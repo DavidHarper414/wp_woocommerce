@@ -621,10 +621,16 @@ jQuery( function( $ ) {
 			$( document.body ).trigger( 'checkout_error' , [ error_message ] );
 		},
 		wrapMessagesInsideLink: function( $msgs ) {
-			$( 'li[data-id]', $msgs ).each( function() {
-				var $this = $( this );
-
-				$this.wrapInner( '<a href="#' + $this.attr( 'data-id' ) + '"></a>' );				
+			$msgs.find( 'li[data-id]' ).each( function() {
+				const $this = $( this );
+				const dataId = $this.attr( 'data-id' );
+				if ( dataId ) {
+					const $link = $('<a>', {
+						href: '#' + dataId,
+						html: $this.html()
+					} );
+					$this.empty().append( $link );
+				}
 			} );
 
 			return $msgs;
