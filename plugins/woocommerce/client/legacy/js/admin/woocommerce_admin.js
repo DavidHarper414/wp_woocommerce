@@ -25,13 +25,12 @@
 				$title_action.after(exportLink);
 			}
 			if ( woocommerce_admin.urls.import_products ) {
-				$title_action.after(
-					'<a href="' +
-						woocommerce_admin.urls.import_products +
-						'" class="page-title-action">' +
-						woocommerce_admin.strings.import_products +
-						'</a>'
-				);
+				const importLink = document.createElement('a');
+				importLink.href = woocommerce_admin.urls.import_products;
+				importLink.className = 'page-title-action';
+				importLink.textContent = woocommerce_admin.strings.import_products;
+
+				$title_action.after(importLink);
 			}
 		} else {
 			$title_action.hide();
