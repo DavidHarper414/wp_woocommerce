@@ -631,19 +631,23 @@ jQuery( function( $ ) {
 		},
 		show_inline_errors: function( $messages ) {
 			$messages.find( 'li[data-id]' ).each( function() {
-				var $this = $( this );
-				var dataId = $this.attr( 'data-id' );
-				var $field = $( '#' + dataId );
+				const $this = $( this );
+				const dataId = $this.attr( 'data-id' );
+				const $field = $( '#' + dataId );
 
 				if ( $field.length === 1 ) {
-					var descriptionId = dataId + '_description';
-					var msg = $this.text().trim();
-					var $formRow = $field.closest( '.form-row' );
-					
-					$formRow.append( '<p id="' + descriptionId + '" class="checkout-inline-error-message">' + msg + '</p>' );
-					$field
-						.attr( 'aria-describedby', descriptionId )
-						.attr( 'aria-invalid', 'true' );
+					const descriptionId = dataId + '_description';
+					const msg = $this.text().trim();
+					const $formRow = $field.closest( '.form-row' );
+
+					const errorMessage = document.createElement( 'p' );
+					errorMessage.id = descriptionId;
+					errorMessage.className = 'checkout-inline-error-message';
+					errorMessage.textContent = msg;
+
+					$formRow.appendChild( errorMessage );
+					$field.setAttribute( 'aria-describedby', descriptionId );
+					$field.setAttribute( 'aria-invalid', 'true' );
 				}
 			} );
 		},
