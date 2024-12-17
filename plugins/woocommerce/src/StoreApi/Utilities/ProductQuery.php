@@ -130,6 +130,14 @@ class ProductQuery {
 			}
 		}
 
+		if ( ! empty( $request['category_slug'] ) ) {
+			$tax_query[] = array(
+				'taxonomy' => 'product_cat',
+				'field'    => 'slug',
+				'terms'    => $request['category_slug'],
+			);
+		}
+
 		// Filter by attributes.
 		if ( ! empty( $request['attributes'] ) ) {
 			$att_queries = array();
