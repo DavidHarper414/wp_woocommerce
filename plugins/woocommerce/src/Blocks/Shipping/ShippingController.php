@@ -7,6 +7,7 @@ use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
 use Automattic\WooCommerce\Enums\ProductTaxStatus;
 use Automattic\WooCommerce\StoreApi\Utilities\LocalPickupUtils;
 use Automattic\WooCommerce\Utilities\ArrayUtil;
+use WC_Shipping_Rate;
 use WC_Tracks;
 
 /**
@@ -459,7 +460,7 @@ class ShippingController {
 					$package['rates'] = array_filter(
 						$package['rates'],
 						function ( $rate ) {
-							return in_array( $rate->get_method_id(), LocalPickupUtils::get_local_pickup_method_ids(), true );
+							return $rate instanceof WC_Shipping_Rate && in_array( $rate->get_method_id(), LocalPickupUtils::get_local_pickup_method_ids(), true );
 						}
 					);
 					return $package;
