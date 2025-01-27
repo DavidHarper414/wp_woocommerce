@@ -75,7 +75,8 @@ trait ProductItemTrait {
 			}
 
 			$return[] = [
-				'attribute' => $this->prepare_html_response( $label ),
+				'attribute' => $this->prepare_html_response( $label ), // @deprecated 9.8.0
+				'name'      => $this->prepare_html_response( $label ),
 				'value'     => $this->prepare_html_response( $value ),
 			];
 		}

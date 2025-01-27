@@ -145,6 +145,13 @@ abstract class ItemSchema extends ProductSchema {
 					'type'       => 'object',
 					'properties' => [
 						'attribute' => [
+							'description' => __( 'Deprecated, use name instead.', 'woocommerce' ),
+							'type'        => 'string',
+							'context'     => [ 'view', 'edit' ],
+							'readonly'    => true,
+							'deprecated'  => true,
+						],
+						'name'      => [
 							'description' => __( 'Variation attribute name.', 'woocommerce' ),
 							'type'        => 'string',
 							'context'     => [ 'view', 'edit' ],
