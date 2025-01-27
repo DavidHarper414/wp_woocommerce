@@ -31,6 +31,12 @@ abstract class ItemSchema extends ProductSchema {
 				'context'     => [ 'view', 'edit' ],
 				'readonly'    => true,
 			],
+			'slug'                 => [
+				'description' => __( 'The item product or variation slug.', 'woocommerce' ),
+				'type'        => 'string',
+				'context'     => [ 'view', 'edit' ],
+				'readonly'    => true,
+			],
 			'quantity'             => [
 				'description' => __( 'Quantity of this item.', 'woocommerce' ),
 				'type'        => 'number',
