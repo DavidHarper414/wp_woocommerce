@@ -282,8 +282,7 @@ function afterAllResolved( lockfile, context ) {
 			}
 			for ( const [ key, value ] of Object.entries( declaredDependencies ) ) {
 				if ( value.startsWith( 'workspace:' ) ) {
-					const linkedPath     = resolvedDependencies[key].replace( 'link:', '' );
-					const normalizedPath = path.join( packagePath, linkedPath );
+					const normalizedPath = path.join( packagePath, resolvedDependencies[key].replace( 'link:', '' ) );
 					context.log( `[wireit][${ packageFile.name }]    Inspecting workspace dependency: ${ key } (${ normalizedPath })` );
 
 					// Actualize output storage with the identified entries.
