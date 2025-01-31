@@ -101,7 +101,7 @@ function afterAllResolved( lockfile, context ) {
 							}
 							config.files.push( normalizedValue );
 
-							context.log( `[wireit][${ packageFile.name }]        Output dependency: ${ normalizedValue }` );
+							context.log( `[wireit][${ packageFile.name }]        - ${ normalizedValue }` );
 						}
 					} else {
 						context.log( `[wireit][${ packageFile.name }]        ---` );
