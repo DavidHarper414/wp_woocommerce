@@ -18,20 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td data-export-label="Database Version"><?php esc_html_e( 'Database version', 'woocommerce-back-in-stock-notifications' ); ?>:</td>
-			<td class="help"><?php echo wc_help_tip( esc_html__( 'The version of WooCommerce Back In Stock Notifications reported by the database. This should be the same as the plugin version.', 'woocommerce-back-in-stock-notifications' ) ); ?></td>
-			<td>
-			<?php
 
-			if ( version_compare( $debug_data['db_version'], WC_BIS()->get_plugin_version( true ), '<=' ) ) {
-				echo '<mark class="yes">' . esc_html( $debug_data['db_version'] ) . '</mark>';
-			} else {
-				echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . esc_html( $debug_data['db_version'] ) . ' - ' . esc_html__( 'Database version mismatch.', 'woocommerce-back-in-stock-notifications' ) . '</mark>';
-			}
-			?>
-			</td>
-		</tr>
 		<tr>
 			<td data-export-label="Loopback Test"><?php esc_html_e( 'Loopback test', 'woocommerce-back-in-stock-notifications' ); ?>:</td>
 			<td class="help"><?php echo wc_help_tip( esc_html__( 'Loopback requests are used by WooCommerce to process tasks in the background.', 'woocommerce-back-in-stock-notifications' ) ); ?></td>
