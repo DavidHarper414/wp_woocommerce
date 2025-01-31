@@ -1,0 +1,58 @@
+@import 'bis_icons';
+
+/**
+ * MyAccount page styles.
+ */
+body.theme-storefront .woocommerce-MyAccount-navigation-link.woocommerce-MyAccount-navigation-link--backinstock {
+  a:before {
+    content: '\f472';
+  }
+}
+
+.woocommerce-backinstock-table__cell__product {
+  .description {
+    display: block;
+    font-size: 0.9em;
+  }
+}
+
+/**
+ * Product page styles.
+ */
+#wc_bis_product_form {
+  margin: 0 0 40px;
+
+  .wc_bis_form_title {
+    margin: 0 0 20px;
+  }
+
+  .wc_bis_registrations_count {
+    margin: 20px 0 0;
+  }
+
+  #wc_bis_send_form {
+    // Reset float.
+    float: none;
+  }
+
+  .wc_bis_opt_in {
+    margin: 0;
+    display: block;
+
+    span {
+      margin-left: 5px;
+    }
+
+    input[type="checkbox"] {
+      margin: 0;
+    }
+  }
+}
+
+/**
+ * Bundles integration styles.
+ */
+.bundle_form #wc_bis_already_registered,
+.bundle_form #wc_bis_product_form {
+  margin-top: 20px;
+}

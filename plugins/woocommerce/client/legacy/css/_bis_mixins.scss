@@ -1,0 +1,40 @@
+/*
+ * Back In Stock Notifications mixin.
+ */
+@mixin mq( $breakpoint ) {
+
+  $mq-small-portrait: "(max-width: 359px)";
+  $mq-portrait:       "(max-width: 480px)";
+  $mq-xs:             "(max-width: 782px)";
+  $mq-no-xs:          "(min-width: 783px)";
+  $mq-sm:             "(max-width: 980px)";
+  $mq-md:             "(max-width: 1280px)";
+  $mq-up-md:          "(min-width: 1280px)";
+  $mq-lg:             "(max-width: 1690px)";
+
+
+  @if $breakpoint == small-portrait {
+    @media #{$mq-small-portrait} { @content; }
+  }
+  @else if $breakpoint == portrait {
+    @media #{$mq-portrait} { @content; }
+  }
+  @else if $breakpoint == xs {
+    @media #{$mq-xs} { @content; }
+  }
+  @else if $breakpoint == no-xs {
+    @media #{$mq-no-xs} { @content; }
+  }
+  @else if $breakpoint == sm {
+    @media #{$mq-sm} { @content; }
+  }
+  @else if $breakpoint == md {
+    @media #{$mq-md} { @content; }
+  }
+  @else if $breakpoint == up-md {
+    @media #{$mq-up-md} { @content; }
+  }
+  @else if $breakpoint == lg {
+    @media #{$mq-lg} { @content; }
+  }
+}
