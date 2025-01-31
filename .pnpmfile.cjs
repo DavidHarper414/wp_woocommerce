@@ -226,6 +226,8 @@ function updateWireitDependencies( lockPackages, context ) {
 				continue;
 			}
 
+			console.log ( `[wireit][${ packageFile.name }] Outputs: `, packageOutputs );
+
 			// Put includes at the front and excludes at the end. This is important because otherwise
 			// wireit will blow the call stack due to the way it handles negation globs.
 			packageFile.wireit.dependencyOutputs.files.unshift( ...packageOutputs.include );
@@ -235,6 +237,8 @@ function updateWireitDependencies( lockPackages, context ) {
 				`[wireit][${ packageFile.name }] Added '${ linkedPackage.name }' Outputs`
 			);
 		}
+
+		// TODO: update only if the data changed
 		updatePackageFile( packagePath, packageFile );
 	}
 
@@ -253,7 +257,67 @@ function updateWireitDependencies( lockPackages, context ) {
  * @return {Object} lockfile The updated lockfile.
  */
 function afterAllResolved( lockfile, context ) {
-	updateWireitDependencies( lockfile.importers, context );
+	for ( const packagePath in lockfile.importers ) {
+		const packageFile = loadPackageFile( packagePath );
+		if ( packageFile.wireit ) {
+			context.log( `[wireit][${ packageFile.name }] Verifying 'wireit.dependencyOutputs' state` );
+
+			// Initialize outputs storage and hash it's original state.
+			const config = {
+				allowUsuallyExcludedPaths: true, // This is needed so we can reference files in `node_modules`.
+				files: [ "package.json" ],       // The files list will include globs for dependency files that we should fingerprint.
+			};
+			const originalConfigState = JSON.stringify( config );
+
+			// Walk through workspace-located dependencies and resolve their locations.
+			const declaredDependencies = {
+				...( packageFile.dependencies || {} ),
+				...( packageFile.devDependencies || {} ),
+			};
+			const resolvedDependencies = {
+				...( lockfile.importers[ packagePath ].dependencies || {} ),
+				...( lockfile.importers[ packagePath ].devDependencies || {} ),
+			}
+			for ( const [ key, value ] of Object.entries( declaredDependencies ) ) {
+				if ( value.startsWith( 'workspace:' ) ) {
+					const linkedPath     = resolvedDependencies[key].replace( 'link:', '' );
+					const normalizedPath = path.join( packagePath, linkedPath );
+					context.log( `[wireit][${ packageFile.name }]    Identified workspace dependency: ${ key } => ${ normalizedPath }` );
+
+					// Actualize output storage with the identified entries.
+					const dependencyFile = loadPackageFile( path.join( packagePath, 'node_modules', key ) );
+					if ( dependencyFile.files ) {
+						for ( const entry in dependencyFile.files ) {
+							const entryValue = dependencyFile.files[entry];
+							let normalizedValue;
+							if ( entryValue.startsWith( '!' ) ) {
+								normalizedValue = config.files.push( '!' + path.join( 'node_modules', key, entryValue.substring( 1 ) ) );
+							} else {
+								normalizedValue = config.files.push( path.join( 'node_modules', key, entryValue ) );
+							}
+							config.files.push( normalizedValue );
+							context.log( `[wireit][${ packageFile.name }]        Output dependency: ${ normalizedValue }` );
+						}
+					}
+				}
+			}
+
+			// Verify config state and update manifest on mismatch.
+			const newConfigState = JSON.stringify( config );
+			if ( newConfigState !== originalConfigState ) {
+				const loadedConfigState = JSON.stringify( packageFile.wireit?.dependencyOutputs || {} );
+				if ( newConfigState !== loadedConfigState ) {
+					context.log( `[wireit][${ packageFile.name }] Updating 'wireit.dependencyOutputs'` );
+
+					packageFile.wireit.dependencyOutputs = config;
+					updatePackageFile( packagePath, packageFile );
+				}
+			}
+		}
+	}
+
+	context.log( '[wireit] Done' );
+
 	return lockfile;
 }
 
