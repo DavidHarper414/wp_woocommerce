@@ -25,7 +25,7 @@ class BackInStockNotifications {
 			return;
 		}
 
-		include_once WC_ABSPATH . 'includes/class-wc-bis-notifications.php';
+		include_once WC_ABSPATH . '/includes/bis/class-wc-bis-notifications.php';
 		//...
 
 		if ( wc_current_theme_is_fse_theme() ) {
