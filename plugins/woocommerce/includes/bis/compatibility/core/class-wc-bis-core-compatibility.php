@@ -73,6 +73,8 @@ class WC_BIS_Core_Compatibility {
 	 * @return string
 	 */
 	public static function get_wc_version() {
+		wc_deprecated_function( 'WC_BIS_Core_Compatibility::get_wc_version', 9.8, 'Constants::get_constant( \'WC_VERSION\' )' );
+
 		return defined( 'WC_VERSION' ) && WC_VERSION ? WC_VERSION : null;
 	}
 
@@ -83,6 +85,8 @@ class WC_BIS_Core_Compatibility {
 	 * @return boolean
 	 */
 	public static function is_wc_version_gte( $version ) {
+		wc_deprecated_function( 'WC_BIS_Core_Compatibility::is_wc_version_gte', 9.8, 'version_compare' );
+
 		if ( ! isset( self::$is_wc_version_gte[ $version ] ) ) {
 			self::$is_wc_version_gte[ $version ] = self::get_wc_version() && version_compare( self::get_wc_version(), $version, '>=' );
 		}
@@ -96,6 +100,8 @@ class WC_BIS_Core_Compatibility {
 	 * @return boolean
 	 */
 	public static function is_wc_version_gt( $version ) {
+		wc_deprecated_function( 'WC_BIS_Core_Compatibility::is_wc_version_gt', 9.8, 'version_compare' );
+
 		if ( ! isset( self::$is_wc_version_gt[ $version ] ) ) {
 			self::$is_wc_version_gt[ $version ] = self::get_wc_version() && version_compare( self::get_wc_version(), $version, '>' );
 		}
@@ -109,6 +115,8 @@ class WC_BIS_Core_Compatibility {
 	 * @return boolean
 	 */
 	public static function is_wc_version_lte( $version ) {
+		wc_deprecated_function( 'WC_BIS_Core_Compatibility::is_wc_version_lte', 9.8, 'version_compare' );
+
 		if ( ! isset( self::$is_wc_version_gt[ $version ] ) ) {
 			self::$is_wc_version_gt[ $version ] = self::get_wc_version() && version_compare( self::get_wc_version(), $version, '<=' );
 		}
@@ -122,6 +130,8 @@ class WC_BIS_Core_Compatibility {
 	 * @return boolean
 	 */
 	public static function is_wc_version_lt( $version ) {
+		wc_deprecated_function( 'WC_BIS_Core_Compatibility::is_wc_version_lt', 9.8, 'version_compare' );
+
 		if ( ! isset( self::$is_wc_version_gt[ $version ] ) ) {
 			self::$is_wc_version_gt[ $version ] = self::get_wc_version() && version_compare( self::get_wc_version(), $version, '<' );
 		}
@@ -135,12 +145,14 @@ class WC_BIS_Core_Compatibility {
 	*/
 
 	/**
-	 * Returns true if the installed version of WooCommerce is greater than or equal to $version.
+	 * Returns true if the installed version of WordPress is greater than or equal to $version.
 	 *
 	 * @param  string $version
 	 * @return boolean
 	 */
 	public static function is_wp_version_gt( $version ) {
+		wc_deprecated_function( 'WC_BIS_Core_Compatibility::is_wp_version_gt', 9.8, 'version_compare' );
+
 		if ( ! isset( self::$is_wp_version_gt[ $version ] ) ) {
 			global $wp_version;
 			self::$is_wp_version_gt[ $version ] = $wp_version && version_compare( WC_BIS()->get_plugin_version( true, $wp_version ), $version, '>' );
@@ -149,12 +161,14 @@ class WC_BIS_Core_Compatibility {
 	}
 
 	/**
-	 * Returns true if the installed version of WooCommerce is greater than or equal to $version.
+	 * Returns true if the installed version of WordPress is greater than or equal to $version.
 	 *
 	 * @param  string $version
 	 * @return boolean
 	 */
 	public static function is_wp_version_gte( $version ) {
+		wc_deprecated_function( 'WC_BIS_Core_Compatibility::is_wp_version_gte', 9.8, 'version_compare' );
+
 		if ( ! isset( self::$is_wp_version_gte[ $version ] ) ) {
 			global $wp_version;
 			self::$is_wp_version_gte[ $version ] = $wp_version && version_compare( WC_BIS()->get_plugin_version( true, $wp_version ), $version, '>=' );
