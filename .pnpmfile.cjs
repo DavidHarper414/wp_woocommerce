@@ -311,7 +311,7 @@ function afterAllResolved( lockfile, context ) {
 			if ( newConfigState !== originalConfigState ) {
 				const loadedConfigState = JSON.stringify( packageFile.wireit?.dependencyOutputs || {} );
 				if ( newConfigState !== loadedConfigState ) {
-					context.log( `[wireit][${ packageFile.name }] Updating 'wireit.dependencyOutputs'` );
+					context.log( `[wireit][${ packageFile.name }]     Conclusion: outdated, updating 'wireit.dependencyOutputs'` );
 
 					packageFile.wireit.dependencyOutputs = config;
 					updatePackageFile( packagePath, packageFile );
@@ -319,7 +319,7 @@ function afterAllResolved( lockfile, context ) {
 				}
 			}
 			if ( ! updated ) {
-				context.log( `[wireit][${ packageFile.name }] Verified 'wireit.dependencyOutputs', no update needed` );
+				context.log( `[wireit][${ packageFile.name }]     Conclusion: up to date` );
 			}
 		}
 	}
