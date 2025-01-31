@@ -1,0 +1,35 @@
+/*
+ * Include custom font icons.
+ */
+@font-face {
+	font-family: 'WC_BIS';
+	src: url('../../fonts/WC_BIS.eot?74918120');
+	src: url('../../fonts/WC_BIS.eot?74918120#iefix') format('embedded-opentype'),
+		 url('../../fonts/WC_BIS.woff?74918120') format('woff'),
+		 url('../../fonts/WC_BIS.ttf?74918120') format('truetype'),
+		 url('../../fonts/WC_BIS.svg?74918120#WC_BIS') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/*
+ * Icons
+ */
+.bis-icon:before {
+	display: inline-block;
+	font-size: 20px;
+	line-height: 1;
+	font-family: WC_BIS !important;
+	text-decoration: inherit;
+	font-weight: normal;
+	font-style: normal;
+	vertical-align: top;
+	text-align: center;
+	transition: color .1s ease-in 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.bis-icon.bis-notifications:before {
+	content: '\e900';
+}
+
