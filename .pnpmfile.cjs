@@ -284,7 +284,7 @@ function afterAllResolved( lockfile, context ) {
 				if ( value.startsWith( 'workspace:' ) ) {
 					const linkedPath     = resolvedDependencies[key].replace( 'link:', '' );
 					const normalizedPath = path.join( packagePath, linkedPath );
-					context.log( `[wireit][${ packageFile.name }]    Identified workspace dependency: ${ key } => ${ normalizedPath }` );
+					context.log( `[wireit][${ packageFile.name }]    Inspecting workspace dependency: ${ key } (${ normalizedPath })` );
 
 					// Actualize output storage with the identified entries.
 					const dependencyFile = loadPackageFile( path.join( packagePath, 'node_modules', key ) );
@@ -301,6 +301,8 @@ function afterAllResolved( lockfile, context ) {
 
 							context.log( `[wireit][${ packageFile.name }]        Output dependency: ${ normalizedValue }` );
 						}
+					} else {
+						context.log( `[wireit][${ packageFile.name }]        ---` );
 					}
 				}
 			}
