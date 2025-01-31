@@ -25,7 +25,7 @@ class BackInStockNotifications {
 			return;
 		}
 
-		include_once WC_ABSPATH . 'includes/class-wc-brands.php';
+		include_once WC_ABSPATH . 'includes/class-wc-bis-notifications.php';
 		//...
 
 		if ( wc_current_theme_is_fse_theme() ) {
@@ -68,7 +68,7 @@ class BackInStockNotifications {
 
 		if ( function_exists( 'wc_bis_get_notifications' ) ) {
 			//TODO: check if this works.
-			remove_action( 'plugins_loaded', array( WC_Back_In_Stock::instance(), 'initialize_plugin' ), 9 );
+			remove_action( 'plugins_loaded', array( \WC_BIS_Notifications::instance(), 'initialize_plugin' ), 9 );
 		}
 
 	}

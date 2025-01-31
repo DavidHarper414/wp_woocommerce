@@ -75,7 +75,7 @@ class WC_BIS_Notifications {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var WC_Back_In_Stock
+	 * @var WC_BIS_Notifications
 	 */
 	protected static $_instance = null;
 
@@ -83,7 +83,7 @@ class WC_BIS_Notifications {
 	 * Main WC_Back_In_Stock instance. Ensures only one instance is loaded or can be loaded - @see 'WC_BIS()'.
 	 *
 	 * @static
-	 * @return  WC_Back_In_Stock
+	 * @return  WC_BIS_Notifications
 	 */
 	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
@@ -455,12 +455,12 @@ class WC_BIS_Notifications {
 }
 
 /**
- * Returns the main instance of WC_Back_In_Stock to prevent the need to use globals.
+ * Returns the main instance of WC_BIS_Notifications to prevent the need to use globals.
  *
- * @return  WC_Back_In_Stock
+ * @return  WC_BIS_Notifications
  */
 function WC_BIS() {
-	return WC_Back_In_Stock::instance();
+	return WC_BIS_Notifications::instance();
 }
 
 WC_BIS();

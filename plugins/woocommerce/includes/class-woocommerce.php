@@ -9,6 +9,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Internal\AssignDefaultCategory;
+use Automattic\WooCommerce\Internal\BackInStockNotifications;
 use Automattic\WooCommerce\Internal\BatchProcessing\BatchProcessingController;
 use Automattic\WooCommerce\Internal\ComingSoon\ComingSoonAdminBarBadge;
 use Automattic\WooCommerce\Internal\ComingSoon\ComingSoonCacheInvalidator;
@@ -26,6 +27,7 @@ use Automattic\WooCommerce\Internal\Settings\OptionSanitizer;
 use Automattic\WooCommerce\Internal\Utilities\LegacyRestApiStub;
 use Automattic\WooCommerce\Internal\Utilities\WebhookUtil;
 use Automattic\WooCommerce\Internal\Admin\Marketplace;
+use Automattic\WooCommerce\Packages;
 use Automattic\WooCommerce\Proxies\LegacyProxy;
 use Automattic\WooCommerce\Utilities\{LoggingUtil, RestApiUtil, TimeUtil};
 use Automattic\WooCommerce\Internal\Logging\RemoteLogger;
@@ -1183,6 +1185,24 @@ final class WooCommerce {
 	 */
 	public function mailer() {
 		return WC_Emails::instance();
+	}
+
+	/**
+	 *
+	 *
+	 * @return WC_BIS_Notifications|WC_BIS_Noop
+	 */
+	public function bis_notifications() {
+		static $noop_instance = null;
+
+		if ( ! ( BackInStockNotifications::is_enabled() && Packages::is_package_enabled( 'BackInStockNotifications' ) ) ) {
+			if ( ! $noop_instance ) {
+				$noop_instance = new WC_BIS_Noop();
+			}
+			return $noop_instance;
+		}
+
+		return WC_BIS_Notifications::instance();
 	}
 
 	/**
