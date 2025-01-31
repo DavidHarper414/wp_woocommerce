@@ -291,11 +291,12 @@ function afterAllResolved( lockfile, context ) {
 							const entryValue = dependencyFile.files[entry];
 							let normalizedValue;
 							if ( entryValue.startsWith( '!' ) ) {
-								normalizedValue = config.files.push( '!' + path.join( 'node_modules', key, entryValue.substring( 1 ) ) );
+								normalizedValue = '!' + path.join( 'node_modules', key, entryValue.substring( 1 ) );
 							} else {
-								normalizedValue = config.files.push( path.join( 'node_modules', key, entryValue ) );
+								normalizedValue = path.join( 'node_modules', key, entryValue );
 							}
 							config.files.push( normalizedValue );
+
 							context.log( `[wireit][${ packageFile.name }]        Output dependency: ${ normalizedValue }` );
 						}
 					}
