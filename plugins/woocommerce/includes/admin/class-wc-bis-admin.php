@@ -6,6 +6,8 @@
  * @since    1.0.0
  */
 
+use Automattic\Jetpack\Constants;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -112,7 +114,7 @@ class WC_BIS_Admin {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 			// Register own select2 initialization library.
-			wp_register_script( 'sw-admin-select-init', WC_BIS()->get_plugin_url() . '/assets/js/admin/select2-init' . $suffix . '.js', array( 'jquery', 'sw-admin-select' ), self::$bundled_selectsw_version );
+			wp_register_script( 'sw-admin-select-init', WC()->plugin_url() . '/assets/js/admin/select2-init' . $suffix . '.js', array( 'jquery', 'sw-admin-select' ), self::$bundled_selectsw_version );
 		}
 	}
 
@@ -129,10 +131,10 @@ class WC_BIS_Admin {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 			// Register selectSW library.
-			wp_register_script( 'sw-admin-select', WC_BIS()->get_plugin_url() . '/assets/js/admin/select2' . $suffix . '.js', array( 'jquery' ), self::$bundled_selectsw_version );
+			wp_register_script( 'sw-admin-select', WC()->plugin_url() . '/assets/js/admin/select2' . $suffix . '.js', array( 'jquery' ), self::$bundled_selectsw_version );
 
 			// Enqueue selectSW styles.
-			wp_register_style( 'sw-admin-css-select', WC_BIS()->get_plugin_url() . '/assets/css/admin/select2.css', array(), self::$bundled_selectsw_version );
+			wp_register_style( 'sw-admin-css-select', WC()->plugin_url() . '/assets/css/admin/select2.css', array(), self::$bundled_selectsw_version );
 			wp_style_add_data( 'sw-admin-css-select', 'rtl', 'replace' );
 		}
 	}
@@ -175,7 +177,7 @@ class WC_BIS_Admin {
 		}
 
 		$load_selectsw_from = wp_scripts()->registered['sw-admin-select-init']->src;
-		return strpos( $load_selectsw_from, WC_BIS()->get_plugin_url() ) === 0;
+		return strpos( $load_selectsw_from, WC()->plugin_url() ) === 0;
 	}
 
 	/**
@@ -235,11 +237,12 @@ class WC_BIS_Admin {
 	public static function admin_resources() {
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$version   = Constants::get_constant( 'WC_VERSION' );
 
-		wp_register_style( 'wc-bis-admin-css', WC_BIS()->get_plugin_url() . '/assets/css/admin/admin.css', array( 'sw-admin-css-select' ), WC_BIS()->get_plugin_version() );
+		wp_register_style( 'wc-bis-admin-css', WC()->plugin_url() . '/assets/css/admin/admin.css', array( 'sw-admin-css-select' ), $version );
 		wp_style_add_data( 'wc-bis-admin-css', 'rtl', 'replace' );
 
-		wp_register_script( 'wc-bis-writepanel', WC_BIS()->get_plugin_url() . '/assets/js/admin/wc-bis-admin' . $suffix . '.js', array( 'jquery', 'jquery-ui-datepicker', 'wp-util', 'sw-admin-select-init', 'wc-backbone-modal' ), WC_BIS()->get_plugin_version() );
+		wp_register_script( 'wc-bis-writepanel', WC()->plugin_url() . '/assets/js/admin/wc-bis-admin' . $suffix . '.js', array( 'jquery', 'jquery-ui-datepicker', 'wp-util', 'sw-admin-select-init', 'wc-backbone-modal' ), $version );
 
 		$params = array(
 			'wc_ajax_url'                               => admin_url( 'admin-ajax.php' ),
@@ -259,7 +262,7 @@ class WC_BIS_Admin {
 			'i18n_dashboard_sent_chart_tooltip'         => __( '%notifications% sent on %date%', 'woocommerce-back-in-stock-notifications' ),
 		);
 
-		wp_register_script( 'wc-bis-dashboard', WC_BIS()->get_plugin_url() . '/assets/js/admin/wc-bis-admin-dashboard' . $suffix . '.js', array( 'jquery', 'wc-bis-writepanel' ), WC_BIS()->get_plugin_version() );
+		wp_register_script( 'wc-bis-dashboard', WC()->plugin_url() . '/assets/js/admin/wc-bis-admin-dashboard' . $suffix . '.js', array( 'jquery', 'wc-bis-writepanel' ), $version );
 
 		/*
 		 * Enqueue specific styles & scripts.

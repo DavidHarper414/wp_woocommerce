@@ -93,6 +93,7 @@ class WC_BIS_Install {
 	 * @return boolean
 	 */
 	private static function must_install() {
+		//TODO: plug this into WC core's install routine.
 		if ( is_null( self::$current_version ) ) {
 			return true;
 		}
@@ -106,6 +107,7 @@ class WC_BIS_Install {
 	 * @return boolean
 	 */
 	private static function can_install() {
+		//TODO: plug this into WC core's install routine.
 		return ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) && ! defined( 'IFRAME_REQUEST' ) && ! self::is_installing();
 	}
 
@@ -113,6 +115,7 @@ class WC_BIS_Install {
 	 * Check version and run the installer if necessary.
 	 */
 	public static function maybe_install() {
+		//TODO: plug this into WC core's install routine.
 		if ( self::can_install() && self::must_install() ) {
 			self::install();
 		}
@@ -124,6 +127,7 @@ class WC_BIS_Install {
 	 * @return boolean
 	 */
 	private static function is_installing() {
+		//TODO: plug this into WC core's install routine.
 		return 'yes' === get_transient( 'wc_bis_installing' );
 	}
 

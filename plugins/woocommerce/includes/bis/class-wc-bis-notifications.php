@@ -4,6 +4,8 @@
  */
 
 // Exit if accessed directly.
+use Automattic\Jetpack\Constants;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -22,13 +24,6 @@ class WC_BIS_Notifications {
 	 * @var string
 	 */
 	public $version = '2.0.6';
-
-	/**
-	 * Min required WC version.
-	 *
-	 * @var string
-	 */
-	private $wc_min_version = '8.2.0';
 
 	/**
 	 * Sync Stock Controller.
@@ -110,6 +105,8 @@ class WC_BIS_Notifications {
 	 * Make stuff.
 	 */
 	protected function __construct() {
+		$this->version = Constants::get_constant( 'WC_VERSION' );
+
 		// Entry point.
 		add_action( 'plugins_loaded', array( $this, 'initialize_plugin' ), 9 );
 	}
@@ -149,6 +146,7 @@ class WC_BIS_Notifications {
 	 * @return string
 	 */
 	public function get_plugin_version( $base = false, $version = '' ) {
+		wc_deprecated_function( 'WC_BIS_Notifications::get_plugin_version', 9.8, 'Constants::get_constant( \'WC_VERSION\' )' );
 
 		$version = $version ? $version : $this->version;
 
@@ -158,17 +156,6 @@ class WC_BIS_Notifications {
 		}
 
 		return $version;
-	}
-
-	/**
-	 * Define constants if not present.
-	 *
-	 * @return boolean
-	 */
-	protected function maybe_define_constant( $name, $value ) {
-		if ( ! defined( $name ) ) {
-			define( $name, $value );
-		}
 	}
 
 	/**
@@ -231,9 +218,9 @@ class WC_BIS_Notifications {
 	 * Constants.
 	 */
 	public function define_constants() {
-		$this->maybe_define_constant( 'WC_BIS_VERSION', $this->version );
-		$this->maybe_define_constant( 'WC_BIS_SUPPORT_URL', 'https://woocommerce.com/my-account/marketplace-ticket-form/' );
-		$this->maybe_define_constant( 'WC_BIS_ABSPATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
+//		$this->maybe_define_constant( 'WC_BIS_VERSION', $this->version );
+//		$this->maybe_define_constant( 'WC_BIS_SUPPORT_URL', 'https://woocommerce.com/my-account/marketplace-ticket-form/' );
+//		$this->maybe_define_constant( 'WC_BIS_ABSPATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 	}
 
 	/**

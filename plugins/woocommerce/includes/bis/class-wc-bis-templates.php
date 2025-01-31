@@ -7,6 +7,8 @@
  */
 
 // Exit if accessed directly.
+use Automattic\Jetpack\Constants;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -71,15 +73,16 @@ class WC_BIS_Templates {
 	 */
 	public function frontend_scripts() {
 
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$suffix  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$version = Constants::get_constant( 'WC_VERSION' );
 
 		// Styles
-		wp_register_style( 'wc-bis-css', WC_BIS()->get_plugin_url() . '/assets/css/frontend/woocommerce.css', false, WC_BIS()->get_plugin_version(), 'all' );
+		wp_register_style( 'wc-bis-css', WC()->plugin_url() . '/assets/css/frontend/woocommerce.css', false, $version, 'all' );
 		wp_style_add_data( 'wc-bis-css', 'rtl', 'replace' );
 		wp_enqueue_style( 'wc-bis-css' );
 
 		if ( WC_BIS_Core_Compatibility::wc_current_theme_is_fse_theme() ) {
-			wp_register_style( 'wc-bis-blocks-style', WC_BIS()->get_plugin_url() . '/assets/css/frontend/blocktheme.css', false, WC_BIS()->get_plugin_version() );
+			wp_register_style( 'wc-bis-blocks-style', WC()->plugin_url() . '/assets/css/frontend/blocktheme.css', false, $version );
 			wp_style_add_data( 'wc-bis-blocks-style', 'rtl', 'replace' );
 			wp_enqueue_style( 'wc-bis-blocks-style' );
 		}
@@ -93,7 +96,7 @@ class WC_BIS_Templates {
 		 */
 		$dependencies = apply_filters( 'woocommerce_bis_script_dependencies', $dependencies );
 
-		wp_register_script( 'wc-bis-main', WC_BIS()->get_plugin_url() . '/assets/js/frontend/wc-bis-main' . $suffix . '.js', $dependencies, WC_BIS()->get_plugin_version(), true );
+		wp_register_script( 'wc-bis-main', WC()->plugin_url() . '/assets/js/frontend/wc-bis-main' . $suffix . '.js', $dependencies, $version, true );
 		wp_script_add_data( 'wc-bis-main', 'strategy', 'defer' );
 
 		/**
@@ -104,7 +107,7 @@ class WC_BIS_Templates {
 		$params = apply_filters(
 			'woocommerce_bis_front_end_params',
 			array(
-				'version'                 => WC_BIS()->get_plugin_version(),
+				'version'                 => $version,
 				'wc_ajax_url'             => WC_AJAX::get_endpoint( '%%endpoint%%' ),
 				'registration_form_nonce' => wp_create_nonce( 'wc-bis-registration-form' ),
 			)
