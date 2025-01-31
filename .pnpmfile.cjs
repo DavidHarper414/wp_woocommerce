@@ -179,7 +179,7 @@ function getLinkedPackages( packagePath, lockPackage ) {
  * @param {Function.<string>}		context.log	 Logs a message to the console.
  */
 function updateWireitDependencies( lockPackages, context ) {
-	context.log( '[wireit] Updating Dependency Lists' );
+
 
 	// Rather than using wireit for task orchestration we are going to rely on PNPM in order to provide a more consistent developer experience.
 	// In order to achieve this, however, we need to make sure that all of the dependencies are included in the fingerprint. If we don't, then
@@ -257,10 +257,12 @@ function updateWireitDependencies( lockPackages, context ) {
  * @return {Object} lockfile The updated lockfile.
  */
 function afterAllResolved( lockfile, context ) {
+	context.log( '[wireit] Updating Dependency Lists' );
+
 	for ( const packagePath in lockfile.importers ) {
 		const packageFile = loadPackageFile( packagePath );
 		if ( packageFile.wireit ) {
-			context.log( `[wireit][${ packageFile.name }] Verifying 'wireit.dependencyOutputs' state` );
+			context.log( `[wireit][${ packageFile.name }] Verifying 'wireit.dependencyOutputs'` );
 
 			// Initialize outputs storage and hash it's original state.
 			const config = {
@@ -304,6 +306,7 @@ function afterAllResolved( lockfile, context ) {
 			}
 
 			// Verify config state and update manifest on mismatch.
+			let updated = false;
 			const newConfigState = JSON.stringify( config );
 			if ( newConfigState !== originalConfigState ) {
 				const loadedConfigState = JSON.stringify( packageFile.wireit?.dependencyOutputs || {} );
@@ -312,7 +315,11 @@ function afterAllResolved( lockfile, context ) {
 
 					packageFile.wireit.dependencyOutputs = config;
 					updatePackageFile( packagePath, packageFile );
+					updated = true;
 				}
+			}
+			if ( ! updated ) {
+				context.log( `[wireit][${ packageFile.name }] Verified 'wireit.dependencyOutputs', no update needed` );
 			}
 		}
 	}
