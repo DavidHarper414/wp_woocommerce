@@ -1,5 +1,5 @@
 /**
- * Util helper made for filling billing details in the block-based checkout
+ * Util helper made to fill the Checkout details in the block-based checkout.
  *
  * @param {Object}  page
  * @param {Object}  [details={}]                     - The shipping details object.
@@ -173,6 +173,12 @@ async function fillCheckoutBlocks( page, details = {}, type = 'shipping' ) {
 	}
 }
 
+/**
+ * Convenience function to fill Shipping Address fields.
+ *
+ * @param {Object} page
+ * @param {*} shippingDetails See arguments description for `fillCheckoutBlocks`.
+ */
 export async function fillShippingCheckoutBlocks(
 	page,
 	shippingDetails = {
@@ -184,6 +190,12 @@ export async function fillShippingCheckoutBlocks(
 	await fillCheckoutBlocks( page, shippingDetails, 'shipping' );
 }
 
+/**
+ * Convenience function to fill Billing Address fields.
+ *
+ * @param {Object} page
+ * @param {*} shippingDetails See arguments description for `fillCheckoutBlocks`.
+ */
 export async function fillBillingCheckoutBlocks(
 	page,
 	billingDetails = {
