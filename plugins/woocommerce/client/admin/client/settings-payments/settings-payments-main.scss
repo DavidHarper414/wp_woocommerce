@@ -279,17 +279,6 @@
 
 			&__external-icon {
 				padding: $grid-unit-05;
-
-				img {
-					height: 20px;
-					margin-right: $grid-unit-05;
-				}
-
-				a {
-					min-height: $button-size-small;
-					padding: $grid-unit-05;
-					text-decoration: none;
-				}
 			}
 		}
 
@@ -301,6 +290,20 @@
 			margin: 32px $gap 0 $gap;
 			padding: $gap-smaller $gap;
 		}
+	}
+
+	.more-payment-options-link {
+		padding: 0;
+		text-decoration: none;
+
+		img {
+			height: $grid-unit-20;
+			margin-right: $grid-unit-05;
+		}
+	}
+
+	.more-payment-options {
+		padding: 25px 54px;
 	}
 }
 
@@ -341,6 +344,10 @@
 			.woocommerce-list__item-after {
 				display: none;
 			}
+		}
+
+		.more-payment-options {
+			padding-left: 25px;
 		}
 	}
 }
