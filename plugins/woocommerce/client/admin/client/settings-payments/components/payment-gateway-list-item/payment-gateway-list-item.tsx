@@ -110,12 +110,14 @@ export const PaymentGatewayListItem = ( {
 						) }
 						{ gateway.supports?.includes( 'subscriptions' ) && (
 							<Tooltip
+								placement="top"
 								text={ __(
 									'Supports recurring payments',
 									'woocommerce'
 								) }
 								children={
 									<img
+										className="woocommerce-list__item-recurring-payments-icon"
 										src={
 											WC_ASSET_URL +
 											'images/icons/recurring-payments.svg'
