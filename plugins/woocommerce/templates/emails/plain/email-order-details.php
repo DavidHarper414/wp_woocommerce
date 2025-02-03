@@ -67,7 +67,11 @@ if ( $item_totals ) {
 }
 
 if ( $order->get_customer_note() ) {
-	echo "\n" . esc_html__( 'Note:', 'woocommerce' ) . "\n" . wp_kses( wptexturize( $order->get_customer_note() ), array() ) . "\n";
+	if ( $email_improvements_enabled ) {
+		echo "\n" . esc_html__( 'Note:', 'woocommerce' ) . "\n" . wp_kses( wptexturize( $order->get_customer_note() ), array() ) . "\n";
+	} else {
+		echo esc_html__( 'Note:', 'woocommerce' ) . "\t " . wp_kses( wptexturize( $order->get_customer_note() ), array() ) . "\n";
+	}
 }
 
 if ( $sent_to_admin ) {

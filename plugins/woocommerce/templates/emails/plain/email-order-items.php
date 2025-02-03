@@ -56,7 +56,7 @@ foreach ( $items as $item_id => $item ) :
 			echo wp_kses_post( str_pad( wp_kses_post( $product_name ), 40 ) );
 			echo ' ';
 			echo esc_html( str_pad( wp_kses( $order->get_formatted_line_subtotal( $item ), array() ), 20, ' ', STR_PAD_LEFT ) ) . "\n";
-			if ( $sku ) {
+			if ( $show_sku && $sku ) {
 				echo esc_html( '(#' . $sku . ")\n" );
 			}
 		} else {
