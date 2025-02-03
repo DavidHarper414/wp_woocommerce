@@ -7,6 +7,8 @@ declare( strict_types = 1);
 
 namespace Automattic\WooCommerce\Internal;
 
+use Automattic\WooCommerce\Packages;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -21,7 +23,7 @@ class BackInStockNotifications {
 	 */
 	final public static function init() {
 
-		if ( ! self::is_enabled() ) {
+		if ( ! self::is_enabled_for_rollout() ) {
 			return;
 		}
 
@@ -49,8 +51,17 @@ class BackInStockNotifications {
 	 *
 	 * @return bool
 	 */
-	public static function is_enabled() {
+	public static function is_enabled_for_rollout() {
 		return true;
+	}
+
+	/**
+	 * If the feature is actually enabled, not just for rollout.
+	 *
+	 * @return bool
+	 */
+	public static function is_enabled() {
+		return self::is_enabled_for_rollout() && Packages::is_package_enabled( 'BackInStockNotifications' );
 	}
 
 	/**
@@ -62,7 +73,7 @@ class BackInStockNotifications {
 	 */
 	public static function prepare() {
 
-		if ( ! self::is_enabled() ) {
+		if ( ! self::is_enabled_for_rollout() ) {
 			return;
 		}
 
