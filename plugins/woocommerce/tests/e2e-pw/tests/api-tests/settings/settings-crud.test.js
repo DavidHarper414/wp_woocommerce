@@ -1731,7 +1731,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						type: 'color',
 						default: '#000000',
 						tip: 'Customize the color of your buttons and links. Default <code>#000000</code>.',
-						value: '#7f54b3',
+						value: '#720eec',
 					} ),
 				] )
 			);
