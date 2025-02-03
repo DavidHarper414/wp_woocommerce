@@ -278,7 +278,7 @@
 			}
 
 			&__external-icon {
-              padding: $grid-unit-05;
+				padding: $grid-unit-05;
 			}
 		}
 
@@ -297,8 +297,8 @@
 		text-decoration: none;
 
 		img {
-			height: 16px;
-			margin-right: 4px;
+			height: $grid-unit-20;
+			margin-right: $grid-unit-05;
 		}
 	}
 
