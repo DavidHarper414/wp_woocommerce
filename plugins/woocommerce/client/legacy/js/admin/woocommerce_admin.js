@@ -1,4 +1,4 @@
-/* global woocommerce_admin */
+/* global woocommerce_admin ... */
 ( function ( $, woocommerce_admin ) {
 	$( function () {
 		if ( 'undefined' === typeof woocommerce_admin ) {
