@@ -593,7 +593,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 										if ( FeaturesUtil::feature_is_enabled( 'email_improvements' ) ) {
 											$ccs  = $email->get_cc_recipient();
 											$bccs = $email->get_bcc_recipient();
-											// Translators: %s: comma-separated email addressed to which the email is cc-ed.
+											// Translators: %s: comma-separated email addresses to which the email is cc-ed.
 											$cc = $ccs ? sprintf( __( '<b>Cc</b>: %s', 'woocommerce' ), $ccs ) : false;
 											// Translators: %s: comma-separated email addresses to which the email is bcc-ed.
 											$bcc = $bccs ? sprintf( __( '<b>Bcc</b>: %s', 'woocommerce' ), $bccs ) : false;
