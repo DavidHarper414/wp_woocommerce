@@ -33,9 +33,16 @@ class Validation {
 	public static function get_field_schema_with_context( $field_id, $field_schema, $context ) {
 		$primary_key   = 'checkout';
 		$secondary_key = 'additional_fields';
-		if ( in_array( $context, [ 'billing_address', 'shipping_address' ], true ) ) {
-			$primary_key   = 'customer';
-			$secondary_key = $context;
+		switch ( $context ) {
+			case 'billing_address':
+			case 'shipping_address':
+				$primary_key   = 'customer';
+				$secondary_key = $context;
+				break;
+			case 'contact':
+				$primary_key   = 'customer';
+				$secondary_key = 'additional_fields';
+				break;
 		}
 		return [
 			$primary_key => [

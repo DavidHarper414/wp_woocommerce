@@ -188,28 +188,62 @@ class Checkout extends AbstractCartRoute {
 			$document_object = new DocumentObject(
 				[
 					'customer' => [
-						'billing_address'  => $request['billing_address'],
-						'shipping_address' => $request['shipping_address'],
+						'billing_address'   => $request['billing_address'],
+						'shipping_address'  => $request['shipping_address'],
+						'additional_fields' => $this->additional_fields_controller->filter_values_for_location( $request['additional_fields'], 'contact' ),
 					],
 					'checkout' => [
 						'payment_method'    => $request['payment_method'],
 						'create_account'    => $request['create_account'],
 						'customer_note'     => $request['customer_note'],
-						'additional_fields' => $request['additional_fields'],
+						'additional_fields' => $this->additional_fields_controller->filter_values_for_location( $request['additional_fields'], 'order' ),
 					],
 				]
 			);
 		}
 
-		$address_fields = $this->additional_fields_controller->get_fields_for_location( 'address' );
-		$other_fields   = $this->additional_fields_controller->get_fields_for_group( 'other' );
+		$validate_contexts = [
+			'shipping_address' => [
+				'location' => 'address',
+				'group'    => 'shipping',
+				'values'   => $request['shipping_address'],
+			],
+			'billing_address'  => [
+				'location' => 'address',
+				'group'    => 'billing',
+				'values'   => $request['billing_address'],
+			],
+			'contact'          => [
+				'location' => 'contact',
+				'group'    => 'other',
+				'values'   => $request['additional_fields'],
+			],
+			'order'            => [
+				'location' => 'order',
+				'group'    => 'other',
+				'values'   => $request['additional_fields'],
+			],
+		];
 
-		if ( WC()->cart->needs_shipping() ) {
-			$this->validate_additional_fields_with_context( $address_fields, $request['shipping_address'], $document_object, 'shipping_address' );
+		if ( ! WC()->cart->needs_shipping() ) {
+			unset( $validate_contexts['shipping_address'] );
 		}
 
-		$this->validate_additional_fields_with_context( $address_fields, $request['billing_address'], $document_object, 'billing_address' );
-		$this->validate_additional_fields_with_context( $other_fields, $request['additional_fields'], $document_object, 'other' );
+		foreach ( $validate_contexts as $context => $context_data ) {
+			$fields = $this->additional_fields_controller->get_fields_for_location( $context_data['location'] );
+
+			$this->validate_additional_fields_with_context( $fields, $context_data['values'], $document_object, $context );
+
+			$validate_location_result = $this->additional_fields_controller->validate_fields_for_location(
+				$fields,
+				$context_data['location'],
+				$context_data['group']
+			);
+
+			if ( is_wp_error( $result ) && $result->has_errors() ) {
+				throw new RouteException( 'woocommerce_rest_checkout_invalid_field', esc_html( $result->get_error_message() ), 400 );
+			}
+		}
 	}
 
 	/**
@@ -227,31 +261,6 @@ class Checkout extends AbstractCartRoute {
 
 			if ( is_wp_error( $validation_result ) && $validation_result->has_errors() ) {
 				throw new RouteException( 'woocommerce_rest_checkout_invalid_field', esc_html( $validation_result->get_error_message() ), 400 );
-			}
-		}
-
-		if ( ! $context ) {
-			return;
-		}
-
-		// Validate groups of properties per registered location. This allows any custom valdation rules applied to locations or groups to be respected.
-		if ( in_array( $context, [ 'shipping_address', 'billing_address' ], true ) ) {
-			$locations = [ 'address' ];
-			$group     = 'shipping_address' === $context ? 'shipping' : 'billing';
-		} else {
-			$locations = [ 'contact', 'order' ];
-			$group     = 'other';
-		}
-
-		foreach ( $locations as $location ) {
-			$result = $this->additional_fields_controller->validate_fields_for_location(
-				$this->additional_fields_controller->filter_fields_for_location( $fields, $location ),
-				$location,
-				$group
-			);
-
-			if ( is_wp_error( $result ) && $result->has_errors() ) {
-				throw new RouteException( 'woocommerce_rest_checkout_invalid_field', esc_html( $result->get_error_message() ), 400 );
 			}
 		}
 	}
