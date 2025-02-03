@@ -1129,7 +1129,7 @@ class AdditionalFields extends MockeryTestCase {
 				'label'    => 'Checkbox Bad Required Value',
 				'location' => 'order',
 				'type'     => 'checkbox',
-				'required' => 'true',
+				'required' => true,
 			)
 		);
 
