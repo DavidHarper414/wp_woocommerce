@@ -240,8 +240,8 @@ class Checkout extends AbstractCartRoute {
 				$context_data['group']
 			);
 
-			if ( is_wp_error( $result ) && $result->has_errors() ) {
-				throw new RouteException( 'woocommerce_rest_checkout_invalid_field', esc_html( $result->get_error_message() ), 400 );
+			if ( is_wp_error( $validate_location_result ) && $validate_location_result->has_errors() ) {
+				throw new RouteException( 'woocommerce_rest_checkout_invalid_field', esc_html( $validate_location_result->get_error_message() ), 400 );
 			}
 		}
 	}
