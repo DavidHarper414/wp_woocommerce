@@ -78,7 +78,7 @@ export default function MySubscriptions(): JSX.Element {
 
 	if ( ! wccomSettings?.isConnected ) {
 		const connectMessage = __(
-			"Connect your WooCommerce.com account to get product updates, manage your subscriptions from your store admin, and get streamlined support.",
+			'Connect your WooCommerce.com account to get product updates, manage your subscriptions from your store admin, and get streamlined support.',
 			'woocommerce'
 		);
 
@@ -113,7 +113,10 @@ export default function MySubscriptions(): JSX.Element {
 					<InstallModal />
 					<div className="woocommerce-marketplace__my-subscriptions__icon" />
 					<h2 className="woocommerce-marketplace__my-subscriptions__header">
-						{ __( 'Connect your WooCommerce.com account', 'woocommerce' ) }
+						{ __(
+							'Connect your WooCommerce.com account',
+							'woocommerce'
+						) }
 					</h2>
 					<p className="woocommerce-marketplace__my-subscriptions__description">
 						{ connectMessage }
