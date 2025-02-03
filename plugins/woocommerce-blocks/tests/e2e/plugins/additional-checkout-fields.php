@@ -102,7 +102,7 @@ class Additional_Checkout_Fields_Test_Helper {
 				'id'            => 'first-plugin-namespace/test-required-checkbox',
 				'label'         => 'Test required checkbox',
 				'location'      => 'contact',
-				'required'      => 'true',
+				'required'      => true,
 				'type'          => 'checkbox',
 				'error_message' => 'Please check the box or you will be unable to order',
 			)
