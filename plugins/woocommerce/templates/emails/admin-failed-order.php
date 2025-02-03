@@ -31,7 +31,11 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 <?php
 echo $email_improvements_enabled ? '<div class="email-introduction">' : '';
 /* translators: %1$s: Order number. %2$s: Customer full name. */
-$text = $email_improvements_enabled ? __( 'Unfortunately, the payment for order #%1$s from %2$s has failed. The order was as follows:', 'woocommerce' ) : __( 'Payment for order #%1$s from %2$s has failed. The order was as follows:', 'woocommerce' );
+$text = __( 'Payment for order #%1$s from %2$s has failed. The order was as follows:', 'woocommerce' );
+if ( $email_improvements_enabled ) {
+	/* translators: %1$s: Order number. %2$s: Customer full name. */
+	$text = __( 'Unfortunately, the payment for order #%1$s from %2$s has failed. The order was as follows:', 'woocommerce' );
+}
 ?>
 <p><?php printf( esc_html( $text ), esc_html( $order->get_order_number() ), esc_html( $order->get_formatted_billing_full_name() ) ); ?></p>
 <?php echo $email_improvements_enabled ? '</div>' : ''; ?>

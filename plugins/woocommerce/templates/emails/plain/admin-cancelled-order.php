@@ -26,7 +26,11 @@ echo esc_html( wp_strip_all_tags( $email_heading ) );
 echo "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
 
 /* translators: %1$s: Order number. %2$s: Customer full name */
-$text = $email_improvements_enabled ? __( 'We’re getting in touch to let you know that order #%1$s from %2$s has been cancelled.', 'woocommerce' ) : __( 'Notification to let you know &mdash; order #%1$s belonging to %2$s has been cancelled:', 'woocommerce' );
+$text = __( 'Notification to let you know &mdash; order #%1$s belonging to %2$s has been cancelled:', 'woocommerce' );
+if ( $email_improvements_enabled ) {
+	/* translators: %1$s: Order number. %2$s: Customer full name */
+	$text = __( 'We’re getting in touch to let you know that order #%1$s from %2$s has been cancelled.', 'woocommerce' );
+}
 echo sprintf( esc_html( $text ), esc_html( $order->get_order_number() ), esc_html( $order->get_formatted_billing_full_name() ) ) . "\n\n";
 
 /*

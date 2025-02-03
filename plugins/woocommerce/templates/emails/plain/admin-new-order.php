@@ -26,7 +26,11 @@ echo esc_html( wp_strip_all_tags( $email_heading ) );
 echo "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
 
 /* translators: %s: Customer billing full name */
-$text = $email_improvements_enabled ? __( 'Woo! You’ve received a new order from %s:', 'woocommerce' ) : __( 'You’ve received the following order from %s:', 'woocommerce' );
+$text = __( 'You’ve received the following order from %s:', 'woocommerce' );
+if ( $email_improvements_enabled ) {
+	/* translators: %s: Customer billing full name */
+	$text = __( 'Woo! You’ve received a new order from %s:', 'woocommerce' );
+}
 echo sprintf( esc_html( $text ), esc_html( $order->get_formatted_billing_full_name() ) ) . "\n\n";
 
 /*
