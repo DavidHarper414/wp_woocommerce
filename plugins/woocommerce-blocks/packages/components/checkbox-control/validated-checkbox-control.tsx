@@ -13,7 +13,7 @@ import clsx from 'clsx';
 import { isObject } from '@woocommerce/types';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { validationStore } from '@woocommerce/block-data';
-import type { InputHTMLAttributes, ReactElement } from 'react';
+import type { InputHTMLAttributes } from 'react';
 
 /**
  * Internal dependencies
