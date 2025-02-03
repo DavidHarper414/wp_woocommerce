@@ -185,9 +185,13 @@ const ValidatedCheckboxControl = forwardRef<
 
 		return (
 			<CheckboxControl
-				className={ clsx( className, {
-					'has-error': hasError,
-				} ) }
+				className={ clsx(
+					'wc-block-components-validated-checkbox-control',
+					className,
+					{
+						'has-error': hasError,
+					}
+				) }
 				aria-invalid={ hasError === true }
 				id={ textInputId }
 				aria-errormessage={
