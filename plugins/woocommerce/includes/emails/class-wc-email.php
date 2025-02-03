@@ -251,7 +251,7 @@ class WC_Email extends WC_Settings_API {
 	public $email_type;
 
 	/**
-	 * Wether email improvements feature is enabled.
+	 * Whether email improvements feature is enabled.
 	 *
 	 * @var bool
 	 */
