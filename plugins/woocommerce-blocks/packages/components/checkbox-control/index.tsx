@@ -18,7 +18,6 @@ export type CheckboxControlProps = {
 	ariaDescribedBy?: string | undefined;
 	onChange: ( value: boolean ) => void;
 	children?: ReactNode | null | undefined;
-	feedback?: ReactNode | null;
 	hasError?: boolean;
 	checked?: boolean;
 	disabled?: string | boolean | undefined;
@@ -41,7 +40,6 @@ export const CheckboxControl = forwardRef<
 			hasError = false,
 			checked = false,
 			disabled = false,
-			feedback,
 			errorId,
 			errorMessage,
 			...rest
@@ -90,7 +88,6 @@ export const CheckboxControl = forwardRef<
 					) }
 					{ children }
 				</label>
-				{ feedback }
 			</div>
 		);
 	}
