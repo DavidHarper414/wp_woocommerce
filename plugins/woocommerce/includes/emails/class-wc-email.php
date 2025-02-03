@@ -514,6 +514,7 @@ class WC_Email extends WC_Settings_API {
 		$cc  = apply_filters( 'woocommerce_email_cc_recipient_' . $this->id, $cc, $this->object, $this );
 		$ccs = array_map( 'trim', explode( ',', $cc ) );
 		$ccs = array_filter( $ccs, 'is_email' );
+		$ccs = array_map( 'sanitize_email', $ccs );
 		return implode( ', ', $ccs );
 	}
 
@@ -535,6 +536,7 @@ class WC_Email extends WC_Settings_API {
 		$bcc  = apply_filters( 'woocommerce_email_bcc_recipient_' . $this->id, $bcc, $this->object, $this );
 		$bccs = array_map( 'trim', explode( ',', $bcc ) );
 		$bccs = array_filter( $bccs, 'is_email' );
+		$bccs = array_map( 'sanitize_email', $bccs );
 		return implode( ', ', $bccs );
 	}
 
@@ -557,12 +559,12 @@ class WC_Email extends WC_Settings_API {
 		if ( FeaturesUtil::feature_is_enabled( 'email_improvements' ) ) {
 			$cc = $this->get_cc_recipient();
 			if ( ! empty( $cc ) ) {
-				$header .= 'Cc: ' . $cc . "\r\n";
+				$header .= 'Cc: ' . sanitize_text_field( $cc ) . "\r\n";
 			}
 
 			$bcc = $this->get_bcc_recipient();
 			if ( ! empty( $bcc ) ) {
-				$header .= 'Bcc: ' . $bcc . "\r\n";
+				$header .= 'Bcc: ' . sanitize_text_field( $bcc ) . "\r\n";
 			}
 		}
 
