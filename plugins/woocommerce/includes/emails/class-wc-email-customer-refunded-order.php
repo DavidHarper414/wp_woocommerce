@@ -297,24 +297,8 @@ if ( ! class_exists( 'WC_Email_Customer_Refunded_Order', false ) ) :
 				),
 			);
 			if ( FeaturesUtil::feature_is_enabled( 'email_improvements' ) ) {
-				$this->form_fields['cc']  = array(
-					'title'       => __( 'Cc(s)', 'woocommerce' ),
-					'type'        => 'text',
-					/* translators: %s: admin email */
-					'description' => __( 'Enter Cc recipients (comma-separated) for this email.', 'woocommerce' ),
-					'placeholder' => '',
-					'default'     => '',
-					'desc_tip'    => true,
-				);
-				$this->form_fields['bcc'] = array(
-					'title'       => __( 'Bcc(s)', 'woocommerce' ),
-					'type'        => 'text',
-					/* translators: %s: admin email */
-					'description' => __( 'Enter Bcc recipients (comma-separated) for this email.', 'woocommerce' ),
-					'placeholder' => '',
-					'default'     => '',
-					'desc_tip'    => true,
-				);
+				$this->form_fields['cc']  = $this->get_cc_field();
+				$this->form_fields['bcc'] = $this->get_bcc_field();
 			}
 		}
 	}

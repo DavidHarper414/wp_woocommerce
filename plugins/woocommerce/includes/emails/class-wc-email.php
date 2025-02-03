@@ -935,25 +935,43 @@ class WC_Email extends WC_Settings_API {
 			),
 		);
 		if ( FeaturesUtil::feature_is_enabled( 'email_improvements' ) ) {
-			$this->form_fields['cc']  = array(
-				'title'       => __( 'Cc(s)', 'woocommerce' ),
-				'type'        => 'text',
-				/* translators: %s: admin email */
-				'description' => __( 'Enter Cc recipients (comma-separated) for this email.', 'woocommerce' ),
-				'placeholder' => '',
-				'default'     => '',
-				'desc_tip'    => true,
-			);
-			$this->form_fields['bcc'] = array(
-				'title'       => __( 'Bcc(s)', 'woocommerce' ),
-				'type'        => 'text',
-				/* translators: %s: admin email */
-				'description' => __( 'Enter Bcc recipients (comma-separated) for this email.', 'woocommerce' ),
-				'placeholder' => '',
-				'default'     => '',
-				'desc_tip'    => true,
-			);
+			$this->form_fields['cc']  = $this->get_cc_field();
+			$this->form_fields['bcc'] = $this->get_bcc_field();
 		}
+	}
+
+	/**
+	 * Get the cc field definition.
+	 *
+	 * @return array
+	 */
+	protected function get_cc_field() {
+		return array(
+			'title'       => __( 'Cc(s)', 'woocommerce' ),
+			'type'        => 'text',
+			/* translators: %s: admin email */
+			'description' => __( 'Enter Cc recipients (comma-separated) for this email.', 'woocommerce' ),
+			'placeholder' => '',
+			'default'     => '',
+			'desc_tip'    => true,
+		);
+	}
+
+	/**
+	 * Get the bcc field definition.
+	 *
+	 * @return array
+	 */
+	protected function get_bcc_field() {
+		return array(
+			'title'       => __( 'Bcc(s)', 'woocommerce' ),
+			'type'        => 'text',
+			/* translators: %s: admin email */
+			'description' => __( 'Enter Bcc recipients (comma-separated) for this email.', 'woocommerce' ),
+			'placeholder' => '',
+			'default'     => '',
+			'desc_tip'    => true,
+		);
 	}
 
 	/**
