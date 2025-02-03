@@ -799,7 +799,7 @@ class CheckoutFields {
 	 * @param string $field_key    The key of the field.
 	 * @param mixed  $field_value  The value of the field.
 	 * @param array  $document_object The document object.
-	 * @param string $document_object_context The context for the document object (shipping_address|billing_address|other).
+	 * @param string $document_object_context The context for the document object.
 	 * @return WP_Error
 	 */
 	public function validate_field( $field_key, $field_value, $document_object = null, $document_object_context = null ) {
@@ -1350,6 +1350,23 @@ class CheckoutFields {
 				return $this->is_field( $key ) && $this->get_field_location( $key ) === $location;
 			},
 			ARRAY_FILTER_USE_KEY
+		);
+	}
+
+	/**
+	 * From a set of field values, returns only the ones for a given location.
+	 *
+	 * @param array  $values The values to filter.
+	 * @param string $location The location to validate the field for (address|contact|order).
+	 * @return array The filtered values.
+	 */
+	public function filter_values_for_location( array $values, string $location ) {
+		return array_filter(
+			$values,
+			function ( $value, $key ) use ( $location ) {
+				return $this->is_field( $key ) && $this->get_field_location( $key ) === $location;
+			},
+			ARRAY_FILTER_USE_BOTH
 		);
 	}
 
