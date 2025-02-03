@@ -4,6 +4,7 @@
 import { setOption } from '../../utils/options';
 import { activateTheme } from '../../utils/themes';
 import AcceptanceHelper from './helper';
+const { CUSTOMER_STATE_PATH } = require( '../../playwright.config' );
 const { test, request } = require( '@playwright/test' );
 test.describe( 'Feature: Signing up', () => {
 	let helper;
@@ -26,7 +27,7 @@ test.describe( 'Feature: Signing up', () => {
 		helper.deleteCurrentProduct();
 	} );
 	test.describe( 'Logged in', () => {
-		test.use( { storageState: process.env.CUSTOMERSTATE } );
+		test.use( { storageState: CUSTOMER_STATE_PATH } );
 		test( 'Simple product', async () => {
 			const { given, when, then } = helper;
 			await given.iAmViewingThePageOfASimpleProductThatIsOutOfStock();
