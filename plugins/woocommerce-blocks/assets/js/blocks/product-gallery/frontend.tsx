@@ -35,7 +35,7 @@ const disableArrows = (
 ) => {
 	// One-based index so it ranges from 1 to imagesIds.length.
 	context.disableLeft = newImageNumber === 1;
-	context.disableRight = newImageNumber === state.imageIds.length;
+	context.disableRight = newImageNumber === context.imageIds.length;
 };
 
 const selectImage = (
@@ -190,10 +190,15 @@ const productGallery = {
 					if (
 						mutation.type === 'attributes' &&
 						currentImageAttribute &&
-						state.imageIds.includes( currentImageAttribute )
+						// This have a diffent context so we cannot rely on store values.
+						context.imageIds.includes( currentImageAttribute )
 					) {
-						const nextImageIndex = getImageIndex();
-						context.selectedImageNumber = nextImageIndex + 1;
+						// One-based.
+						const nextImageNumber =
+							context.imageIds.indexOf( currentImageAttribute ) +
+							1;
+						context.selectedImageNumber = nextImageNumber;
+						disableArrows( context, nextImageNumber );
 					}
 				}
 			} );
