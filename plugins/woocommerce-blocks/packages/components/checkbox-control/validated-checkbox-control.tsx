@@ -213,19 +213,10 @@ const ValidatedCheckboxControl = forwardRef<
 				checked={ checked }
 				title="" // This prevents the same error being shown on hover.
 				label={ label }
-				feedback={
-					showError && hasError ? (
-						<ValidationInputError
-							errorMessage={ passedErrorMessage }
-							propertyName={ errorIdString }
-							elementId={ errorIdString }
-						/>
-					) : (
-						feedback
-					)
-				}
 				{ ...rest }
-			/>
+			>
+				<ValidationInputError propertyName={ errorIdString } />
+			</CheckboxControl>
 		);
 	}
 );
