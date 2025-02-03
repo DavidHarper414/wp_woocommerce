@@ -946,7 +946,10 @@ test.describe(
 			);
 
 			// fill shipping address and check cash on delivery method
-			await fillShippingCheckoutBlocks( page, { firstName: 'Marge', ...shippingDetails } );
+			await fillShippingCheckoutBlocks( page, {
+				firstName: 'Marge',
+				...shippingDetails,
+			} );
 			await page.getByLabel( 'Cash on delivery' ).check();
 			await expect( page.getByLabel( 'Cash on delivery' ) ).toBeChecked();
 
@@ -1047,7 +1050,10 @@ test.describe(
 			);
 
 			// fill shipping address and check cash on delivery method
-			await fillShippingCheckoutBlocks( page, { firstName: 'Marge', ...shippingDetails } );
+			await fillShippingCheckoutBlocks( page, {
+				firstName: 'Marge',
+				...shippingDetails,
+			} );
 			await page.getByLabel( 'Cash on delivery' ).check();
 			await expect( page.getByLabel( 'Cash on delivery' ) ).toBeChecked();
 
