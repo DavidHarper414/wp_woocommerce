@@ -58,7 +58,9 @@ jobs:
 
             - name: Enable corepack for pnpm
               shell: 'bash'
-              run: 'corepack enable pnpm'
+              run: 'npm install -g corepack@latest && corepack enable pnpm'
+              # The corepack is distributed with node, but we ran into https://github.com/nodejs/corepack/issues/612
+              # and the future people are free to try removing `npm install -g corepack@latest`.
 
             - uses: preactjs/compressed-size-action@f780fd104362cfce9e118f9198df2ee37d12946c
               env:
