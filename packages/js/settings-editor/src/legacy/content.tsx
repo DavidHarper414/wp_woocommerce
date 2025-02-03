@@ -51,7 +51,9 @@ export const LegacyContent = ( {
 
 	return (
 		<>
-			<CustomView html={ settingsData.start.content } />
+			{ settingsData.start && (
+				<CustomView html={ settingsData.start.content } />
+			) }
 			<Form settings={ section.settings } />
 		</>
 	);
