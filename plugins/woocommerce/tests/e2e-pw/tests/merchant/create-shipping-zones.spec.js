@@ -314,12 +314,6 @@ test.describe(
 				await page.goto(
 					'wp-admin/admin.php?page=wc-settings&tab=shipping'
 				);
-
-				try {
-					await page
-						.getByLabel( 'Close Tour' )
-						.click( { timeout: 5000 } ); // close the tour if visible
-				} catch ( e ) {}
 			}
 			await expect( page.locator( '.wc-shipping-zones' ) ).toHaveText(
 				/USA Zone.*/
