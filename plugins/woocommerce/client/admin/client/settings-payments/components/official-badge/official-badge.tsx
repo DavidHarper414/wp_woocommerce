@@ -26,23 +26,19 @@ interface OfficialBadgeProps {
  * The style of the badge can be either "expanded" or "compact".
  *
  * @example
- * // Render an official badge with the default style.
- * <OfficialBadgeProps variant="expanded" />
+ * // Render an official badge with icon and text.
+ * <OfficialBadge variant="expanded" />
  *
  * @example
- * // Render a compact official badge.
- * <OfficialBadgeProps variant="compact" />
- *
- * @example
- * // Render a status badge which displays a popover.
- * <StatusBadge status="active" message="Active" popoverContent={ <p>This is an active status badge</p> } />
+ * // Render an official badge with just the icon.
+ * <OfficialBadge variant="compact" />
  */
 export const OfficialBadge = ( { variant }: OfficialBadgeProps ) => {
 	const [ isPopoverVisible, setPopoverVisible ] = useState( false );
 
 	const hidePopoverDebounced = useDebounce( () => {
 		setPopoverVisible( false );
-	}, 500 );
+	}, 350 );
 	const showPopover = () => {
 		setPopoverVisible( true );
 		hidePopoverDebounced.cancel();
@@ -52,6 +48,8 @@ export const OfficialBadge = ( { variant }: OfficialBadgeProps ) => {
 		<Pill className={ `woocommerce-official-extension-badge` }>
 			<span
 				className="woocommerce-official-extension-badge__container"
+				tabIndex={ 0 }
+				role="button"
 				onClick={ () => setPopoverVisible( ! isPopoverVisible ) }
 				onMouseEnter={ showPopover }
 				onMouseLeave={ hidePopoverDebounced }
@@ -60,8 +58,6 @@ export const OfficialBadge = ( { variant }: OfficialBadgeProps ) => {
 						setPopoverVisible( ! isPopoverVisible );
 					}
 				} }
-				tabIndex={ 0 }
-				role="button"
 			>
 				<Icon size={ 16 } icon={ BadgeOfficial } />
 				{ variant === 'expanded' && (
@@ -76,8 +72,7 @@ export const OfficialBadge = ( { variant }: OfficialBadgeProps ) => {
 						focusOnMount={ true }
 						noArrow={ true }
 						shift={ true }
-						inline={ true }
-						onClose={ () => setPopoverVisible( false ) }
+						onClose={ hidePopoverDebounced }
 					>
 						<div className="components-popover__content-container">
 							<p>

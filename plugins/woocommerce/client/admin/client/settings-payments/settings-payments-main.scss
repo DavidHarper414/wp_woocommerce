@@ -178,6 +178,7 @@
 
 				&__icon-container {
 					height: 16px;
+					cursor: pointer;
 				}
 
 				&__icon {
@@ -228,7 +229,7 @@
 						display: inline-flex;
 						flex-wrap: wrap;
 						gap: 10px;
-						align-items: start;
+						align-items: center;
 						font-size: 14px;
 						font-weight: 600;
 						line-height: 20px;
@@ -302,6 +303,12 @@
 		}
 	}
 
+	.woocommerce-status-badge-popover {
+		.components-popover__content-container {
+			width: 236px;
+		}
+	}
+
 	.more-payment-options-link {
 		padding: 0;
 		text-decoration: none;
@@ -371,16 +378,19 @@
 	padding: 0;
 
 	& > .woocommerce-official-extension-badge__container {
-		padding-top: 3px;
 		cursor: pointer;
 		display: inline-flex;
 		align-items: center;
 		gap: 2px;
+		padding: 2px 4px 2px 2px;
 	}
 }
 
 // Popover styling
-.settings-payments-main__container {
+.settings-payment-gateways__header-select-container--indicator-popover,
+.woocommerce-official-extension-badge-popover,
+.woocommerce-status-badge-popover,
+.other-payment-gateways__content__title-popover {
 	.components-popover__content {
 		background: $white;
 		color: $gray-900;
@@ -408,12 +418,6 @@
 		// The last paragraph doesn't have a bottom margin.
 		p:last-of-type {
 			margin-bottom: 0;
-		}
-	}
-
-	.woocommerce-status-badge-popover {
-		.components-popover__content-container {
-			width: 236px;
 		}
 	}
 }

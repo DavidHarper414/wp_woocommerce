@@ -79,7 +79,7 @@
 			display: inline-flex;
 			flex-wrap: wrap;
 			gap: 10px;
-			align-items: start;
+			align-items: center;
 
 			@media screen and ( max-width: $break-medium ) {
 				font-size: 15px;
@@ -88,10 +88,6 @@
 				.woocommerce-status-badge {
 					white-space: nowrap;
 				}
-			}
-
-			.woocommerce-official-extension-badge > .woocommerce-official-extension-badge__container {
-				padding-top: 4px;
 			}
 		}
 

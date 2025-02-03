@@ -64,7 +64,7 @@ export const StatusBadge = ( {
 
 	const hidePopoverDebounced = useDebounce( () => {
 		setPopoverVisible( false );
-	}, 500 );
+	}, 350 );
 	const showPopover = () => {
 		setPopoverVisible( true );
 		hidePopoverDebounced.cancel();
@@ -143,8 +143,7 @@ export const StatusBadge = ( {
 							focusOnMount={ true }
 							noArrow={ true }
 							shift={ true }
-							inline={ true }
-							onClose={ () => setPopoverVisible( false ) }
+							onClose={ hidePopoverDebounced }
 						>
 							<div className="components-popover__content-container">
 								{ popoverContent }

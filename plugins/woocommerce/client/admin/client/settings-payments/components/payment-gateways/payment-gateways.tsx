@@ -89,7 +89,7 @@ export const PaymentGateways = ( {
 
 	const hidePopoverDebounced = useDebounce( () => {
 		setIsPopoverVisible( false );
-	}, 500 );
+	}, 350 );
 	const showPopover = () => {
 		setIsPopoverVisible( true );
 		hidePopoverDebounced.cancel();
@@ -132,13 +132,13 @@ export const PaymentGateways = ( {
 					{ isBaseCountryDifferent && (
 						<div
 							className="settings-payment-gateways__header-select-container--indicator"
+							tabIndex={ 0 }
+							role="button"
 							onClick={ () =>
 								setIsPopoverVisible( ! isPopoverVisible )
 							}
 							onMouseEnter={ showPopover }
 							onMouseLeave={ hidePopoverDebounced }
-							tabIndex={ 0 }
-							role="button"
 							onKeyDown={ ( event ) => {
 								if (
 									event.key === 'Enter' ||
@@ -161,10 +161,7 @@ export const PaymentGateways = ( {
 									focusOnMount={ true }
 									noArrow={ true }
 									shift={ true }
-									inline={ true }
-									onClose={ () =>
-										setIsPopoverVisible( false )
-									}
+									onClose={ hidePopoverDebounced }
 								>
 									<div className="components-popover__content-container">
 										<p>

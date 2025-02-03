@@ -70,7 +70,7 @@ export const OtherPaymentGateways = ( {
 
 	const hidePopoverDebounced = useDebounce( () => {
 		setCategoryIdWithPopoverVisible( '' );
-	}, 500 );
+	}, 350 );
 	const showPopover = ( categoryId: string ) => {
 		setCategoryIdWithPopoverVisible( categoryId );
 		hidePopoverDebounced.cancel();
@@ -196,12 +196,7 @@ export const OtherPaymentGateways = ( {
 											focusOnMount={ true }
 											noArrow={ true }
 											shift={ true }
-											inline={ true }
-											onClose={ () =>
-												setCategoryIdWithPopoverVisible(
-													''
-												)
-											}
+											onClose={ hidePopoverDebounced }
 										>
 											<div className="components-popover__content-container">
 												<p>
