@@ -320,8 +320,6 @@ test.describe(
 						.getByLabel( 'Close Tour' )
 						.click( { timeout: 5000 } ); // close the tour if visible
 				} catch ( e ) {}
-
-				await page.reload(); // Playwright runs so fast, the location shows up as "Everywhere" at first
 			}
 			await expect( page.locator( '.wc-shipping-zones' ) ).toHaveText(
 				/USA Zone.*/
