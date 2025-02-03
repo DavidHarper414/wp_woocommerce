@@ -258,6 +258,7 @@
 
 						button.components-button.is-link {
 							text-decoration: none;
+							padding-right: 12px; /* This reserves space for the three dots of loading animation */
 						}
 
 						button.components-button.is-link.is-busy {
