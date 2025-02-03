@@ -5,6 +5,7 @@ import { setOption } from '../../utils/options';
 import { activateTheme } from '../../utils/themes';
 import AcceptanceHelper from './helper';
 const { test, request } = require( '@playwright/test' );
+const { CUSTOMER_STATE_PATH } = require( '../../playwright.config' );
 test.describe( 'Feature: Managing Notifications', () => {
 	let helper;
 	test.beforeAll( async ( { baseURL } ) => {
@@ -26,7 +27,7 @@ test.describe( 'Feature: Managing Notifications', () => {
 		helper.deleteCurrentProduct();
 	} );
 	test.describe( 'Logged in', async () => {
-		test.use( { storageState: process.env.CUSTOMERSTATE } );
+		test.use( { storageState: CUSTOMER_STATE_PATH } );
 		test( 'View active notifications, simple product', async () => {
 			const { given, when, then } = helper;
 			await given.iAmViewingThePageOfASimpleProductThatIsOutOfStock();
