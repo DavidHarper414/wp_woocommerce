@@ -861,8 +861,6 @@ class CheckoutFields {
 				if ( is_wp_error( $validate_callback_result ) ) {
 					$errors->merge_from( $validate_callback_result );
 				}
-
-				return $errors;
 			}
 
 			wc_do_deprecated_action( '__experimental_woocommerce_blocks_validate_additional_field', array( $errors, $field_key, $field_value ), '8.7.0', 'woocommerce_validate_additional_field', 'This action has been graduated, use woocommerce_validate_additional_field instead.' );
