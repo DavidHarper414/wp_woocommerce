@@ -231,7 +231,7 @@ if ( ! class_exists( 'WC_Email_New_Order' ) ) :
 					'title'       => __( 'Cc(s)', 'woocommerce' ),
 					'type'        => 'text',
 					/* translators: %s: admin email */
-					'description' => __( 'Enter Cc recipients (comma separated) for this email.', 'woocommerce' ),
+					'description' => __( 'Enter Cc recipients (comma-separated) for this email.', 'woocommerce' ),
 					'placeholder' => '',
 					'default'     => '',
 					'desc_tip'    => true,
@@ -240,7 +240,7 @@ if ( ! class_exists( 'WC_Email_New_Order' ) ) :
 					'title'       => __( 'Bcc(s)', 'woocommerce' ),
 					'type'        => 'text',
 					/* translators: %s: admin email */
-					'description' => __( 'Enter Bcc recipients (comma separated) for this email.', 'woocommerce' ),
+					'description' => __( 'Enter Bcc recipients (comma-separated) for this email.', 'woocommerce' ),
 					'placeholder' => '',
 					'default'     => '',
 					'desc_tip'    => true,

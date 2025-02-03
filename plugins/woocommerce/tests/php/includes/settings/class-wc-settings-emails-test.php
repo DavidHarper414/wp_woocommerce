@@ -92,7 +92,7 @@ class WC_Settings_Emails_Test extends WC_Settings_Unit_Test_Case {
 	}
 
 	/**
-	 * @testdox get_settings('') should return all the settings for the default section
+	 * @testdox get_settings_for_section('') should return all the settings for the default section
 	 * when the email improvements feature is enabled.
 	 */
 	public function test_get_default_settings_returns_all_settings_with_email_improvements_feature() {

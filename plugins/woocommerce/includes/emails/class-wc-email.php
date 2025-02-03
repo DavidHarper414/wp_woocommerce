@@ -937,7 +937,7 @@ class WC_Email extends WC_Settings_API {
 				'title'       => __( 'Cc(s)', 'woocommerce' ),
 				'type'        => 'text',
 				/* translators: %s: admin email */
-				'description' => __( 'Enter Cc recipients (comma separated) for this email.', 'woocommerce' ),
+				'description' => __( 'Enter Cc recipients (comma-separated) for this email.', 'woocommerce' ),
 				'placeholder' => '',
 				'default'     => '',
 				'desc_tip'    => true,
@@ -946,7 +946,7 @@ class WC_Email extends WC_Settings_API {
 				'title'       => __( 'Bcc(s)', 'woocommerce' ),
 				'type'        => 'text',
 				/* translators: %s: admin email */
-				'description' => __( 'Enter Bcc recipients (comma separated) for this email.', 'woocommerce' ),
+				'description' => __( 'Enter Bcc recipients (comma-separated) for this email.', 'woocommerce' ),
 				'placeholder' => '',
 				'default'     => '',
 				'desc_tip'    => true,

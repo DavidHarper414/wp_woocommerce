@@ -301,7 +301,7 @@ if ( ! class_exists( 'WC_Email_Customer_Refunded_Order', false ) ) :
 					'title'       => __( 'Cc(s)', 'woocommerce' ),
 					'type'        => 'text',
 					/* translators: %s: admin email */
-					'description' => __( 'Enter Cc recipients (comma separated) for this email.', 'woocommerce' ),
+					'description' => __( 'Enter Cc recipients (comma-separated) for this email.', 'woocommerce' ),
 					'placeholder' => '',
 					'default'     => '',
 					'desc_tip'    => true,
@@ -310,7 +310,7 @@ if ( ! class_exists( 'WC_Email_Customer_Refunded_Order', false ) ) :
 					'title'       => __( 'Bcc(s)', 'woocommerce' ),
 					'type'        => 'text',
 					/* translators: %s: admin email */
-					'description' => __( 'Enter Bcc recipients (comma separated) for this email.', 'woocommerce' ),
+					'description' => __( 'Enter Bcc recipients (comma-separated) for this email.', 'woocommerce' ),
 					'placeholder' => '',
 					'default'     => '',
 					'desc_tip'    => true,

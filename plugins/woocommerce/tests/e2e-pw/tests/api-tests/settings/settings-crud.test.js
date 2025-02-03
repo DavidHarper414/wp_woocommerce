@@ -2204,12 +2204,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'cc',
 						label: 'Cc(s)',
 						description: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -2221,12 +2221,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'bcc',
 						label: 'Bcc(s)',
 						description: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -2346,12 +2346,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 							id: 'cc',
 							label: 'Cc(s)',
 							description: expect.stringContaining(
-								'Enter Cc recipients (comma separated) for this email.'
+								'Enter Cc recipients (comma-separated) for this email.'
 							),
 							type: 'text',
 							default: '',
 							tip: expect.stringContaining(
-								'Enter Cc recipients (comma separated) for this email.'
+								'Enter Cc recipients (comma-separated) for this email.'
 							),
 							value: expect.any( String ),
 						} ),
@@ -2363,12 +2363,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 							id: 'bcc',
 							label: 'Bcc(s)',
 							description: expect.stringContaining(
-								'Enter Bcc recipients (comma separated) for this email.'
+								'Enter Bcc recipients (comma-separated) for this email.'
 							),
 							type: 'text',
 							default: '',
 							tip: expect.stringContaining(
-								'Enter Bcc recipients (comma separated) for this email.'
+								'Enter Bcc recipients (comma-separated) for this email.'
 							),
 							value: expect.any( String ),
 						} ),
@@ -2470,12 +2470,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'cc',
 						label: 'Cc(s)',
 						description: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -2487,12 +2487,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'bcc',
 						label: 'Bcc(s)',
 						description: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -2592,12 +2592,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'cc',
 						label: 'Cc(s)',
 						description: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -2609,12 +2609,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'bcc',
 						label: 'Bcc(s)',
 						description: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -2714,12 +2714,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'cc',
 						label: 'Cc(s)',
 						description: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -2731,12 +2731,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'bcc',
 						label: 'Bcc(s)',
 						description: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -2866,12 +2866,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'cc',
 						label: 'Cc(s)',
 						description: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -2883,12 +2883,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'bcc',
 						label: 'Bcc(s)',
 						description: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -2991,12 +2991,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'cc',
 						label: 'Cc(s)',
 						description: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -3008,12 +3008,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'bcc',
 						label: 'Bcc(s)',
 						description: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -3113,12 +3113,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'cc',
 						label: 'Cc(s)',
 						description: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -3130,12 +3130,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'bcc',
 						label: 'Bcc(s)',
 						description: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -3235,12 +3235,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'cc',
 						label: 'Cc(s)',
 						description: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -3252,12 +3252,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'bcc',
 						label: 'Bcc(s)',
 						description: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -3357,12 +3357,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'cc',
 						label: 'Cc(s)',
 						description: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Cc recipients (comma separated) for this email.'
+							'Enter Cc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
@@ -3374,12 +3374,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'bcc',
 						label: 'Bcc(s)',
 						description: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						type: 'text',
 						default: '',
 						tip: expect.stringContaining(
-							'Enter Bcc recipients (comma separated) for this email.'
+							'Enter Bcc recipients (comma-separated) for this email.'
 						),
 						value: expect.any( String ),
 					} ),
