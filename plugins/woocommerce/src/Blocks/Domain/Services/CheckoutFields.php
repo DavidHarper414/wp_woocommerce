@@ -816,18 +816,19 @@ class CheckoutFields {
 			$is_required = $this->is_required_field( $field, $document_object, $document_object_context );
 
 			if ( ( '' === $field_value || is_null( $field_value ) ) && $is_required ) {
-				switch ( $document_object_context ) {
-					case 'shipping_address':
-						/* translators: %s: is the field label */
-						$errors->add( 'woocommerce_required_checkout_field', sprintf( __( 'There was a problem with the provided shipping address: %s is required', 'woocommerce' ), $field['label'] ) );
-						break;
-					case 'billing_address':
-						/* translators: %s: is the field label */
-						$errors->add( 'woocommerce_required_checkout_field', sprintf( __( 'There was a problem with the provided billing address: %s is required', 'woocommerce' ), $field['label'] ) );
-						break;
-					default:
-						/* translators: %s: is the field label */
-						$errors->add( 'woocommerce_required_checkout_field', sprintf( __( 'There was a problem with the provided field: %s is required', 'woocommerce' ), $field['label'] ) );
+				/* translators: %s: is the field label */
+				$error_message = sprintf( __( '%s is a required field', 'woocommerce' ), $field['label'] );
+				$error_code    = 'woocommerce_required_checkout_field';
+
+				if ( 'shipping_address' === $document_object_context ) {
+					/* translators: %s: is the field error message */
+					$errors->add( $error_code, sprintf( __( 'There was a problem with the provided shipping address: %s', 'woocommerce' ), $error_message ) );
+				} elseif ( 'billing_address' === $document_object_context ) {
+					/* translators: %s: is the field error message */
+					$errors->add( $error_code, sprintf( __( 'There was a problem with the provided billing address: %s', 'woocommerce' ), $error_message ) );
+				} else {
+					/* translators: %s: is the field error message */
+					$errors->add( $error_code, $error_message );
 				}
 				return $errors;
 			}
@@ -836,18 +837,19 @@ class CheckoutFields {
 			$validate_result = $this->is_valid_field( $field, $document_object, $document_object_context );
 
 			if ( is_wp_error( $validate_result ) ) {
-				switch ( $document_object_context ) {
-					case 'shipping_address':
-						/* translators: %1$s: is the field label, %2$s: is the error message */
-						$errors->add( 'woocommerce_invalid_checkout_field', sprintf( __( 'There was a problem with the provided shipping address %1$s: %2$s', 'woocommerce' ), $field['label'], $validate_result->get_error_message() ) );
-						break;
-					case 'billing_address':
-						/* translators: %1$s: is the field label, %2$s: is the error message */
-						$errors->add( 'woocommerce_invalid_checkout_field', sprintf( __( 'There was a problem with the provided billing address %1$s: %2$s', 'woocommerce' ), $field['label'], $validate_result->get_error_message() ) );
-						break;
-					default:
-						/* translators: %1$s: is the field label, %2$s: is the error message */
-						$errors->add( 'woocommerce_invalid_checkout_field', sprintf( __( 'There was a problem with the provided %1$s: %2$s', 'woocommerce' ), $field['label'], $validate_result->get_error_message() ) );
+				/* translators: %s: is the field label */
+				$error_message = sprintf( __( 'Please provide a valid %s', 'woocommerce' ), $field['label'] );
+				$error_code    = 'woocommerce_invalid_checkout_field';
+
+				if ( 'shipping_address' === $document_object_context ) {
+					/* translators: %s: is the field error message */
+					$errors->add( $error_code, sprintf( __( 'There was a problem with the provided shipping address: %s', 'woocommerce' ), $error_message ) );
+				} elseif ( 'billing_address' === $document_object_context ) {
+					/* translators: %s: is the field error message */
+					$errors->add( $error_code, sprintf( __( 'There was a problem with the provided billing address: %s', 'woocommerce' ), $error_message ) );
+				} else {
+					/* translators: %s: is the field error message */
+					$errors->add( $error_code, $error_message );
 				}
 				return $errors;
 			}
@@ -994,7 +996,6 @@ class CheckoutFields {
 		}
 
 		try {
-			wc_do_deprecated_action( 'woocommerce_blocks_validate_location_additional_fields', array( $errors, $fields, $group ), '8.9.0', 'woocommerce_blocks_validate_location_additional_fields', 'This action has been graduated, use woocommerce_blocks_validate_location_additional_fields instead.' );
 			wc_do_deprecated_action( '__experimental_woocommerce_blocks_validate_location_' . $location . '_fields', array( $errors, $fields, $group ), '8.9.0', 'woocommerce_blocks_validate_location_' . $location . '_fields', 'This action has been graduated, use woocommerce_blocks_validate_location_' . $location . '_fields instead.' );
 
 			/**

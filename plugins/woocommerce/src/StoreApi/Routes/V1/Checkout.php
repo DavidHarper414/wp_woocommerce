@@ -209,7 +209,7 @@ class Checkout extends AbstractCartRoute {
 		}
 
 		$this->validate_additional_fields_with_context( $address_fields, $request['billing_address'], $document_object, 'billing_address' );
-		$this->validate_additional_fields_with_context( $other_fields, $request['additional_fields'], $document_object );
+		$this->validate_additional_fields_with_context( $other_fields, $request['additional_fields'], $document_object, 'other' );
 	}
 
 	/**
@@ -218,7 +218,7 @@ class Checkout extends AbstractCartRoute {
 	 * @param array          $fields The fields within this context to validate.
 	 * @param array          $values The values within this context to validate.
 	 * @param DocumentObject $document_object The document object if applicable.
-	 * @param string         $context The context.
+	 * @param string         $context The context. shipping_address|billing_address|other.
 	 * @throws RouteException When a required additional field is missing.
 	 */
 	protected function validate_additional_fields_with_context( $fields, $values, $document_object = null, $context = null ) {
@@ -230,25 +230,25 @@ class Checkout extends AbstractCartRoute {
 			}
 		}
 
-		// Validate groups of properties per registered location.
-		switch ( $context ) {
-			case 'shipping_address':
-				$locations = [ 'address' ];
-				$group     = 'shipping';
-				break;
-			case 'billing_address':
-				$locations = [ 'address' ];
-				$group     = 'billing';
-				break;
-			default:
-				$locations = [ 'contact', 'order' ];
-				$group     = 'other';
-				break;
+		if ( ! $context ) {
+			return;
+		}
+
+		// Validate groups of properties per registered location. This allows any custom valdation rules applied to locations or groups to be respected.
+		if ( in_array( $context, [ 'shipping_address', 'billing_address' ], true ) ) {
+			$locations = [ 'address' ];
+			$group     = 'shipping_address' === $context ? 'shipping' : 'billing';
+		} else {
+			$locations = [ 'contact', 'order' ];
+			$group     = 'other';
 		}
 
 		foreach ( $locations as $location ) {
-			$location_fields = $this->additional_fields_controller->filter_fields_for_location( $fields, $location );
-			$result          = $this->additional_fields_controller->validate_fields_for_location( $fields, $location, $group );
+			$result = $this->additional_fields_controller->validate_fields_for_location(
+				$this->additional_fields_controller->filter_fields_for_location( $fields, $location ),
+				$location,
+				$group
+			);
 
 			if ( is_wp_error( $result ) && $result->has_errors() ) {
 				throw new RouteException( 'woocommerce_rest_checkout_invalid_field', esc_html( $result->get_error_message() ), 400 );

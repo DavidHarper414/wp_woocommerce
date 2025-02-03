@@ -226,22 +226,7 @@ class CheckoutFieldsFrontend {
 
 			if ( is_wp_error( $validation_result ) && $validation_result->has_errors() ) {
 				$has_errors = true;
-
-				if ( $validation_result->get_error_code() === 'woocommerce_required_checkout_field' ) {
-					wc_add_notice(
-						/* translators: %s: Field name. */
-						sprintf( __( '%s is a required field', 'woocommerce' ), '<strong>' . $field['label'] . '</strong>' ),
-						'error',
-						array( 'id' => $field_key )
-					);
-				} else {
-					wc_add_notice(
-						/* translators: %s: Field name. */
-						sprintf( __( 'Please provide a valid %s', 'woocommerce' ), '<strong>' . $field['label'] . '</strong>' ),
-						'error',
-						array( 'id' => $field_key )
-					);
-				}
+				wc_add_notice( $validation_result->get_error_message(), 'error', array( 'id' => $field_key ) );
 			} else {
 				$save_values[ $field_key ] = $values[ $field_key ];
 			}
