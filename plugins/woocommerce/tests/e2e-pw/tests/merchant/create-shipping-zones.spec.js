@@ -115,7 +115,6 @@ test.describe(
 				await page.goto(
 					'wp-admin/admin.php?page=wc-settings&tab=shipping'
 				);
-				await page.reload(); // Playwright runs so fast, the location shows up as "Everywhere" at first
 			}
 
 			await expect( page.locator( '.wc-shipping-zones' ) ).toHaveText(
@@ -187,7 +186,6 @@ test.describe(
 				await page.goto(
 					'wp-admin/admin.php?page=wc-settings&tab=shipping'
 				);
-				await page.reload(); // Playwright runs so fast, the location shows up as "Everywhere" at first
 			}
 			await expect( page.locator( '.wc-shipping-zones' ) ).toHaveText(
 				/BC with Free shipping.*/
@@ -264,7 +262,6 @@ test.describe(
 				await page.goto(
 					'wp-admin/admin.php?page=wc-settings&tab=shipping'
 				);
-				await page.reload(); // Playwright runs so fast, the location shows up as "Everywhere" at first
 			}
 			await expect( page.locator( '.wc-shipping-zones' ) ).toHaveText(
 				/Canada with Flat rate*/
