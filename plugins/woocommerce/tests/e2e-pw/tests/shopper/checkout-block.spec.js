@@ -48,15 +48,23 @@ let guestOrderId1,
 	shippingZoneId;
 
 const shippingDetails = {
+	firstName: 'Homer',
+	lastName: 'Simpson',
+	address: '123 Evergreen Terrace',
 	zip: '97403',
 	city: 'Springfield',
 	state: 'OR',
+	country: 'US',
 };
 
 const billingDetails = {
+	firstName: 'Mister',
+	lastName: 'Burns',
+	address: '156th Street',
 	zip: '98500',
 	city: 'Springfield',
 	state: 'WA',
+	country: 'US',
 };
 
 const test = baseTest.extend( {

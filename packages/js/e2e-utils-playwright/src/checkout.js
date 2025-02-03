@@ -10,15 +10,15 @@
  * @param {string}  [details.zip='']                 - The ZIP code.
  * @param {string}  [details.city='']                - The city.
  * @param {string}  [details.state='']               - The State.
- * @param {string} [details.suburb='']               - The Suburb.
- * @param {string} [details.province='']             - The Province.
- * @param {string} [details.district='']             - The District.
- * @param {string} [details.department='']           - The Department.
- * @param {string} [details.region='']               - The Region.
- * @param {string} [details.parish='']               - The Parish.
- * @param {string} [details.county='']               - The Country.
- * @param {string} [details.prefecture='']           - The Prefecture.
- * @param {string} [details.municipality='']         - The Municipality.
+ * @param {string}  [details.suburb='']              - The Suburb.
+ * @param {string}  [details.province='']            - The Province.
+ * @param {string}  [details.district='']            - The District.
+ * @param {string}  [details.department='']          - The Department.
+ * @param {string}  [details.region='']              - The Region.
+ * @param {string}  [details.parish='']              - The Parish.
+ * @param {string}  [details.county='']              - The Country.
+ * @param {string}  [details.prefecture='']          - The Prefecture.
+ * @param {string}  [details.municipality='']        - The Municipality.
  * @param {boolean} [details.isPostalCode=false]     - If true, search by 'Postal code' instead of 'Zip Code'.
  */
 async function fillCheckoutBlocks( page, details = {}, type = 'shipping' ) {
@@ -48,7 +48,9 @@ async function fillCheckoutBlocks( page, details = {}, type = 'shipping' ) {
 	};
 
 	async function setDynamicFieldType( field, addressElement ) {
-		const tagName = await field.evaluate( el => el.tagName.toLowerCase() );
+		const tagName = await field.evaluate( ( el ) =>
+			el.tagName.toLowerCase()
+		);
 
 		if ( tagName === 'select' ) {
 			await field.selectOption( addressElement );
@@ -106,7 +108,7 @@ async function fillCheckoutBlocks( page, details = {}, type = 'shipping' ) {
 	}
 
 	if ( department ) {
-		await setDynamicFieldType( 
+		await setDynamicFieldType(
 			await page
 				.getByRole( 'group', { name: label[ type ] } )
 				.getByLabel( 'Department' ),
@@ -135,7 +137,8 @@ async function fillCheckoutBlocks( page, details = {}, type = 'shipping' ) {
 			await page
 				.getByRole( 'group', { name: label[ type ] } )
 				.getByLabel( 'County' ),
-			county );
+			county
+		);
 	}
 
 	if ( prefecture ) {
@@ -160,7 +163,7 @@ async function fillCheckoutBlocks( page, details = {}, type = 'shipping' ) {
 				await page
 					.getByRole( 'group', { name: label[ type ] } )
 					.getByLabel( 'State' )
-			)
+			);
 
 		await setDynamicFieldType( stateField, state );
 	}
@@ -177,16 +180,9 @@ async function fillCheckoutBlocks( page, details = {}, type = 'shipping' ) {
  * Convenience function to fill Shipping Address fields.
  *
  * @param {Object} page
- * @param {*} shippingDetails See arguments description for `fillCheckoutBlocks`.
+ * @param {*}      shippingDetails See arguments description for `fillCheckoutBlocks`.
  */
-export async function fillShippingCheckoutBlocks(
-	page,
-	shippingDetails = {
-		country: 'US',
-		firstName: 'Homer',
-		lastName: 'Simpson',
-		address: '123 Evergreen Terrace',
-} ) {
+export async function fillShippingCheckoutBlocks( page, shippingDetails = {} ) {
 	await fillCheckoutBlocks( page, shippingDetails, 'shipping' );
 }
 
@@ -194,15 +190,8 @@ export async function fillShippingCheckoutBlocks(
  * Convenience function to fill Billing Address fields.
  *
  * @param {Object} page
- * @param {*} shippingDetails See arguments description for `fillCheckoutBlocks`.
+ * @param {*}      billingDetails See arguments description for `fillCheckoutBlocks`.
  */
-export async function fillBillingCheckoutBlocks(
-	page,
-	billingDetails = {
-		country: 'US',
-		firstName: 'Mister',
-		lastName: 'Burns',
-		address: '156th Street',
-} ) {
+export async function fillBillingCheckoutBlocks( page, billingDetails = {} ) {
 	await fillCheckoutBlocks( page, billingDetails, 'billing' );
 }
