@@ -817,7 +817,7 @@ class CheckoutFields {
 
 			if ( ( '' === $field_value || is_null( $field_value ) ) && $is_required ) {
 				/* translators: %s: is the field label */
-				$error_message = sprintf( __( '%s is a required field', 'woocommerce' ), $field['label'] );
+				$error_message = sprintf( __( '%s is required', 'woocommerce' ), $field['label'] );
 				$error_code    = 'woocommerce_required_checkout_field';
 
 				if ( 'shipping_address' === $document_object_context ) {
