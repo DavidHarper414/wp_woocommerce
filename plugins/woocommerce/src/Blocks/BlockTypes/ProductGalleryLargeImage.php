@@ -189,7 +189,7 @@ class ProductGalleryLargeImage extends AbstractBlock {
 		);
 
 		return array(
-			'data-wp-interactive'    => $this->get_full_block_name(),
+			'data-wp-interactive'    => 'woocommerce/product-gallery',
 			'data-wp-context'        => wp_json_encode( $context, JSON_NUMERIC_CHECK | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
 			'data-wp-on--mousemove'  => 'actions.startZoom',
 			'data-wp-on--mouseleave' => 'actions.resetZoom',
