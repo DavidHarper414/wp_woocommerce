@@ -258,9 +258,11 @@ const frontendScriptModuleBlocksToSkip = [
 ];
 
 const frontendEntries = getBlockEntries( 'frontend.{t,j}s{,x}', {
-	...blocks.filter( ( [ blockName ] ) => {
-		return ! frontendScriptModuleBlocksToSkip.includes( blockName );
-	} ),
+	...Object.fromEntries(
+		Object.entries( blocks ).filter( ( [ blockName ] ) => {
+			return ! frontendScriptModuleBlocksToSkip.includes( blockName );
+		} )
+	),
 	...genericBlocks,
 } );
 
