@@ -1,38 +1,33 @@
 const { test, expect } = require( '@playwright/test' );
+const { tags } = require( '../../fixtures/fixtures' );
+const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
 
 test.describe( 'Marketing page', () => {
-	test.use( { storageState: process.env.ADMINSTATE } );
+	test.use( { storageState: ADMIN_STATE_PATH } );
 
-	test( 'A user can view the Marketing > Overview page without it crashing', async ( {
+	test( 'Marketing Overview page have relevant content', async ( {
 		page,
 	} ) => {
+		// See if this is a WPCOM site.
+		const is_wpcom_site =
+			process.env.IS_WPCOM &&
+			process.env.IS_WPCOM.toLowerCase() === 'true';
+
 		// Go to the Marketing page.
 		await page.goto( 'wp-admin/admin.php?page=wc-admin&path=%2Fmarketing' );
 
-		// Users should see the "Learn about marketing a store" card.
+		// Heading should be overview
 		await expect(
-			page.getByText( 'Learn about marketing a store' )
+			page.getByRole( 'heading', { name: 'Overview' } )
 		).toBeVisible();
-	} );
 
-	test(
-		'Marketing Overview page have relevant content',
-		{ tag: '@skip-on-default-wpcom' },
-		async ( { page } ) => {
-			// Go to the Marketing page.
-			await page.goto(
-				'wp-admin/admin.php?page=wc-admin&path=%2Fmarketing'
-			);
+		// Sections present
+		await expect(
+			page.getByText( 'Channels', { exact: true } )
+		).toBeVisible();
 
-			// Heading should be overview
-			await expect(
-				page.getByRole( 'heading', { name: 'Overview' } )
-			).toBeVisible();
-
-			// Sections present
-			await expect(
-				page.getByText( 'Channels', { exact: true } )
-			).toBeVisible();
+		// Check the 'Discover more marketing tools' and 'Learn about marketing a store' cards only on non-WPCOM sites.
+		if ( ! is_wpcom_site ) {
 			await expect(
 				page.getByText( 'Discover more marketing tools' )
 			).toBeVisible();
@@ -52,11 +47,11 @@ test.describe( 'Marketing page', () => {
 				page.getByText( 'Learn about marketing a store' )
 			).toBeVisible();
 		}
-	);
+	} );
 
 	test(
 		'Introduction can be dismissed',
-		{ tag: '@skip-on-default-pressable' },
+		{ tag: [ tags.SKIP_ON_PRESSABLE, tags.NOT_E2E, tags.NON_CRITICAL ] },
 		async ( { page } ) => {
 			// Go to the Marketing page.
 			await page.goto(
@@ -93,28 +88,37 @@ test.describe( 'Marketing page', () => {
 		}
 	);
 
-	test( 'Learning section can be expanded', async ( { page } ) => {
-		// Go to the Dashboard page (this adds time for posts to be created)
-		await page.goto( 'wp-admin/index.php' );
+	test(
+		'Learning section can be expanded',
+		{ tag: [ tags.NOT_E2E, tags.NON_CRITICAL ] },
+		async ( { page } ) => {
+			// Go to the Dashboard page (this adds time for posts to be created)
+			await page.goto( 'wp-admin/index.php' );
 
-		// Go to the Marketing page.
-		await page.goto( 'wp-admin/admin.php?page=wc-admin&path=%2Fmarketing' );
+			// Go to the Marketing page.
+			await page.goto(
+				'wp-admin/admin.php?page=wc-admin&path=%2Fmarketing'
+			);
 
-		// Expand the learning section
-		await page.getByLabel( 'Expand' ).waitFor();
-		await page.getByLabel( 'Expand' ).click( { timeout: 2000 } );
+			// Expand the learning section
+			await page.getByLabel( 'Expand' ).waitFor();
+			await page.getByLabel( 'Expand' ).click( { timeout: 2000 } );
 
-		// The learning section should be expanded.
-		await expect( page.getByText( 'Page 1 of 4' ) ).toBeVisible();
+			// The learning section should be expanded.
+			await expect( page.getByText( 'Page 1 of 4' ) ).toBeVisible();
 
-		// Can navigate to next page
-		await page.getByLabel( 'Next page' ).click();
-		await expect( page.getByText( 'Page 2 of 4' ) ).toBeVisible();
+			// Can navigate to next page
+			await page.getByLabel( 'Next page' ).click();
+			await expect( page.getByText( 'Page 2 of 4' ) ).toBeVisible();
 
-		// Collapse the learning section
-		await page.getByLabel( 'Collapse' ).nth( 2 ).click( { timeout: 2000 } );
+			// Collapse the learning section
+			await page
+				.getByLabel( 'Collapse' )
+				.nth( 2 )
+				.click( { timeout: 2000 } );
 
-		// The learning section should be collapsed.
-		await expect( page.getByText( 'Page 1 of 4' ) ).toBeHidden();
-	} );
+			// The learning section should be collapsed.
+			await expect( page.getByText( 'Page 1 of 4' ) ).toBeHidden();
+		}
+	);
 } );

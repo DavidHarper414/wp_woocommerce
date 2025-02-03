@@ -1,7 +1,3 @@
-const { test, expect } = require( '@playwright/test' );
-const wcApi = require( '@woocommerce/woocommerce-rest-api' ).default;
-const { random } = require( '../../utils/helpers' );
-
 /**
  * External dependencies
  */
@@ -10,7 +6,14 @@ import {
 	getCanvas,
 	goToPageEditor,
 } from '@woocommerce/e2e-utils-playwright';
-
+/**
+ * Internal dependencies
+ */
+import { tags } from '../../fixtures/fixtures';
+import { ADMIN_STATE_PATH } from '../../playwright.config';
+const { test, expect } = require( '@playwright/test' );
+const wcApi = require( '@woocommerce/woocommerce-rest-api' ).default;
+const { random } = require( '../../utils/helpers' );
 const miniCartPageTitle = `Mini Cart ${ random() }`;
 const miniCartPageSlug = miniCartPageTitle.replace( / /gi, '-' ).toLowerCase();
 const miniCartButton = 'main .wc-block-mini-cart__button';
@@ -26,9 +29,9 @@ let productId, countryTaxId, stateTaxId, shippingZoneId;
 
 test.describe(
 	'Mini Cart block page',
-	{ tag: [ '@payments', '@services' ] },
+	{ tag: [ tags.PAYMENTS, tags.SERVICES ] },
 	() => {
-		test.use( { storageState: process.env.ADMINSTATE } );
+		test.use( { storageState: ADMIN_STATE_PATH } );
 
 		test.beforeAll( async ( { baseURL } ) => {
 			const api = new wcApi( {
@@ -349,6 +352,9 @@ test.describe(
 			await expect(
 				page.locator( '.wc-block-components-totals-item__value' )
 			).toContainText( `$${ totalInclusiveTax }` );
+			await expect(
+				page.getByRole( 'link', { name: simpleProductName } )
+			).toBeVisible();
 			await page
 				.getByRole( 'button' )
 				.filter( { hasText: 'Remove item' } )

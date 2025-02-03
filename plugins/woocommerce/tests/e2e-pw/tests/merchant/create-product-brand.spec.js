@@ -1,6 +1,7 @@
 const { test, expect } = require( '@playwright/test' );
+const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
 
-test.use( { storageState: process.env.ADMINSTATE } );
+test.use( { storageState: ADMIN_STATE_PATH } );
 
 test( 'Merchant can add brands', async ( { page } ) => {
 	/**
@@ -176,6 +177,8 @@ test( 'Merchant can add brands', async ( { page } ) => {
 		thumbnailFileName: 'image-03',
 	} );
 
-	// Delete the dummy child brand "WooCommerce Dummy Edited".
+	// Delete brands.
 	await deleteBrand( 'WooCommerce Dummy Edited' );
+	await deleteBrand( 'WooCommerce Apparels' );
+	await deleteBrand( 'WooCommerce' );
 } );

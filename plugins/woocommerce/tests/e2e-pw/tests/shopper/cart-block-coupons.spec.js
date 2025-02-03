@@ -1,6 +1,3 @@
-const { test: baseTest, expect } = require( '../../fixtures/fixtures' );
-const { fillPageTitle } = require( '../../utils/editor' );
-
 /**
  * External dependencies
  */
@@ -10,6 +7,14 @@ import {
 	goToPageEditor,
 	publishPage,
 } from '@woocommerce/e2e-utils-playwright';
+
+/**
+ * Internal dependencies
+ */
+import { ADMIN_STATE_PATH } from '../../playwright.config';
+
+const { test: baseTest, expect, tags } = require( '../../fixtures/fixtures' );
+const { fillPageTitle } = require( '../../utils/editor' );
 
 const simpleProductName = 'Cart Coupons Product';
 const singleProductFullPrice = '110.00';
@@ -39,7 +44,7 @@ const customerBilling = {
 let productId, orderId, limitedCouponId;
 
 const test = baseTest.extend( {
-	storageState: process.env.ADMINSTATE,
+	storageState: ADMIN_STATE_PATH,
 	testPageTitlePrefix: 'Cart Block',
 	page: async ( { context, page, testPage }, use ) => {
 		await goToPageEditor( { page } );
@@ -61,7 +66,7 @@ const test = baseTest.extend( {
 
 test.describe(
 	'Cart Block Applying Coupons',
-	{ tag: [ '@payments', '@services' ] },
+	{ tag: [ tags.PAYMENTS, tags.SERVICES ] },
 	() => {
 		const couponBatchId = [];
 
@@ -133,7 +138,7 @@ test.describe(
 
 		test(
 			'allows cart block to apply coupon of any type',
-			{ tag: [ '@could-be-lower-level-test' ] },
+			{ tag: [ tags.COULD_BE_LOWER_LEVEL_TEST ] },
 			async ( { page } ) => {
 				const totals = [ '$50.00', '$27.50', '$45.00' ];
 
@@ -178,7 +183,7 @@ test.describe(
 
 		test(
 			'allows cart block to apply multiple coupons',
-			{ tag: [ '@could-be-lower-level-test' ] },
+			{ tag: [ tags.COULD_BE_LOWER_LEVEL_TEST ] },
 			async ( { page } ) => {
 				const totals = [ '$50.00', '$22.50', '$12.50' ];
 				const totalsReverse = [ '$17.50', '$45.00', '$55.00' ];
@@ -229,7 +234,7 @@ test.describe(
 
 		test(
 			'prevents cart block applying same coupon twice',
-			{ tag: [ '@could-be-lower-level-test' ] },
+			{ tag: [ tags.COULD_BE_LOWER_LEVEL_TEST ] },
 			async ( { page } ) => {
 				// try to add two same coupons and verify the error message
 				await page
@@ -263,7 +268,7 @@ test.describe(
 
 		test(
 			'prevents cart block applying coupon with usage limit',
-			{ tag: [ '@could-be-lower-level-test' ] },
+			{ tag: [ tags.COULD_BE_LOWER_LEVEL_TEST ] },
 			async ( { page } ) => {
 				// add coupon with usage limit
 				await page
