@@ -16,15 +16,15 @@
 			padding: $gap-smaller 48px $gap-large;
 			align-items: center;
 
-			@media screen and ( max-width: $break-xlarge ) {
+			@media screen and (max-width: $break-xlarge) {
 				padding: $gap-smaller $gap-large $gap-large;
 			}
 
-			@media screen and ( max-width: $break-medium ) {
+			@media screen and (max-width: $break-medium) {
 				padding: $gap-smaller $gap $gap-large;
 			}
 
-			@media screen and ( max-width: $break-mobile ) {
+			@media screen and (max-width: $break-mobile) {
 				display: block;
 			}
 		}
@@ -77,7 +77,7 @@
 				}
 			}
 
-			@media screen and ( max-width: $break-mobile ) {
+			@media screen and (max-width: $break-mobile) {
 				margin-top: $gap;
 			}
 		}
@@ -118,7 +118,7 @@
 					border-radius: 2px;
 				}
 
-				@media screen and ( max-width: $break-medium ) {
+				@media screen and (max-width: $break-medium) {
 					font-weight: 500;
 				}
 			}
@@ -213,7 +213,7 @@
 					margin-right: 20px; /* Space between image and text */
 					border-radius: 4px;
 
-					@media screen and ( max-width: 782px ) {
+					@media screen and (max-width: 782px) {
 						width: 24px;
 						height: 24px;
 					}
@@ -261,17 +261,27 @@
 							// Loading animation from here https://stackoverflow.com/a/40991531.
 							&::after {
 								display: inline-block;
-								animation: three-dots-loader steps(1,end) 1s infinite;
+								animation: three-dots-loader steps(1, end) 1s infinite;
 								content: '';
 							}
 						}
 
 						@keyframes three-dots-loader {
-							0%   { content: ''; }
-							25%  { content: '.'; }
-							50%  { content: '..'; }
-							75%  { content: '...'; }
-							100% { content: ''; }
+							0% {
+								content: '';
+							}
+							25% {
+								content: '.';
+							}
+							50% {
+								content: '..';
+							}
+							75% {
+								content: '...';
+							}
+							100% {
+								content: '';
+							}
 						}
 					}
 				}
@@ -282,11 +292,11 @@
 			}
 		}
 
-		@media screen and ( max-width: $break-xlarge ) {
+		@media screen and (max-width: $break-xlarge) {
 			margin: 32px $gap-large 0 $gap-large;
 		}
 
-		@media screen and ( max-width: $break-medium ) {
+		@media screen and (max-width: $break-medium) {
 			margin: 32px $gap 0 $gap;
 			padding: $gap-smaller $gap;
 		}
@@ -307,7 +317,7 @@
 	}
 }
 
-@media screen and ( max-width: $break-xlarge ) {
+@media screen and (max-width: $break-xlarge) {
 	.settings-payments-main__container {
 		.woocommerce-item__payment-gateway-placeholder {
 			padding: 0 $gap-large;
@@ -315,7 +325,7 @@
 	}
 }
 
-@media screen and ( max-width: $break-medium ) {
+@media screen and (max-width: $break-medium) {
 	.settings-payments-main__container {
 		.woocommerce-item__payment-gateway-placeholder {
 			padding: 0 $gap;
