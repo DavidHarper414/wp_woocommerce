@@ -10,29 +10,25 @@ import { TextareaControl } from '@wordpress/components';
  */
 import type { DataFormItem } from '../../types';
 
-export const getTextareaEdit = ( {
-	field,
-	onChange,
-	data,
-}: DataFormControlProps< DataFormItem > ) => {
-	const { id, getValue, label, placeholder, description } = field;
-	const value = getValue( { item: data } );
-	const helpText =
-		description === 'true' || description === 'false' ? '' : description;
+export const getTextareaEdit =
+	( help?: React.ReactNode ) =>
+	( { field, onChange, data }: DataFormControlProps< DataFormItem > ) => {
+		const { id, getValue, label, placeholder } = field;
+		const value = getValue( { item: data } );
 
-	return (
-		<TextareaControl
-			__nextHasNoMarginBottom
-			help={ helpText }
-			label={ label }
-			placeholder={ placeholder }
-			onChange={ ( newValue ) => {
-				onChange( {
-					[ id ]: newValue,
-				} );
-			} }
-			value={ value }
-			id={ id }
-		/>
-	);
-};
+		return (
+			<TextareaControl
+				__nextHasNoMarginBottom
+				help={ help }
+				label={ label }
+				placeholder={ placeholder }
+				onChange={ ( newValue ) => {
+					onChange( {
+						[ id ]: newValue,
+					} );
+				} }
+				value={ value }
+				id={ id }
+			/>
+		);
+	};

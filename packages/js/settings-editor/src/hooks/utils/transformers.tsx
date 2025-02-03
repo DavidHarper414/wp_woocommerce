@@ -155,13 +155,14 @@ export const transformToField = (
 			};
 		}
 		case 'textarea':
+			const { label, help } = getLabelAndHelp( setting );
+
 			return {
 				id: setting.id,
 				type: 'text',
 				placeholder: setting.placeholder,
-				description: String( setting.desc_tip ),
-				label: setting.desc,
-				Edit: getTextareaEdit,
+				label,
+				Edit: getTextareaEdit( help ),
 			};
 
 		case 'color':
