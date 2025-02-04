@@ -190,13 +190,13 @@ class Checkout extends AbstractCartRoute {
 					'customer' => [
 						'billing_address'   => $request['billing_address'],
 						'shipping_address'  => $request['shipping_address'],
-						'additional_fields' => $this->additional_fields_controller->filter_values_for_location( $request['additional_fields'], 'contact' ),
+						'additional_fields' => $this->additional_fields_controller->filter_values_for_location( $request['additional_fields'] ?? [], 'contact' ),
 					],
 					'checkout' => [
 						'payment_method'    => $request['payment_method'],
 						'create_account'    => $request['create_account'],
 						'customer_note'     => $request['customer_note'],
-						'additional_fields' => $this->additional_fields_controller->filter_values_for_location( $request['additional_fields'], 'order' ),
+						'additional_fields' => $this->additional_fields_controller->filter_values_for_location( $request['additional_fields'] ?? [], 'order' ),
 					],
 				]
 			);
