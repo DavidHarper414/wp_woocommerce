@@ -37,7 +37,7 @@ $email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improveme
 	<?php /* translators: %s: Username */ ?>
 	<p><?php echo wp_kses( sprintf( __( 'Username: <b>%s</b>', 'woocommerce' ), esc_html( $user_login ) ), array( 'b' => array() ) ); ?></p>
 	<div class="hr hr-bottom"></div>
-	<p><?php esc_html_e( 'If you didn\'t make this request, just ignore this email. If you\'d like to proceed, reset your password via the link below:', 'woocommerce' ); ?></p>
+	<p><?php esc_html_e( 'If you didn’t make this request, just ignore this email. If you’d like to proceed, reset your password via the link below:', 'woocommerce' ); ?></p>
 <?php else : ?>
 	<?php /* translators: %s: Customer username */ ?>
 	<p><?php printf( esc_html__( 'Username: %s', 'woocommerce' ), esc_html( $user_login ) ); ?></p>

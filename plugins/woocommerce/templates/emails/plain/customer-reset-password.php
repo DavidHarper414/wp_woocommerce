@@ -36,7 +36,7 @@ if ( $email_improvements_enabled ) {
 echo sprintf( esc_html__( 'Username: %s', 'woocommerce' ), esc_html( $user_login ) ) . "\n\n";
 if ( $email_improvements_enabled ) {
 	echo "----------------------------------------\n\n";
-	echo esc_html__( 'If you didn\'t make this request, just ignore this email. If you\'d like to proceed, reset your password via the link below:', 'woocommerce' ) . "\n\n";
+	echo esc_html__( 'If you didn’t make this request, just ignore this email. If you’d like to proceed, reset your password via the link below:', 'woocommerce' ) . "\n\n";
 } else {
 	echo esc_html__( 'If you didn\'t make this request, just ignore this email. If you\'d like to proceed:', 'woocommerce' ) . "\n\n";
 }
