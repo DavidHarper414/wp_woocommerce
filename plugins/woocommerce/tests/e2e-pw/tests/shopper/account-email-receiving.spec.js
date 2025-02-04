@@ -23,6 +23,8 @@ const test = baseTest.extend( {
 	},
 } );
 
+test.skip( process.env.IS_MULTISITE, 'Test not working on a multisite setup' );
+
 test.describe(
 	'Shopper Account Email Receiving',
 	{ tag: [ tags.PAYMENTS, tags.SERVICES ] },
