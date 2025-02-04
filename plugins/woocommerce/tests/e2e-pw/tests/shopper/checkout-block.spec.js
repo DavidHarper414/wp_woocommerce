@@ -174,7 +174,16 @@ test.describe(
 			} );
 
 			await test.step( 'Make sure our customer user has a pre-defined billing/shipping address', async () => {
-				await api.put( `customers/${ process.env.CUSTOMER_USER_ID }`, {
+				// Get existing customer ID
+				const { data } = await api.get( 'customers', {
+					email: customer.email,
+					role: 'all',
+				} );
+				expect( data ).toMatchObject( [ { email: customer.email } ] );
+
+				// Update its billing & shipping address
+				const customerId = data[ 0 ].id;
+				await api.put( `customers/${ customerId }`, {
 					shipping: {
 						first_name: 'Maggie',
 						last_name: 'Simpson',
