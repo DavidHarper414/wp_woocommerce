@@ -84,7 +84,7 @@ export const OfficialBadge = ( { variant }: OfficialBadgeProps ) => {
 									{
 										learnMoreLink: (
 											<Link
-												href="https://woocommerce.com/something"
+												href="https://woocommerce.com/learn-more-about-official-partner-badging/"
 												target="_blank"
 												rel="noreferrer"
 												type="external"
