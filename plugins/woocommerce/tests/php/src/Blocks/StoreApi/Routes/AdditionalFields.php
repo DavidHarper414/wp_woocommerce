@@ -1626,8 +1626,7 @@ class AdditionalFields extends MockeryTestCase {
 		$response = rest_get_server()->dispatch( $request );
 		$data     = $response->get_data();
 		$this->assertEquals( 400, $response->get_status(), print_r( $data, true ) );
-		$this->assertEquals( 'Invalid value provided.', $data['data']['message'], print_r( $data, true ) );
-		$this->assertEquals( 'woocommerce_rest_checkout_invalid_field', $data['data']['code'], print_r( $data, true ) );
+		$this->assertEquals( 'Invalid value provided.', $data['data']['params']['additional_fields'], print_r( $data, true ) );
 
 		\__internal_woocommerce_blocks_deregister_checkout_field( $id );
 
@@ -1731,7 +1730,7 @@ class AdditionalFields extends MockeryTestCase {
 			'woocommerce_validate_additional_field',
 			function ( \WP_Error $errors, $key, $value ) use ( $id ) {
 				if ( $key === $id && 'invalid' === $value ) {
-					$errors->add( 'woocommerce_rest_checkout_invalid_field', 'Invalid value provided.' );
+					$errors->add( 'my_invalid_value', 'Invalid value provided.' );
 				}
 			},
 			10,
@@ -1780,8 +1779,7 @@ class AdditionalFields extends MockeryTestCase {
 		$response = rest_get_server()->dispatch( $request );
 		$data     = $response->get_data();
 		$this->assertEquals( 400, $response->get_status(), print_r( $data, true ) );
-		$this->assertEquals( 'Invalid value provided.', $data['data']['message'], print_r( $data, true ) );
-		$this->assertEquals( 'my_invalid_value', $data['data']['code'], print_r( $data, true ) );
+		$this->assertEquals( 'Invalid value provided.', $data['data']['params']['additional_fields'], print_r( $data, true ) );
 
 		\__internal_woocommerce_blocks_deregister_checkout_field( $id );
 
@@ -1893,7 +1891,7 @@ class AdditionalFields extends MockeryTestCase {
 		$data     = $response->get_data();
 
 		$this->assertEquals( 400, $response->get_status(), print_r( $data, true ) );
-		$this->assertEquals( \sprintf( 'There was a problem with the provided shipping address: %s is required', $label ), $data['message'], print_r( $data, true ) );
+		$this->assertEquals( \sprintf( 'There was a problem with the provided shipping address: %s is required', $label ), $data['data']['params']['shipping_address'], print_r( $data, true ) );
 
 		$request = new \WP_REST_Request( 'POST', '/wc/store/v1/checkout' );
 		$request->set_header( 'Nonce', wp_create_nonce( 'wc_store_api' ) );
@@ -2027,7 +2025,7 @@ class AdditionalFields extends MockeryTestCase {
 
 		// The product is downloadable, but not virtual, so should still require a shipping address.
 		$this->assertEquals( 400, $response->get_status(), print_r( $data, true ) );
-		$this->assertEquals( 'There was a problem with the provided shipping address: Government ID is required', $data['message'], print_r( $data, true ) );
+		$this->assertEquals( 'There was a problem with the provided shipping address: Government ID is required', $data['data']['params']['shipping_address'], print_r( $data, true ) );
 	}
 
 	/**
