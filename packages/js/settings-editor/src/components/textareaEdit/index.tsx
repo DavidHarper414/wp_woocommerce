@@ -17,8 +17,6 @@ export const getTextareaEdit =
 		const label = field.label === id ? undefined : field.label;
 		const value = getValue( { item: data } );
 
-		console.log( 'label', label );
-
 		return (
 			<TextareaControl
 				__nextHasNoMarginBottom
