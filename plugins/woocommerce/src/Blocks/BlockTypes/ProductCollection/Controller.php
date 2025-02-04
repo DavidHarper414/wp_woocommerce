@@ -149,7 +149,7 @@ class Controller extends AbstractBlock {
 			$is_anchor = $p->next_tag( array( 'tag_name' => 'a' ) );
 
 			if ( $is_anchor ) {
-				$p->set_attribute( 'data-wc-on--click', 'woocommerce/product-collection::actions.viewProduct' );
+				$p->set_attribute( 'data-wp-on--click', 'woocommerce/product-collection::actions.viewProduct' );
 
 				$block_content = $p->get_updated_html();
 			}
@@ -242,7 +242,7 @@ class Controller extends AbstractBlock {
 					if ( isset( $dirty_enhanced_queries[ $block['attrs']['queryId'] ] ) ) {
 						$p = new \WP_HTML_Tag_Processor( $content );
 						if ( $p->next_tag() ) {
-							$p->set_attribute( 'data-wc-navigation-disabled', 'true' );
+							$p->set_attribute( 'data-wp-navigation-disabled', 'true' );
 						}
 						$content = $p->get_updated_html();
 						$dirty_enhanced_queries[ $block['attrs']['queryId'] ] = null;

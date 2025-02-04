@@ -248,13 +248,16 @@ const getBlockEntries = ( relativePath, blockEntries = blocks ) => {
 	);
 };
 
-// The way entries are defined right now, we use them to build styles and JS, but for
-// frontend JS of these blocks we use a script modules build so we skip building them on
-// the frontend.
+// The entries are used to build styles **and** JS, but for
+// frontend JS of these blocks we use a script modules build so
+// we skip building their JS files in the old build.
+// The script modules build handles them in
+// webpack-config-interactivity-blocks-frontend.js.
 const frontendScriptModuleBlocksToSkip = [
 	'product-gallery',
 	'product-gallery-large-image',
 	'store-notices',
+	'product-collection',
 ];
 
 const frontendEntries = getBlockEntries( 'frontend.{t,j}s{,x}', {

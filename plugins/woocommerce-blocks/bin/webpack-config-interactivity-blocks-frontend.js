@@ -17,6 +17,8 @@ const blockEntries = {
 		'./assets/js/blocks/product-gallery/frontend.tsx',
 	'woocommerce/product-gallery-large-image':
 		'./assets/js/blocks/product-gallery/inner-blocks/product-gallery-large-image/frontend.tsx',
+	'woocommerce/product-collection':
+		'./assets/js/blocks/product-collection/frontend.tsx',
 };
 
 module.exports = {

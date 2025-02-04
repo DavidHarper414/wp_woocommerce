@@ -71,6 +71,7 @@
 				"@wordpress/url",
 				"@wordpress/wordcount",
 				"@wordpress/interactivity",
+				"@wordpress/interactivity-router",
 				"babel*",
 				"eslint*",
 				"glob*",
