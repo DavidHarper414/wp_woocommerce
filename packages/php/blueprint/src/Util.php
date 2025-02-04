@@ -26,6 +26,19 @@ class Util {
 		return $path;
 	}
 
+	public static function array_to_insert_sql ($row, $table, $ignore = true) {
+		if (empty($row) || !is_array($row)) {
+			return false; // Return false if input data is empty or not an array
+		}
+
+		// Get column names and values
+		$columns = '`' . implode('`, `', array_keys($row)) . '`';
+		$escapedValues = array_map(fn($value) => "'" . addslashes($value) . "'", $row);
+		$values = implode(', ', $escapedValues);
+		// Construct final SQL query
+		return "INSERT " . ($ignore ? "IGNORE " : "") . "INTO `$table` ($columns) VALUES ($values);";
+	}
+
 	/**
 	 * Convert a string from snake_case to camelCase.
 	 *
