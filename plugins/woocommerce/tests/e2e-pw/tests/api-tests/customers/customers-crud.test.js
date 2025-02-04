@@ -2,6 +2,7 @@ const { test, expect } = require( '../../../fixtures/api-tests-fixtures' );
 const { admin } = require( '../../../test-data/data' );
 
 test.describe( 'Customers API tests: CRUD', () => {
+	let adminId;
 		let customerId;
 		let subscriberUserId;
 		let subscriberUserCreatedDuringTests = false;
@@ -18,6 +19,12 @@ test.describe( 'Customers API tests: CRUD', () => {
 				}
 			);
 			const customersResponseJSON = await customersResponse.json();
+
+		// Get the admin user ID
+		const adminJSON = customersResponseJSON.find(
+			( { username } ) => username === admin.username
+		);
+		adminId = adminJSON.id;
 
 			for ( const element of customersResponseJSON ) {
 				if ( element.role === 'subscriber' ) {
@@ -89,7 +96,7 @@ test.describe( 'Customers API tests: CRUD', () => {
 			test( 'can retrieve admin user', async ( { request } ) => {
 				// call API to retrieve the previously saved customer
 				const response = await request.get(
-					'./wp-json/wc/v3/customers/1'
+				`./wp-json/wc/v3/customers/${ adminId }`
 				);
 				const responseJSON = await response.json();
 				expect( response.status() ).toEqual( 200 );
@@ -248,7 +255,7 @@ test.describe( 'Customers API tests: CRUD', () => {
 				 * (https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce/tests/e2e-pw#woocommerce-playwright-end-to-end-tests
 				 */
 				const response = await request.put(
-					`./wp-json/wc/v3/customers/1`,
+				`./wp-json/wc/v3/customers/${ adminId }`,
 					{
 						data: {
 							first_name: 'admin',
@@ -271,7 +278,7 @@ test.describe( 'Customers API tests: CRUD', () => {
 			test( 'retrieve after update admin', async ( { request } ) => {
 				// call API to retrieve the admin customer we updated above
 				const response = await request.get(
-					'./wp-json/wc/v3/customers/1'
+				`./wp-json/wc/v3/customers/${ adminId }`
 				);
 				const responseJSON = await response.json();
 				expect( response.status() ).toEqual( 200 );
