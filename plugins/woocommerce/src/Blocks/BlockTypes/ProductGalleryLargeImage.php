@@ -63,8 +63,6 @@ class ProductGalleryLargeImage extends AbstractBlock {
 			return '';
 		}
 
-		wp_enqueue_script_module( $this->get_full_block_name() );
-
 		global $product;
 
 		$previous_product = $product;
@@ -74,6 +72,8 @@ class ProductGalleryLargeImage extends AbstractBlock {
 
 			return '';
 		}
+
+		wp_enqueue_script_module( $this->get_full_block_name() );
 
 		if ( class_exists( 'WC_Frontend_Scripts' ) ) {
 			$frontend_scripts = new \WC_Frontend_Scripts();
@@ -126,6 +126,9 @@ class ProductGalleryLargeImage extends AbstractBlock {
 			'data-wp-bind--tabindex' => 'state.thumbnailTabIndex',
 			'data-wp-on--keydown'    => 'actions.onSelectedLargeImageKeyDown',
 			'data-wp-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide' => 'state.isSelected',
+			'data-wp-on--touchstart' => 'actions.onTouchStart',
+			'data-wp-on--touchmove'  => 'actions.onTouchMove',
+			'data-wp-on--touchend'   => 'actions.onTouchEnd',
 		);
 
 		if ( $context['fullScreenOnClick'] ) {
@@ -211,16 +214,5 @@ class ProductGalleryLargeImage extends AbstractBlock {
 		return array(
 			'data-wp-on--click' => 'actions.openDialog',
 		);
-	}
-
-	/**
-	 * Disable the block type script, this block's frontend script is a script module.
-	 *
-	 * @param string|null $key The key.
-	 *
-	 * @return null
-	 */
-	protected function get_block_type_script( $key = null ) {
-		return null;
 	}
 }
