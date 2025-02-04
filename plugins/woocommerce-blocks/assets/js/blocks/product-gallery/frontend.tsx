@@ -8,6 +8,11 @@ import {
 } from '@woocommerce/interactivity';
 import { StorePart } from '@woocommerce/utils';
 
+/**
+ * Internal dependencies
+ */
+import { ImageRef, ImageChoice } from './types';
+
 export interface ProductGalleryContext {
 	// It's an actual image number, not an index, hence one-based!
 	selectedImageNumber: number;
@@ -32,39 +37,22 @@ const getImageIndex = (): number => {
 	return state.imageIds.indexOf( state.imageId );
 };
 
-const disableArrows = (
-	context: ProductGalleryContext,
-	newImageNumber: number
-) => {
+const getImageNumber = (
+	imageChoice: ImageRef,
+	imageNumber: number,
+	totalImages: number
+) =>
+	( {
+		current: () => getImageIndex() + 1,
+		prev: () => Math.max( 1, imageNumber - 1 ),
+		next: () => Math.min( totalImages, imageNumber + 1 ),
+	}[ imageChoice ]() );
+
+const getArrowsState = ( imageNumber: number, totalImages: number ) => ( {
 	// One-based index so it ranges from 1 to imagesIds.length.
-	context.disableLeft = newImageNumber === 1;
-	context.disableRight = newImageNumber === context.imageIds.length;
-};
-
-const selectImage = (
-	context: ProductGalleryContext,
-	type: 'prev' | 'next' | 'current' | 'first'
-) => {
-	const { selectedImageNumber, imageIds } = state;
-	// Default to the first image.
-	let newImageNumber = 1;
-
-	// Current means the image that has been clicked.
-	if ( type === 'current' ) {
-		newImageNumber = getImageIndex() + 1;
-	}
-
-	if ( type === 'prev' ) {
-		newImageNumber = Math.max( 1, selectedImageNumber - 1 );
-	}
-
-	if ( type === 'next' ) {
-		newImageNumber = Math.min( imageIds.length, selectedImageNumber + 1 );
-	}
-
-	context.selectedImageNumber = newImageNumber;
-	disableArrows( context, newImageNumber );
-};
+	disableLeft: imageNumber === 1,
+	disableRight: imageNumber === totalImages,
+} );
 
 const productGallery = {
 	state: {
@@ -102,20 +90,46 @@ const productGallery = {
 		},
 	},
 	actions: {
-		selectImage: () => {
-			selectImage( getContext(), 'current' );
+		selectImage: ( image: ImageChoice ) => {
+			const context = getContext();
+			const { selectedImageNumber, imageIds } = state;
+
+			const newImageNumber =
+				typeof image === 'number'
+					? image
+					: getImageNumber(
+							image,
+							selectedImageNumber,
+							imageIds.length
+					  );
+
+			const { disableLeft, disableRight } = getArrowsState(
+				newImageNumber,
+				imageIds.length
+			);
+
+			context.selectedImageNumber = newImageNumber;
+			context.disableLeft = disableLeft;
+			context.disableRight = disableRight;
+		},
+		selectCurrentImage: ( event?: MouseEvent ) => {
+			if ( event ) {
+				event.stopPropagation();
+			}
+			actions.selectImage( 'current' );
 		},
 		selectNextImage: ( event?: MouseEvent ) => {
 			if ( event ) {
 				event.stopPropagation();
 			}
-			selectImage( getContext(), 'next' );
+
+			actions.selectImage( 'next' );
 		},
 		selectPreviousImage: ( event?: MouseEvent ) => {
 			if ( event ) {
 				event.stopPropagation();
 			}
-			selectImage( getContext(), 'prev' );
+			actions.selectImage( 'prev' );
 		},
 		onSelectedLargeImageKeyDown: ( event: KeyboardEvent ) => {
 			if (
@@ -150,7 +164,7 @@ const productGallery = {
 				if ( event.code === 'Space' ) {
 					event.preventDefault();
 				}
-				productGallery.actions.selectImage();
+				actions.selectImage( 'current' );
 			}
 		},
 		onDialogKeyDown: ( event: KeyboardEvent ) => {
@@ -225,6 +239,17 @@ const productGallery = {
 				return;
 			}
 
+			const selectFirstImage = () => {
+				const nextImageNumber = 1;
+				const { disableLeft, disableRight } = getArrowsState(
+					nextImageNumber,
+					context.imageIds.length
+				);
+				context.selectedImageNumber = nextImageNumber;
+				context.disableLeft = disableLeft;
+				context.disableRight = disableRight;
+			};
+
 			// TODO: Replace with an interactive block that calls `actions.selectImage`.
 			const observer = new MutationObserver( function ( mutations ) {
 				for ( const mutation of mutations ) {
@@ -241,8 +266,16 @@ const productGallery = {
 						const nextImageNumber =
 							context.imageIds.indexOf( currentImageAttribute ) +
 							1;
+
+						const { disableLeft, disableRight } = getArrowsState(
+							nextImageNumber,
+							context.imageIds.length
+						);
 						context.selectedImageNumber = nextImageNumber;
-						disableArrows( context, nextImageNumber );
+						context.disableLeft = disableLeft;
+						context.disableRight = disableRight;
+					} else {
+						selectFirstImage();
 					}
 				}
 			} );
@@ -254,10 +287,6 @@ const productGallery = {
 			const clearVariationsLink = document.querySelector(
 				'.wp-block-add-to-cart-form .reset_variations'
 			);
-
-			const selectFirstImage = () => {
-				selectImage( context, 'first' );
-			};
 
 			if ( clearVariationsLink ) {
 				clearVariationsLink.addEventListener(

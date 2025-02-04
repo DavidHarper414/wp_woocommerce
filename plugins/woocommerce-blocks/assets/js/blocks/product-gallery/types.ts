@@ -10,3 +10,6 @@ export interface ProductGallerySettingsProps {
 		attributes: Partial< ProductGalleryBlockAttributes >
 	) => void;
 }
+
+export type ImageRef = 'prev' | 'next' | 'current';
+export type ImageChoice = ImageRef | number;
