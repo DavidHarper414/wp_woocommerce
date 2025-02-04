@@ -95,9 +95,9 @@ class Controller extends AbstractBlock {
 	 * @return array The array of hooked blocks.
 	 */
 	public function block_hook_fallback( $hooked_blocks, $position, $anchor_block, $context ) {
-		$position_to_check = wc_is_block_hook_post_content_supported() ? 'first_child' : 'before';
+		$anchor_block_to_check = wc_is_block_hook_post_content_supported() ? 'woocommerce/product-collection' : 'core/post-content';
 
-		if ( 'core/post-content' === $anchor_block && $position_to_check === $position ) {
+		if ( $anchor_block_to_check === $anchor_block && 'before' === $position ) {
 			if ( $context instanceof \WP_Block_Template && ! str_contains( $context->content, 'woocommerce/store-notices' ) ) {
 				$hooked_blocks[] = 'woocommerce/store-notices';
 			}
