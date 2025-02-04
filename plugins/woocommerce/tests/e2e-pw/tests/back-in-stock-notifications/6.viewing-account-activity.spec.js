@@ -8,7 +8,7 @@ const { test, request } = require( '@playwright/test' );
 const { CUSTOMER_STATE_PATH } = require( '../../playwright.config' );
 
 [ 'twentytwentyfour', 'storefront' ].forEach( ( theme ) => {
-	test.describe( 'Feature: Viewing Account Activity', () => {
+	test.describe( `Feature: Viewing Account Activity: ${ theme }`, () => {
 		let helper;
 
 		test.beforeAll( async ( { baseURL } ) => {
