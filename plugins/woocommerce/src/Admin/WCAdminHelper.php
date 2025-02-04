@@ -164,13 +164,8 @@ class WCAdminHelper {
 			return true;
 		}
 
-		if (
-			// Check taxonomies.
-			is_tax( 'product_tag' ) ||
-			is_tax( 'product_cat' ) ||
-			is_tax( 'product_brand' ) ||
-			is_tax( 'product_variation' )
-		) {
+		// Product taxonomy page (e.g. Product Category, Product Tag, etc.).
+		if ( is_product_taxonomy() ) {
 			return true;
 		}
 
