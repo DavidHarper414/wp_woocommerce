@@ -13,8 +13,11 @@ import type { DataFormItem } from '../../types';
 export const getTextareaEdit =
 	( help?: React.ReactNode ) =>
 	( { field, onChange, data }: DataFormControlProps< DataFormItem > ) => {
-		const { id, getValue, label, placeholder } = field;
+		const { id, getValue, placeholder } = field;
+		const label = field.label === id ? undefined : field.label;
 		const value = getValue( { item: data } );
+
+		console.log( 'label', label );
 
 		return (
 			<TextareaControl
