@@ -39,8 +39,7 @@ const NotFound = () => {
  * Default route when active page is not found.
  *
  * @param {string}        activePage - The active page.
- * @param {settingsPages} pages - The settings pages.
- *
+ * @param {SettingsPages} pages      - The settings pages.
  */
 const getNotFoundRoute = (
 	activePage: string,
