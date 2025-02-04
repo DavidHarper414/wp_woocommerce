@@ -101,14 +101,19 @@ class WC_REST_Shipping_Methods_V2_Controller extends WC_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
+		
 		$wc_shipping = WC_Shipping::instance();
-		$response    = array();
+		$data        = array();
 		foreach ( $wc_shipping->get_shipping_methods() as $id => $shipping_method ) {
-			$method     = $this->prepare_item_for_response( $shipping_method, $request );
-			$method     = $this->prepare_response_for_collection( $method );
-			$response[] = $method;
+			$method = $this->prepare_item_for_response( $shipping_method, $request );
+			$method = $this->prepare_response_for_collection( $method );
+			$data[] = $method;
 		}
-		return rest_ensure_response( $response );
+
+		$total    = count( $data );
+		$response = rest_ensure_response( $data );
+		$response->header( 'X-WP-Total', $total );
+		return $response;
 	}
 
 	/**
