@@ -88,7 +88,6 @@ test.describe( 'Customers API tests: CRUD', () => {
 			 * (https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce/tests/e2e-pw#woocommerce-playwright-end-to-end-tests),
 			 * we have an admin user and a subscriber user that can both be
 			 * accessed through their ids
-			 * admin user will have id 1 and subscriber user will have id 2
 			 * neither of these are returned as part of the get all customers call
 			 * unless the role 'all' is passed as a search param
 			 * but they can be accessed by specific id reference
@@ -108,7 +107,7 @@ test.describe( 'Customers API tests: CRUD', () => {
 
 			test( 'can retrieve subscriber user', async ( { request } ) => {
 				// if environment was created with subscriber user
-				// call API to retrieve the customer with id 2
+			// call API to retrieve the customer
 				const response = await request.get(
 					`./wp-json/wc/v3/customers/${ subscriberUserId }`
 				);
