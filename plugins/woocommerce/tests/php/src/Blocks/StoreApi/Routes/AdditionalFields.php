@@ -1626,7 +1626,8 @@ class AdditionalFields extends MockeryTestCase {
 		$response = rest_get_server()->dispatch( $request );
 		$data     = $response->get_data();
 		$this->assertEquals( 400, $response->get_status(), print_r( $data, true ) );
-		$this->assertEquals( 'Invalid value provided.', $data['data']['params']['additional_fields'], print_r( $data, true ) );
+		$this->assertEquals( 'Invalid value provided.', $data['data']['message'], print_r( $data, true ) );
+		$this->assertEquals( 'woocommerce_rest_checkout_invalid_field', $data['data']['code'], print_r( $data, true ) );
 
 		\__internal_woocommerce_blocks_deregister_checkout_field( $id );
 
@@ -1730,7 +1731,7 @@ class AdditionalFields extends MockeryTestCase {
 			'woocommerce_validate_additional_field',
 			function ( \WP_Error $errors, $key, $value ) use ( $id ) {
 				if ( $key === $id && 'invalid' === $value ) {
-					$errors->add( 'my_invalid_value', 'Invalid value provided.' );
+					$errors->add( 'woocommerce_rest_checkout_invalid_field', 'Invalid value provided.' );
 				}
 			},
 			10,
@@ -1779,7 +1780,8 @@ class AdditionalFields extends MockeryTestCase {
 		$response = rest_get_server()->dispatch( $request );
 		$data     = $response->get_data();
 		$this->assertEquals( 400, $response->get_status(), print_r( $data, true ) );
-		$this->assertEquals( 'Invalid value provided.', $data['data']['params']['additional_fields'], print_r( $data, true ) );
+		$this->assertEquals( 'Invalid value provided.', $data['data']['message'], print_r( $data, true ) );
+		$this->assertEquals( 'my_invalid_value', $data['data']['code'], print_r( $data, true ) );
 
 		\__internal_woocommerce_blocks_deregister_checkout_field( $id );
 
