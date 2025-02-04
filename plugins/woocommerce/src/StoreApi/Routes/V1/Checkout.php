@@ -195,7 +195,7 @@ class Checkout extends AbstractCartRoute {
 						'billing_address'   => $sanitized_request->get_param( 'billing_address' ),
 						'shipping_address'  => $sanitized_request->get_param( 'shipping_address' ),
 						'additional_fields' => $this->additional_fields_controller->filter_values_for_location(
-							$sanitized_request->get_param( 'additional_fields' ),
+							$sanitized_request->get_param( 'additional_fields' ) ?? [],
 							'contact'
 						),
 					],
@@ -204,7 +204,7 @@ class Checkout extends AbstractCartRoute {
 						'create_account'    => $sanitized_request->get_param( 'create_account' ),
 						'customer_note'     => $sanitized_request->get_param( 'customer_note' ),
 						'additional_fields' => $this->additional_fields_controller->filter_values_for_location(
-							$sanitized_request->get_param( 'additional_fields' ),
+							$sanitized_request->get_param( 'additional_fields' ) ?? [],
 							'order'
 						),
 					],
