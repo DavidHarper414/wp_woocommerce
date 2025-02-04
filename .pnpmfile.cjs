@@ -51,6 +51,8 @@ function updatePackageFile( packagePath, packageFile ) {
 /**
  * Populated config object based on declared and resolved dependencies.
  *
+ * @param {string}            packageName          Package name.
+ * @param {string}            packagePath          Package path.
  * @param {Object}            declaredDependencies Declared dependencies from package-file.
  * @param {Object}            resolvedDependencies Resolved dependencies from lock-file.
  * @param {Object}            config               Dependency output path configuration.
@@ -59,11 +61,11 @@ function updatePackageFile( packagePath, packageFile ) {
  *
  * @return void
  */
-function updateConfig( declaredDependencies, resolvedDependencies, config, context ) {
+function updateConfig( packageName, packagePath, declaredDependencies, resolvedDependencies, config, context ) {
 	for ( const [ key, value ] of Object.entries( declaredDependencies ) ) {
 		if ( value.startsWith( 'workspace:' ) ) {
 			const normalizedPath = path.join( packagePath, resolvedDependencies[key].replace( 'link:', '' ) );
-			context.log( `[wireit][${ packageFile.name }]    Inspecting workspace dependency: ${ key } (${ normalizedPath })` );
+			context.log( `[wireit][${ packageName }]    Inspecting workspace dependency: ${ key } (${ normalizedPath })` );
 
 			// Actualize output storage with the identified entries.
 			const dependencyFile = loadPackageFile( path.join( packagePath, 'node_modules', key ) );
@@ -78,10 +80,10 @@ function updateConfig( declaredDependencies, resolvedDependencies, config, conte
 					}
 					config.files.push( normalizedValue );
 
-					context.log( `[wireit][${ packageFile.name }]        - ${ normalizedValue }` );
+					context.log( `[wireit][${ packageName }]        - ${ normalizedValue }` );
 				}
 			} else {
-				context.log( `[wireit][${ packageFile.name }]        ---` );
+				context.log( `[wireit][${ packageName }]        ---` );
 			}
 		}
 	}
@@ -115,6 +117,8 @@ function afterAllResolved( lockfile, context ) {
 
 			// Walk through workspace-located dependencies and provision.
 			updateConfig(
+				packageFile.name,
+				packagePath,
 				{
 					...( packageFile.dependencies || {} ),
 					...( packageFile.devDependencies || {} ),
