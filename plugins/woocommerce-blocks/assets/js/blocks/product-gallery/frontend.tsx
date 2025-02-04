@@ -131,14 +131,12 @@ const productGallery = {
 			selectImage( getContext(), 'current' );
 		},
 		selectNextImage: ( event?: MouseEvent ) => {
-			console.log( 'selectNextImage' );
 			if ( event ) {
 				event.stopPropagation();
 			}
 			selectImage( getContext(), 'next' );
 		},
 		selectPreviousImage: ( event?: MouseEvent ) => {
-			console.log( 'selectPreviousImage' );
 			if ( event ) {
 				event.stopPropagation();
 			}
