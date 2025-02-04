@@ -32,7 +32,9 @@ class SingleProductTemplateCompatibility extends AbstractTemplateCompatibility {
 
 		$this->remove_default_hooks();
 
-		$block_hooks = $this->get_block_hooks( $block_content, $block );
+		$block_name = $block['blockName'];
+
+		$block_hooks = $this->get_block_hooks( $block_name, $block_content, $block );
 
 		$first_or_last_block_content = $this->inject_hook_to_first_and_last_blocks( $block_content, $block, $block_hooks );
 

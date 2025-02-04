@@ -76,7 +76,7 @@ class ArchiveProductTemplatesCompatibility extends AbstractTemplateCompatibility
 			$block_name = self::LOOP_ITEM_ID;
 		}
 
-		$block_hooks = $this->get_block_hooks( $block_content, $block );
+		$block_hooks = $this->get_block_hooks( $block_name, $block_content, $block );
 
 		// We want to inject hooks to the core/post-template or product template block only when the products exist:
 		// https://github.com/woocommerce/woocommerce-blocks/issues/9463.
