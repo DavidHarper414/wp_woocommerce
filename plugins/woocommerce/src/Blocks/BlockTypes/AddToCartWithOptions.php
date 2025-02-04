@@ -101,11 +101,36 @@ class AddToCartWithOptions extends AbstractBlock {
 				)
 			);
 
+			$hooks_before = '';
+			$hooks_after  = '';
+
+			/**
+			* Filter to disable the compatibility layer for the blockified templates.
+			*
+			* This hook allows to disable the compatibility layer for the blockified.
+			*
+			* @since 7.6.0
+			* @param boolean.
+			*/
+			$is_disabled_compatibility_layer       = apply_filters( 'woocommerce_disable_compatibility_layer', false );
+			$is_descendent_of_single_product_block = is_null( $previous_product ) || $post_id !== $previous_product->get_id();
+
+			if ( ! $is_disabled_compatibility_layer && ! $is_descendent_of_single_product_block && ProductType::VARIABLE === $product_type ) {
+				ob_start();
+				do_action( 'woocommerce_before_variations_form' );
+				$hooks_before = ob_get_clean();
+
+				ob_start();
+				do_action( 'woocommerce_after_variations_form' );
+				$hooks_after = ob_get_clean();
+			}
+
 			$form_html = sprintf(
-				'<form %1$s %2$s>%3$s</form>',
+				'<form %1$s>%2$s%3$s%4$s</form>',
 				$wrapper_attributes,
-				'',
-				$template_part_contents
+				$hooks_before,
+				$template_part_contents,
+				$hooks_after,
 			);
 
 			$product = $previous_product;
