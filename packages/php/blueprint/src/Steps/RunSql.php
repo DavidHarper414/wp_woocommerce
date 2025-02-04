@@ -45,9 +45,9 @@ class RunSql extends Step {
 				),
 				'sql' => array(
 					'type' => 'object',
-					'required' => array( 'contents', 'resources' ),
+					'required' => array( 'contents', 'resources', 'name' ),
 					'properties' => array(
-						'resources' => array(
+						'resource' => array(
 							'type' => 'string',
 							'enum' => array( 'literal' ),
 						),
@@ -73,7 +73,7 @@ class RunSql extends Step {
 		return array(
 			'step'      => static::get_step_name(),
 			'sql' => array(
-				'resources' => 'literal',
+				'resource' => 'literal',
 				'name' => $this->name,
 				'contents' => $this->sql,
 			)
