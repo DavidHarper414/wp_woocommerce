@@ -1,14 +1,7 @@
-const {
-	test,
-	expect,
-	tags,
-} = require( '../../../fixtures/api-tests-fixtures' );
+const { test, expect } = require( '../../../fixtures/api-tests-fixtures' );
 const { admin } = require( '../../../test-data/data' );
 
-test.describe(
-	'Customers API tests: CRUD',
-	{ tag: [ tags.SKIP_ON_PRESSABLE, tags.SKIP_ON_WPCOM ] },
-	() => {
+test.describe( 'Customers API tests: CRUD', () => {
 		let customerId;
 		let subscriberUserId;
 		let subscriberUserCreatedDuringTests = false;
