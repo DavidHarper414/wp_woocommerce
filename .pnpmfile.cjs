@@ -49,6 +49,45 @@ function updatePackageFile( packagePath, packageFile ) {
 }
 
 /**
+ * Populated config object based on declared and resolved dependencies.
+ *
+ * @param {Object}            declaredDependencies Declared dependencies from package-file.
+ * @param {Object}            resolvedDependencies Resolved dependencies from lock-file.
+ * @param {Object}            config               Dependency output path configuration.
+ * @param {Object}            context              The hook context object.
+ * @param {Function.<string>} context.log          Logs a message to the console.
+ *
+ * @return void
+ */
+function updateConfig( declaredDependencies, resolvedDependencies, config, context ) {
+	for ( const [ key, value ] of Object.entries( declaredDependencies ) ) {
+		if ( value.startsWith( 'workspace:' ) ) {
+			const normalizedPath = path.join( packagePath, resolvedDependencies[key].replace( 'link:', '' ) );
+			context.log( `[wireit][${ packageFile.name }]    Inspecting workspace dependency: ${ key } (${ normalizedPath })` );
+
+			// Actualize output storage with the identified entries.
+			const dependencyFile = loadPackageFile( path.join( packagePath, 'node_modules', key ) );
+			if ( dependencyFile.files ) {
+				for ( const entry in dependencyFile.files ) {
+					const entryValue = dependencyFile.files[entry];
+					let normalizedValue;
+					if ( entryValue.startsWith( '!' ) ) {
+						normalizedValue = '!' + path.join( 'node_modules', key, entryValue.substring( 1 ) );
+					} else {
+						normalizedValue = path.join( 'node_modules', key, entryValue );
+					}
+					config.files.push( normalizedValue );
+
+					context.log( `[wireit][${ packageFile.name }]        - ${ normalizedValue }` );
+				}
+			} else {
+				context.log( `[wireit][${ packageFile.name }]        ---` );
+			}
+		}
+	}
+}
+
+/**
  * This hook allows for the mutation of the lockfile before it is serialized.
  *
  * @param {Object}					lockfile				 The lock file that was produced by PNPM.
@@ -68,46 +107,25 @@ function afterAllResolved( lockfile, context ) {
 			context.log( `[wireit][${ packageFile.name }] Verifying 'wireit.dependencyOutputs'` );
 
 			// Initialize outputs storage and hash it's original state.
-			const config = {
+			const config              = {
 				allowUsuallyExcludedPaths: true, // This is needed so we can reference files in `node_modules`.
 				files: [ "package.json" ],       // The files list will include globs for dependency files that we should fingerprint.
 			};
 			const originalConfigState = JSON.stringify( config );
 
-			// Walk through workspace-located dependencies and resolve their locations.
-			const declaredDependencies = {
-				...( packageFile.dependencies || {} ),
-				...( packageFile.devDependencies || {} ),
-			};
-			const resolvedDependencies = {
-				...( lockfile.importers[ packagePath ].dependencies || {} ),
-				...( lockfile.importers[ packagePath ].devDependencies || {} ),
-			}
-			for ( const [ key, value ] of Object.entries( declaredDependencies ) ) {
-				if ( value.startsWith( 'workspace:' ) ) {
-					const normalizedPath = path.join( packagePath, resolvedDependencies[key].replace( 'link:', '' ) );
-					context.log( `[wireit][${ packageFile.name }]    Inspecting workspace dependency: ${ key } (${ normalizedPath })` );
-
-					// Actualize output storage with the identified entries.
-					const dependencyFile = loadPackageFile( path.join( packagePath, 'node_modules', key ) );
-					if ( dependencyFile.files ) {
-						for ( const entry in dependencyFile.files ) {
-							const entryValue = dependencyFile.files[entry];
-							let normalizedValue;
-							if ( entryValue.startsWith( '!' ) ) {
-								normalizedValue = '!' + path.join( 'node_modules', key, entryValue.substring( 1 ) );
-							} else {
-								normalizedValue = path.join( 'node_modules', key, entryValue );
-							}
-							config.files.push( normalizedValue );
-
-							context.log( `[wireit][${ packageFile.name }]        - ${ normalizedValue }` );
-						}
-					} else {
-						context.log( `[wireit][${ packageFile.name }]        ---` );
-					}
-				}
-			}
+			// Walk through workspace-located dependencies and provision.
+			updateConfig(
+				{
+					...( packageFile.dependencies || {} ),
+					...( packageFile.devDependencies || {} ),
+				},
+				{
+					...( lockfile.importers[ packagePath ].dependencies || {} ),
+					...( lockfile.importers[ packagePath ].devDependencies || {} ),
+				},
+				config,
+				context
+			);
 
 			// Verify config state and update manifest on mismatch.
 			let updated = false;
