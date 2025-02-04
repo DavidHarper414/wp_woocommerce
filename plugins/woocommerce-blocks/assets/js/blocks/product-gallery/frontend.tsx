@@ -8,11 +8,6 @@ import {
 } from '@woocommerce/interactivity';
 import { StorePart } from '@woocommerce/utils';
 
-/**
- * Internal dependencies
- */
-import { ImageRef, ImageChoice } from './types';
-
 export interface ProductGalleryContext {
 	// It's an actual image number, not an index, hence one-based!
 	selectedImageNumber: number;
@@ -36,17 +31,6 @@ const { state, actions } = store< Store >( 'woocommerce/product-gallery' );
 const getImageIndex = (): number => {
 	return state.imageIds.indexOf( state.imageId );
 };
-
-const getImageNumber = (
-	imageChoice: ImageRef,
-	imageNumber: number,
-	totalImages: number
-) =>
-	( {
-		current: () => getImageIndex() + 1,
-		prev: () => Math.max( 1, imageNumber - 1 ),
-		next: () => Math.min( totalImages, imageNumber + 1 ),
-	}[ imageChoice ]() );
 
 const getArrowsState = ( imageNumber: number, totalImages: number ) => ( {
 	// One-based index so it ranges from 1 to imagesIds.length.
@@ -90,22 +74,12 @@ const productGallery = {
 		},
 	},
 	actions: {
-		selectImage: ( image: ImageChoice ) => {
+		selectImage: ( newImageNumber: number ) => {
 			const context = getContext();
-			const { selectedImageNumber, imageIds } = state;
-
-			const newImageNumber =
-				typeof image === 'number'
-					? image
-					: getImageNumber(
-							image,
-							selectedImageNumber,
-							imageIds.length
-					  );
 
 			const { disableLeft, disableRight } = getArrowsState(
 				newImageNumber,
-				imageIds.length
+				context.imageIds.length
 			);
 
 			context.selectedImageNumber = newImageNumber;
@@ -116,20 +90,27 @@ const productGallery = {
 			if ( event ) {
 				event.stopPropagation();
 			}
-			actions.selectImage( 'current' );
+			const newImageNumber = getImageIndex() + 1;
+			actions.selectImage( newImageNumber );
 		},
 		selectNextImage: ( event?: MouseEvent ) => {
 			if ( event ) {
 				event.stopPropagation();
 			}
-
-			actions.selectImage( 'next' );
+			const { imageIds, selectedImageNumber } = state;
+			const newImageNumber = Math.min(
+				imageIds.length,
+				selectedImageNumber + 1
+			);
+			actions.selectImage( newImageNumber );
 		},
 		selectPreviousImage: ( event?: MouseEvent ) => {
 			if ( event ) {
 				event.stopPropagation();
 			}
-			actions.selectImage( 'prev' );
+			const { selectedImageNumber } = state;
+			const newImageNumber = Math.max( 1, selectedImageNumber - 1 );
+			actions.selectImage( newImageNumber );
 		},
 		onSelectedLargeImageKeyDown: ( event: KeyboardEvent ) => {
 			if (
@@ -164,7 +145,7 @@ const productGallery = {
 				if ( event.code === 'Space' ) {
 					event.preventDefault();
 				}
-				actions.selectImage( 'current' );
+				actions.selectCurrentImage();
 			}
 		},
 		onDialogKeyDown: ( event: KeyboardEvent ) => {
@@ -239,18 +220,20 @@ const productGallery = {
 				return;
 			}
 
-			const selectFirstImage = () => {
-				const nextImageNumber = 1;
+			// TODO: Replace with an interactive block that calls `actions.selectImage`.
+			// This have a diffent context in current setup.
+			const selectImage = ( newImageNumber: number ) => {
 				const { disableLeft, disableRight } = getArrowsState(
-					nextImageNumber,
+					newImageNumber,
 					context.imageIds.length
 				);
-				context.selectedImageNumber = nextImageNumber;
+				context.selectedImageNumber = newImageNumber;
 				context.disableLeft = disableLeft;
 				context.disableRight = disableRight;
 			};
 
-			// TODO: Replace with an interactive block that calls `actions.selectImage`.
+			const selectFirstImage = () => selectImage( 1 );
+
 			const observer = new MutationObserver( function ( mutations ) {
 				for ( const mutation of mutations ) {
 					const mutationTarget = mutation.target as HTMLElement;
@@ -259,21 +242,13 @@ const productGallery = {
 					if (
 						mutation.type === 'attributes' &&
 						currentImageAttribute &&
-						// This have a diffent context so we cannot rely on store values.
 						context.imageIds.includes( currentImageAttribute )
 					) {
-						// One-based.
 						const nextImageNumber =
 							context.imageIds.indexOf( currentImageAttribute ) +
 							1;
 
-						const { disableLeft, disableRight } = getArrowsState(
-							nextImageNumber,
-							context.imageIds.length
-						);
-						context.selectedImageNumber = nextImageNumber;
-						context.disableLeft = disableLeft;
-						context.disableRight = disableRight;
+						selectImage( nextImageNumber );
 					} else {
 						selectFirstImage();
 					}
