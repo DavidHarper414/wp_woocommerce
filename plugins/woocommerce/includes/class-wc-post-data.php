@@ -305,6 +305,8 @@ class WC_Post_Data {
 	/**
 	 * Removes variations etc. belonging to a deleted post, and clears transients
 	 *
+	 * @internal Use the delete_post function instead.
+	 *
 	 * @param mixed $id ID of post being deleted.
 	 */
 	public static function delete_post_data( $id ) {
