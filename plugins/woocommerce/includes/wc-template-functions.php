@@ -55,8 +55,10 @@ function wc_template_redirect() {
 		status_header( 404 );
 
 		$template = get_query_template( '404' );
-		if ( $template ) {
+		if ( ! empty( $template ) && file_exists( $template ) ) {
 			include $template;
+		} else {
+			wp_safe_redirect( home_url() );
 		}
 		exit;
 	}
