@@ -22,7 +22,7 @@ const SidebarNavigationScreenContent = ( {
 	pages,
 }: {
 	activePage: string;
-	pages: { [ key: string ]: SettingsPage };
+	pages: SettingsPages;
 } ) => {
 	return (
 		<ItemGroup>
@@ -55,7 +55,7 @@ export const Sidebar = ( {
 	pageTitle,
 }: {
 	activePage: string;
-	pages: { [ key: string ]: SettingsPage };
+	pages: SettingsPages;
 	pageTitle: string;
 } ) => {
 	return (

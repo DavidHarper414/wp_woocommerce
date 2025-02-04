@@ -96,11 +96,13 @@ declare global {
 		is_modern: boolean;
 	}
 
+	interface SettingsPages {
+		[ key: string ]: SettingsPage;
+	}
+
 	interface SettingsData {
 		start?: CustomSettingsField;
-		pages: {
-			[ key: string ]: SettingsPage;
-		};
+		pages: SettingsPages;
 	}
 }
 

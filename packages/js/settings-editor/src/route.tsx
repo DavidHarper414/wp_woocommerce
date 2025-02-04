@@ -44,7 +44,7 @@ const NotFound = () => {
  */
 const getNotFoundRoute = (
 	activePage: string,
-	pages: { [ key: string ]: SettingsPage }
+	pages: SettingsPages
 ): Route => ( {
 	key: activePage,
 	areas: {
