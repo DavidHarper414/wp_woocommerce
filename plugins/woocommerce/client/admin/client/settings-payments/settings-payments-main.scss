@@ -268,25 +268,25 @@
 							&::after {
 								display: inline-block;
 								animation: three-dots-loader steps(1, end) 1s infinite;
-								content: '';
+								content: "";
 							}
 						}
 
 						@keyframes three-dots-loader {
 							0% {
-								content: '';
+								content: "";
 							}
 							25% {
-								content: '.';
+								content: ".";
 							}
 							50% {
-								content: '..';
+								content: "..";
 							}
 							75% {
-								content: '...';
+								content: "...";
 							}
 							100% {
-								content: '';
+								content: "";
 							}
 						}
 					}
