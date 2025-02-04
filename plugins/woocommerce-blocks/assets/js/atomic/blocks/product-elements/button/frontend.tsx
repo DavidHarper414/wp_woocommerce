@@ -146,8 +146,10 @@ const { state } = store< Store >(
 				// quantity with the quantity in the cart to avoid triggering
 				// the animation. We do this only once, and we use
 				// useLayoutEffect to avoid the useEffect flickering.
+				// eslint-disable-next-line react-hooks/rules-of-hooks
 				useLayoutEffect( () => {
 					context.tempQuantity = state.quantity;
+					// eslint-disable-next-line react-hooks/exhaustive-deps
 				}, [] );
 			},
 			startAnimation() {

@@ -1,5 +1,7 @@
 //  TODO - move this to shared code once the product collection block is converted to use script modules.
-
+/**
+ * Internal dependencies
+ */
 import { CoreCollectionNames } from './types';
 
 interface DispatchedEventProperties {
