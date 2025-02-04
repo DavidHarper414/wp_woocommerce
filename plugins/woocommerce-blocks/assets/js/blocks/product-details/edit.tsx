@@ -10,7 +10,11 @@ const createAccordionItem = (
 ): InnerBlockTemplate => {
 	return [
 		'woocommerce/accordion-item',
-		{},
+		{
+			metadata: {
+				wcDescendantOf: 'woocommerce/blockified-product-details',
+			},
+		},
 		[
 			[ 'woocommerce/accordion-header', { title }, [] ],
 			[ 'woocommerce/accordion-panel', {}, content ],
@@ -54,7 +58,11 @@ const reviewsAccordion = createAccordionItem( 'Reviews', [
 const TEMPLATE: InnerBlockTemplate[] = [
 	[
 		'woocommerce/accordion-group',
-		{},
+		{
+			metadata: {
+				wcDescendantOf: 'woocommerce/blockified-product-details',
+			},
+		},
 		[
 			descriptionAccordion,
 			additionalInformationAccordion,

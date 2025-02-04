@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace Automattic\WooCommerce\Blocks\BlockTypes;
 
+use Automattic\WooCommerce\Blocks\Utils\BlockifiedProductDetailsUtils;
+
 /**
  * BlockifiedProductDetails class.
  */
@@ -13,40 +15,35 @@ class BlockifiedProductDetails extends AbstractBlock {
 	 */
 	protected $block_name = 'blockified-product-details';
 
-	public function add_block_type_metadata( $metadata ) {
-		if ( 'woocommerce/accordion-group' === $metadata['name'] ) {
-			$metadata['attributes']['__isProductDetailsChildren'] = array(
-				'type'    => 'boolean',
-				'default' => false,
-			);
-			return $metadata;
-		}
-		return $metadata;
-	}
-
+	/**
+	 * Initialize the block type.
+	 */
 	protected function initialize() {
 		add_filter( 'block_type_metadata', array( $this, 'add_block_type_metadata' ), 10, 2 );
 		parent::initialize();
 	}
 
 	/**
-	 * Create accordion item block markup
+	 * Add block type metadata.
 	 *
-	 * @param string $title Accordion Title.
-	 * @param string $content Accordion Content.
+	 * @param array $metadata Block metadata.
 	 * @return array
 	 */
-	private function create_accordion_item( $title, $content ) {
-		$markup_html = sprintf(
-			'<!-- wp:woocommerce/accordion-item {"openByDefault": false} --><div class="wp-block-woocommerce-accordion-item"><!-- wp:woocommerce/accordion-header -->
-		<h3 class="wp-block-woocommerce-accordion-header accordion-item__heading"><button class="accordion-item__toggle"><span>%1$s</span><span class="accordion-item__toggle-icon has-icon-plus" style="width:1.2em;height:1.2em"><svg width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11 12.5V17.5H12.5V12.5H17.5V11H12.5V6H11V11H6V12.5H11Z" fill="currentColor"></path></svg></span></button></h3>
-		<!-- /wp:woocommerce/accordion-header -->
-		<!-- wp:woocommerce/accordion-panel -->
-		<div class="wp-block-woocommerce-accordion-panel"><div class="accordion-content__wrapper"><!-- wp:html -->%2$s<!-- /wp:html --></div></div><!-- /wp:woocommerce/accordion-panel --></div><!-- /wp:woocommerce/accordion-item --></div>',
-			$title,
-			$content
+	public function add_block_type_metadata( $metadata ) {
+		$custom_metadata = array(
+			'metadata' => array(
+				'wcDescendantOf' => array(
+					'type'    => 'string',
+					'default' => $this->block_name,
+				),
+			),
 		);
-		return parse_blocks( $markup_html )[0];
+
+		if ( 'woocommerce/accordion-group' === $metadata['name'] || 'woocommerce/accordion-item' === $metadata['name'] ) {
+			$metadata['attributes'][] = $custom_metadata;
+		}
+
+		return $metadata;
 	}
 
 
@@ -85,7 +82,6 @@ class BlockifiedProductDetails extends AbstractBlock {
 				return $priority_a - $priority_b;
 			}
 		);
-
 		return $tabs;
 	}
 
@@ -203,8 +199,7 @@ class BlockifiedProductDetails extends AbstractBlock {
 				ob_start();
 				call_user_func( $tab['callback'], $key, $tab );
 				$content = ob_get_clean();
-
-				$carry[] = $this->create_accordion_item( $tab['title'], $content );
+				$carry[] = BlockifiedProductDetailsUtils::create_accordion_item( $tab['title'], $content );
 				return $carry;
 			},
 			array()

@@ -10,6 +10,7 @@ use Automattic\WooCommerce\Blocks\Integrations\IntegrationRegistry;
 use Automattic\WooCommerce\Blocks\BlockTypes\Cart;
 use Automattic\WooCommerce\Blocks\BlockTypes\Checkout;
 use Automattic\WooCommerce\Blocks\BlockTypes\MiniCartContents;
+use Automattic\WooCommerce\Blocks\Utils\BlockifiedProductDetailsUtils;
 
 /**
  * BlockTypesController class.
@@ -66,15 +67,19 @@ final class BlockTypesController {
 		add_filter(
 			'hooked_block_types',
 			function ( $hooked_block_types, $relative_position, $anchor_block_type, $context ) {
-				if ( $context instanceof \WP_Block_Template && 'single-product' === $context->slug ) {
-					if ( 'woocommerce/accordion-group' === $anchor_block_type && 'last_child' === $relative_position ) {
-						$hooked_block_types[] = 'woocommerce/accordion-item';
-					}
+
+				$anchor_info = array(
+					'block_type'         => 'woocommerce/accordion-group',
+					'position_to_anchor' => 'last_child',
+				);
+
+				if ( BlockifiedProductDetailsUtils::is_hook_accordion_item_block_to_anchor( $anchor_info, $anchor_block_type, $relative_position, $context ) ) {
+					$hooked_block_types[] = 'woocommerce/accordion-item';
 				}
 
 				return $hooked_block_types;
 			},
-			50,
+			10,
 			4
 		);
 
@@ -88,30 +93,19 @@ final class BlockTypesController {
 				$context
 			) {
 
-				// Has the hooked block been suppressed by a previous filter?
 				if ( is_null( $parsed_hooked_block ) ) {
 					return $parsed_hooked_block;
 				}
 
-				// Only apply the updated attributes if the block is hooked after a Post Content block.
-				if ( 'woocommerce/accordion-group' === $parsed_anchor_block['blockName'] && $parsed_anchor_block['attrs']['__isProductDetailsChildren'] ) {
+				if ( BlockifiedProductDetailsUtils::is_child_of_product_details_block( $parsed_anchor_block ) && $relative_position === 'last_child' ) {
 
-					$markup_html = sprintf(
-						'<!-- wp:woocommerce/accordion-item {"openByDefault": false} --><div class="wp-block-woocommerce-accordion-item"><!-- wp:woocommerce/accordion-header -->
-					<h3 class="wp-block-woocommerce-accordion-header accordion-item__heading"><button class="accordion-item__toggle"><span>%1$s</span><span class="accordion-item__toggle-icon has-icon-plus" style="width:1.2em;height:1.2em"><svg width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11 12.5V17.5H12.5V12.5H17.5V11H12.5V6H11V11H6V12.5H11Z" fill="currentColor"></path></svg></span></button></h3>
-					<!-- /wp:woocommerce/accordion-header -->
-					<!-- wp:woocommerce/accordion-panel -->
-					<div class="wp-block-woocommerce-accordion-panel"><div class="accordion-content__wrapper"><!-- wp:html -->%2$s<!-- /wp:html --></div></div><!-- /wp:woocommerce/accordion-panel --></div><!-- /wp:woocommerce/accordion-item --></div>',
-						'Accordion Item',
-						'Accordion Content'
-					);
-					return parse_blocks( $markup_html )[0];
+					$parsed_hooked_block = BlockifiedProductDetailsUtils::create_accordion_item( 'ciao', 'ciao' );
 
 				}
 
 				return $parsed_hooked_block;
 			},
-			50,
+			10,
 			5
 		);
 	}
