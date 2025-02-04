@@ -31,8 +31,6 @@ class Store {
 					'cart'     => array( 'items' => $cart_items ),
 					'nonce'    => wp_create_nonce( 'wc_store_api' ),
 					'noticeId' => '',
-
-					// Todo: move this to wp_interactivity_config.
 					'restUrl'  => get_rest_url(),
 				)
 			);

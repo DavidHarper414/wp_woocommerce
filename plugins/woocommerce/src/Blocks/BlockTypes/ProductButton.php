@@ -96,7 +96,6 @@ class ProductButton extends AbstractBlock {
 		wp_interactivity_state(
 			'woocommerce/product-button',
 			array(
-				// Todo: move this to wp_interactivity_config() instead of state.
 				'inTheCartText' => sprintf(
 					/* translators: %s: product number. */
 					__( '%s in cart', 'woocommerce' ),
