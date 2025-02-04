@@ -45,7 +45,7 @@ class RunSql extends Step {
 				),
 				'sql' => array(
 					'type' => 'object',
-					'required' => array( 'contents', 'resources', 'name' ),
+					'required' => array( 'contents', 'resource', 'name' ),
 					'properties' => array(
 						'resource' => array(
 							'type' => 'string',
