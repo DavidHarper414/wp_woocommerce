@@ -86,6 +86,7 @@ class Checkout extends AbstractCartRoute {
 				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => [ $this, 'get_response' ],
 				'permission_callback' => '__return_true',
+				'validate_callback'   => [ $this, 'validate_callback' ],
 				'args'                => array_merge(
 					[
 						'payment_data'      => [
@@ -176,52 +177,61 @@ class Checkout extends AbstractCartRoute {
 	}
 
 	/**
-	 * Validate additional fields on request.
+	 * Validation callback for the checkout route.
+	 *
+	 * This runs after individual field validation_callbacks have been called.
 	 *
 	 * @param \WP_REST_Request $request Request object.
-	 * @throws RouteException When a required additional field is missing.
+	 * @return true|\WP_Error
 	 */
-	protected function validate_additional_fields( \WP_REST_Request $request ) {
-		$document_object = null;
+	public function validate_callback( $request ) {
+		$sanitized_request = clone $request;
+		$sanitized_request->sanitize_params();
 
 		if ( Features::is_enabled( 'experimental-blocks' ) ) {
 			$document_object = new DocumentObject(
 				[
 					'customer' => [
-						'billing_address'   => $request['billing_address'],
-						'shipping_address'  => $request['shipping_address'],
-						'additional_fields' => $this->additional_fields_controller->filter_values_for_location( $request['additional_fields'], 'contact' ),
+						'billing_address'   => $sanitized_request->get_param( 'billing_address' ),
+						'shipping_address'  => $sanitized_request->get_param( 'shipping_address' ),
+						'additional_fields' => $this->additional_fields_controller->filter_values_for_location( $sanitized_request->get_param( 'additional_fields' ), 'contact' ),
 					],
 					'checkout' => [
-						'payment_method'    => $request['payment_method'],
-						'create_account'    => $request['create_account'],
-						'customer_note'     => $request['customer_note'],
-						'additional_fields' => $this->additional_fields_controller->filter_values_for_location( $request['additional_fields'], 'order' ),
+						'payment_method'    => $sanitized_request->get_param( 'payment_method' ),
+						'create_account'    => $sanitized_request->get_param( 'create_account' ),
+						'customer_note'     => $sanitized_request->get_param( 'customer_note' ),
+						'additional_fields' => $this->additional_fields_controller->filter_values_for_location( $sanitized_request->get_param( 'additional_fields' ), 'order' ),
 					],
 				]
 			);
+		} else {
+			$document_object = null;
 		}
 
 		$validate_contexts = [
 			'shipping_address' => [
 				'location' => 'address',
 				'group'    => 'shipping',
-				'values'   => $request['shipping_address'],
+				'fields'   => $this->additional_fields_controller->get_fields_for_location( 'address' ),
+				'values'   => $sanitized_request->get_param( 'shipping_address' ),
 			],
 			'billing_address'  => [
 				'location' => 'address',
 				'group'    => 'billing',
-				'values'   => $request['billing_address'],
+				'fields'   => $this->additional_fields_controller->get_fields_for_location( 'address' ),
+				'values'   => $sanitized_request->get_param( 'billing_address' ),
 			],
 			'contact'          => [
 				'location' => 'contact',
 				'group'    => 'other',
-				'values'   => $request['additional_fields'],
+				'fields'   => $this->additional_fields_controller->get_fields_for_location( 'contact' ),
+				'values'   => $sanitized_request->get_param( 'additional_fields' ),
 			],
 			'order'            => [
 				'location' => 'order',
 				'group'    => 'other',
-				'values'   => $request['additional_fields'],
+				'fields'   => $this->additional_fields_controller->get_fields_for_location( 'order' ),
+				'values'   => $sanitized_request->get_param( 'additional_fields' ),
 			],
 		];
 
@@ -229,21 +239,62 @@ class Checkout extends AbstractCartRoute {
 			unset( $validate_contexts['shipping_address'] );
 		}
 
+		$invalid_params  = [];
+		$invalid_details = [];
+		$is_partial      = in_array( $request->get_method(), [ 'PUT', 'PATCH' ], true );
+
 		foreach ( $validate_contexts as $context => $context_data ) {
-			$fields = $this->additional_fields_controller->get_fields_for_location( $context_data['location'] );
+			foreach ( $context_data['fields'] as $field_key => $field ) {
+				$is_required = $this->additional_fields_controller->is_required_field( $field, $document_object, $context );
 
-			$this->validate_additional_fields_with_context( $fields, $context_data['values'], $document_object, $context );
+				if ( ! isset( $context_data['values'][ $field_key ] ) && ( ! $is_required || $is_partial ) ) {
+					continue;
+				}
 
-			$validate_location_result = $this->additional_fields_controller->validate_fields_for_location(
-				$fields,
+				$field_value = $context_data['values'][ $field_key ] ?? '';
+				$valid_check = $this->additional_fields_controller->validate_field( $field_key, $field_value, $document_object, $context );
+
+				if ( is_wp_error( $valid_check ) && $valid_check->has_errors() ) {
+					foreach ( $valid_check->get_error_codes() as $code ) {
+						$valid_check->add_data(
+							array(
+								'location' => $context_data['location'],
+								'key'      => $field_key,
+							),
+							$code
+						);
+					}
+					$invalid_params[ $field_key ]  = implode( ' ', $valid_check->get_error_messages() );
+					$invalid_details[ $field_key ] = rest_convert_error_to_response( $valid_check )->get_data();
+				}
+			}
+		}
+
+		if ( $invalid_params ) {
+			return new \WP_Error(
+				'rest_invalid_param',
+				/* translators: %s: List of invalid parameters. */
+				esc_html( sprintf( __( 'Invalid parameter(s): %s', 'woocommerce' ), implode( ', ', array_keys( $invalid_params ) ) ) ),
+				array(
+					'status'  => 400,
+					'params'  => $invalid_params,
+					'details' => $invalid_details,
+				)
+			);
+		}
+
+		foreach ( $validate_contexts as $context => $context_data ) {
+			$result = $this->additional_fields_controller->validate_fields_for_location(
+				$context_data['fields'],
 				$context_data['location'],
 				$context_data['group']
 			);
-
-			if ( is_wp_error( $validate_location_result ) && $validate_location_result->has_errors() ) {
-				throw new RouteException( 'woocommerce_rest_checkout_invalid_field', esc_html( $validate_location_result->get_error_message() ), 400 );
+			if ( is_wp_error( $result ) && $result->has_errors() ) {
+				return $result;
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -253,16 +304,38 @@ class Checkout extends AbstractCartRoute {
 	 * @param array          $values The values within this context to validate.
 	 * @param DocumentObject $document_object The document object if applicable.
 	 * @param string         $context The context. shipping_address|billing_address|other.
-	 * @throws RouteException When a required additional field is missing.
+	 * @param bool           $is_partial True if this is a partial request.
+	 * @return true|\WP_Error True on success, \WP_Error on failure.
 	 */
-	protected function validate_additional_fields_with_context( $fields, $values, $document_object = null, $context = null ) {
-		foreach ( $fields as $field_key => $field ) {
-			$validation_result = $this->additional_fields_controller->validate_field( $field_key, $values[ $field_key ], $document_object, $context );
+	protected function validate_additional_fields_with_context( $fields, $values, $document_object = null, $context = null, $is_partial = false ) {
+		$errors = new \WP_Error();
 
-			if ( is_wp_error( $validation_result ) && $validation_result->has_errors() ) {
-				throw new RouteException( 'woocommerce_rest_checkout_invalid_field', esc_html( $validation_result->get_error_message() ), 400 );
+		foreach ( $fields as $field_key => $field ) {
+			$is_required = $this->additional_fields_controller->is_required_field( $field, $document_object, $context );
+
+			if ( ! isset( $values[ $field_key ] ) && ! $is_required ) {
+				continue;
+			}
+
+			$field_value = $values[ $field_key ] ?? '';
+			$result      = $this->additional_fields_controller->validate_field( $field_key, $field_value, $document_object, $context );
+
+			if ( is_wp_error( $result ) && $result->has_errors() ) {
+				$location = $this->additional_fields_controller->get_field_location( $field_key );
+				foreach ( $result->get_error_codes() as $code ) {
+					$result->add_data(
+						array(
+							'location' => $location,
+							'key'      => $field_key,
+						),
+						$code
+					);
+				}
+				$errors->merge_from( $result );
 			}
 		}
+
+		return $errors->has_errors() ? $errors : true;
 	}
 
 	/**
@@ -301,11 +374,6 @@ class Checkout extends AbstractCartRoute {
 		 * Validate items and fix violations before the order is processed.
 		 */
 		$this->cart_controller->validate_cart();
-
-		/**
-		 * Validate additional fields on request.
-		 */
-		$this->validate_additional_fields( $request );
 
 		/**
 		 * Persist customer session data from the request first so that OrderController::update_addresses_from_cart
