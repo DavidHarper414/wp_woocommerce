@@ -117,10 +117,24 @@ class AddToCartWithOptions extends AbstractBlock {
 
 			if ( ! $is_disabled_compatibility_layer && ! $is_descendent_of_single_product_block && ProductType::VARIABLE === $product_type ) {
 				ob_start();
+				/**
+				 * Hook: woocommerce_before_variations_form.
+				 *
+				 * Fires inside the Add to Cart form of variable products.
+				 *
+				 * @since 2.4.0
+				 */
 				do_action( 'woocommerce_before_variations_form' );
 				$hooks_before = ob_get_clean();
 
 				ob_start();
+				/**
+				 * Hook: woocommerce_after_variations_form.
+				 *
+				 * Fires after the variations form in variable products.
+				 *
+				 * @since 2.4.0
+				 */
 				do_action( 'woocommerce_after_variations_form' );
 				$hooks_after = ob_get_clean();
 			}
