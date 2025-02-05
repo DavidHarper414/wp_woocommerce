@@ -2,10 +2,6 @@
  * External dependencies
  */
 import { defineConfig, devices } from '@playwright/test';
-/**
- * Internal dependencies
- */
-import { tags } from './fixtures/fixtures';
 
 require( 'dotenv' ).config( { path: __dirname + '/.env' } );
 
@@ -14,14 +10,8 @@ if ( ! process.env.BASE_URL ) {
 	process.env.BASE_URL = 'http://localhost:8086';
 }
 
-const {
-	ALLURE_RESULTS_DIR,
-	BASE_URL,
-	CI,
-	DEFAULT_TIMEOUT_OVERRIDE,
-	E2E_MAX_FAILURES,
-	REPEAT_EACH,
-} = process.env;
+const { ALLURE_RESULTS_DIR, BASE_URL, CI, E2E_MAX_FAILURES, REPEAT_EACH } =
+	process.env;
 
 export const TESTS_ROOT_PATH = __dirname;
 export const TESTS_RESULTS_PATH = `${ TESTS_ROOT_PATH }/test-results`;
@@ -98,9 +88,7 @@ export const setupProjects = [
 ];
 
 export default defineConfig( {
-	timeout: DEFAULT_TIMEOUT_OVERRIDE
-		? Number( DEFAULT_TIMEOUT_OVERRIDE )
-		: 120 * 1000,
+	timeout: 120 * 1000,
 	expect: { timeout: 20 * 1000 },
 	outputDir: TESTS_RESULTS_PATH,
 	testDir: `${ TESTS_ROOT_PATH }/tests`,
@@ -137,10 +125,6 @@ export default defineConfig( {
 			name: 'api',
 			testMatch: '**/api-tests/**',
 			dependencies: [ 'site setup' ],
-		},
-		{
-			name: 'e2e-hpos-disabled',
-			grep: new RegExp( tags.HPOS ),
 		},
 	],
 } );
