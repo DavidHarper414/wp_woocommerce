@@ -2,10 +2,6 @@
  * External dependencies
  */
 import { defineConfig, devices } from '@playwright/test';
-/**
- * Internal dependencies
- */
-import { tags } from './fixtures/fixtures';
 
 require( 'dotenv' ).config( { path: __dirname + '/.env' } );
 
@@ -14,14 +10,8 @@ if ( ! process.env.BASE_URL ) {
 	process.env.BASE_URL = 'http://localhost:8086';
 }
 
-const {
-	ALLURE_RESULTS_DIR,
-	BASE_URL,
-	CI,
-	DEFAULT_TIMEOUT_OVERRIDE,
-	E2E_MAX_FAILURES,
-	REPEAT_EACH,
-} = process.env;
+const { ALLURE_RESULTS_DIR, BASE_URL, CI, E2E_MAX_FAILURES, REPEAT_EACH } =
+	process.env;
 
 export const TESTS_ROOT_PATH = __dirname;
 export const TESTS_RESULTS_PATH = `${ TESTS_ROOT_PATH }/test-results`;
@@ -71,10 +61,34 @@ if ( process.env.CI ) {
 	] );
 }
 
+export const setupProjects = [
+	{
+		name: 'global authentication',
+		testDir: `${ TESTS_ROOT_PATH }/fixtures`,
+		testMatch: 'auth.setup.js',
+	},
+	{
+		name: 'consumer token setup',
+		testDir: `${ TESTS_ROOT_PATH }/fixtures`,
+		testMatch: 'token.setup.js',
+		teardown: 'consumer token teardown',
+		dependencies: [ 'global authentication' ],
+	},
+	{
+		name: 'consumer token teardown',
+		testDir: `${ TESTS_ROOT_PATH }/fixtures`,
+		testMatch: `token.teardown.js`,
+	},
+	{
+		name: 'site setup',
+		testDir: `${ TESTS_ROOT_PATH }/fixtures`,
+		testMatch: `site.setup.js`,
+		dependencies: [ 'consumer token setup' ],
+	},
+];
+
 export default defineConfig( {
-	timeout: DEFAULT_TIMEOUT_OVERRIDE
-		? Number( DEFAULT_TIMEOUT_OVERRIDE )
-		: 120 * 1000,
+	timeout: 120 * 1000,
 	expect: { timeout: 20 * 1000 },
 	outputDir: TESTS_RESULTS_PATH,
 	testDir: `${ TESTS_ROOT_PATH }/tests`,
@@ -99,38 +113,11 @@ export default defineConfig( {
 		...devices[ 'Desktop Chrome' ],
 	},
 	snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{arg}',
+
 	projects: [
+		...setupProjects,
 		{
-			name: 'global authentication',
-			testDir: `${ TESTS_ROOT_PATH }/fixtures`,
-			testMatch: 'auth.setup.js',
-		},
-		{
-			name: 'consumer token setup',
-			testDir: `${ TESTS_ROOT_PATH }/fixtures`,
-			testMatch: 'token.setup.js',
-			teardown: 'consumer token teardown',
-			dependencies: [ 'global authentication' ],
-		},
-		{
-			name: 'consumer token teardown',
-			testDir: `${ TESTS_ROOT_PATH }/fixtures`,
-			testMatch: `token.teardown.js`,
-		},
-		{
-			name: 'site setup',
-			testDir: `${ TESTS_ROOT_PATH }/fixtures`,
-			testMatch: `site.setup.js`,
-			dependencies: [ 'consumer token setup' ],
-		},
-		{
-			name: 'reset',
-			testDir: `${ TESTS_ROOT_PATH }/fixtures`,
-			testMatch: 'reset.setup.js',
-			dependencies: [ 'site setup' ],
-		},
-		{
-			name: 'ui',
+			name: 'e2e',
 			testIgnore: '**/api-tests/**',
 			dependencies: [ 'site setup' ],
 		},
@@ -138,10 +125,6 @@ export default defineConfig( {
 			name: 'api',
 			testMatch: '**/api-tests/**',
 			dependencies: [ 'site setup' ],
-		},
-		{
-			name: 'e2e-hpos-disabled',
-			grep: new RegExp( tags.HPOS ),
 		},
 	],
 } );
