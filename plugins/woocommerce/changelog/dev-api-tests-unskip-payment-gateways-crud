@@ -1,0 +1,4 @@
+Significance: patch
+Type: dev
+
+Unskip api test `payment-gateways-crud.test.js` on WPCOM, Pressable, and multisite.
