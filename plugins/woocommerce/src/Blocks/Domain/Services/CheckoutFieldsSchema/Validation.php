@@ -95,7 +95,7 @@ class Validation {
 	 * @param array $fields The fields.
 	 * @return bool
 	 */
-	public static function has_field_with_schema( $fields ) {
+	public static function has_field_schema( $fields ) {
 		$return = false;
 
 		foreach ( $fields as $field ) {
