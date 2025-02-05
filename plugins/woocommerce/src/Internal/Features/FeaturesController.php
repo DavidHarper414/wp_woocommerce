@@ -312,6 +312,17 @@ class FeaturesController {
 						'woocommerce'
 					),
 				),
+				'blueprint'              => array(
+					'name'               => __( 'Blueprint (Beta)', 'woocommerce' ),
+					'description'        => __(
+						'Enable blueprint to import and export settings in bulk',
+						'woocommerce'
+					),
+					'enabled_by_default' => true,
+					'disable_ui'         => false,
+					'is_legacy'          => true,
+					'is_experimental'    => false,
+				),
 			);
 
 			foreach ( $legacy_features as $slug => $definition ) {

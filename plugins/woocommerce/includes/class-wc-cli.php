@@ -8,6 +8,7 @@
 
 use Automattic\WooCommerce\Database\Migrations\CustomOrderTable\CLIRunner as CustomOrdersTableCLIRunner;
 use Automattic\WooCommerce\Internal\ProductAttributesLookup\CLIRunner as ProductAttributesLookupCLIRunner;
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -65,8 +66,7 @@ class WC_CLI {
 			require_once WC_ABSPATH . 'includes/react-admin/feature-config.php';
 		}
 
-		$features = wc_admin_get_feature_config();
-		if ( isset( $features['blueprint'] ) ) {
+		if ( FeaturesUtil::feature_is_enabled( 'blueprint' ) ) {
 			require_once dirname( WC_PLUGIN_FILE ) . '/vendor/woocommerce/blueprint/src/Cli.php';
 		}
 	}
