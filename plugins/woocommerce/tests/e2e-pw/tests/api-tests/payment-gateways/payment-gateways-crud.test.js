@@ -6,10 +6,9 @@ const {
 const expect = baseExpect.extend( {
 	toBeValidLocalPickupObject( receivedObj ) {
 		const value = 'Any &quot;Local pickup&quot; method';
-		const key = Object.keys( receivedObj ).find( ( k ) =>
-			[ 'pickup_location', 'local_pickup' ].includes( k )
-		);
-		const pass = key && receivedObj[ key ] === value;
+		const pass =
+			receivedObj[ 'pickup_location' ] === value ||
+			receivedObj[ 'local_pickup' ] === value;
 		const message = () =>
 			'\n\n' +
 			`Received: ${ JSON.stringify( receivedObj ) }\n` +
