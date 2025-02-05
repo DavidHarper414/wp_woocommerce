@@ -35,7 +35,7 @@ class ExportSchemaTest extends TestCase {
 	 * with the built-in exporters.
 	 */
 	public function test_it_uses_exporters_passed_to_the_constructor() {
-		$empty_exporter = new EmptySetSiteOptionsExporter();
+		$empty_exporter     = new EmptySetSiteOptionsExporter();
 		$mock               = Mock( ExportSchema::class, array( array( $empty_exporter ) ) );
 		$built_in_exporters = ( new BuiltInExporters() )->get_all();
 		$mock->makePartial();
