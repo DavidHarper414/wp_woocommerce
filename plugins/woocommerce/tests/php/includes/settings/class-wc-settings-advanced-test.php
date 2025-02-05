@@ -187,7 +187,7 @@ class WC_Settings_Advanced_Test extends WC_Settings_Unit_Test_Case {
 					},
 				),
 				'WC_Admin_Settings' => array(
-					'output_fields' => function ( $settings ) use ( &$actual_invoked_class ) {
+					'output_fields' => function () use ( &$actual_invoked_class ) {
 						$actual_invoked_class = 'WC_Admin_Settings';
 					},
 				),
@@ -297,7 +297,7 @@ class WC_Settings_Advanced_Test extends WC_Settings_Unit_Test_Case {
 		StaticMockerHack::add_method_mocks(
 			array(
 				'WC_Admin_Settings' => array(
-					'save_fields' => function ( $settings ) use ( &$settings_were_saved ) {
+					'save_fields' => function () use ( &$settings_were_saved ) {
 						$settings_were_saved = true;
 					},
 				),
