@@ -248,7 +248,7 @@
 			  {
 				"type": "plugins_activated",
 				"plugins": [
-				  "woocommerce-services"
+				  "woocommerce-shipping"
 				]
 			  }
 			]
@@ -297,7 +297,7 @@
 		  }
 		],
 		"is_built_by_wc": true,
-		"key": "woocommerce-services:shipping"
+		"key": "woocommerce-shipping"
 	  },
 	  {
 		"name": "WooCommerce Tax",
@@ -991,7 +991,7 @@
 		  }
 		],
 		"is_built_by_wc": true,
-		"key": "woocommerce-services:shipping",
+		"key": "woocommerce-shipping",
 		"label": "Print shipping labels with WooCommerce Shipping",
 		"image_url": "https://woocommerce.com/wp-content/plugins/wccom-plugins/obw-free-extensions/images/core-profiler/logo-woo.svg",
 		"learn_more_link": "https://woocommerce.com/woocommerce-shipping",

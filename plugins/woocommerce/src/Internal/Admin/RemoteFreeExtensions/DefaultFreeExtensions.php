@@ -40,7 +40,7 @@ class DefaultFreeExtensions {
 				'title'   => __( 'Get the basics', 'woocommerce' ),
 				'plugins' => array(
 					self::get_plugin( 'woocommerce-payments' ),
-					self::get_plugin( 'woocommerce-services:shipping' ),
+					self::get_plugin( 'woocommerce-shipping' ),
 					self::get_plugin( 'woocommerce-services:tax' ),
 					self::get_plugin( 'jetpack' ),
 				),
@@ -80,7 +80,7 @@ class DefaultFreeExtensions {
 				'plugins' => self::with_core_profiler_fields(
 					array(
 						self::get_plugin( 'woocommerce-payments' ),
-						self::get_plugin( 'woocommerce-services:shipping' ),
+						self::get_plugin( 'woocommerce-shipping' ),
 						self::get_plugin( 'jetpack' ),
 						self::get_plugin( 'pinterest-for-woocommerce' ),
 						self::get_plugin( 'kliken-ads-pixel-for-meta' ),
@@ -292,7 +292,7 @@ class DefaultFreeExtensions {
 				'is_built_by_wc' => true,
 				'min_wp_version' => '5.9',
 			),
-			'woocommerce-services:shipping' => array(
+			'woocommerce-shipping' => array(
 				'name'           => __( 'WooCommerce Shipping', 'woocommerce' ),
 				'image_url'      => self::get_woo_logo(),
 				'description'    => sprintf(
@@ -312,25 +312,7 @@ class DefaultFreeExtensions {
 						'operand' => array(
 							array(
 								'type'    => 'plugins_activated',
-								'plugins' => array( 'woocommerce-services' ),
-							),
-						),
-					),
-					array(
-						'type'    => 'not',
-						'operand' => array(
-							array(
-								'type'    => 'plugins_activated',
 								'plugins' => array( 'woocommerce-shipping' ),
-							),
-						),
-					),
-					array(
-						'type'    => 'not',
-						'operand' => array(
-							array(
-								'type'    => 'plugins_activated',
-								'plugins' => array( 'woocommerce-tax' ),
 							),
 						),
 					),
@@ -396,24 +378,6 @@ class DefaultFreeExtensions {
 							array(
 								'type'    => 'plugins_activated',
 								'plugins' => array( 'woocommerce-services' ),
-							),
-						),
-					),
-					array(
-						'type'    => 'not',
-						'operand' => array(
-							array(
-								'type'    => 'plugins_activated',
-								'plugins' => array( 'woocommerce-shipping' ),
-							),
-						),
-					),
-					array(
-						'type'    => 'not',
-						'operand' => array(
-							array(
-								'type'    => 'plugins_activated',
-								'plugins' => array( 'woocommerce-tax' ),
 							),
 						),
 					),
@@ -548,10 +512,10 @@ class DefaultFreeExtensions {
 				'install_priority' => 5,
 				'requires_jpc'     => true,
 			),
-			'woocommerce-services:shipping' => array(
+			'woocommerce-shipping' => array(
 				'label'            => __( 'Print shipping labels with WooCommerce Shipping', 'woocommerce' ),
 				'image_url'        => self::get_woo_logo(),
-				'description'      => __( 'Print USPS and DHL labels directly from your dashboard and save on shipping.', 'woocommerce' ),
+				'description'      => __( 'Print USPS, UPS, and DHL labels directly from your dashboard and save on shipping.', 'woocommerce' ),
 				'learn_more_link'  => 'https://woocommerce.com/woocommerce-shipping?utm_source=storeprofiler&utm_medium=product&utm_campaign=freefeatures',
 				'install_priority' => 3,
 			),
@@ -614,57 +578,16 @@ class DefaultFreeExtensions {
 			),
 		);
 
-		/*
-		 * Overwrite the is_visible conditions to just the country restriction
-		 * and the requirement for WooCommerce Shipping and WooCommerce Tax
-		 * to not be active.
-		 */
-		$_plugins['woocommerce-services:shipping']['is_visible'] = array(
+		$_plugins['woocommerce-shipping']['is_visible'] = array(
 			array(
 				'type'      => 'base_location_country',
 				'value'     => 'US',
 				'operation' => '=',
 			),
-			array(
-				'type'    => 'not',
-				'operand' => array(
-					array(
-						'type'    => 'plugins_activated',
-						'plugins' => array( 'woocommerce-shipping' ),
-					),
-				),
-			),
-			array(
-				'type'    => 'not',
-				'operand' => array(
-					array(
-						'type'    => 'plugins_activated',
-						'plugins' => array( 'woocommerce-tax' ),
-					),
-				),
-			),
 		);
 
 		$_plugins['woocommerce-services:tax']['is_visible'] = array(
 			self::get_rules_for_wcservices_tax_countries(),
-			array(
-				'type'    => 'not',
-				'operand' => array(
-					array(
-						'type'    => 'plugins_activated',
-						'plugins' => array( 'woocommerce-shipping' ),
-					),
-				),
-			),
-			array(
-				'type'    => 'not',
-				'operand' => array(
-					array(
-						'type'    => 'plugins_activated',
-						'plugins' => array( 'woocommerce-tax' ),
-					),
-				),
-			),
 		);
 
 		$remove_plugins_activated_rule = function ( $is_visible ) {
@@ -693,31 +616,7 @@ class DefaultFreeExtensions {
 			if ( isset( $_plugins[ $plugin['key'] ] ) ) {
 				$plugin = array_merge( $plugin, $_plugins[ $plugin['key'] ] );
 
-				/*
-				 * Removes the "not plugins_activated" rules from the "is_visible"
-				 * ruleset except for the WooCommerce Services plugin.
-				 *
-				 * WC Services is a plugin that provides shipping and tax features.
-				 * WC Services is sometimes labelled as "WooCommerce Shipping" or
-				 * "WooCommerce Tax", depending on which functionality of the plugin
-				 * is advertised.
-				 *
-				 * We have two new upcoming, standalone plugins: "WooCommerce Shipping" and
-				 * "WooCommerce Tax" (same names as sometimes used for WC Services).
-				 * The new plugins are incompatible with the old WC Services plugin.
-				 * In order to prevent merchants from running into this plugin conflict,
-				 * we want to keep the "not plugins_activated" rules for recommending
-				 * WC Services.
-				 *
-				 * If WC Services and the new plugins are installed together,
-				 * a notice is displayed and the plugin functionality is not registered
-				 * by either WC Services or WC Shipping and WC Tax.
-				 */
-				if (
-					isset( $plugin['is_visible'] ) &&
-					is_array( $plugin['is_visible'] ) &&
-					! in_array( $plugin['key'], array( 'woocommerce-services:shipping', 'woocommerce-services:tax' ), true )
-				) {
+				if ( isset( $plugin['is_visible'] ) && is_array( $plugin['is_visible'] ) ) {
 					$plugin['is_visible'] = $remove_plugins_activated_rule( $plugin['is_visible'] );
 				}
 			}

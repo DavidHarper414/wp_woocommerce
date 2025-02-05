@@ -36,14 +36,11 @@ export const pluginNames = {
 	'woocommerce-payfast-gateway': __( 'WooCommerce Payfast', 'woocommerce' ),
 	'woocommerce-payments': __( 'WooPayments', 'woocommerce' ),
 	'woocommerce-services': __( 'WooCommerce Shipping & Tax', 'woocommerce' ),
-	'woocommerce-services:shipping': __(
-		'WooCommerce Shipping & Tax',
-		'woocommerce'
-	),
 	'woocommerce-services:tax': __(
 		'WooCommerce Shipping & Tax',
 		'woocommerce'
 	),
+	'woocommerce-shipping': __( 'WooCommerce Shipping', 'woocommerce' ),
 	'woocommerce-shipstation-integration': __(
 		'WooCommerce ShipStation Gateway',
 		'woocommerce'
