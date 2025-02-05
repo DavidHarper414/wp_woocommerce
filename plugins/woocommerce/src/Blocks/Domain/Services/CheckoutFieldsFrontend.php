@@ -180,79 +180,6 @@ class CheckoutFieldsFrontend {
 	}
 
 	/**
-	 * Adds additional address fields to the My Account edit address form.
-	 *
-	 * @param array  $address Address fields.
-	 * @param string $address_type Type of address (billing or shipping).
-	 * @return array Updated address fields.
-	 */
-	public function edit_address_fields( $address, $address_type ) {
-		$customer = new WC_Customer( get_current_user_id() );
-		$fields   = $this->checkout_fields_controller->get_fields_for_location( 'address' );
-
-		foreach ( $fields as $key => $field ) {
-			$field_key                      = CheckoutFields::get_group_key( $address_type ) . $key;
-			$address[ $field_key ]          = $field;
-			$address[ $field_key ]['value'] = $this->checkout_fields_controller->get_field_from_object( $key, $customer, $address_type );
-
-			if ( 'select' === $field['type'] ) {
-				$address[ $field_key ]['options'] = array_column( $field['options'], 'label', 'value' );
-
-				// If a placeholder is set, add a placeholder option if it doesn't exist already.
-				if (
-					! empty( $address[ $field_key ]['placeholder'] )
-					&& ! array_key_exists( '', $address[ $field_key ]['options'] )
-				) {
-					$address[ $field_key ]['options'] = array( '' => $address[ $field_key ]['placeholder'] ) + $address[ $field_key ]['options'];
-				}
-			}
-
-			if ( 'checkbox' === $field['type'] ) {
-				$address[ $field_key ]['checked_value']   = '1';
-				$address[ $field_key ]['unchecked_value'] = '0';
-			}
-		}
-
-		return $address;
-	}
-
-	/**
-	 * Helper to sanitize and return additional fields for a given location.
-	 *
-	 * Used for edit account and edit address forms.
-	 *
-	 * @param WC_Customer $customer Customer object.
-	 * @param string      $location Location to save fields for.
-	 * @param string      $group    Group to save fields for.
-	 * @return array Field values.
-	 */
-	protected function sanitize_additional_fields_for_location_group( WC_Customer $customer, $location, $group ) {
-		if ( ! in_array( $group, array( 'other', 'billing', 'shipping' ), true ) || ! in_array( $location, array( 'contact', 'address' ), true ) ) {
-			return;
-		}
-
-		$additional_fields = $this->checkout_fields_controller->get_fields_for_location( $location );
-
-		// Get all values from the POST request before validating.
-		$values = array();
-
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		foreach ( $additional_fields as $field_key => $field ) {
-			$post_key = CheckoutFields::get_group_key( $group ) . $field_key;
-
-			if ( ! isset( $_POST[ $post_key ] ) ) {
-				$values[ $field_key ] = '';
-				continue;
-			}
-
-			$values[ $field_key ] = $this->checkout_fields_controller->sanitize_field( $field_key, wc_clean( wp_unslash( $_POST[ $post_key ] ) ) );
-		}
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
-
-		return $values;
-	}
-
-	/**
 	 * Validates and saves additional address fields to the customer object on the My Account page.
 	 *
 	 * Customer is not provided by this hook so we handle save here.
@@ -296,6 +223,43 @@ class CheckoutFieldsFrontend {
 		}
 
 		$customer->save();
+	}
+
+	/**
+	 * Adds additional address fields to the My Account edit address form.
+	 *
+	 * @param array  $address Address fields.
+	 * @param string $address_type Type of address (billing or shipping).
+	 * @return array Updated address fields.
+	 */
+	public function edit_address_fields( $address, $address_type ) {
+		$customer = new WC_Customer( get_current_user_id() );
+		$fields   = $this->checkout_fields_controller->get_fields_for_location( 'address' );
+
+		foreach ( $fields as $key => $field ) {
+			$field_key                      = CheckoutFields::get_group_key( $address_type ) . $key;
+			$address[ $field_key ]          = $field;
+			$address[ $field_key ]['value'] = $this->checkout_fields_controller->get_field_from_object( $key, $customer, $address_type );
+
+			if ( 'select' === $field['type'] ) {
+				$address[ $field_key ]['options'] = array_column( $field['options'], 'label', 'value' );
+
+				// If a placeholder is set, add a placeholder option if it doesn't exist already.
+				if (
+					! empty( $address[ $field_key ]['placeholder'] )
+					&& ! array_key_exists( '', $address[ $field_key ]['options'] )
+				) {
+					$address[ $field_key ]['options'] = array( '' => $address[ $field_key ]['placeholder'] ) + $address[ $field_key ]['options'];
+				}
+			}
+
+			if ( 'checkbox' === $field['type'] ) {
+				$address[ $field_key ]['checked_value']   = '1';
+				$address[ $field_key ]['unchecked_value'] = '0';
+			}
+		}
+
+		return $address;
 	}
 
 	/**
@@ -343,5 +307,41 @@ class CheckoutFieldsFrontend {
 			wc_add_notice( $location_validation->get_error_message(), 'error' );
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
+	}
+
+	/**
+	 * Helper to sanitize and return additional fields for a given location.
+	 *
+	 * Used for edit account and edit address forms.
+	 *
+	 * @param WC_Customer $customer Customer object.
+	 * @param string      $location Location to save fields for.
+	 * @param string      $group    Group to save fields for.
+	 * @return array Field values.
+	 */
+	protected function sanitize_additional_fields_for_location_group( WC_Customer $customer, $location, $group ) {
+		if ( ! in_array( $group, array( 'other', 'billing', 'shipping' ), true ) || ! in_array( $location, array( 'contact', 'address' ), true ) ) {
+			return;
+		}
+
+		$additional_fields = $this->checkout_fields_controller->get_fields_for_location( $location );
+
+		// Get all values from the POST request before validating.
+		$values = array();
+
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
+		foreach ( $additional_fields as $field_key => $field ) {
+			$post_key = CheckoutFields::get_group_key( $group ) . $field_key;
+
+			if ( ! isset( $_POST[ $post_key ] ) ) {
+				$values[ $field_key ] = '';
+				continue;
+			}
+
+			$values[ $field_key ] = $this->checkout_fields_controller->sanitize_field( $field_key, wc_clean( wp_unslash( $_POST[ $post_key ] ) ) );
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		return $values;
 	}
 }

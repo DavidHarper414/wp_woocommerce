@@ -46,7 +46,7 @@ class CheckoutFields {
 	 *
 	 * @var array
 	 */
-	private $groups = [ 'billing', 'shipping', 'other' ];
+	protected $groups = [ 'billing', 'shipping', 'other' ];
 
 	/**
 	 * Instance of the asset data registry.
@@ -216,8 +216,8 @@ class CheckoutFields {
 			],
 		);
 
-		$field_data['attributes'] = $this->sanitize_field_attributes( $field_data['id'], $field_data['attributes'] );
-		$field_data               = $this->sanitize_field_type_data( $field_data, $options );
+		$field_data['attributes'] = $this->register_field_attributes( $field_data['id'], $field_data['attributes'] );
+		$field_data               = $this->process_field_options( $field_data, $options );
 
 		// $field_data will be false if an error that will prevent the field being registered is encountered.
 		if ( false === $field_data ) {
@@ -368,7 +368,23 @@ class CheckoutFields {
 			// Don't return here unlike the other fields because this is not an issue that will prevent registration.
 		}
 
-		return $this->validate_options_rules( $options );
+		if ( Features::is_enabled( 'experimental-blocks' ) && ! empty( $options['rules'] ) ) {
+			if ( ! is_array( $options['rules'] ) ) {
+				$message = sprintf( 'Unable to register field with id: "%s". %s', $options['id'], 'The rules must be an array.' );
+				_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
+				return false;
+			}
+
+			$valid = Validation::is_valid_schema( $options['rules'] );
+
+			if ( is_wp_error( $valid ) ) {
+				$message = sprintf( 'Unable to register field with id: "%s". %s', $options['id'], $valid->get_error_message() );
+				_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -378,45 +394,17 @@ class CheckoutFields {
 	 * @param array $options    The options supplied during field registration.
 	 * @return array The updated $field_data array.
 	 */
-	private function sanitize_field_type_data( $field_data, $options ) {
+	private function process_field_options( $field_data, $options ) {
 		if ( 'checkbox' === $field_data['type'] ) {
-			$field_data = $this->sanitize_checkbox_field_options( $field_data, $options );
+			$field_data = $this->process_checkbox_field( $field_data, $options );
 		} elseif ( 'select' === $field_data['type'] ) {
-			$field_data = $this->sanitize_select_field_options( $field_data, $options );
+			$field_data = $this->process_select_field( $field_data, $options );
 		}
 		// If the field has conditional required rules, we need to set the required property to false so it can be evaluated.
 		if ( Features::is_enabled( 'experimental-blocks' ) && ! empty( $field_data['rules']['required'] ) ) {
 			$field_data['required'] = false;
 		}
 		return $field_data;
-	}
-
-	/**
-	 * Validate the rules for a field.
-	 *
-	 * @param array $options The field options.
-	 * @return bool True if the rules are valid, false otherwise.
-	 */
-	private function validate_options_rules( $options ) {
-		if ( ! Features::is_enabled( 'experimental-blocks' ) || empty( $options['rules'] ) ) {
-			return true;
-		}
-
-		if ( ! is_array( $options['rules'] ) ) {
-			$message = sprintf( 'Unable to register field with id: "%s". %s', $options['id'], 'The rules must be an array.' );
-			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
-			return false;
-		}
-
-		$valid = Validation::is_valid_schema( $options['rules'] );
-
-		if ( is_wp_error( $valid ) ) {
-			$message = sprintf( 'Unable to register field with id: "%s". %s', $options['id'], $valid->get_error_message() );
-			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
@@ -427,7 +415,7 @@ class CheckoutFields {
 	 *
 	 * @return array|false The updated $field_data array or false if an error was encountered.
 	 */
-	private function sanitize_select_field_options( $field_data, $options ) {
+	private function process_select_field( $field_data, $options ) {
 		$id = $options['id'];
 
 		if ( empty( $options['options'] ) || ! is_array( $options['options'] ) ) {
@@ -480,7 +468,7 @@ class CheckoutFields {
 	 *
 	 * @return array|false The updated $field_data array or false if an error was encountered.
 	 */
-	private function sanitize_checkbox_field_options( $field_data, $options ) {
+	private function process_checkbox_field( $field_data, $options ) {
 		$id = $options['id'];
 
 		if ( isset( $options['required'] ) && ! is_bool( $options['required'] ) ) {
@@ -520,7 +508,7 @@ class CheckoutFields {
 	 *
 	 * @return array The processed attributes.
 	 */
-	private function sanitize_field_attributes( $id, $attributes ) {
+	private function register_field_attributes( $id, $attributes ) {
 		// We check if attributes are valid. This is done to prevent too much nesting and also to allow field registration
 		// even if the attributes property is invalid. We can just skip it and register the field without attributes.
 		if ( empty( $attributes ) ) {
@@ -882,7 +870,6 @@ class CheckoutFields {
 			}
 
 			wc_do_deprecated_action( '__experimental_woocommerce_blocks_validate_additional_field', array( $errors, $field_key, $field_value ), '8.7.0', 'woocommerce_validate_additional_field', 'This action has been graduated, use woocommerce_validate_additional_field instead.' );
-
 			/**
 			 * Pass an error object to allow validation of an additional field.
 			 *
@@ -1026,6 +1013,7 @@ class CheckoutFields {
 			do_action( 'woocommerce_blocks_validate_location_' . $location . '_fields', $errors, $fields, $group );
 
 		} catch ( \Throwable $e ) {
+
 			// One of the filters errored so skip them. This allows the checkout process to continue.
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			trigger_error(
@@ -1101,6 +1089,7 @@ class CheckoutFields {
 	 * Returns all fields key for a given group.
 	 *
 	 * @param string $group The group to get the key for (shipping|billing|other).
+	 *
 	 * @return string[] Field keys.
 	 */
 	public function get_fields_for_group( $group = 'other' ) {
@@ -1348,6 +1337,23 @@ class CheckoutFields {
 	}
 
 	/**
+	 * From a set of field values, returns only the ones for a given location.
+	 *
+	 * @param array  $values The values to filter.
+	 * @param string $location The location to validate the field for (address|contact|order).
+	 * @return array The filtered values.
+	 */
+	public function filter_values_for_location( array $values, string $location ) {
+		return array_filter(
+			$values,
+			function ( $value, $key ) use ( $location ) {
+				return $this->is_field( $key ) && $this->get_field_location( $key ) === $location;
+			},
+			ARRAY_FILTER_USE_BOTH
+		);
+	}
+
+	/**
 	 * From a set of fields, returns only the ones for a given location.
 	 *
 	 * @param array  $fields The fields to filter.
@@ -1366,23 +1372,6 @@ class CheckoutFields {
 				return $this->is_field( $key ) && $this->get_field_location( $key ) === $location;
 			},
 			ARRAY_FILTER_USE_KEY
-		);
-	}
-
-	/**
-	 * From a set of field values, returns only the ones for a given location.
-	 *
-	 * @param array  $values The values to filter.
-	 * @param string $location The location to validate the field for (address|contact|order).
-	 * @return array The filtered values.
-	 */
-	public function filter_values_for_location( array $values, string $location ) {
-		return array_filter(
-			$values,
-			function ( $value, $key ) use ( $location ) {
-				return $this->is_field( $key ) && $this->get_field_location( $key ) === $location;
-			},
-			ARRAY_FILTER_USE_BOTH
 		);
 	}
 
