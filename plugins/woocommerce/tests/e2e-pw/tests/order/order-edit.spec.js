@@ -270,8 +270,8 @@ test.describe( 'Edit order', { tag: [ tags.SERVICES, tags.HPOS ] }, () => {
 				.getByRole( 'combobox' )
 				.nth( 4 )
 				.pressSequentially( username );
-			await page.waitForSelector( 'li.select2-results__option' );
-			await page.locator( 'li.select2-results__option' ).click();
+			await page.waitForSelector( '#order_data li.select2-results__option' );
+			await page.locator( '#order_data li.select2-results__option' ).click();
 		} );
 
 		await test.step( 'Load the billing and shipping addresses', async () => {
@@ -328,8 +328,8 @@ test.describe( 'Edit order', { tag: [ tags.SERVICES, tags.HPOS ] }, () => {
 				.getByRole( 'combobox' )
 				.nth( 4 )
 				.pressSequentially( username );
-			await page.waitForSelector( 'li.select2-results__option' );
-			await page.locator( 'li.select2-results__option' ).click();
+			await page.waitForSelector( '#order_data li.select2-results__option' );
+			await page.locator( '#order_data li.select2-results__option' ).click();
 		} );
 
 		await test.step( 'Load the billing address and then copy it to the shipping address', async () => {
