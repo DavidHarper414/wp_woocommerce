@@ -33,20 +33,23 @@ test.describe( 'Customers API tests: CRUD', () => {
 			}
 		}
 
-		// If a subscriber user has not been created then create one
-		if ( ! subscriberUserId ) {
-			const now = Date.now();
-			const userResponse = await request.post( './wp-json/wp/v2/users', {
-				data: {
-					username: `customer_${ now }`,
-					email: `customer_${ now }@woocommercecoretestsuite.com`,
-					first_name: 'Jane',
-					last_name: 'Smith',
-					roles: [ 'subscriber' ],
-					password: 'password',
-					name: 'Jane',
-				},
-			} );
+			// If a subscriber user has not been created then create one
+			if ( ! subscriberUserId ) {
+				const now = Date.now();
+				const userResponse = await request.post(
+					'./wp-json/wp/v2/users',
+					{
+						data: {
+							username: `customer${ now }`,
+							email: `customer${ now }@woocommercecoretestsuite.com`,
+							first_name: 'Jane',
+							last_name: 'Smith',
+							roles: [ 'subscriber' ],
+							password: 'password',
+							name: 'Jane',
+						},
+					}
+				);
 
 			expect( userResponse.status() ).toEqual( 201 );
 
