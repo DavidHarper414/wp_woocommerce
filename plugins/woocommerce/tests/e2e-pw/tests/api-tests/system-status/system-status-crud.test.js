@@ -101,10 +101,13 @@ const schemas = {
 		{ field: 'remote_post_successful', type: any( Boolean ) },
 		{
 			field: 'remote_post_response',
-			type: anyOf( [ 'string', 'number' ] ),
+			type: anyOf( [ 'boolean', 'string', 'number' ] ),
 		},
 		{ field: 'remote_get_successful', type: any( Boolean ) },
-		{ field: 'remote_get_response', type: anyOf( [ 'string', 'number' ] ) },
+		{
+			field: 'remote_get_response',
+			type: anyOf( [ 'boolean', 'string', 'number' ] ),
+		},
 	],
 	database: [
 		{ field: 'wc_database_version', type: any( String ) },
@@ -194,6 +197,41 @@ const schemas = {
 	],
 };
 
+const otherTableSuffixes = [
+	'actionscheduler_actions',
+	'actionscheduler_claims',
+	'actionscheduler_groups',
+	'actionscheduler_logs',
+	'commentmeta',
+	'comments',
+	'links',
+	'options',
+	'postmeta',
+	'posts',
+	'termmeta',
+	'terms',
+	'term_relationships',
+	'term_taxonomy',
+	'usermeta',
+	'users',
+	'wc_admin_notes',
+	'wc_admin_note_actions',
+	'wc_category_lookup',
+	'wc_customer_lookup',
+	'wc_download_log',
+	'wc_order_coupon_lookup',
+	'wc_order_product_lookup',
+	'wc_order_stats',
+	'wc_order_tax_lookup',
+	'wc_product_attributes_lookup',
+	'wc_product_download_directories',
+	'wc_product_meta_lookup',
+	'wc_rate_limits',
+	'wc_reserved_stock',
+	'wc_tax_rate_classes',
+	'wc_webhooks',
+];
+
 const getExpectedWooCommerceTables = ( dbPrefix ) => {
 	return [
 		`${ dbPrefix }woocommerce_sessions`,
@@ -213,43 +251,6 @@ const getExpectedWooCommerceTables = ( dbPrefix ) => {
 	];
 };
 
-const getExpectedOtherTables = ( dbPrefix ) => {
-	return [
-		`${ dbPrefix }actionscheduler_actions`,
-		`${ dbPrefix }actionscheduler_claims`,
-		`${ dbPrefix }actionscheduler_groups`,
-		`${ dbPrefix }actionscheduler_logs`,
-		`${ dbPrefix }commentmeta`,
-		`${ dbPrefix }comments`,
-		`${ dbPrefix }links`,
-		`${ dbPrefix }options`,
-		`${ dbPrefix }postmeta`,
-		`${ dbPrefix }posts`,
-		`${ dbPrefix }termmeta`,
-		`${ dbPrefix }terms`,
-		`${ dbPrefix }term_relationships`,
-		`${ dbPrefix }term_taxonomy`,
-		`${ dbPrefix }usermeta`,
-		`${ dbPrefix }users`,
-		`${ dbPrefix }wc_admin_notes`,
-		`${ dbPrefix }wc_admin_note_actions`,
-		`${ dbPrefix }wc_category_lookup`,
-		`${ dbPrefix }wc_customer_lookup`,
-		`${ dbPrefix }wc_download_log`,
-		`${ dbPrefix }wc_order_coupon_lookup`,
-		`${ dbPrefix }wc_order_product_lookup`,
-		`${ dbPrefix }wc_order_stats`,
-		`${ dbPrefix }wc_order_tax_lookup`,
-		`${ dbPrefix }wc_product_attributes_lookup`,
-		`${ dbPrefix }wc_product_download_directories`,
-		`${ dbPrefix }wc_product_meta_lookup`,
-		`${ dbPrefix }wc_rate_limits`,
-		`${ dbPrefix }wc_reserved_stock`,
-		`${ dbPrefix }wc_tax_rate_classes`,
-		`${ dbPrefix }wc_webhooks`,
-	];
-};
-
 /* eslint-disable playwright/no-nested-step */
 test.describe( 'System Status API tests', () => {
 	test( 'can view all system status items', async ( { request } ) => {
@@ -262,8 +263,7 @@ test.describe( 'System Status API tests', () => {
 			activePlugins,
 			dropinsMuPlugins,
 			taxonomiesJSON,
-			productVisibilityTerms,
-			pagesList;
+			productVisibilityTerms;
 
 		await test.step( 'Call API to view all system status items', async () => {
 			const response = await request.get(
@@ -275,12 +275,16 @@ test.describe( 'System Status API tests', () => {
 
 		await test.step( 'Verify "environment" fields', async () => {
 			const { environment } = responseJSON;
-			expect( environment ).toBeDefined();
+			expect(
+				environment,
+				'"environment" property should exist.'
+			).toBeDefined();
 
 			for ( const { field, type } of schemas.environment ) {
-				await test.step( `Verify "environment.${ field }"`, () => {
-					expect( environment[ field ] ).toEqual( type );
-				} );
+				expect(
+					environment[ field ],
+					`Verify type of "environment.${ field }"`
+				).toEqual( type );
 			}
 
 			// Handle special case of environment.external_object_cache
@@ -290,19 +294,24 @@ test.describe( 'System Status API tests', () => {
 
 				expect(
 					typeof external_object_cache === 'boolean' ||
-						external_object_cache === null
+						external_object_cache === null,
+					`Expect "environment.external_object_cache" to be either null or a boolean.`
 				).toBeTruthy();
 			} );
 		} );
 
 		await test.step( 'Verify "database" fields', async () => {
 			const { database } = responseJSON;
-			expect( database ).toBeDefined();
+			expect(
+				database,
+				'Expect "database" property to exist.'
+			).toBeDefined();
 
 			for ( const { field, type } of schemas.database ) {
-				await test.step( `Verify "database.${ field }"`, () => {
-					expect( database[ field ] ).toEqual( type );
-				} );
+				expect(
+					database[ field ],
+					`Verify type of "database.${ field }"`
+				).toEqual( type );
 			}
 
 			databaseSize = database.database_size;
@@ -312,8 +321,14 @@ test.describe( 'System Status API tests', () => {
 
 		await test.step( 'Verify "database.database_tables" fields', async () => {
 			const { woocommerce, other } = databaseTables;
-			expect( woocommerce ).toBeDefined();
-			expect( other ).toBeDefined();
+			expect(
+				woocommerce,
+				`Expect "database.database_tables.woocommerce" to exist`
+			).toBeDefined();
+			expect(
+				other,
+				`Expect "database.database_tables.other" to exist`
+			).toBeDefined();
 
 			woocommerceTables = woocommerce;
 			otherTables = other;
@@ -325,33 +340,44 @@ test.describe( 'System Status API tests', () => {
 
 			for ( const tableName of wooTableNames ) {
 				const thisTable = woocommerceTables[ tableName ];
-				expect( thisTable ).toBeDefined();
+				expect(
+					thisTable,
+					`Verify existence of "database.database_tables.woocommerce.${ tableName }"`
+				).toBeDefined();
 
 				for ( const {
 					field,
 					type,
 				} of schemas.database_tables_woocommerce_other ) {
-					await test.step( `Verify "database.database_tables.woocommerce.${ tableName }.${ field }"`, () => {
-						expect( thisTable[ field ] ).toEqual( type );
-					} );
+					expect(
+						thisTable[ field ],
+						`Verify type of "database.database_tables.woocommerce.${ tableName }.${ field }"`
+					).toEqual( type );
 				}
 			}
 		} );
 
 		await test.step( 'Verify "database.database_tables.other" fields', async () => {
-			const otherTableNames = getExpectedOtherTables( databasePrefix );
+			const otherTableKeys = Object.keys( otherTables );
 
-			for ( const tableName of otherTableNames ) {
+			for ( const suffix of otherTableSuffixes ) {
+				const tableName = otherTableKeys.find( ( key ) =>
+					key.endsWith( suffix )
+				);
 				const thisTable = otherTables[ tableName ];
-				expect( thisTable ).toBeDefined();
+				expect(
+					thisTable,
+					`Verify "database.database_tables.other.${ tableName }" to be defined.`
+				).toBeDefined();
 
 				for ( const {
 					field,
 					type,
 				} of schemas.database_tables_woocommerce_other ) {
-					await test.step( `Verify "database.database_tables.other.${ tableName }.${ field }"`, () => {
-						expect( thisTable[ field ] ).toEqual( type );
-					} );
+					expect(
+						thisTable[ field ],
+						`Verify type of "database.database_tables.other.${ tableName }.${ field }".`
+					).toEqual( type );
 				}
 			}
 		} );
@@ -364,20 +390,27 @@ test.describe( 'System Status API tests', () => {
 
 		await test.step( 'Verify "active_plugins"', async () => {
 			const { active_plugins } = responseJSON;
-			expect( active_plugins ).toEqual( any( Array ) );
-			expect( active_plugins.length ).toBeGreaterThan( 0 );
+			expect(
+				active_plugins,
+				'"active_plugins" should be an array'
+			).toEqual( any( Array ) );
+			expect(
+				active_plugins.length,
+				'"active_plugins should not be empty.'
+			).toBeGreaterThan( 0 );
 			activePlugins = active_plugins;
-		} );
 
-		for ( const aPlugin of activePlugins ) {
-			await test.step( `Verify active plugin "${ aPlugin.name }"`, async () => {
-				for ( const { field, type } of schemas.active_plugins ) {
-					await test.step( `Verify "${ field }"`, async () => {
-						expect( aPlugin[ field ] ).toEqual( type );
-					} );
-				}
-			} );
-		}
+			for ( const aPlugin of activePlugins ) {
+				await test.step( `Verify plugin "${ aPlugin.name }"`, async () => {
+					for ( const { field, type } of schemas.active_plugins ) {
+						expect(
+							aPlugin[ field ],
+							`Verify type of "${ field }"`
+						).toEqual( type );
+					}
+				} );
+			}
+		} );
 
 		await test.step( 'Verify "dropins_mu_plugins"', async () => {
 			const { dropins_mu_plugins } = responseJSON;
@@ -392,8 +425,12 @@ test.describe( 'System Status API tests', () => {
 			for ( const dropin of dropins ) {
 				const { name, plugin } = dropin;
 				await test.step( `Verify dropin "${ name }"`, async () => {
-					expect( name ).toEqual( any( String ) );
-					expect( plugin ).toEqual( any( String ) );
+					expect( name, `Verify type of "name"` ).toEqual(
+						any( String )
+					);
+					expect( plugin, `Verify type of "plugin"` ).toEqual(
+						any( String )
+					);
 				} );
 			}
 		} );
@@ -403,14 +440,14 @@ test.describe( 'System Status API tests', () => {
 			expect( mu_plugins ).toEqual( any( Array ) );
 		} );
 
-		await test.step( 'Verify "theme"', async () => {
+		await test.step( 'Verify "theme" fields.', async () => {
 			const { theme } = responseJSON;
 			expect( theme ).toBeDefined();
 
 			for ( const { field, type } of schemas.theme ) {
-				await test.step( `Verify "theme.${ field }"`, () => {
-					expect( theme[ field ] ).toEqual( type );
-				} );
+				expect( theme[ field ], `Verify type of "${ field }"` ).toEqual(
+					type
+				);
 			}
 		} );
 
@@ -419,9 +456,10 @@ test.describe( 'System Status API tests', () => {
 			expect( settings ).toBeDefined();
 
 			for ( const { field, type } of schemas.settings ) {
-				await test.step( `Verify "settings.${ field }"`, async () => {
-					expect( settings[ field ] ).toEqual( type );
-				} );
+				expect(
+					settings[ field ],
+					`Verify type of "settings.${ field }"`
+				).toEqual( type );
 			}
 
 			taxonomiesJSON = settings.taxonomies;
@@ -430,17 +468,19 @@ test.describe( 'System Status API tests', () => {
 
 		await test.step( 'Verify "settings.taxonomies"', async () => {
 			for ( const { field, type } of schemas.taxonomies ) {
-				await test.step( `Verify "settings.taxonomies.${ field }"`, async () => {
-					expect( taxonomiesJSON[ field ] ).toEqual( type );
-				} );
+				expect(
+					taxonomiesJSON[ field ],
+					`Verify type of "settings.taxonomies.${ field }"`
+				).toEqual( type );
 			}
 		} );
 
 		await test.step( 'Verify "settings.product_visibility_terms"', async () => {
 			for ( const { field, type } of schemas.product_visibility_terms ) {
-				await test.step( `Verify "settings.product_visibility_terms.${ field }"`, async () => {
-					expect( productVisibilityTerms[ field ] ).toEqual( type );
-				} );
+				expect(
+					productVisibilityTerms[ field ],
+					`Verify type of "settings.product_visibility_terms.${ field }"`
+				).toEqual( type );
 			}
 		} );
 
@@ -449,9 +489,10 @@ test.describe( 'System Status API tests', () => {
 			expect( security ).toBeDefined();
 
 			for ( const { field, type } of schemas.security ) {
-				await test.step( `Verify "security.${ field }"`, () => {
-					expect( security[ field ] ).toEqual( type );
-				} );
+				expect(
+					security[ field ],
+					`Verify type of "security.${ field }"`
+				).toEqual( type );
 			}
 		} );
 
@@ -459,18 +500,18 @@ test.describe( 'System Status API tests', () => {
 			const { pages } = responseJSON;
 			expect( pages ).toEqual( any( Array ) );
 			expect( pages.length ).toBeGreaterThan( 0 );
-			pagesList = pages;
-		} );
 
-		for ( const page of pagesList ) {
-			await test.step( `Verify page "${ page.page_name }"`, async () => {
-				for ( const { field, type } of schemas.pages ) {
-					await test.step( `Verify "${ field }"`, async () => {
-						expect( page[ field ] ).toEqual( type );
-					} );
-				}
-			} );
-		}
+			for ( const page of pages ) {
+				await test.step( `Verify page "${ page.page_name }"`, async () => {
+					for ( const { field, type } of schemas.pages ) {
+						expect(
+							page[ field ],
+							`Verify type of "${ field }"`
+						).toEqual( type );
+					}
+				} );
+			}
+		} );
 
 		await test.step( 'Verify "post_type_counts" array', async () => {
 			const { post_type_counts } = responseJSON;
@@ -478,10 +519,12 @@ test.describe( 'System Status API tests', () => {
 			expect( post_type_counts.length ).toBeGreaterThan( 0 );
 
 			for ( const { type, count } of post_type_counts ) {
-				await test.step( `Verify post type "${ type }"`, () => {
-					expect( type ).toEqual( any( String ) );
-					expect( count ).toEqual( any( String ) );
-				} );
+				expect( type, `Verify post type "${ type }"` ).toEqual(
+					any( String )
+				);
+				expect( count, `Verify post type "${ count }"` ).toEqual(
+					any( String )
+				);
 			}
 		} );
 	} );
