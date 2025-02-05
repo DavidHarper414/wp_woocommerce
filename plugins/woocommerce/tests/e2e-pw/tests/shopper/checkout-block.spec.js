@@ -1,14 +1,3 @@
-const { fillPageTitle } = require( '../../utils/editor' );
-const { request } = require( '@playwright/test' );
-const { test: baseTest, expect, tags } = require( '../../fixtures/fixtures' );
-
-const wcApi = require( '@woocommerce/woocommerce-rest-api' ).default;
-const { admin, customer } = require( '../../test-data/data' );
-const { logIn } = require( '../../utils/login' );
-const { setFilterValue, clearFilters } = require( '../../utils/filters' );
-const { setOption } = require( '../../utils/options' );
-const { setComingSoon } = require( '../../utils/coming-soon' );
-
 /**
  * External dependencies
  */
@@ -21,6 +10,19 @@ import {
 	fillShippingCheckoutBlocks,
 	fillBillingCheckoutBlocks,
 } from '@woocommerce/e2e-utils-playwright';
+import { request } from '@playwright/test';
+import wcApi from '@woocommerce/woocommerce-rest-api';
+
+/**
+ * Internal dependencies
+ */
+import { ADMIN_STATE_PATH } from '../../playwright.config';
+import { fillPageTitle } from '../../utils/editor';
+import { expect, tags, test as baseTest } from '../../fixtures/fixtures';
+import { admin, customer } from '../../test-data/data';
+import { logIn } from '../../utils/login';
+import { clearFilters, setFilterValue } from '../../utils/filters';
+import { setOption } from '../../utils/options';
 
 const guestEmail = 'checkout-guest@example.com';
 const newAccountEmail = `marge-${ new Date()
@@ -45,8 +47,28 @@ let guestOrderId1,
 	productId,
 	shippingZoneId;
 
+const shippingDetails = {
+	firstName: 'Homer',
+	lastName: 'Simpson',
+	address: '123 Evergreen Terrace',
+	zip: '97403',
+	city: 'Springfield',
+	state: 'OR',
+	country: 'US',
+};
+
+const billingDetails = {
+	firstName: 'Mister',
+	lastName: 'Burns',
+	address: '156th Street',
+	zip: '98500',
+	city: 'Springfield',
+	state: 'WA',
+	country: 'US',
+};
+
 const test = baseTest.extend( {
-	storageState: process.env.ADMINSTATE,
+	storageState: ADMIN_STATE_PATH,
 	testPageTitlePrefix: 'Checkout Block',
 	page: async ( { context, page, testPage }, use ) => {
 		await goToPageEditor( { page } );
@@ -65,8 +87,6 @@ test.describe(
 	{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS, tags.SKIP_ON_WPCOM ] },
 	() => {
 		test.beforeAll( async ( { baseURL } ) => {
-			await setComingSoon( { baseURL, enabled: 'no' } );
-
 			const api = new wcApi( {
 				url: baseURL,
 				consumerKey: process.env.CONSUMER_KEY,
@@ -447,12 +467,12 @@ test.describe(
 				);
 
 				// fill shipping address
-				await fillShippingCheckoutBlocks( page );
+				await fillShippingCheckoutBlocks( page, shippingDetails );
 
 				await page.getByLabel( 'Use same address for billing' ).click();
 
 				// fill billing details
-				await fillBillingCheckoutBlocks( page );
+				await fillBillingCheckoutBlocks( page, billingDetails );
 
 				// add note to the order
 				await page.getByLabel( 'Add a note to your order' ).check();
@@ -567,7 +587,7 @@ test.describe(
 				);
 
 				// fill shipping address and check the toggle to use a different address for billing
-				await fillShippingCheckoutBlocks( page );
+				await fillShippingCheckoutBlocks( page, shippingDetails );
 
 				await expect(
 					page.getByLabel( 'Use same address for billing' )
@@ -605,7 +625,7 @@ test.describe(
 				);
 
 				// fill shipping address
-				await fillShippingCheckoutBlocks( page );
+				await fillShippingCheckoutBlocks( page, shippingDetails );
 
 				await page
 					.locator( '.wc-block-components-totals-shipping__via' )
@@ -693,7 +713,7 @@ test.describe(
 			);
 
 			// fill shipping address and check cash on delivery method
-			await fillShippingCheckoutBlocks( page );
+			await fillShippingCheckoutBlocks( page, shippingDetails );
 			await page.getByLabel( 'Cash on delivery' ).check();
 			await expect( page.getByLabel( 'Cash on delivery' ) ).toBeChecked();
 
@@ -816,13 +836,7 @@ test.describe(
 
 			// click to log in and make sure you are on the same page after logging in
 			await page.locator( 'text=Log in' ).click();
-			await page
-				.locator( 'input[name="username"]' )
-				.fill( customer.username );
-			await page
-				.locator( 'input[name="password"]' )
-				.fill( customer.password );
-			await page.locator( 'text=Log in' ).click();
+			await logIn( page, customer.username, customer.password, false );
 			await expect(
 				page.getByRole( 'heading', { name: testPage.title } )
 			).toBeVisible();
@@ -926,7 +940,10 @@ test.describe(
 			);
 
 			// fill shipping address and check cash on delivery method
-			await fillShippingCheckoutBlocks( page, { firstName: 'Marge' } );
+			await fillShippingCheckoutBlocks( page, {
+				firstName: 'Marge',
+				...shippingDetails,
+			} );
 			await page.getByLabel( 'Cash on delivery' ).check();
 			await expect( page.getByLabel( 'Cash on delivery' ) ).toBeChecked();
 
@@ -1029,6 +1046,7 @@ test.describe(
 			// fill shipping address and check cash on delivery method
 			await fillShippingCheckoutBlocks( page, {
 				firstName: 'Marge',
+				...shippingDetails,
 			} );
 			await page.getByLabel( 'Cash on delivery' ).check();
 			await expect( page.getByLabel( 'Cash on delivery' ) ).toBeChecked();
