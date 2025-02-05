@@ -1,3 +1,8 @@
+/**
+ * External dependencies
+ */
+import type { AddToCartEventDetail } from '@woocommerce/types';
+
 interface DispatchedEventProperties {
 	// Whether the event bubbles.
 	bubbles?: boolean;
