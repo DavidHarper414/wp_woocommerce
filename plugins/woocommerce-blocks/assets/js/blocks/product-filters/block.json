@@ -40,7 +40,11 @@
 	"textdomain": "woocommerce",
 	"usesContext": [ "postId", "query", "queryId" ],
 	"viewScript": "wc-product-filters-frontend",
-	"example": {},
+	"example": {
+		"attributes": {
+			"isPreview": true
+		}
+	},
 	"attributes": {
 		"overlayIcon": {
 			"type": "string",
@@ -52,6 +56,10 @@
 		"overlayButtonType": {
 			"type": "string",
 			"default": "label-icon"
+		},
+		"isPreview": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }
