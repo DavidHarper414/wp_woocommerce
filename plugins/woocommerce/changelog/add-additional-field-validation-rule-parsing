@@ -1,5 +1,3 @@
 Significance: patch
 Type: update
-Comment: This is behind a flag.
-
-
+Comment: Load cart during rest_api_init for Store API requests. This for a change requied to support schema based validation rules for additional checkout fields (behind feature flag).
