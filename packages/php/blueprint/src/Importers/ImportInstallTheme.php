@@ -60,9 +60,11 @@ class ImportInstallTheme implements StepProcessor {
 		}
 
 		if ( isset( $installed_themes[ $theme->slug ] ) ) {
+			$this->activate_theme( $schema );
 			$this->result->add_info( "Skipped installing {$theme->slug}. It is already installed." );
 			return $this->result;
 		}
+
 		if ( $this->storage->is_supported_resource( $theme->resource ) === false ) {
 			$this->result->add_error( "Invalid resource type for {$theme->slug}" );
 			return $this->result;
@@ -85,6 +87,13 @@ class ImportInstallTheme implements StepProcessor {
 			$this->result->add_error( "Failed to install theme '$theme->slug'." );
 		}
 
+		$this->activate_theme( $schema );
+
+		return $this->result;
+	}
+
+	protected function activate_theme( $schema ) {
+		$theme = $schema->themeZipFile;
 		if ( isset( $schema->options->activate ) && true === $schema->options->activate ) {
 			$this->wp_switch_theme( $theme->slug );
 			$current_theme = $this->wp_get_theme()->get_stylesheet();
@@ -94,9 +103,8 @@ class ImportInstallTheme implements StepProcessor {
 				$this->result->add_error( "Failed to switch theme to '$theme->slug'." );
 			}
 		}
-
-		return $this->result;
 	}
+
 
 	/**
 	 * Install the theme from the local plugin path.
