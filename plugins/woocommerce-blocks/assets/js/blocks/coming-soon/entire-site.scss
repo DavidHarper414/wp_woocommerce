@@ -1,3 +1,9 @@
+// When a theme has `useRootPaddingAwareAlignments` enabled in theme.json, it will adding padding to the .wp-site-blocks element and break the coming soon block layout. This ensure no white space is added to the top and bottom of the page.
+.wp-site-blocks:has(> .wp-block-woocommerce-coming-soon) {
+	--wp--style--root--padding-top: 0;
+	--wp--style--root--padding-bottom: 0;
+}
+
 .woocommerce-coming-soon-entire-site {
 	// This is default font family when no font family is selected. Users can override this in the block settings.
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
