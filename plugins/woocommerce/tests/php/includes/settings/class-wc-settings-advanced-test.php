@@ -34,7 +34,7 @@ class WC_Settings_Advanced_Test extends WC_Settings_Unit_Test_Case {
 			'features',
 		);
 
-		if ( FeaturesUtil::is_feature_enabled( 'blueprint' ) ) {
+		if ( FeaturesUtil::feature_is_enabled( 'blueprint' ) ) {
 			$position = array_search( 'woocommerce_com', $expected, true ) + 1;
 			array_splice( $expected, $position, 0, 'blueprint' );
 		}
