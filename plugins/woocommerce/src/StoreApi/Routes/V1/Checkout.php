@@ -247,7 +247,7 @@ class Checkout extends AbstractCartRoute {
 
 		foreach ( $validate_contexts as $context => $context_data ) {
 			$fields = $this->additional_fields_controller->get_fields_for_location( $context_data['location'] );
-			$values = $sanitized_request->get_param( $context_data['param'] );
+			$values = $sanitized_request->get_param( $context_data['param'] ) ?? [];
 
 			foreach ( $fields as $field_key => $field ) {
 				$is_required = $this->additional_fields_controller->is_required_field( $field, $document_object, $context );
@@ -275,7 +275,7 @@ class Checkout extends AbstractCartRoute {
 				}
 			}
 
-			$valid_location_check = $this->additional_fields_controller->validate_fields_for_location( $fields, $context_data['location'], $context_data['group'] );
+			$valid_location_check = $this->additional_fields_controller->validate_fields_for_location( $values, $context_data['location'], $context_data['group'] );
 
 			if ( is_wp_error( $valid_location_check ) && $valid_location_check->has_errors() ) {
 				$invalid_groups[ $context_data['group'] ]  = implode( ' ', $valid_location_check->get_error_messages() );
