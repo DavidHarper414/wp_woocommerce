@@ -442,4 +442,16 @@ class Controller extends AbstractBlock {
 		$collection_handler_store = $this->collection_handler_registry->register_core_collections();
 		$this->query_builder->set_collection_handler_store( $collection_handler_store );
 	}
+
+
+	/**
+	 * Disable the block type script, this block uses script modules.
+	 *
+	 * @param string|null $key The key of the script.
+	 *
+	 * @return null
+	 */
+	protected function get_block_type_script( $key = null ) {
+		return null;
+	}
 }
