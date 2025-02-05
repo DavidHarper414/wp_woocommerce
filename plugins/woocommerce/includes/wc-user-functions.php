@@ -460,7 +460,7 @@ function wc_customer_bought_product( $customer_email, $user_id, $product_id, $lo
 				$user_id_clause = 'OR o.customer_id = ' . absint( $user_id );
 			}
 			if ( $lookup_tables ) {
-				$sql    = "
+				$sql = "
 SELECT DISTINCT product_or_variation_id FROM (
 SELECT CASE WHEN product_id != 0 THEN product_id ELSE variation_id END AS product_or_variation_id
 FROM {$wpdb->prefix}wc_order_product_lookup lookup
@@ -471,7 +471,7 @@ AND ( o.billing_email IN ('" . implode( "','", $customer_data ) . "') $user_id_c
 WHERE product_or_variation_id != 0
 ";
 			} else {
-				$sql    = "
+				$sql = "
 SELECT DISTINCT im.meta_value FROM $order_table AS o
 INNER JOIN {$wpdb->prefix}woocommerce_order_items AS i ON o.id = i.order_id
 INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS im ON i.order_item_id = im.order_item_id
@@ -482,10 +482,9 @@ AND ( o.billing_email IN ('" . implode( "','", $customer_data ) . "') $user_id_c
 ";
 			}
 			$result = $wpdb->get_col( $sql );
-		} else {
-			if ( $lookup_tables ) {
-				$result = $wpdb->get_col(
-					"
+		} elseif ( $lookup_tables ) {
+			$result = $wpdb->get_col(
+				"
 SELECT DISTINCT product_or_variation_id FROM (
 SELECT CASE WHEN lookup.product_id != 0 THEN lookup.product_id ELSE lookup.variation_id END AS product_or_variation_id
 FROM {$wpdb->prefix}wc_order_product_lookup AS lookup
@@ -496,11 +495,12 @@ AND pm.meta_key IN ( '_billing_email', '_customer_user' )
 AND pm.meta_value IN ( '" . implode( "','", $customer_data ) . "' )
 ) AS subquery
 WHERE product_or_variation_id != 0
-			"
-				); // WPCS: unprepared SQL ok.
-			} else {
-				$result = $wpdb->get_col(
-					"
+		"
+			); // WPCS: unprepared SQL ok.
+		} else {
+			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+			$result = $wpdb->get_col(
+				"
 SELECT DISTINCT im.meta_value FROM {$wpdb->posts} AS p
 INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id
 INNER JOIN {$wpdb->prefix}woocommerce_order_items AS i ON p.ID = i.order_id
@@ -510,9 +510,9 @@ AND pm.meta_key IN ( '_billing_email', '_customer_user' )
 AND im.meta_key IN ( '_product_id', '_variation_id' )
 AND im.meta_value != 0
 AND pm.meta_value IN ( '" . implode( "','", $customer_data ) . "' )
-			"
-				); // WPCS: unprepared SQL ok.
-			}
+		"
+			);
+			// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
 		}
 		$result = array_map( 'absint', $result );
 
