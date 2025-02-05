@@ -190,7 +190,7 @@ class CheckoutFieldsFrontend {
 		$customer          = new WC_Customer( $user_id );
 		$additional_fields = $this->sanitize_additional_fields_for_location_group( $customer, 'contact', 'other' );
 
-		// Generate document object based on context and POSTed values.
+		// Generate document object based on POSTed values.
 		$document_object = null;
 
 		if ( Features::is_enabled( 'experimental-blocks' ) ) {
@@ -276,7 +276,7 @@ class CheckoutFieldsFrontend {
 	public function save_address_fields( $user_id, $address_type, $address, $customer ) {
 		$additional_fields = $this->sanitize_additional_fields_for_location_group( $customer, 'address', $address_type );
 
-		// Generate document object based on context and POSTed values.
+		// Generate document object based on POSTed values.
 		$document_object = null;
 
 		if ( Features::is_enabled( 'experimental-blocks' ) ) {
