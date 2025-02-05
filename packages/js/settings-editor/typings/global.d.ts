@@ -94,6 +94,8 @@ declare global {
 			[ key: string ]: SettingsSection;
 		};
 		is_modern: boolean;
+		start?: CustomSettingsField;
+		end?: CustomSettingsField;
 	}
 
 	interface SettingsPages {
