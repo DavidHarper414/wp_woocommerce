@@ -246,8 +246,9 @@ class Checkout extends AbstractCartRoute {
 		$is_partial      = in_array( $request->get_method(), [ 'PUT', 'PATCH' ], true );
 
 		foreach ( $validate_contexts as $context => $context_data ) {
-			$fields = $this->additional_fields_controller->get_fields_for_location( $context_data['location'] );
-			$values = $sanitized_request->get_param( $context_data['param'] ) ?? [];
+			$fields         = $this->additional_fields_controller->get_fields_for_location( $context_data['location'] );
+			$values         = $sanitized_request->get_param( $context_data['param'] ) ?? [];
+			$context_errors = new \WP_Error();
 
 			foreach ( $fields as $field_key => $field ) {
 				$is_required = $this->additional_fields_controller->is_required_field( $field, $document_object, $context );
@@ -269,8 +270,7 @@ class Checkout extends AbstractCartRoute {
 							$code
 						);
 					}
-					$invalid_groups[ $context_data['param'] ]  = implode( ' ', $valid_check->get_error_messages() );
-					$invalid_details[ $context_data['param'] ] = rest_convert_error_to_response( $valid_check )->get_data();
+					$context_errors->merge_from( $valid_check );
 					break;
 				}
 			}
@@ -278,8 +278,20 @@ class Checkout extends AbstractCartRoute {
 			$valid_location_check = $this->additional_fields_controller->validate_fields_for_location( $values, $context_data['location'], $context_data['group'] );
 
 			if ( is_wp_error( $valid_location_check ) && $valid_location_check->has_errors() ) {
-				$invalid_groups[ $context_data['group'] ]  = implode( ' ', $valid_location_check->get_error_messages() );
-				$invalid_details[ $context_data['group'] ] = rest_convert_error_to_response( $valid_location_check )->get_data();
+				foreach ( $valid_location_check->get_error_codes() as $code ) {
+					$valid_location_check->add_data(
+						array(
+							'location' => $context_data['location'],
+						),
+						$code
+					);
+				}
+				$context_errors->merge_from( $valid_location_check );
+			}
+
+			if ( $context_errors->has_errors() ) {
+				$invalid_groups[ $context_data['param'] ]  = implode( ' ', $context_errors->get_error_messages() );
+				$invalid_details[ $context_data['param'] ] = rest_convert_error_to_response( $context_errors )->get_data();
 			}
 		}
 
