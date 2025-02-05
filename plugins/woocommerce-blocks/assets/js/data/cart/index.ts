@@ -66,7 +66,13 @@ window.addEventListener( 'load', () => {
 subscribe( pushChanges, store );
 
 // Todo: remove
-function diffObjects( obj1, obj2, path = [] ) {
+function diffObjects(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	obj1: Record< string, any > | null,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	obj2: Record< string, any > | null,
+	path: string[] = []
+) {
 	if ( ! obj1 || ! obj2 ) return;
 	const allKeys = new Set( [
 		...Object.keys( obj1 ),
@@ -80,28 +86,8 @@ function diffObjects( obj1, obj2, path = [] ) {
 
 		if ( val1 === val2 ) continue; // Values are identical, nothing to log
 
-		if ( ! obj1.hasOwnProperty( key ) ) {
-			console.log(
-				`Added: ${ currentPath.join( '.' ) } - ${ JSON.stringify(
-					val2
-				) }`
-			);
-		} else if ( ! obj2.hasOwnProperty( key ) ) {
-			console.log(
-				`Deleted: ${ currentPath.join( '.' ) } - ${ JSON.stringify(
-					val1
-				) }`
-			);
-		} else if ( typeof val1 === 'object' && typeof val2 === 'object' ) {
+		if ( typeof val1 === 'object' && typeof val2 === 'object' ) {
 			diffObjects( val1, val2, currentPath ); // Recurse for nested objects
-		} else {
-			console.log(
-				`Modified: ${ currentPath.join(
-					'.'
-				) } - From ${ JSON.stringify( val1 ) } to ${ JSON.stringify(
-					val2
-				) }`
-			);
 		}
 	}
 }
@@ -111,19 +97,14 @@ let id = 0;
 
 // Emmits event to sync iAPI store.
 subscribe( () => {
-	// const { cartData } = store.instantiate().store.getState();
 	const cartData = select( STORE_KEY ).getCartData();
 	if (
 		! getIgnoreSync() &&
 		previousCart !== null &&
 		previousCart !== cartData
 	) {
-		console.groupCollapsed(
-			`Cart sync started on the @wordpress/data store: data-${ ++id }`
-		);
 		// Todo: check why there are multiple updates of the cart on page load.
 		diffObjects( previousCart, cartData );
-		console.groupEnd();
 
 		window.dispatchEvent(
 			// Question: What are the usual names for WooCommerce events?
@@ -142,10 +123,6 @@ window.addEventListener( 'woocommerce-cart-sync-required', ( event: Event ) => {
 		id: number;
 	} >;
 	if ( customEvent.detail.type === 'from_iAPI' ) {
-		console.log(
-			`Cart sync received on the @wordpress/data store: iapi-${ customEvent.detail.id }`
-		);
-
 		// Todo: investigate how to avoid infinite loops without causing racing conditions.
 		wpDispatch( store ).syncCartWithIAPIStore();
 	}

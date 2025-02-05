@@ -52,8 +52,8 @@ let pendingRefresh = false;
 let refreshTimeout = 3000;
 let eventId = 0;
 
-function emmitSyncEvent() {
-	console.log( `Cart sync started on the iAPI store: iapi-${ ++eventId }` );
+function emitSyncEvent() {
+	++eventId;
 
 	window.dispatchEvent(
 		// Question: What are the usual names for WooCommerce events?
@@ -113,7 +113,7 @@ export const { state, actions } = ( store as typeof StoreType )< Store >(
 					state.cart.items[ itemIndex ] = json;
 
 					// Dispatches the event to sync the @wordpress/data store.
-					emmitSyncEvent();
+					emitSyncEvent();
 				} catch ( error ) {
 					const message = ( error as Error ).message;
 
@@ -197,9 +197,6 @@ window.addEventListener(
 			id: number;
 		} >;
 		if ( customEvent.detail.type === 'from_@wordpress/data' ) {
-			console.log(
-				`Cart sync received on the iAPI store: data-${ customEvent.detail.id }`
-			);
 			actions.refreshCartItems();
 		}
 	}
