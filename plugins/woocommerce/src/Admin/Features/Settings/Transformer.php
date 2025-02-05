@@ -120,6 +120,13 @@ class Transformer {
 				$this->handle_checkbox_setting( $setting, $transformed_settings );
 				break;
 
+			case 'info':
+				if ( isset( $setting['text'] ) && ! empty( $setting['text'] ) ) {
+					$setting['text'] = wp_kses_post( wpautop( wptexturize( $setting['text'] ) ) );
+				}
+				$this->add_setting( $setting, $transformed_settings );
+				break;
+
 			default:
 				$this->add_setting( $setting, $transformed_settings );
 				break;
