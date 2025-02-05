@@ -93,7 +93,7 @@ export const IncentiveModal = ( {
 			provider_id: provider.id,
 			display_context: context,
 		} );
-	} );
+	}, [ incentive.promo_id, provider.id ] );
 
 	/**
 	 * Closes the modal.
