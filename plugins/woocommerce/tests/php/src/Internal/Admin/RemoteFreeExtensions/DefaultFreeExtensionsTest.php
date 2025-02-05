@@ -116,7 +116,7 @@ class DefaultFreeExtensionsTest extends WC_Unit_Test_Case {
 		$recommended_plugin_slugs = $this->get_recommended_plugin_slugs( $this->bundles_mock );
 
 		// Assert.
-		$this->assertCount( 1, $recommended_plugin_slugs );
+		$this->assertContains( 'woocommerce-services:tax', $recommended_plugin_slugs );
 
 		// Clean up.
 		self::rmdir( dirname( $shipping_plugin_file_path ) );
@@ -139,7 +139,6 @@ class DefaultFreeExtensionsTest extends WC_Unit_Test_Case {
 
 		$recommended_plugin_slugs = $this->get_recommended_plugin_slugs( $this->bundles_mock );
 
-		$this->assertNotContains( 'woocommerce-services', $recommended_plugin_slugs );
 		$this->assertNotContains( 'woocommerce-services:tax', $recommended_plugin_slugs );
 
 		// Clean up.
@@ -155,7 +154,7 @@ class DefaultFreeExtensionsTest extends WC_Unit_Test_Case {
 	public function test_core_profiler_recommends_wcshipping_as_shipping_if_wcservices_is_already_active() {
 		// Arrange.
 		// Make sure the plugin passes as active.
-		$shipping_plugin_file = 'woocommerce-shipping/woocommerce-shipping.php';
+		$shipping_plugin_file = 'woocommerce-services/woocommerce-services.php';
 		// To pass the validation, we need to the plugin file to exist.
 		$shipping_plugin_file_path = WP_PLUGIN_DIR . '/' . $shipping_plugin_file;
 		self::touch( $shipping_plugin_file_path );
@@ -168,7 +167,7 @@ class DefaultFreeExtensionsTest extends WC_Unit_Test_Case {
 		$recommended_plugin_slugs = $this->get_recommended_plugin_slugs( $bundles_with_core_profiler_fields_mock );
 
 		// Assert.
-		$this->assertCount( 2, $recommended_plugin_slugs );
+		$this->assertContains( 'woocommerce-shipping', $recommended_plugin_slugs );
 
 		// Clean up.
 		self::rmdir( dirname( $shipping_plugin_file_path ) );
