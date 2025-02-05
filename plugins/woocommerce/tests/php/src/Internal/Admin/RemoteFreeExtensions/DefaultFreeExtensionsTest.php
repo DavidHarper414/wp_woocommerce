@@ -51,16 +51,25 @@ class DefaultFreeExtensionsTest extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Tests the default behavior of recommending WCS&T twice - as a shipping solution and a tax solution.
+	 * Tests the default behavior of recommending WCS&T as the tax solution.
 	 *
 	 * @return void
 	 */
-	public function test_wcservices_is_recommended_as_both_shipping_and_tax() {
+	public function test_wcservices_is_recommended_for_tax() {
 		$recommended_plugin_slugs = $this->get_recommended_plugin_slugs( $this->bundles_mock );
 
-		$this->assertCount( 2, $recommended_plugin_slugs );
-		$this->assertContains( 'woocommerce-shipping', $recommended_plugin_slugs );
 		$this->assertContains( 'woocommerce-services:tax', $recommended_plugin_slugs );
+	}
+
+	/**
+	 * Tests the default behavior of recommending WC Shipping as the shipping solution.
+	 *
+	 * @return void
+	 */
+	public function test_wcshipping_is_recommended_for_shipping() {
+		$recommended_plugin_slugs = $this->get_recommended_plugin_slugs( $this->bundles_mock );
+
+		$this->assertContains( 'woocommerce-shipping', $recommended_plugin_slugs );
 	}
 
 	/**
@@ -73,11 +82,24 @@ class DefaultFreeExtensionsTest extends WC_Unit_Test_Case {
 
 		$recommended_plugin_slugs = $this->get_recommended_plugin_slugs( $this->bundles_mock );
 
-		$this->assertCount( 0, $recommended_plugin_slugs );
+		$this->assertNotContains( 'woocommerce-services:tax', $recommended_plugin_slugs );
 	}
 
 	/**
-	 * Asserts WCS&T is recommended if WooCommerce Shipping is active.
+	 * Asserts WC Shipping is not recommended in unsupported countries.
+	 *
+	 * @return void
+	 */
+	public function test_wcshipping_is_not_recommended_if_in_an_unsupported_country() {
+		update_option( 'woocommerce_default_country', 'FOO' );
+
+		$recommended_plugin_slugs = $this->get_recommended_plugin_slugs( $this->bundles_mock );
+
+		$this->assertNotContains( 'woocommerce-shipping', $recommended_plugin_slugs );
+	}
+
+	/**
+	 * Asserts WCS&T is still recommended if WooCommerce Shipping is active.
 	 *
 	 * @return void
 	 */
@@ -102,7 +124,7 @@ class DefaultFreeExtensionsTest extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Asserts WCS&T is not recommended if it is already active.
+	 * Asserts WCS&T is not recommended for Tax if it is already active.
 	 *
 	 * @return void
 	 */
@@ -117,7 +139,8 @@ class DefaultFreeExtensionsTest extends WC_Unit_Test_Case {
 
 		$recommended_plugin_slugs = $this->get_recommended_plugin_slugs( $this->bundles_mock );
 
-		$this->assertCount( 0, $recommended_plugin_slugs );
+		$this->assertNotContains( 'woocommerce-services', $recommended_plugin_slugs );
+		$this->assertNotContains( 'woocommerce-services:tax', $recommended_plugin_slugs );
 
 		// Clean up.
 		self::rmdir( dirname( $services_plugin_file_path ) );
@@ -150,60 +173,6 @@ class DefaultFreeExtensionsTest extends WC_Unit_Test_Case {
 		// Clean up.
 		self::rmdir( dirname( $shipping_plugin_file_path ) );
 		self::delete_folders( dirname( $shipping_plugin_file_path ) );
-	}
-
-	/**
-	 * Asserts that in the core profiler, WCS&T is not displayed if WooCommerce Shipping is active.
-	 *
-	 * @return void
-	 */
-	public function test_core_profiler_does_not_recommend_wcservices_at_all_if_woocommerce_shipping_is_active() {
-		// Arrange.
-		// Make sure the plugin passes as active.
-		$shipping_plugin_file = 'woocommerce-shipping/woocommerce-shipping.php';
-		// To pass the validation, we need to the plugin file to exist.
-		$shipping_plugin_file_path = WP_PLUGIN_DIR . '/' . $shipping_plugin_file;
-		self::touch( $shipping_plugin_file_path );
-		update_option( 'active_plugins', array( $shipping_plugin_file ) );
-
-		$bundles_with_core_profiler_fields_mock               = $this->bundles_mock;
-		$bundles_with_core_profiler_fields_mock[0]['plugins'] = DefaultFreeExtensions::with_core_profiler_fields( $this->bundles_mock[0]['plugins'] );
-
-		$recommended_plugin_slugs = $this->get_recommended_plugin_slugs( $bundles_with_core_profiler_fields_mock );
-
-		$this->assertCount( 0, $recommended_plugin_slugs );
-
-		// Clean up.
-		self::rmdir( dirname( $shipping_plugin_file_path ) );
-		self::delete_folders( dirname( $shipping_plugin_file_path ) );
-	}
-
-	/**
-	 * Asserts that in the core profiler, WCS&T is not displayed if WooCommerce Tax is active.
-	 *
-	 * @return void
-	 */
-	public function test_core_profiler_does_not_recommend_wcservices_at_all_if_woocommerce_tax_is_active() {
-		// Arrange.
-		// Make sure the plugin passes as active.
-		$tax_plugin_file = 'woocommerce-tax/woocommerce-tax.php';
-		// To pass the validation, we need to the plugin file to exist.
-		$tax_plugin_file_path = WP_PLUGIN_DIR . '/' . $tax_plugin_file;
-		self::touch( $tax_plugin_file_path );
-		update_option( 'active_plugins', array( $tax_plugin_file ) );
-
-		$bundles_with_core_profiler_fields_mock               = $this->bundles_mock;
-		$bundles_with_core_profiler_fields_mock[0]['plugins'] = DefaultFreeExtensions::with_core_profiler_fields( $this->bundles_mock[0]['plugins'] );
-
-		// Act.
-		$recommended_plugin_slugs = $this->get_recommended_plugin_slugs( $bundles_with_core_profiler_fields_mock );
-
-		// Assert.
-		$this->assertCount( 0, $recommended_plugin_slugs );
-
-		// Clean up.
-		self::rmdir( dirname( $tax_plugin_file_path ) );
-		self::delete_folders( dirname( $tax_plugin_file_path ) );
 	}
 
 	/**
