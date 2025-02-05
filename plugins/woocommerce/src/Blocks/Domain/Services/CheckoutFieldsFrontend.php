@@ -230,6 +230,7 @@ class CheckoutFieldsFrontend {
 			foreach ( $location_validation->get_error_messages() as $error_message ) {
 				wc_add_notice( $error_message, 'error' );
 			}
+			return;
 		}
 
 		$customer->save();
