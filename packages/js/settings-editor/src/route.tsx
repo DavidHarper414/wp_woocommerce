@@ -37,17 +37,20 @@ const NotFound = () => {
 
 /**
  * Default route when active page is not found.
+ *
+ * @param {string}        activePage - The active page.
+ * @param {settingsPages} settingsPages      - The settings pages.
  */
 const getNotFoundRoute = (
 	activePage: string,
-	pages: SettingsPages
+	settingsPages: SettingsPages
 ): Route => ( {
 	key: activePage,
 	areas: {
 		sidebar: (
 			<Sidebar
 				activePage={ activePage }
-				pages={ pages }
+				pages={ settingsPages }
 				pageTitle={ __( 'Settings', 'woocommerce' ) }
 			/>
 		),
