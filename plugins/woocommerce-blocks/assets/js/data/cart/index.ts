@@ -28,6 +28,7 @@ import {
 	isAddingToCart,
 } from './persistence-layer';
 import { defaultCartState } from './default-state';
+import { getSetting } from '@woocommerce/settings';
 
 export const config = {
 	reducer,
@@ -41,6 +42,10 @@ export const config = {
 		cartData: {
 			...defaultCartState.cartData,
 			...( persistenceLayer.get() || {} ),
+			paymentMethods: getSetting< string[] >(
+				'paymentMethodSortOrder',
+				[]
+			),
 		},
 	},
 };
