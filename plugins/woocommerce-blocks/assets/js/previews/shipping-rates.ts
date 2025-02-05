@@ -29,7 +29,7 @@ const localPickupRates = localPickupLocations
 	? Object.values( localPickupLocations ).map(
 			( location, index: number ) => ( {
 				...API_SITE_CURRENCY,
-				name: localPickupTitle + ' (' + location.name + ')',
+				name: `${ localPickupTitle } (${ location.name })`,
 				description: '',
 				delivery_time: '',
 				price: displayForMinorUnit( localPickupCost, 0 ) || '0',
