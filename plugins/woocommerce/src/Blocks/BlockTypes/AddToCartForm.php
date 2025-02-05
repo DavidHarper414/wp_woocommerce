@@ -226,7 +226,7 @@ class AddToCartForm extends AbstractBlock {
 	 * @return string The filtered redirect URL.
 	 */
 	public function add_to_cart_redirect_filter( $url ) {
-		if ( $url ) {
+		if ( $url || 'yes' === get_option( 'woocommerce_cart_redirect_after_add' ) ) {
 			return $url;
 		}
 		return wp_validate_redirect( wp_get_referer(), $url );
