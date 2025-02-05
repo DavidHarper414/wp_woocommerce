@@ -27,7 +27,6 @@ const { Fill } = createSlotFill( SETTINGS_SLOT_FILL_CONSTANT );
 
 const Blueprint = () => {
 	const [ exportEnabled, setExportEnabled ] = useState( true );
-	const [ exportAsZip, setExportAsZip ] = useState( false );
 	const [ error, setError ] = useState( null );
 
 	const blueprintStepGroups =
@@ -57,7 +56,6 @@ const Blueprint = () => {
 				method: 'POST',
 				data: {
 					steps: _steps,
-					export_as_zip: exportAsZip,
 				},
 			} );
 			const link = document.createElement( 'a' );
