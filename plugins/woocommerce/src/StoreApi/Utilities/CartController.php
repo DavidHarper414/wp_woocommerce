@@ -1320,7 +1320,7 @@ class CartController {
 			throw new RouteException(
 				'woocommerce_rest_missing_variation_data',
 				/* translators: %s: Attribute name. */
-				__( 'Missing variation data for variable product.', 'woocommerce' ) . ' ' . sprintf( _n( '%s is a required field.', '%s are required fields', count( $missing_attributes ), 'woocommerce' ), wc_format_list_of_items( $missing_attributes ) ),
+				__( 'Missing variation data for variable product.', 'woocommerce' ) . ' ' . sprintf( _n( '%s is a required field', '%s are required fields', count( $missing_attributes ), 'woocommerce' ), wc_format_list_of_items( $missing_attributes ) ),
 				400
 			);
 		}
