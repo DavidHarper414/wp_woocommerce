@@ -185,55 +185,56 @@ class CheckoutFieldsFrontend {
 	 *
 	 * @param integer $user_id User ID.
 	 */
-	public function save_account_form_fields( int $user_id ) {
+	public function save_account_form_fields( $user_id ) {
 
 		try {
 			$customer = new WC_Customer( $user_id );
+
+			$additional_fields = $this->checkout_fields_controller->get_fields_for_location( 'contact' );
+
+			$field_values = array();
+
+			foreach ( $additional_fields as $key => $field_data ) {
+				// We can't skip, field might be required.
+				$field_value = wc_clean( wp_unslash( $_POST[ $key ] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+				$field_value = $this->checkout_fields_controller->sanitize_field( $key, $field_value );
+				$validation  = $this->checkout_fields_controller->validate_field( $key, $field_value );
+
+				if ( is_wp_error( $validation ) && $validation->has_errors() ) {
+					foreach ( $validation->get_error_messages() as $error_message ) {
+						wc_add_notice( $error_message, 'error' );
+					}
+					continue;
+				}
+
+				$field_values[ $key ] = $field_value;
+			}
+
+			// Persist individual additional fields to customer.
+			foreach ( $field_values as $key => $value ) {
+				$this->checkout_fields_controller->persist_field_for_customer( $key, $value, $customer, 'other' );
+			}
+
+			// Validate all fields for this location.
+			$location_validation = $this->checkout_fields_controller->validate_fields_for_location( $field_values, 'contact', 'other' );
+
+			if ( is_wp_error( $location_validation ) && $location_validation->has_errors() ) {
+				foreach ( $location_validation->get_error_messages() as $error_message ) {
+					wc_add_notice( $error_message, 'error' );
+				}
+
+				return;
+			}
+
+			$customer->save();
+
 		} catch ( \Exception $e ) {
 			wc_add_notice(
 				__( 'Unable to save customer additional fields: ', 'woocommerce' ) . $e->getMessage(),
 				'notice'
 			);
-			return;
 		}
-
-		$additional_fields = $this->checkout_fields_controller->get_fields_for_location( 'contact' );
-
-		$field_values = array();
-
-		foreach ( $additional_fields as $key => $field_data ) {
-			// We can't skip, field might be required.
-			$field_value = wc_clean( wp_unslash( $_POST[ $key ] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-
-			$field_value = $this->checkout_fields_controller->sanitize_field( $key, $field_value );
-			$validation  = $this->checkout_fields_controller->validate_field( $key, $field_value );
-
-			if ( is_wp_error( $validation ) && $validation->has_errors() ) {
-				foreach ( $validation->get_error_messages() as $error_message ) {
-					wc_add_notice( $error_message, 'error' );
-				}
-				continue;
-			}
-
-			$field_values[ $key ] = $field_value;
-		}
-
-		// Persist individual additional fields to customer.
-		foreach ( $field_values as $key => $value ) {
-			$this->checkout_fields_controller->persist_field_for_customer( $key, $value, $customer, 'other' );
-		}
-
-		// Validate all fields for this location.
-		$location_validation = $this->checkout_fields_controller->validate_fields_for_location( $field_values, 'contact', 'other' );
-
-		if ( is_wp_error( $location_validation ) && $location_validation->has_errors() ) {
-			foreach ( $location_validation->get_error_messages() as $error_message ) {
-				wc_add_notice( $error_message, 'error' );
-			}
-			return;
-		}
-
-		$customer->save();
 	}
 
 	/**
