@@ -228,9 +228,10 @@ class OrdersTableQuery {
 		 *     @type int   $max_num_pages The number of pages.
 		 * }
 		 * @param OrdersTableQuery   $query The OrdersTableQuery instance.
-		 * @param string             $sql The OrdersTableQuery instance.
+		 * @param string             $sql   Fully built SQL query.
+		 * @param array              $args  Query arguments.
 		 */
-		$pre_query = apply_filters( 'woocommerce_hpos_pre_query', null, $this, $this->sql );
+		$pre_query = apply_filters( 'woocommerce_hpos_pre_query', null, $this, $this->sql, $this->args );
 		if ( ! $pre_query || ! isset( $pre_query[0] ) || ! is_array( $pre_query[0] ) ) {
 			return false;
 		}
