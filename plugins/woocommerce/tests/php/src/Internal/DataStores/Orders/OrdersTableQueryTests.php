@@ -260,17 +260,18 @@ class OrdersTableQueryTests extends \WC_Unit_Test_Case {
 		$this->assertEquals( 2, $query->found_orders );
 		$this->assertEquals( 0, $query->max_num_pages );
 
-		$callback = function ( $result, $query_object, $sql ) use ( $order1 ) {
+		$callback = function ( $result, $query_object, $sql, $args ) use ( $order1 ) {
 			$this->assertNull( $result );
 			$this->assertInstanceOf( OrdersTableQuery::class, $query_object );
 			$this->assertStringContainsString( 'SELECT ', $sql );
+			$this->assertIsArray( $args );
 
 			// Only return one of the orders to show that we are replacing the query result.
 			// Do not return found_orders or max_num_pages to show we're setting defaults.
 			$order_ids = array( $order1->get_id() );
 			return array( $order_ids, null, null );
 		};
-		add_filter( 'woocommerce_hpos_pre_query', $callback, 10, 3 );
+		add_filter( 'woocommerce_hpos_pre_query', $callback, 10, 4 );
 
 		$query = new OrdersTableQuery( array() );
 		$this->assertCount( 1, $query->orders );
@@ -301,10 +302,11 @@ class OrdersTableQueryTests extends \WC_Unit_Test_Case {
 		$this->assertEquals( 2, $query->found_orders );
 		$this->assertEquals( 0, $query->max_num_pages );
 
-		$callback = function ( $result, $query_object, $sql ) use ( $order1 ) {
+		$callback = function ( $result, $query_object, $sql, $args ) use ( $order1 ) {
 			$this->assertNull( $result );
 			$this->assertInstanceOf( OrdersTableQuery::class, $query_object );
 			$this->assertStringContainsString( 'SELECT ', $sql );
+			$this->assertIsArray( $args );
 
 			// Only return one of the orders to show that we are replacing the query result.
 			$order_ids = array( $order1->get_id() );
@@ -313,7 +315,7 @@ class OrdersTableQueryTests extends \WC_Unit_Test_Case {
 			$max_num_pages = 23;
 			return array( $order_ids, $found_orders, $max_num_pages );
 		};
-		add_filter( 'woocommerce_hpos_pre_query', $callback, 10, 3 );
+		add_filter( 'woocommerce_hpos_pre_query', $callback, 10, 4 );
 
 		$query = new OrdersTableQuery( array() );
 		$this->assertCount( 1, $query->orders );
