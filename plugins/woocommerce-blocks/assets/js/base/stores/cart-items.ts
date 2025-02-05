@@ -7,6 +7,7 @@ import { store } from '@wordpress/interactivity';
  * Internal dependencies
  */
 import type { StoreNoticesStore } from '../../blocks/store-notices/frontend';
+import { triggerAddedToCartEvent } from '../utils';
 
 type Item = {
 	key?: string;
@@ -110,6 +111,11 @@ export const { state, actions } = ( store as typeof StoreType )< Store >(
 
 					// Updates the local cart.
 					state.cart.items[ itemIndex ] = json;
+
+					// dispatch legacy event
+					triggerAddedToCartEvent( {
+						preserveCartData: true,
+					} );
 
 					// Dispatches the event to sync the @wordpress/data store.
 					emitSyncEvent();
