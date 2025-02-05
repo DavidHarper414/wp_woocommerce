@@ -1,6 +1,8 @@
 const { test, expect } = require( '../../../fixtures/api-tests-fixtures' );
 const { admin } = require( '../../../test-data/data' );
 
+let isMultisite;
+
 test.describe( 'Customers API tests: CRUD', () => {
 	let adminId;
 	let customerId;
@@ -33,23 +35,20 @@ test.describe( 'Customers API tests: CRUD', () => {
 			}
 		}
 
-			// If a subscriber user has not been created then create one
-			if ( ! subscriberUserId ) {
-				const now = Date.now();
-				const userResponse = await request.post(
-					'./wp-json/wp/v2/users',
-					{
-						data: {
-							username: `customer${ now }`,
-							email: `customer${ now }@woocommercecoretestsuite.com`,
-							first_name: 'Jane',
-							last_name: 'Smith',
-							roles: [ 'subscriber' ],
-							password: 'password',
-							name: 'Jane',
-						},
-					}
-				);
+		// If a subscriber user has not been created then create one
+		if ( ! subscriberUserId ) {
+			const now = Date.now();
+			const userResponse = await request.post( './wp-json/wp/v2/users', {
+				data: {
+					username: `customer${ now }`,
+					email: `customer${ now }@woocommercecoretestsuite.com`,
+					first_name: 'Jane',
+					last_name: 'Smith',
+					roles: [ 'subscriber' ],
+					password: 'password',
+					name: 'Jane',
+				},
+			} );
 
 			expect( userResponse.status() ).toEqual( 201 );
 
@@ -66,6 +65,20 @@ test.describe( 'Customers API tests: CRUD', () => {
 		const responseJSON = await response.json();
 		expect( response.status() ).toEqual( 200 );
 		expect( responseJSON.role ).toEqual( 'subscriber' );
+
+		// Determine whether this is a multisite to conditionally skip multisite-incompatible tests.
+		const systemStatusResponse = await request.get(
+			'./wp-json/wc/v3/system_status',
+			{
+				data: { _fields: [ 'environment.wp_multisite' ] },
+				failOnStatusCode: true,
+			}
+		);
+		const ssrJSON = await systemStatusResponse.json();
+		expect( ssrJSON ).toMatchObject( {
+			environment: { wp_multisite: expect.any( Boolean ) },
+		} );
+		isMultisite = ssrJSON.environment.wp_multisite;
 	} );
 
 	test.afterAll( async ( { request } ) => {
@@ -345,6 +358,11 @@ test.describe( 'Customers API tests: CRUD', () => {
 
 	test.describe( 'Delete a customer', () => {
 		test( 'can permanently delete an customer', async ( { request } ) => {
+			test.skip(
+				isMultisite,
+				'Skip tests on deleting a customer on multisites until bug #384 in private repo is resolved.'
+			);
+
 			// Delete the customer.
 			const response = await request.delete(
 				`./wp-json/wc/v3/customers/${ customerId }`,
@@ -514,6 +532,11 @@ test.describe( 'Customers API tests: CRUD', () => {
 		} );
 
 		test( 'can batch delete customers', async ( { request } ) => {
+			test.skip(
+				isMultisite,
+				'Skip tests on deleting a customer on multisites until bug #384 in private repo is resolved.'
+			);
+
 			// Batch delete the 2 customers.
 			const customerIdsToDelete = expectedCustomers.map(
 				( { id } ) => id
