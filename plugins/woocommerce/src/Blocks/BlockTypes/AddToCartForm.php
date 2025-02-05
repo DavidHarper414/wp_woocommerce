@@ -45,8 +45,7 @@ class AddToCartForm extends AbstractBlock {
 	private function parse_attributes( $attributes ) {
 		// These should match what's set in JS `registerBlockType`.
 		$defaults = array(
-			'isDescendentOfSingleProductBlock' => false,
-			'quantitySelectorStyle'            => 'input',
+			'quantitySelectorStyle' => 'input',
 		);
 
 		return wp_parse_args( $attributes, $defaults );
