@@ -154,10 +154,12 @@ class CustomMetaBox {
 			<tbody>
 			<tr>
 				<td id="newmetaleft" class="left">
+					<span id="metakey-search">
 					<select id="metakeyselect" name="metakeyselect" class="wc-order-metakey-search" data-placeholder="<?php esc_attr_e( 'Add existing', 'woocommerce' ); ?>" data-minimum-input-length="0" data-order_id="<?php echo esc_attr( $order->get_id() ); ?>">
 					</select>
+					</span>
 					<input class="hidden" type="text" id="metakeyinput" name="metakeyinput" value="" aria-label="<?php esc_attr_e( 'New custom field name', 'woocommerce' ); ?>" />
-					<button type="button" id="newmeta-button" class="button button-small hide-if-no-js" onclick="jQuery('#metakeyinput, #metakeyselect, #enternew, #cancelnew').toggleClass('hidden');jQuery('#metakeyinput, #metakeyselect').filter(':visible').trigger('focus');">
+					<button type="button" id="newmeta-button" class="button button-small hide-if-no-js" onclick="jQuery('#metakeyinput, #metakeyselect, #enternew, #cancelnew, #metakey-search').toggleClass('hidden');jQuery('#metakeyinput, #metakeyselect').filter(':visible').trigger('focus');">
 					<span id="enternew"><?php esc_html_e( 'Enter new', 'woocommerce' ); ?></span>
 					<span id="cancelnew" class="hidden"><?php esc_html_e( 'Cancel', 'woocommerce' ); ?></span>
 				</td>
