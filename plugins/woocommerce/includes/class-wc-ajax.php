@@ -155,6 +155,7 @@ class WC_AJAX {
 			'load_order_items',
 			'add_order_note',
 			'delete_order_note',
+			'json_search_order_metakeys',
 			'json_search_products',
 			'json_search_products_and_variations',
 			'json_search_downloadable_products_and_variations',
@@ -2010,6 +2011,7 @@ class WC_AJAX {
 		wp_send_json( apply_filters( 'woocommerce_json_search_found_product_categories', $found_product_categories, $search_text ) );
 	}
 
+
 	/**
 	 * Ajax request handling for page searching.
 	 */
@@ -3631,6 +3633,10 @@ class WC_AJAX {
 	 */
 	private static function order_delete_meta() : void {
 		wc_get_container()->get( CustomMetaBox::class )->delete_meta_ajax();
+	}
+
+	public static function json_search_order_metakeys() : void {
+		wc_get_container()->get( CustomMetaBox::class )->search_metakeys_ajax();
 	}
 
 	/**

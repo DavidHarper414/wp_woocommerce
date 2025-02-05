@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-/*global woocommerce_admin_meta_boxes, woocommerce_admin, accounting, woocommerce_admin_meta_boxes_order, wcSetClipboard, wcClearClipboard */
+/*global woocommerce_admin_meta_boxes, woocommerce_admin, accounting, woocommerce_admin_meta_boxes_order, wcSetClipboard, wcClearClipboard, wc_enhanced_select_params */
 jQuery( function ( $ ) {
 
 	// Stand-in wcTracks.recordEvent in case tracks is not available (for any reason).
@@ -1590,6 +1590,89 @@ jQuery( function ( $ ) {
 					settings.data.action   = 'woocommerce_order_delete_meta';
 					return settings;
 				}
+			});
+
+			$( '#order_custom #metakeyselect').filter( ':not(.enhanced)' ).each( function() {
+				var select2Element = this;
+				var select2_args = {
+					allowClear: !!$(this).data('allow_clear'),
+					placeholder: $(this).data('placeholder'),
+					escapeMarkup: function (m) {
+						return m;
+					},
+					ajax: {
+						url: wc_enhanced_select_params.ajax_url,
+						dataType: 'json',
+						delay: 500,
+						data: function (params) {
+							return {
+								order_id: $(this).data('order_id'),
+								action: 'woocommerce_json_search_order_metakeys',
+								security: wc_enhanced_select_params.search_order_metakeys_nonce
+							};
+						},
+						success: function (data) {
+							var terms = [];
+							if (data) {
+								$.each(data, function (id, term) {
+									terms.push({
+										id: term,
+										text: term,
+									});
+								});
+							}
+							// Reinitialize with the loaded data to avoid continued ajax requests when searching since
+							// we are not using the search term to filter the list on the backend.
+							select2_args.data = terms;
+							delete select2_args.ajax;
+							$(select2Element).selectWoo(select2_args).select2('open');
+						},
+						cache: true
+					},
+					language: {
+						errorLoading: function () {
+							// Workaround for https://github.com/select2/select2/issues/4355 instead of i18n_ajax_error.
+							return wc_enhanced_select_params.i18n_searching;
+						},
+						inputTooLong: function (args) {
+							var overChars = args.input.length - args.maximum;
+
+							if (1 === overChars) {
+								return wc_enhanced_select_params.i18n_input_too_long_1;
+							}
+
+							return wc_enhanced_select_params.i18n_input_too_long_n.replace('%qty%', overChars);
+						},
+						inputTooShort: function (args) {
+							var remainingChars = args.minimum - args.input.length;
+
+							if (1 === remainingChars) {
+								return wc_enhanced_select_params.i18n_input_too_short_1;
+							}
+
+							return wc_enhanced_select_params.i18n_input_too_short_n.replace('%qty%', remainingChars);
+						},
+						loadingMore: function () {
+							return wc_enhanced_select_params.i18n_load_more;
+						},
+						maximumSelected: function (args) {
+							if (args.maximum === 1) {
+								return wc_enhanced_select_params.i18n_selection_too_long_1;
+							}
+
+							return wc_enhanced_select_params.i18n_selection_too_long_n.replace('%qty%', args.maximum);
+						},
+						noResults: function () {
+							return wc_enhanced_select_params.i18n_no_matches;
+						},
+						searching: function () {
+							return wc_enhanced_select_params.i18n_searching;
+						}
+					}
+
+				};
+
+				$(this).selectWoo(select2_args).addClass('enhanced');
 			});
 		}
 	};
