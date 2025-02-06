@@ -213,7 +213,7 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 
 			$custom_start_content = $this->get_custom_view( 'woocommerce_before_settings_' . $this->id );
 
-			if ( ! empty( $custom_start_content ) ) {	
+			if ( ! empty( $custom_start_content ) ) {
 				$pages[ $this->id ]['start'] = $this->get_custom_view_object( $custom_start_content );
 			}
 
