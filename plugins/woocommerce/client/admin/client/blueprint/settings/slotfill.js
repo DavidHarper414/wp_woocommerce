@@ -136,7 +136,7 @@ const Blueprint = () => {
 			<p>
 				{ createInterpolateElement(
 					__(
-						"Blueprints are setup files that contain all the installation instructions, including plugins, themes, and setting. Ease the setup process, allow teams to apply each others' changes and much more. <docLink />",
+						"Blueprints are setup files that contain all the installation instructions, including plugins, themes, and setting. Ease the setup process, allow teams to apply each others’ changes and much more. <docLink />",
 						'woocommerce'
 					),
 					{
