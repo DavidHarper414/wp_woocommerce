@@ -313,7 +313,7 @@ class FeaturesController {
 					),
 				),
 				'blueprint'              => array(
-					'name'               => __( 'Blueprint (Beta)', 'woocommerce' ),
+					'name'               => __( 'Blueprint (beta)', 'woocommerce' ),
 					'description'        => __(
 						'Enable blueprint to import and export settings in bulk',
 						'woocommerce'
