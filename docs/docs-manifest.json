@@ -153,7 +153,7 @@
           "menu_title": "Frequently Asked Questions",
           "tags": "reference",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/faq.md",
-          "hash": "f83f3517106b024b853718d17c3c44a522156ea55aa441de9433d3f312d5f851",
+          "hash": "99b5533f684f62498098d55a6ba1e2dba71664cca7cf35d8c4272dd24d6686fa",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/faq.md",
           "id": "041787aca25af363a5eff3e710bd669cc8aebc4b",
           "links": {
@@ -298,7 +298,7 @@
               "menu_title": "Checkout Flow and Events",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/checkout-payment-methods/checkout-flow-and-events.md",
-              "hash": "8759412c671ef972d4ce737f14f786387a9cd8ea628a65bff13a2648245b407c",
+              "hash": "8da896fc4f27bad91140e6b5779ea70e929f2290e9dd382141af4fa456961b36",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/checkout-payment-methods/checkout-flow-and-events.md",
               "id": "499384cbb48ed96a2e12653cd68bd82d123a20a1",
               "links": {
@@ -508,7 +508,7 @@
           "post_title": "Change a currency symbol",
           "tags": "code-snippet",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/code-snippets/change-a-currency-symbol.md",
-          "hash": "1e25d4cf42f3b5907befc8d3b6d3999ca31c2f97b9512eadb749935685d1a7d6",
+          "hash": "81da31279a278ad1281dcec75f3c72049d7732bf318618da5d9e5cd337eff79b",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/code-snippets/change-a-currency-symbol.md",
           "id": "35ff98a542ad0b092aa44a049c6015cd43ed5857"
         },
@@ -1074,6 +1074,19 @@
           "hash": "f35b7458ea38f7c95f56888c76f139059bf38661991d7f0c37fbdd860786f5fc",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/localization-translation/translating-woocommerce.md",
           "id": "017b9f80a086d119f8bac193c9b4d87d1efff67d"
+        },
+        {
+          "post_title": "Updating Countries and Subdivisions",
+          "menu_title": "Countries and Subdivisions",
+          "tags": "how-to",
+          "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/localization-translation/countries-and-subdivisions.md",
+          "hash": "22938768e8f494d233a0f69a3332efa5e6acc6bcc83d6ae897788f628008cbae",
+          "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/localization-translation/countries-and-subdivisions.md",
+          "id": "385b95e7f5ca43eeb33472f883765e3b931b2f76",
+          "links": {
+            "../code-snippets/add-a-country.md": "3f20affcf41e51989b0a7408aefe32b95d1da073",
+            "../code-snippets/add-or-modify-states.md": "59ff38edfc09669967a06dd1dd3e6fb967422367"
+          }
         }
       ],
       "categories": []
@@ -1915,5 +1928,5 @@
       "categories": []
     }
   ],
-  "hash": "0a49132d17aa2f1d245e8f981d56efa0535dc24f3181a444d6a073533c2afaed"
+  "hash": "fe63e7520363b24882f4f16a7b0982f72fed28e3b61c88654a9d40a3cb99b173"
 }
