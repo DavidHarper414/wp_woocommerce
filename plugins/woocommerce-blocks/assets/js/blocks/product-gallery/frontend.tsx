@@ -28,10 +28,6 @@ const getContext = ( ns?: string ) =>
 type Store = typeof productGallery & StorePart< ProductGallery >;
 const { state, actions } = store< Store >( 'woocommerce/product-gallery' );
 
-const getImageIndex = (): number => {
-	return state.imageIds.indexOf( state.imageId );
-};
-
 const getArrowsState = ( imageNumber: number, totalImages: number ) => ( {
 	// One-based index so it ranges from 1 to imagesIds.length.
 	disableLeft: imageNumber === 1,
@@ -41,9 +37,8 @@ const getArrowsState = ( imageNumber: number, totalImages: number ) => ( {
 const productGallery = {
 	state: {
 		get isSelected() {
-			const { selectedImageNumber } = getContext();
-			const imageIndex = getImageIndex();
-			return selectedImageNumber === imageIndex + 1;
+			const { selectedImageNumber, imageIds, imageId } = getContext();
+			return selectedImageNumber === imageIds.indexOf( imageId ) + 1;
 		},
 		get isDialogOpen() {
 			return getContext().isDialogOpen;
@@ -54,8 +49,9 @@ const productGallery = {
 		get disableRight() {
 			return getContext().disableRight;
 		},
-		get imageId() {
-			return getContext().imageId;
+		get imageIndex(): number {
+			const { imageIds, imageId } = getContext();
+			return imageIds.indexOf( imageId );
 		},
 		get imageIds() {
 			return getContext().imageIds;
@@ -84,7 +80,7 @@ const productGallery = {
 			if ( event ) {
 				event.stopPropagation();
 			}
-			const newImageNumber = getImageIndex() + 1;
+			const newImageNumber = state.imageIndex + 1;
 			actions.selectImage( newImageNumber );
 		},
 		selectNextImage: ( event?: MouseEvent ) => {
