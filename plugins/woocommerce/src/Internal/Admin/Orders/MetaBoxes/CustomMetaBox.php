@@ -220,8 +220,7 @@ class CustomMetaBox {
 			wp_die( -1 );
 		}
 
-		$search_text = isset( $_GET['term'] ) ? wc_clean( wp_unslash( $_GET['term'] ) ) : '';
-		$order_id = intval( $_GET['order_id'] );
+		$order_id    = intval( $_GET['order_id'] );
 
 		$order = wc_get_order( $order_id );
 		if ( ! is_a( $order, \WC_Order::class ) ) {
@@ -230,7 +229,7 @@ class CustomMetaBox {
 
 		$found_order_meta_keys = $this->order_meta_keys_autofill( null, $order );
 
-		wp_send_json( apply_filters( 'woocommerce_json_search_found_order_meta_keys', $found_order_meta_keys, $search_text ) );
+		wp_send_json( $found_order_meta_keys );
 	}
 
 	/**
