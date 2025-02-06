@@ -23,7 +23,10 @@ const test = baseTest.extend( {
 	},
 } );
 
-test.skip( process.env.IS_MULTISITE, 'Test not working on a multisite setup' );
+test.skip(
+	process.env.IS_MULTISITE,
+	'Test not working on a multisite setup, see https://github.com/woocommerce/woocommerce/issues/55082'
+);
 
 test.describe(
 	'Shopper Account Email Receiving',

@@ -33,7 +33,7 @@ test.describe(
 		} ) => {
 			test.skip(
 				process.env.IS_MULTISITE,
-				'Test not working on a multisite setup'
+				'Test not working on a multisite setup, see https://github.com/woocommerce/woocommerce/issues/55066'
 			);
 			await page.goto(
 				'wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard'
@@ -198,7 +198,7 @@ test.describe(
 		} ) => {
 			test.skip(
 				process.env.IS_MULTISITE,
-				'Test not working on a multisite setup'
+				'Test not working on a multisite setup, see https://github.com/woocommerce/woocommerce/issues/55066'
 			);
 			await page.goto(
 				'wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard'
