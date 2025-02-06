@@ -184,16 +184,9 @@ class ProductGalleryLargeImage extends AbstractBlock {
 		if ( ! $block_context['hoverZoom'] ) {
 			return array();
 		}
-		$context = array(
-			'styles' => array(
-				'transform'        => 'scale(1.0)',
-				'transform-origin' => '',
-			),
-		);
 
 		return array(
 			'data-wp-interactive'    => 'woocommerce/product-gallery',
-			'data-wp-context'        => wp_json_encode( $context, JSON_NUMERIC_CHECK | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
 			'data-wp-on--mousemove'  => 'actions.startZoom',
 			'data-wp-on--mouseleave' => 'actions.resetZoom',
 		);
