@@ -318,7 +318,7 @@ class FeaturesController {
 						'Enable blueprint to import and export settings in bulk',
 						'woocommerce'
 					),
-					'enabled_by_default' => true,
+					'enabled_by_default' => false,
 					'disable_ui'         => false,
 
 					/*
