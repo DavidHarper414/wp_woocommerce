@@ -162,7 +162,7 @@ class Init {
 			),
 			array(
 				'id'          => 'themes',
-				'description' => __( 'It includes all the installed themes.', 'woocommerce' ),
+				'description' => __( 'It includes all the active themes.', 'woocommerce' ),
 				'label'       => __( 'Themes', 'woocommerce' ),
 				'items'       => array(
 					array(
