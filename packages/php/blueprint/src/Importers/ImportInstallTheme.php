@@ -92,7 +92,15 @@ class ImportInstallTheme implements StepProcessor {
 		return $this->result;
 	}
 
+	/**
+	 * Attempt to activate the theme if the schema specifies to do so.
+	 *
+	 * @param object $schema installTheme schema.
+	 *
+	 * @return void
+	 */
 	protected function activate_theme( $schema ) {
+		// phpcs:ignore
 		$theme = $schema->themeZipFile;
 		if ( isset( $schema->options->activate ) && true === $schema->options->activate ) {
 			$this->wp_switch_theme( $theme->slug );
