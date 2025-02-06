@@ -6,7 +6,13 @@ namespace Automattic\WooCommerce\Admin\Features\Blueprint;
 
 use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCCoreProfilerOptions;
 use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCPaymentGateways;
-use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCSettings;
+use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCSettingsAccount;
+use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCSettingsAdvanced;
+use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCSettingsEmails;
+use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCSettingsGeneral;
+use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCSettingsIntegrations;
+use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCSettingsProducts;
+use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCSettingsSiteVisibility;
 use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCShipping;
 use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCTaskOptions;
 use Automattic\WooCommerce\Admin\Features\Blueprint\Exporters\ExportWCTaxRates;
@@ -67,12 +73,16 @@ class Init {
 	 */
 	public function get_woo_exporters() {
 		$classnames = array(
-			ExportWCCoreProfilerOptions::class,
-			ExportWCSettings::class,
-			ExportWCPaymentGateways::class,
-			ExportWCShipping::class,
-			ExportWCTaskOptions::class,
+			ExportWCSettingsGeneral::class,
+			ExportWCSettingsProducts::class,
 			ExportWCTaxRates::class,
+			ExportWCShipping::class,
+			ExportWCPaymentGateways::class,
+			ExportWCSettingsAccount::class,
+			ExportWCSettingsEmails::class,
+			ExportWCSettingsIntegrations::class,
+			ExportWCSettingsSiteVisibility::class,
+			ExportWCSettingsAdvanced::class,
 		);
 
 		$exporters = array();

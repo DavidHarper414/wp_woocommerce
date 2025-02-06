@@ -61,7 +61,7 @@ class ExportWCTaxRates implements StepExporter, HasAlias {
 	 * @return string Label text.
 	 */
 	public function get_label(): string {
-		return __( 'Tax Rates', 'woocommerce' );
+		return __( 'Tax', 'woocommerce' );
 	}
 
 	/**
@@ -70,7 +70,7 @@ class ExportWCTaxRates implements StepExporter, HasAlias {
 	 * @return string Description text.
 	 */
 	public function get_description(): string {
-		return __( 'It includes tax rates and locations.', 'woocommerce' );
+		return __( 'It includes all settings in WooCommerce | Settings | Tax.', 'woocommerce' );
 	}
 
 	/**
