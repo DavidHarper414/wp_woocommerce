@@ -89,26 +89,26 @@ class FixtureData {
 			)
 		);
 
-		$children = [];
+		$children   = array();
 		$children[] = $this->get_simple_product(
 			array(
-				'name'              => 'Child Product 1',
-				'stock_status'      => 'instock',
-				'regular_price'     => 10,
+				'name'          => 'Child Product 1',
+				'stock_status'  => 'instock',
+				'regular_price' => 10,
 			)
 		)->get_id();
 		$children[] = $this->get_simple_product(
 			array(
-				'name'              => 'Child Product 2',
-				'stock_status'      => 'instock',
-				'regular_price'     => 9,
+				'name'          => 'Child Product 2',
+				'stock_status'  => 'instock',
+				'regular_price' => 9,
 			)
 		)->get_id();
 		$children[] = $this->get_simple_product(
 			array(
-				'name'              => 'Child Product 3',
-				'stock_status'      => 'instock',
-				'regular_price'     => 10,
+				'name'          => 'Child Product 3',
+				'stock_status'  => 'instock',
+				'regular_price' => 10,
 			)
 		)->get_id();
 

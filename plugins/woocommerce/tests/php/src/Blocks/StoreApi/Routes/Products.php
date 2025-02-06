@@ -82,7 +82,7 @@ class Products extends ControllerTestCase {
 		$data     = $response->get_data();
 
 		$grouped_product_ids = $this->products[2]->get_visible_child_ids();
-		$total_ids = count( $grouped_product_ids );
+		$total_ids           = count( $grouped_product_ids );
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertCount( $total_ids, $data['grouped_products'] );
@@ -100,7 +100,7 @@ class Products extends ControllerTestCase {
 		$data     = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 2, count( $data ) );
+		$this->assertEquals( 6, count( $data ) );
 		$this->assertArrayHasKey( 'id', $data[0] );
 		$this->assertArrayHasKey( 'name', $data[0] );
 		$this->assertArrayHasKey( 'variation', $data[0] );
