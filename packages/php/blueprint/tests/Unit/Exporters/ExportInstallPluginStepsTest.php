@@ -3,6 +3,7 @@
 namespace Automattic\WooCommerce\Blueprint\Tests\Unit\Exporters;
 
 use Automattic\WooCommerce\Blueprint\Exporters\ExportInstallPluginSteps;
+use Automattic\WooCommerce\Blueprint\Steps\Step;
 use Automattic\WooCommerce\Blueprint\Tests\TestCase;
 
 class ExportInstallPluginStepsTest extends TestCase {
@@ -39,8 +40,17 @@ class ExportInstallPluginStepsTest extends TestCase {
 			'download_link' => 'download_link_url',
 		));
 
+		/**
+		 * @var Step[] $result The result of the export.
+		 */
 		$result = $mock->export();
 		$this->assertCount( 3, $result );
+
+		$slugs = array_map(fn($step) => $step->prepare_json_array()['pluginZipFile']['slug'], $result);
+		$this->assertContains('plugina', $slugs);
+		$this->assertContains('pluginb', $slugs);
+		$this->assertContains('pluginc', $slugs);
+
 	}
 
 	/**
