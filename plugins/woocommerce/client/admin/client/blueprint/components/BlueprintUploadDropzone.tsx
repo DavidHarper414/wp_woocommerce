@@ -64,7 +64,15 @@ type BlueprintImportStepResponse = {
 };
 
 const importBlueprint = async ( file: File ) => {
-	const errors = [];
+	const errors = [] as {
+		step: string;
+		messages: {
+			step: string;
+			type: string;
+			message: string;
+		}[];
+	}[];
+
 	try {
 		// Create a FileReader instance
 		const reader = new FileReader();
@@ -86,10 +94,6 @@ const importBlueprint = async ( file: File ) => {
 
 		// Loop through each step and send it to the endpoint
 		for ( const step of steps ) {
-			const logLabel = `${ step.step }: Importing `;
-			console.log( logLabel );
-			console.time( step.step );
-
 			const response = await apiFetch< BlueprintImportStepResponse >( {
 				path: 'wc-admin/blueprint/import-step',
 				method: 'POST',
@@ -106,13 +110,6 @@ const importBlueprint = async ( file: File ) => {
 					step: step.step,
 					messages: response.messages,
 				} );
-				console.error(
-					`${ step.step }: Failed to import step.`,
-					response.messages
-				);
-			} else {
-				console.log( `${ step.step }: Successfully imported step.` );
-				console.timeEnd( step.step );
 			}
 		}
 
