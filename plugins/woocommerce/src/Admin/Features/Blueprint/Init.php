@@ -125,9 +125,9 @@ class Init {
 	 * @return array
 	 */
 	public function get_step_groups_for_js() {
-		$all_plugins = $this->wp_get_plugins();
-		$active_plugins = array_intersect_key($all_plugins, array_flip(get_option('active_plugins', array())));
-		$active_theme = $this->wp_get_theme();
+		$all_plugins    = $this->wp_get_plugins();
+		$active_plugins = array_intersect_key( $all_plugins, array_flip( get_option( 'active_plugins', array() ) ) );
+		$active_theme   = $this->wp_get_theme();
 
 		return array(
 			array(
@@ -167,9 +167,9 @@ class Init {
 				'items'       => array(
 					array(
 						'id'    => $active_theme->get_stylesheet(),
-						'label' => $active_theme->get('Name'),
-					)
-				)
+						'label' => $active_theme->get( 'Name' ),
+					),
+				),
 			),
 		);
 	}
