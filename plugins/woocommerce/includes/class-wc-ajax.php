@@ -3635,7 +3635,13 @@ class WC_AJAX {
 		wc_get_container()->get( CustomMetaBox::class )->delete_meta_ajax();
 	}
 
-	public static function json_search_order_metakeys() : void {
+	/**
+	 * Hooked into `wp_ajax_woocommerce_json_search_order_metakeys` to return the list of unique meta keys for the
+	 * edit order screen custom fields metabox.
+	 *
+	 * @return void
+	 */
+	public static function json_search_order_metakeys(): void {
 		wc_get_container()->get( CustomMetaBox::class )->search_metakeys_ajax();
 	}
 
