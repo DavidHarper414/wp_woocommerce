@@ -63,12 +63,6 @@ const productGallery = {
 		get selectedImageNumber() {
 			return getContext().selectedImageNumber;
 		},
-		get pagerDotFillOpacity(): number {
-			return state.isSelected ? 1 : 0.2;
-		},
-		get pagerButtonPressed(): boolean {
-			return state.isSelected ? true : false;
-		},
 		get thumbnailTabIndex(): string {
 			return state.isSelected ? '0' : '-1';
 		},
