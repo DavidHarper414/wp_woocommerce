@@ -1,5 +1,6 @@
 const { test: baseTest, expect } = require( '../../fixtures/fixtures' );
 const { logIn } = require( '../../utils/login' );
+const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
 
 const now = Date.now();
 const users = [
@@ -13,7 +14,7 @@ const users = [
 ];
 
 const test = baseTest.extend( {
-	storageState: process.env.ADMINSTATE,
+	storageState: ADMIN_STATE_PATH,
 	user: async ( { api }, use ) => {
 		const user = {};
 		await use( user );
@@ -24,6 +25,10 @@ const test = baseTest.extend( {
 
 for ( const userData of users ) {
 	test( `can create a new ${ userData.role }`, async ( { page, user } ) => {
+		test.skip(
+			process.env.IS_MULTISITE,
+			'Test not working on a multisite setup, see https://github.com/woocommerce/woocommerce/issues/55082'
+		);
 		await page.goto( `wp-admin/user-new.php` );
 
 		await test.step( 'create a new user', async () => {

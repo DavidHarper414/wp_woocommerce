@@ -1,14 +1,13 @@
 <?php
 
-declare( strict_types = 1);
+declare(strict_types=1);
 
 namespace Automattic\WooCommerce\Admin\Features\Blueprint\Exporters;
 
-use Automattic\WooCommerce\Admin\Features\Blueprint\Steps\SetWCTaxRates;
-use Automattic\WooCommerce\Blueprint\ClassExtractor;
 use Automattic\WooCommerce\Blueprint\Exporters\HasAlias;
 use Automattic\WooCommerce\Blueprint\Exporters\StepExporter;
-use Automattic\WooCommerce\Blueprint\Steps\RunPHP;
+use Automattic\WooCommerce\Blueprint\Steps\RunSql;
+use Automattic\WooCommerce\Blueprint\Util;
 
 /**
  * Class ExportWCTaxRates
@@ -22,70 +21,64 @@ class ExportWCTaxRates implements StepExporter, HasAlias {
 	/**
 	 * Export WooCommerce tax rates.
 	 *
-	 * @return RunPHP
+	 * @return array RunSql
 	 */
-	public function export() {
+	public function export(): array {
+		return array_merge(
+			$this->generateSteps( 'woocommerce_tax_rates' ),
+			$this->generateSteps( 'woocommerce_tax_rate_locations' )
+		);
+	}
+
+	/**
+	 * Generate SQL steps for exporting data.
+	 *
+	 * @param string $table Table identifier.
+	 * @return array Array of RunSql steps.
+	 */
+	private function generateSteps( string $table ): array {
 		global $wpdb;
-
-		// Fetch tax rates from the database.
-		$rates = $wpdb->get_results(
-			"
-            SELECT *
-            FROM {$wpdb->prefix}woocommerce_tax_rates as tax_rates
-            ",
-			ARRAY_A
+		$table = $wpdb->prefix . $table;
+		return array_map(
+			fn( $record ) => new RunSql( Util::array_to_insert_sql( $record, $table ) ),
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->get_results( "SELECT * FROM {$table}", ARRAY_A )
 		);
-
-		// Fetch tax rate locations from the database.
-		$locations = $wpdb->get_results(
-			"
-            SELECT *
-            FROM {$wpdb->prefix}woocommerce_tax_rate_locations as locations
-            ",
-			ARRAY_A
-		);
-
-		$class_extractor = new ClassExtractor( __DIR__ . '/../RunPHPTemplates/ImportSetWCTaxRates.php' );
-		$class_extractor->replace_class_variable( 'rates', $rates );
-		$class_extractor->replace_class_variable( 'locations', $locations );
-		$code = $class_extractor->with_wp_load()->get_code();
-
-		return new RunPHP( $code );
 	}
 
 	/**
 	 * Get the name of the step.
 	 *
-	 * @return string
+	 * @return string Step name.
 	 */
-	public function get_step_name() {
-		return 'runPHP';
+	public function get_step_name(): string {
+		return 'runSql';
 	}
 
 	/**
 	 * Return label used in the frontend.
 	 *
-	 * @return string
+	 * @return string Label text.
 	 */
-	public function get_label() {
+	public function get_label(): string {
 		return __( 'Tax Rates', 'woocommerce' );
 	}
 
 	/**
 	 * Return description used in the frontend.
 	 *
-	 * @return string
+	 * @return string Description text.
 	 */
-	public function get_description() {
+	public function get_description(): string {
 		return __( 'It includes tax rates and locations.', 'woocommerce' );
 	}
 
 	/**
-	 * Get the alias
+	 * Get the alias.
 	 *
-	 * @return string
+	 * @return string Alias name.
 	 */
-	public function get_alias() {
+	public function get_alias(): string {
 		return 'setWCTaxRates';
 	}
 }
