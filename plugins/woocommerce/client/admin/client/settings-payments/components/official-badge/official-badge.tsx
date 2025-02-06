@@ -12,7 +12,7 @@ import { useDebounce } from '@wordpress/compose';
 /**
  * Internal dependencies
  */
-import { BadgeOfficial } from '../icons';
+import { WC_ASSET_URL } from '~/utils/admin-settings';
 
 interface OfficialBadgeProps {
 	/**
@@ -59,7 +59,13 @@ export const OfficialBadge = ( { variant }: OfficialBadgeProps ) => {
 					}
 				} }
 			>
-				<Icon size={ 16 } icon={ BadgeOfficial } />
+				<img
+					src={ WC_ASSET_URL + 'images/icons/official-extension.svg' }
+					alt={ __(
+						'Official WooCommerce extension badge',
+						'woocommerce'
+					) }
+				/>
 				{ variant === 'expanded' && (
 					<span>{ __( 'Official', 'woocommerce' ) }</span>
 				) }
