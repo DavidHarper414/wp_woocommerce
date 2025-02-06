@@ -20,12 +20,18 @@ use Automattic\WooCommerce\Blueprint\UseWPFunctions;
 class ExportWCSettingsSiteVisibility implements StepExporter, HasAlias {
 	use UseWPFunctions;
 
+	/**
+	 * Export Site Visibility settings.
+	 *
+	 * @return SetSiteOptions
+	 */
 	public function export() {
-		return new SetSiteOptions(array(
-			'woocommerce_coming_soon' => $this->wp_get_option( 'woocommerce_coming_soon' ),
-			'woocommerce_store_pages_only' => $this->wp_get_option( 'woocommerce_store_pages_only' ),
-		));
-
+		return new SetSiteOptions(
+			array(
+				'woocommerce_coming_soon'      => $this->wp_get_option( 'woocommerce_coming_soon' ),
+				'woocommerce_store_pages_only' => $this->wp_get_option( 'woocommerce_store_pages_only' ),
+			)
+		);
 	}
 
 	/**

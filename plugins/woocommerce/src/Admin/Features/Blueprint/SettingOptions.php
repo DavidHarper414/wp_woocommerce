@@ -7,8 +7,14 @@ use Automattic\WooCommerce\Blueprint\Util;
 use WC_Admin_Settings;
 use WC_Settings_Page;
 
+/**
+ * Handles getting options from WooCommerce settings pages.
+ *
+ * Class SettingOptions
+ */
 class SettingOptions {
 	use UseWPFunctions;
+
 	/**
 	 * Array of WC_Settings_Page objects.
 	 *
@@ -27,17 +33,29 @@ class SettingOptions {
 		$this->setting_pages = $setting_pages;
 	}
 
-	public function get_page_options($page_id) {
-		$page = $this->get_page($page_id);
+	/**
+	 * Get options for a specific settings page.
+	 *
+	 * @param string $page_id The page ID.
+	 * @return array
+	 */
+	public function get_page_options( $page_id ) {
+		$page      = $this->get_page( $page_id );
 		$page_info = $this->get_page_info( $page );
-		$options = $this->merge_page_info_options ($page_info);
-		return array_column($options, 'value', 'id');
+		$options   = $this->merge_page_info_options( $page_info );
+		return array_column( $options, 'value', 'id' );
 	}
 
-	public function get_page( $page_id) {
+	/**
+	 * Get a settings page by ID.
+	 *
+	 * @param string $page_id The page ID.
+	 * @return WC_Settings_Page|null
+	 */
+	public function get_page( $page_id ) {
 		foreach ( $this->setting_pages as $page ) {
 			$id = $page->get_id();
-			if ($id == $page_id) {
+			if ( $id === $page_id ) {
 				return $page;
 			}
 		}
@@ -55,7 +73,7 @@ class SettingOptions {
 		$info = array(
 			'label'    => $page->get_label(),
 			'sections' => array(),
-			'options' => array(),
+			'options'  => array(),
 
 		);
 
@@ -87,7 +105,7 @@ class SettingOptions {
 			}
 
 			// Get options.
-			$info['sections'][$section_id]['options'] = $this->get_page_section_settings( $settings, $page->get_id(), $section_id );
+			$info['sections'][ $section_id ]['options'] = $this->get_page_section_settings( $settings, $page->get_id(), $section_id );
 		}
 		return $info;
 	}
@@ -128,6 +146,13 @@ class SettingOptions {
 		return $data;
 	}
 
+	/**
+	 * Merge page info options.
+	 *
+	 * @param array $page_info The page info.
+	 *
+	 * @return array|mixed
+	 */
 	private function merge_page_info_options( array $page_info ) {
 		$options = $page_info['options'];
 		foreach ( $page_info['sections'] as $section ) {

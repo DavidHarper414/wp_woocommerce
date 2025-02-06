@@ -22,6 +22,7 @@ class ExportWCSettingsProducts extends ExportWCSettingsGeneral {
 
 	/**
 	 * Page I.D to export.
+	 *
 	 * @var string The page ID.
 	 */
 	protected string $page_id = 'products';
