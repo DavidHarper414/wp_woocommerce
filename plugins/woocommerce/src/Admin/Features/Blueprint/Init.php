@@ -147,7 +147,7 @@ class Init {
 			),
 			array(
 				'id'          => 'plugins',
-				'description' => __( 'It includes all the installed plugins and extensions.', 'woocommerce' ),
+				'description' => __( 'It includes all the active plugins.', 'woocommerce' ),
 				'label'       => __( 'Plugins and extensions', 'woocommerce' ),
 				'items'       => array_map(
 					function ( $key, $plugin ) {
