@@ -270,6 +270,7 @@ test.describe( 'Edit order', { tag: [ tags.SERVICES, tags.HPOS ] }, () => {
 				.getByRole( 'combobox' )
 				.nth( 4 )
 				.pressSequentially( username );
+			await page.waitForSelector( '#order_data li.select2-results__option' );
 			await page.locator( '#order_data li.select2-results__option' ).click();
 		} );
 
@@ -327,6 +328,7 @@ test.describe( 'Edit order', { tag: [ tags.SERVICES, tags.HPOS ] }, () => {
 				.getByRole( 'combobox' )
 				.nth( 4 )
 				.pressSequentially( username );
+			await page.waitForSelector( '#order_data li.select2-results__option' );
 			await page.locator( '#order_data li.select2-results__option' ).click();
 		} );
 
