@@ -48,7 +48,7 @@ class RemoteFreeExtensionsDataSourcePoller extends DataSourcePoller {
 	 */
 	public static function get_data_sources() {
 		return array(
-			WC_Helper::get_woocommerce_com_base_url() . 'wp-json/wccom/obw-free-extensions/4.0/extensions.json',
+			WC_Helper::get_woocommerce_com_base_url() . 'wp-json/wccom/obw-free-extensions/5.0/extensions.json',
 		);
 	}
 }
