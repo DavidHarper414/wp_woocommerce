@@ -198,11 +198,11 @@
 				gap: $gap; /* Space between columns */
 				padding: $gap 0;
 
-				@media screen and (max-width: 1024px) {
+				@media screen and (max-width: $break-wide) {
 					grid-template-columns: repeat(2, 1fr); /* 2 columns */
 				}
 
-				@media screen and (max-width: 768px) {
+				@media screen and (max-width: $break-medium) {
 					grid-template-columns: repeat(1, 1fr); /* w columns */
 				}
 			}
@@ -211,6 +211,10 @@
 				display: flex; /* Use Flexbox to align image and content */
 				align-items: flex-start; /* Align items to the top */
 				padding: $gap 0;
+
+				@media screen and (min-width: $break-xlarge) {
+					max-width: 480px;
+				}
 
 				&-image {
 					width: 40px;
