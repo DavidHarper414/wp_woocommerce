@@ -220,9 +220,8 @@ class CustomMetaBox {
 			wp_die( -1 );
 		}
 
-		$order_id    = intval( $_GET['order_id'] );
-
-		$order = wc_get_order( $order_id );
+		$order_id = intval( $_GET['order_id'] );
+		$order    = wc_get_order( $order_id );
 		if ( ! is_a( $order, \WC_Order::class ) ) {
 			wp_die( - 1 );
 		}
