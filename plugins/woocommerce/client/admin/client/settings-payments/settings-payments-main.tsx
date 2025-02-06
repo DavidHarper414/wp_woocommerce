@@ -258,6 +258,11 @@ export const SettingsPaymentsMain = () => {
 							provider.plugin.slug === slug // Last resort to find the provider.
 					);
 
+					// Record the event when user successfully enables a gateway.
+					recordEvent( 'settings_payments_provider_enable', {
+						provider_id: id,
+					} );
+
 					// If the installed and/or activated extension has recommended payment methods,
 					// redirect to the payment methods page.
 					if (
