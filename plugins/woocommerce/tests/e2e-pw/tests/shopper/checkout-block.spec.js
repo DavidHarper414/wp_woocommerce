@@ -11,7 +11,6 @@ import {
 	fillBillingCheckoutBlocks,
 } from '@woocommerce/e2e-utils-playwright';
 import { request } from '@playwright/test';
-import wcApi from '@woocommerce/woocommerce-rest-api';
 
 /**
  * Internal dependencies
@@ -47,6 +46,26 @@ let guestOrderId1,
 	productId,
 	shippingZoneId;
 
+const shippingDetails = {
+	firstName: 'Homer',
+	lastName: 'Simpson',
+	address: '123 Evergreen Terrace',
+	zip: '97403',
+	city: 'Springfield',
+	state: 'OR',
+	country: 'US',
+};
+
+const billingDetails = {
+	firstName: 'Mister',
+	lastName: 'Burns',
+	address: '156th Street',
+	zip: '98500',
+	city: 'Springfield',
+	state: 'WA',
+	country: 'US',
+};
+
 const test = baseTest.extend( {
 	storageState: ADMIN_STATE_PATH,
 	testPageTitlePrefix: 'Checkout Block',
@@ -64,142 +83,154 @@ const test = baseTest.extend( {
 
 test.describe(
 	'Checkout Block page',
-	{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS, tags.SKIP_ON_WPCOM ] },
+	{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS ] },
 	() => {
-		test.beforeAll( async ( { baseURL } ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
+		test.beforeAll( async ( { baseURL, api } ) => {
+			await test.step( 'Set field visibility options', async () => {
+				await setOption(
+					request,
+					baseURL,
+					'woocommerce_checkout_phone_field',
+					'optional'
+				);
+				await setOption(
+					request,
+					baseURL,
+					'woocommerce_checkout_company_field',
+					'optional'
+				);
+				await setOption(
+					request,
+					baseURL,
+					'woocommerce_checkout_address_2_field',
+					'optional'
+				);
 			} );
-			// Set field visibility options
-			await setOption(
-				request,
-				baseURL,
-				'woocommerce_checkout_phone_field',
-				'optional'
-			);
-			await setOption(
-				request,
-				baseURL,
-				'woocommerce_checkout_company_field',
-				'optional'
-			);
-			await setOption(
-				request,
-				baseURL,
-				'woocommerce_checkout_address_2_field',
-				'optional'
-			);
-			// make sure the currency is USD
-			await api.put( 'settings/general/woocommerce_currency', {
-				value: 'USD',
-			} );
-			// add product
-			await api
-				.post( 'products', {
-					name: simpleProductName,
-					description: simpleProductDesc,
-					type: 'simple',
-					regular_price: singleProductFullPrice,
-					sale_price: singleProductSalePrice,
-				} )
-				.then( ( response ) => {
-					productId = response.data.id;
+
+			await test.step( 'Make sure the currency is USD', async () => {
+				await api.put( 'settings/general/woocommerce_currency', {
+					value: 'USD',
 				} );
-			// enable logging through checkout
-			await api.put(
-				'settings/account/woocommerce_enable_checkout_login_reminder',
-				{
-					value: 'yes',
-				}
-			);
-			// enable creating account through checkout
-			await api.put(
-				'settings/account/woocommerce_enable_signup_and_login_from_checkout',
-				{
-					value: 'yes',
-				}
-			);
-			// add a shipping zone and method
-			await api
-				.post( 'shipping/zones', {
-					name: 'California and Oregon Shipping Zone',
-				} )
-				.then( ( response ) => {
-					shippingZoneId = response.data.id;
+			} );
+
+			await test.step( 'Add test product.', async () => {
+				await api
+					.post( 'products', {
+						name: simpleProductName,
+						description: simpleProductDesc,
+						type: 'simple',
+						regular_price: singleProductFullPrice,
+						sale_price: singleProductSalePrice,
+					} )
+					.then( ( response ) => {
+						productId = response.data.id;
+					} );
+			} );
+
+			await test.step( 'Enable logging through checkout', async () => {
+				await api.put(
+					'settings/account/woocommerce_enable_checkout_login_reminder',
+					{
+						value: 'yes',
+					}
+				);
+			} );
+
+			await test.step( 'Enable creating account through checkout', async () => {
+				await api.put(
+					'settings/account/woocommerce_enable_signup_and_login_from_checkout',
+					{
+						value: 'yes',
+					}
+				);
+			} );
+
+			await test.step( 'Add a shipping zone and method', async () => {
+				await api
+					.post( 'shipping/zones', {
+						name: 'California and Oregon Shipping Zone',
+					} )
+					.then( ( response ) => {
+						shippingZoneId = response.data.id;
+					} );
+				await api.put( `shipping/zones/${ shippingZoneId }/locations`, [
+					{
+						code: 'US:CA',
+						type: 'state',
+					},
+					{
+						code: 'US:OR',
+						type: 'state',
+					},
+				] );
+				await api.post( `shipping/zones/${ shippingZoneId }/methods`, {
+					method_id: 'free_shipping',
+					settings: {
+						title: 'Free shipping',
+					},
 				} );
-			await api.put( `shipping/zones/${ shippingZoneId }/locations`, [
-				{
-					code: 'US:CA',
-					type: 'state',
-				},
-				{
-					code: 'US:OR',
-					type: 'state',
-				},
-			] );
-			await api.post( `shipping/zones/${ shippingZoneId }/methods`, {
-				method_id: 'free_shipping',
-				settings: {
-					title: 'Free shipping',
-				},
+				await api.post( `shipping/zones/${ shippingZoneId }/methods`, {
+					method_id: 'local_pickup',
+					settings: {
+						title: 'Local pickup',
+					},
+				} );
+				await api.post( `shipping/zones/${ shippingZoneId }/methods`, {
+					method_id: 'flat_rate',
+					settings: {
+						title: 'Flat rate',
+						cost: singleProductSalePrice,
+					},
+				} );
 			} );
-			await api.post( `shipping/zones/${ shippingZoneId }/methods`, {
-				method_id: 'local_pickup',
-				settings: {
-					title: 'Local pickup',
-				},
+
+			await test.step( 'Enable bank transfers and COD for payment', async () => {
+				await api.put( 'payment_gateways/bacs', {
+					enabled: true,
+				} );
+				await api.put( 'payment_gateways/cod', {
+					enabled: true,
+				} );
 			} );
-			await api.post( `shipping/zones/${ shippingZoneId }/methods`, {
-				method_id: 'flat_rate',
-				settings: {
-					title: 'Flat rate',
-					cost: singleProductSalePrice,
-				},
-			} );
-			// enable bank transfers and COD for payment
-			await api.put( 'payment_gateways/bacs', {
-				enabled: true,
-			} );
-			await api.put( 'payment_gateways/cod', {
-				enabled: true,
-			} );
-			// make sure our customer user has a pre-defined billing/shipping address
-			await api.put( `customers/2`, {
-				shipping: {
-					first_name: 'Maggie',
-					last_name: 'Simpson',
-					company: '',
-					address_1: '123 Evergreen Terrace',
-					address_2: '',
-					city: 'Springfield',
-					state: 'OR',
-					postcode: '97403',
-					country: 'US',
-				},
-				billing: {
-					first_name: 'Maggie',
-					last_name: 'Simpson',
-					company: '',
-					address_1: '123 Evergreen Terrace',
-					address_2: '',
-					city: 'Springfield',
-					state: 'OR',
-					postcode: '97403',
-					country: 'US',
-				},
+
+			await test.step( 'Make sure our customer user has a pre-defined billing/shipping address', async () => {
+				// Get existing customer ID
+				const { data } = await api.get( 'customers', {
+					email: customer.email,
+					role: 'all',
+				} );
+				expect( data ).toMatchObject( [ { email: customer.email } ] );
+
+				// Update its billing & shipping address
+				const customerId = data[ 0 ].id;
+				await api.put( `customers/${ customerId }`, {
+					shipping: {
+						first_name: 'Maggie',
+						last_name: 'Simpson',
+						company: '',
+						address_1: '123 Evergreen Terrace',
+						address_2: '',
+						city: 'Springfield',
+						state: 'OR',
+						postcode: '97403',
+						country: 'US',
+					},
+					billing: {
+						first_name: 'Maggie',
+						last_name: 'Simpson',
+						company: '',
+						address_1: '123 Evergreen Terrace',
+						address_2: '',
+						city: 'Springfield',
+						state: 'OR',
+						postcode: '97403',
+						country: 'US',
+					},
+				} );
 			} );
 		} );
 
-		test.afterAll( async ( { baseURL } ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
+		test.afterAll( async ( { api } ) => {
 			await api.delete( `products/${ productId }`, {
 				force: true,
 			} );
@@ -271,33 +302,28 @@ test.describe(
 			} );
 		} );
 
-		test.beforeEach( async ( { baseURL } ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
-			// ensure the store address is always in the US
-			await api.post( 'settings/general/batch', {
-				update: [
-					{
-						id: 'woocommerce_store_address',
-						value: 'addr 1',
-					},
-					{
-						id: 'woocommerce_store_city',
-						value: 'San Francisco',
-					},
-					{
-						id: 'woocommerce_default_country',
-						value: 'US:CA',
-					},
-					{
-						id: 'woocommerce_store_postcode',
-						value: '94107',
-					},
-				],
+		test.beforeEach( async ( { api } ) => {
+			await test.step( 'Ensure the store address is always in the US', async () => {
+				await api.post( 'settings/general/batch', {
+					update: [
+						{
+							id: 'woocommerce_store_address',
+							value: 'addr 1',
+						},
+						{
+							id: 'woocommerce_store_city',
+							value: 'San Francisco',
+						},
+						{
+							id: 'woocommerce_default_country',
+							value: 'US:CA',
+						},
+						{
+							id: 'woocommerce_store_postcode',
+							value: '94107',
+						},
+					],
+				} );
 			} );
 		} );
 
@@ -447,12 +473,12 @@ test.describe(
 				);
 
 				// fill shipping address
-				await fillShippingCheckoutBlocks( page );
+				await fillShippingCheckoutBlocks( page, shippingDetails );
 
 				await page.getByLabel( 'Use same address for billing' ).click();
 
 				// fill billing details
-				await fillBillingCheckoutBlocks( page );
+				await fillBillingCheckoutBlocks( page, billingDetails );
 
 				// add note to the order
 				await page.getByLabel( 'Add a note to your order' ).check();
@@ -567,7 +593,7 @@ test.describe(
 				);
 
 				// fill shipping address and check the toggle to use a different address for billing
-				await fillShippingCheckoutBlocks( page );
+				await fillShippingCheckoutBlocks( page, shippingDetails );
 
 				await expect(
 					page.getByLabel( 'Use same address for billing' )
@@ -605,7 +631,7 @@ test.describe(
 				);
 
 				// fill shipping address
-				await fillShippingCheckoutBlocks( page );
+				await fillShippingCheckoutBlocks( page, shippingDetails );
 
 				await page
 					.locator( '.wc-block-components-totals-shipping__via' )
@@ -693,7 +719,7 @@ test.describe(
 			);
 
 			// fill shipping address and check cash on delivery method
-			await fillShippingCheckoutBlocks( page );
+			await fillShippingCheckoutBlocks( page, shippingDetails );
 			await page.getByLabel( 'Cash on delivery' ).check();
 			await expect( page.getByLabel( 'Cash on delivery' ) ).toBeChecked();
 
@@ -816,13 +842,7 @@ test.describe(
 
 			// click to log in and make sure you are on the same page after logging in
 			await page.locator( 'text=Log in' ).click();
-			await page
-				.locator( 'input[name="username"]' )
-				.fill( customer.username );
-			await page
-				.locator( 'input[name="password"]' )
-				.fill( customer.password );
-			await page.locator( 'text=Log in' ).click();
+			await logIn( page, customer.username, customer.password, false );
 			await expect(
 				page.getByRole( 'heading', { name: testPage.title } )
 			).toBeVisible();
@@ -926,7 +946,10 @@ test.describe(
 			);
 
 			// fill shipping address and check cash on delivery method
-			await fillShippingCheckoutBlocks( page, { firstName: 'Marge' } );
+			await fillShippingCheckoutBlocks( page, {
+				firstName: 'Marge',
+				...shippingDetails,
+			} );
 			await page.getByLabel( 'Cash on delivery' ).check();
 			await expect( page.getByLabel( 'Cash on delivery' ) ).toBeChecked();
 
@@ -970,14 +993,8 @@ test.describe(
 		test( 'can create an account during checkout with custom password', async ( {
 			page,
 			testPage,
-			baseURL,
+			api,
 		} ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
 			// Password generation off
 			await api.put(
 				'settings/account/woocommerce_registration_generate_password',
@@ -1029,6 +1046,7 @@ test.describe(
 			// fill shipping address and check cash on delivery method
 			await fillShippingCheckoutBlocks( page, {
 				firstName: 'Marge',
+				...shippingDetails,
 			} );
 			await page.getByLabel( 'Cash on delivery' ).check();
 			await expect( page.getByLabel( 'Cash on delivery' ) ).toBeChecked();
