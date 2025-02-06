@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { createElement, useMemo } from '@wordpress/element';
+import { createElement, useEffect, useRef } from '@wordpress/element';
 import clsx from 'clsx';
 
 /**
@@ -16,32 +16,18 @@ type InfoViewProps = {
 };
 
 export const InfoView = ( { text, className, css = '' }: InfoViewProps ) => {
-	const styleObject = useMemo( () => {
-		if ( ! css ) {
-			return {};
-		}
+	const ref = useRef< HTMLDivElement >( null );
 
-		return Object.fromEntries(
-			css
-				.split( ';' )
-				.filter( ( style ) => style.trim() )
-				.map( ( style ) => {
-					const [ key, value ] = style
-						.split( ':' )
-						.map( ( str ) => str.trim() );
-					// Convert kebab-case to camelCase
-					const camelKey = key.replace( /-./g, ( x ) =>
-						x[ 1 ].toUpperCase()
-					);
-					return [ camelKey, value ];
-				} )
-		);
+	useEffect( () => {
+		if ( ref.current ) {
+			ref.current.style.cssText = css;
+		}
 	}, [ css ] );
 
 	return (
 		<div
+			ref={ ref }
 			className={ clsx( 'woocommerce-settings-info-view', className ) }
-			style={ styleObject }
 			dangerouslySetInnerHTML={ {
 				__html: sanitizeHTML( text ?? '' ),
 			} }

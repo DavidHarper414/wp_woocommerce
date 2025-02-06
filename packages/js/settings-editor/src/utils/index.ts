@@ -33,6 +33,12 @@ const ALLOWED_TAGS = [
 ];
 const ALLOWED_ATTR = [ 'target', 'href', 'rel', 'name', 'download', 'title' ];
 
+/**
+ * Sanitizes HTML content to ensure it only contains allowed tags and attributes.
+ *
+ * @param html - The HTML content to sanitize.
+ * @return Sanitized HTML content.
+ */
 export function sanitizeHTML( html: string ) {
 	return sanitize( html, { ALLOWED_TAGS, ALLOWED_ATTR } );
 }
