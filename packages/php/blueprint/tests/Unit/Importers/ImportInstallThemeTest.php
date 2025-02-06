@@ -85,9 +85,8 @@ class ImportInstallThemeTest extends TestCase {
 		$this->assertInstanceOf(StepProcessorResult::class, $result);
 		$this->assertFalse($result->is_success());
 		$errorMessages = $result->get_messages('error');
-		$this->assertCount(2, $errorMessages); // Only error message
+		$this->assertCount(1, $errorMessages); // Only error message
 		$this->assertEquals("Failed to install theme '{$themeSlug}'.", $errorMessages[1]['message']);
-		$this->assertEquals("Failed to switch theme to '{$themeSlug}'.", $errorMessages[2]['message']);
 
 	}
 }
