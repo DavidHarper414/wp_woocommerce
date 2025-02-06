@@ -31,6 +31,10 @@ test.describe(
 		test( 'Can complete the core profiler skipping extension install', async ( {
 			page,
 		} ) => {
+			test.skip(
+				process.env.IS_MULTISITE,
+				'Test not working on a multisite setup, see https://github.com/woocommerce/woocommerce/issues/55066'
+			);
 			await page.goto(
 				'wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard'
 			);
@@ -192,6 +196,10 @@ test.describe(
 		test( 'Can complete the core profiler installing default extensions', async ( {
 			page,
 		} ) => {
+			test.skip(
+				process.env.IS_MULTISITE,
+				'Test not working on a multisite setup, see https://github.com/woocommerce/woocommerce/issues/55066'
+			);
 			await page.goto(
 				'wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard'
 			);
@@ -523,7 +531,7 @@ test.describe(
 
 			await test.step( 'Go to the extensions tab and connect store', async () => {
 				const connectButton = page.getByRole( 'link', {
-					name: 'Connect your store',
+					name: 'Connect',
 				} );
 				await page.goto(
 					'wp-admin/admin.php?page=wc-admin&tab=my-subscriptions&path=%2Fextensions'

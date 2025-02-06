@@ -9,6 +9,8 @@ use Automattic\WooCommerce\Internal\CostOfGoodsSold\CostOfGoodsSoldController;
 
 defined( 'ABSPATH' ) || exit;
 
+use Automattic\WooCommerce\Enums\ProductTaxStatus;
+
 ?>
 <div id="general_product_data" class="panel woocommerce_options_panel">
 
@@ -202,9 +204,9 @@ defined( 'ABSPATH' ) || exit;
 					'value'       => $product_object->get_tax_status( 'edit' ),
 					'label'       => __( 'Tax status', 'woocommerce' ),
 					'options'     => array(
-						'taxable'  => __( 'Taxable', 'woocommerce' ),
-						'shipping' => __( 'Shipping only', 'woocommerce' ),
-						'none'     => _x( 'None', 'Tax status', 'woocommerce' ),
+						ProductTaxStatus::TAXABLE  => __( 'Taxable', 'woocommerce' ),
+						ProductTaxStatus::SHIPPING => __( 'Shipping only', 'woocommerce' ),
+						ProductTaxStatus::NONE     => _x( 'None', 'Tax status', 'woocommerce' ),
 					),
 					'desc_tip'    => 'true',
 					'description' => __( 'Define whether or not the entire product is taxable, or just the cost of shipping it.', 'woocommerce' ),
