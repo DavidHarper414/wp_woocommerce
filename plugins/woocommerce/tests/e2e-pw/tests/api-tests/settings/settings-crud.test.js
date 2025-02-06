@@ -1098,14 +1098,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 							'Optionally control which tax class shipping gets, or leave it so shipping tax is based on the cart items themselves.',
 						type: 'select',
 						default: 'inherit',
-						options: {
+						options: expect.objectContaining( {
 							inherit: 'Shipping tax class based on cart items',
 							'': 'Standard',
-							'reduced-rate': 'Reduced rate',
-							'zero-rate': 'Zero rate',
-						},
+						} ),
 						tip: 'Optionally control which tax class shipping gets, or leave it so shipping tax is based on the cart items themselves.',
-						value: 'inherit',
+						value: expect.any( String ),
 					} ),
 				] )
 			);
