@@ -139,6 +139,10 @@ class ProductGallery extends AbstractBlock {
 						'isDragging'             => false,
 						'touchStartX'            => 0,
 						'touchCurrentX'          => 0,
+						'styles'                 => array(
+							'transform'        => 'scale(1.0)',
+							'transform-origin' => '',
+						),
 					),
 					JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
 				)
