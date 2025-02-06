@@ -72,7 +72,7 @@ const DefaultQueryOrderByControl = ( {
 			orderOptions={ orderOptions }
 			onChange={ onChange }
 			help={ __(
-				'This setting is synced across all Product Collection blocks using the default query type.',
+				'All Product Collection blocks using the Default Query will sync to this sort order.',
 				'woocommerce'
 			) }
 		/>
