@@ -534,13 +534,15 @@ class RestApi {
 	}
 
 	/**
-	 * @param \WP_REST_Request $request
+	 * Import a single step.
+	 *
+	 * @param \WP_REST_Request $request The request object.
 	 *
 	 * @return array
 	 */
 	public function import_step( \WP_REST_Request $request ) {
 		// Make sure we're dealing with object.
-		$step_definition = json_decode( json_encode( $request->get_param( 'step_definition' ) ) );
+		$step_definition = json_decode( wp_json_encode( $request->get_param( 'step_definition' ) ) );
 		$step_importer   = new ImportStep( $step_definition );
 		$result          = $step_importer->import();
 
