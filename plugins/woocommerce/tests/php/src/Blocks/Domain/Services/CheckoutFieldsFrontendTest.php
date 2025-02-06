@@ -39,7 +39,7 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		add_filter( 'woocommerce_add_error', [ $this, 'capture_error' ] );
 		add_filter( 'woocommerce_add_success', [ $this, 'capture_success' ] );
 
-		$this->sut = Package::container()->get( CheckoutFieldsFrontend::class );
+		$this->sut        = Package::container()->get( CheckoutFieldsFrontend::class );
 		$this->controller = Package::container()->get( CheckoutFields::class );
 	}
 
@@ -52,21 +52,45 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		remove_filter( 'woocommerce_add_success', [ $this, 'capture_success' ] );
 	}
 
-	public function capture_success( $message ) {
+	/**
+	 * Capture success messages.
+	 *
+	 * @param string $message The message string.
+	 */
+	public function capture_success( string $message ): void {
 		$this->capture_messages( $message, 'success' );
 	}
 
-	public function capture_error( $message ) {
+	/**
+	 * Capture error messages.
+	 *
+	 * @param string $message The message string.
+	 */
+	public function capture_error( string $message ): void {
 		$this->capture_messages( $message, 'error' );
 	}
 
-	public function capture_notice( $message ) {
+	/**
+	 * Capture notice messages.
+	 *
+	 * @param string $message The message string.
+	 */
+	public function capture_notice( string $message ): void {
 		$this->capture_messages( $message, 'notice' );
 	}
 
-	private function capture_messages( $message, $type ) {
+	/**
+	 * Capture messages.
+	 *
+	 * @param string $message The message string.
+	 * @param string $type The message type.
+	 */
+	private function capture_messages( string $message, string $type ): void {
 		global $mocked_messages;
-		$mocked_messages[] = [ 'message' => $message, 'type' => $type ];
+		$mocked_messages[] = [
+			'message' => $message,
+			'type'    => $type,
+		];
 	}
 
 
@@ -78,7 +102,7 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$hash = uniqid();
 
 		$mock_data_store = function () use ( $hash ) {
-			throw new Exception( $hash );
+			throw new Exception( $hash ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		};
 
 		add_filter( 'woocommerce_customer_data_store', $mock_data_store );
@@ -126,10 +150,9 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$this->assertEquals( 'error', $mocked_messages[0]['type'] );
 
 		__internal_woocommerce_blocks_deregister_checkout_field( 'mynamespace/generic_validation_error' );
-
 	}
 
-	/*
+	/**
 	 * @testDox Contact additional field location validation error
 	 */
 	public function test_save_account_form_fields_contact_location_validation_error() {
@@ -162,7 +185,6 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		__internal_woocommerce_blocks_deregister_checkout_field( 'mynamespace/location_validation_error' );
 
 		remove_action( 'woocommerce_blocks_validate_location_contact_fields', $e_thrower );
-
 	}
 
 	/**
@@ -189,20 +211,20 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$this->assertEquals( 'The field mynamespace/required_field is required.', $mocked_messages[0]['message'] );
 		$this->assertEquals( 'error', $mocked_messages[0]['type'] );
 
-		$mocked_messages = [];
-		$hash = uniqid();
+		$mocked_messages                     = [];
+		$hash                                = uniqid();
 		$_POST['mynamespace/required_field'] = $hash;
 		$this->sut->save_account_form_fields( 1 );
 
 		$this->assertCount( 0, $mocked_messages );
 
-		$value = $this->controller->get_field_from_object('mynamespace/required_field', new WC_Customer(1));
+		$value = $this->controller->get_field_from_object( 'mynamespace/required_field', new WC_Customer( 1 ) );
 		$this->assertEquals( $hash, $value );
 
 		__internal_woocommerce_blocks_deregister_checkout_field( 'mynamespace/required_field' );
 	}
 
-	/*
+	/**
 	 * @testDox Contact additional field save optional field test.
 	 */
 	public function test_save_account_form_fields_contact_save_optional_field() {
@@ -224,16 +246,16 @@ class CheckoutFieldsFrontendTest extends TestCase {
 
 		$this->assertCount( 0, $mocked_messages );
 
-		$value = $this->controller->get_field_from_object('mynamespace/optional_field', new WC_Customer(1));
+		$value = $this->controller->get_field_from_object( 'mynamespace/optional_field', new WC_Customer( 1 ) );
 		$this->assertEquals( '', $value );
 
-		$hash = uniqid();
+		$hash                                = uniqid();
 		$_POST['mynamespace/optional_field'] = $hash;
 		$this->sut->save_account_form_fields( 1 );
 
 		$this->assertCount( 0, $mocked_messages );
 
-		$value = $this->controller->get_field_from_object('mynamespace/optional_field', new WC_Customer(1));
+		$value = $this->controller->get_field_from_object( 'mynamespace/optional_field', new WC_Customer( 1 ) );
 		$this->assertEquals( $hash, $value );
 
 		__internal_woocommerce_blocks_deregister_checkout_field( 'mynamespace/optional_field' );
