@@ -104,7 +104,7 @@ export const PaymentGateways = ( {
 				<div className={ selectContainerClass }>
 					<CountrySelector
 						className="woocommerce-select-control__country"
-						label={ __( 'Business location :', 'woocommerce' ) }
+						label={ __( 'Business location:', 'woocommerce' ) }
 						placeholder={ '' }
 						value={
 							countryOptions.find(
