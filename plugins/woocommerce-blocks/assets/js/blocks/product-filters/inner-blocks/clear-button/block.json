@@ -2,12 +2,12 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"name": "woocommerce/product-filter-clear-button",
 	"version": "0.1.0",
-	"title": "Clear (Experimental)",
-	"description": "Allows shoppers to reset this filter.",
+	"title": "Clear filters (Experimental)",
+	"description": "Allows shoppers to clear active filters.",
 	"category": "woocommerce",
 	"keywords": [
 		"WooCommerce",
-		"reset filter"
+		"clear filters"
 	],
 	"textdomain": "woocommerce",
 	"apiVersion": 3,
@@ -17,12 +17,6 @@
 	"usesContext": [
 		"filterData"
 	],
-	"attributes": {
-		"clearType": {
-			"type": "string",
-			"default": ""
-		}
-	},
 	"supports": {
 		"interactivity": true,
 		"inserter": true
