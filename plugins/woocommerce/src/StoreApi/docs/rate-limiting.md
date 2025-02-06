@@ -67,7 +67,7 @@ This is disabled by default.
 For more advanced use cases, you can enable rate limiting by custom fingerprinting.
 This allows for a custom implementation to group requests without relying on logged-in User ID or IP Address.
 
-### Custom basic example for grouping requests by User-Agent and Accept-Language combination.
+### Custom basic example for grouping requests by User-Agent and Accept-Language combination
 
 ```php
 add_filter( 'woocommerce_store_api_rate_limit_id', function() {
