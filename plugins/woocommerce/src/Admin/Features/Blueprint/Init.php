@@ -111,7 +111,7 @@ class Init {
 				'id'          => 'settings',
 				'description' => __( 'It includes all the items featured in WooCommerce | Settings.', 'woocommerce' ),
 				'label'       => __( 'WooCommerce Settings', 'woocommerce' ),
-				'icon'        => 'wcSettings',
+				'icon'        => 'settings',
 				'items'       => array_map(
 					function ( $exporter ) {
 						return array(
@@ -143,7 +143,7 @@ class Init {
 				'id'          => 'themes',
 				'description' => __( 'It includes all the installed themes.', 'woocommerce' ),
 				'label'       => __( 'Themes', 'woocommerce' ),
-				'icon'        => 'themes',
+				'icon'        => 'brush',
 				'items'       => array_map(
 					function ( $key, $theme ) {
 						return array(

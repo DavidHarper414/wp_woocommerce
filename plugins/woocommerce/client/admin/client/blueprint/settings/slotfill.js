@@ -6,6 +6,7 @@ import {
 	Button,
 	Notice,
 	ToggleControl,
+	Icon,
 } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import {
@@ -14,25 +15,23 @@ import {
 	createInterpolateElement,
 } from '@wordpress/element';
 import { registerPlugin } from '@wordpress/plugins';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { CollapsibleContent } from '@woocommerce/components';
+import { settings, plugins, brush } from '@wordpress/icons';
+
 /**
  * Internal dependencies
  */
 import { SETTINGS_SLOT_FILL_CONSTANT } from '../../settings/settings-slots';
 import { BlueprintUploadDropzone } from '../components/BlueprintUploadDropzone';
-import wcSettingsIcon from './icons/wc-settings.svg';
-import pluginsIcon from './icons/plugins.svg';
-import themesIcon from './icons/themes.svg';
-
 import './style.scss';
 
 const { Fill } = createSlotFill( SETTINGS_SLOT_FILL_CONSTANT );
 
 const icons = {
-	plugins: pluginsIcon,
-	themes: themesIcon,
-	wcSettings: wcSettingsIcon,
+	plugins,
+	themes: brush,
+	settings,
 };
 
 const Blueprint = () => {
@@ -133,10 +132,10 @@ const Blueprint = () => {
 				</Notice>
 			) }
 			<h3>{ __( 'Blueprint', 'woocommerce' ) }</h3>
-			<p>
+			<p className="blueprint-settings-intro-text">
 				{ createInterpolateElement(
 					__(
-						"Blueprints are setup files that contain all the installation instructions, including plugins, themes, and setting. Ease the setup process, allow teams to apply each others’ changes and much more. <docLink />",
+						'Blueprints are setup files that contain all the installation instructions, including plugins, themes, and setting. Ease the setup process, allow teams to apply each others’ changes and much more. <docLink />',
 						'woocommerce'
 					),
 					{
@@ -160,7 +159,7 @@ const Blueprint = () => {
 			</p>
 			<BlueprintUploadDropzone />
 			<h4>{ __( 'Export', 'woocommerce' ) }</h4>
-			<p className="export-intro">
+			<p className="blueprint-settings-export-intro">
 				{ __(
 					'Choose what you want to include, and export it as a .zip file.',
 					'woocommerce'
@@ -168,9 +167,13 @@ const Blueprint = () => {
 			</p>
 			{ blueprintStepGroups.map( ( group, index ) => (
 				<div key={ index } className="blueprint-settings-export-group">
-					<img
-						src={ icons[ group.icon ] ?? wcSettingsIcon }
-						alt="WooCommerce Settings Icon"
+					<Icon
+						icon={ icons[ group.icon ] ?? icons.settings }
+						alt={ sprintf(
+							// translators: %s: icon name. Does not need to be translated.
+							__( 'Blueprint setting icon - %s', 'woocommerce' ),
+							group.icon
+						) }
 					/>
 					<span className="blueprint-settings-export-group-item-count">
 						{ group.items.length }

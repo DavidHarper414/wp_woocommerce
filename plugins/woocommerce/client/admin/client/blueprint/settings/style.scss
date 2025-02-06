@@ -40,8 +40,8 @@
 		}
 	}
 
-	p.export-intro {
-		margin: 6px 0 4px 0;
+	p.blueprint-settings-intro-text {
+		margin-bottom: 40px;
 	}
 
 	a.woocommerce-admin-inline-documentation-link {
@@ -98,7 +98,7 @@
 
 		.woocommerce-collapsible-content__content {
 			margin-top: 16px;
-			left: -31px;
+			left: -27px;
 			p {
 				margin: 0 0 12px 0;
 				color: #757575;
@@ -112,6 +112,9 @@
 				margin-bottom: 16px;
 				&:last-child {
 					margin-bottom: 0;
+					p {
+						margin-bottom: 0;
+					}
 				}
 			}
 		}
