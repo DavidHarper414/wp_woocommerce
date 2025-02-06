@@ -30,7 +30,7 @@ const { Fill } = createSlotFill( SETTINGS_SLOT_FILL_CONSTANT );
 
 const icons = {
 	plugins,
-	themes: brush,
+	brush,
 	settings,
 };
 
