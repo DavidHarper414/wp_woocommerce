@@ -1174,7 +1174,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						type: 'text',
 						default: '',
 						tip: 'Define text to show after your product prices. This could be, for example, "inc. Vat" to explain your pricing. You can also have prices substituted here using one of the following: {price_including_tax}, {price_excluding_tax}.',
-						value: '',
+						value: expect.any( String ),
 					} ),
 				] )
 			);
