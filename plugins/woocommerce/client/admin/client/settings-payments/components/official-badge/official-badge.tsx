@@ -6,7 +6,6 @@ import { __ } from '@wordpress/i18n';
 import { Popover } from '@wordpress/components';
 import { Link, Pill } from '@woocommerce/components';
 import { createInterpolateElement, useState } from '@wordpress/element';
-import { Icon } from '@wordpress/icons';
 import { useDebounce } from '@wordpress/compose';
 
 /**
