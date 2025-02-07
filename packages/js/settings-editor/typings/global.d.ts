@@ -74,12 +74,22 @@ declare global {
 		settings: CheckboxSettingsField[];
 	}
 
+	interface InfoSettingsField {
+		id: string;
+		title: string;
+		type: 'info';
+		text: string;
+		row_class?: string;
+		css?: string;
+	}
+
 	type SettingsField =
 		| BaseSettingsField
 		| CustomSettingsField
 		| GroupSettingsField
 		| CheckboxGroupSettingsField
-		| CheckboxSettingsField;
+		| CheckboxSettingsField
+		| InfoSettingsField;
 
 	interface SettingsSection {
 		label: string;
@@ -96,8 +106,13 @@ declare global {
 		is_modern: boolean;
 	}
 
-	interface SettingsData {
+	interface SettingsPages {
 		[ key: string ]: SettingsPage;
+	}
+
+	interface SettingsData {
+		start?: CustomSettingsField;
+		pages: SettingsPages;
 	}
 }
 
