@@ -24,7 +24,7 @@ type Context = {
 const getContext = ( ns?: string ) => getContextFn< Context >( ns );
 
 type Store = typeof productGalleryLargeImage & StorePart< ProductGallery >;
-const { state, actions } = store< Store >( 'woocommerce/product-gallery' );
+const { actions } = store< Store >( 'woocommerce/product-gallery' );
 
 const productGalleryLargeImage = {
 	state: {
@@ -68,21 +68,6 @@ const productGalleryLargeImage = {
 				context.styles.transform = `scale(1.0)`;
 				context.styles[ 'transform-origin' ] = '';
 			}
-		},
-	},
-	callbacks: {
-		scrollInto: () => {
-			if ( ! state.isSelected ) {
-				return;
-			}
-
-			const { ref } = getElement();
-			// Scroll to the selected image with a smooth animation.
-			ref.scrollIntoView( {
-				behavior: 'smooth',
-				block: 'nearest',
-				inline: 'center',
-			} );
 		},
 	},
 };

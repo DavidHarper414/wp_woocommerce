@@ -76,83 +76,77 @@ class ProductGalleryLargeImage extends AbstractBlock {
 			$frontend_scripts::load_scripts();
 		}
 
+		$images_html = $this->get_main_images_html( $block->context, $post_id );
+		$directives  = $this->get_directives( $block->context );
+
+		$directives_html = array_reduce(
+			array_keys( $directives ),
+			function ( $carry, $key ) use ( $directives ) {
+				return $carry . ' ' . $key . '="' . esc_attr( $directives[ $key ] ) . '"';
+			},
+			''
+		);
+
 		$processor = new \WP_HTML_Tag_Processor( $content );
 		$processor->next_tag();
 		$processor->remove_class( 'wp-block-woocommerce-product-gallery-large-image' );
 		$content = $processor->get_updated_html();
 
-		[ $visible_main_image, $main_images ] = $this->get_main_images_html( $block->context, $post_id );
-
-		$directives = $this->get_directives( $block->context );
-
-		return strtr(
-			'<div class="wc-block-product-gallery-large-image wp-block-woocommerce-product-gallery-large-image" {directives}>
+		ob_start();
+		?>
+			<div class="wc-block-product-gallery-large-image wp-block-woocommerce-product-gallery-large-image" <?php echo $directives_html; ?>>
 				<ul class="wc-block-product-gallery-large-image__container" tabindex="-1">
-					{main_images}
+					<?php echo $images_html; ?>
 				</ul>
-					{content}
-			</div>',
-			array(
-				'{visible_main_image}' => $visible_main_image,
-				'{main_images}'        => implode( ' ', $main_images ),
-				'{content}'            => $content,
-				'{directives}'         => array_reduce(
-					array_keys( $directives ),
-					function ( $carry, $key ) use ( $directives ) {
-						return $carry . ' ' . $key . '="' . esc_attr( $directives[ $key ] ) . '"';
-					},
-					''
-				),
-			)
-		);
+				<?php echo $content; ?>
+			</div>
+		<?php
+		$html = ob_get_clean();
+
+		return $html;
 	}
 
 	/**
 	 * Get the main images html code. The first element of the array contains the HTML of the first image that is visible, the second element contains the HTML of the other images that are hidden.
 	 *
 	 * @param array $context The block context.
-	 * @param int   $product_id The product id.
 	 *
 	 * @return array
 	 */
-	private function get_main_images_html( $context, $product_id ) {
-		$attributes = array(
-			'class'                  => 'wc-block-woocommerce-product-gallery-large-image__image',
-			'data-wc-watch'          => 'callbacks.scrollInto',
-			'data-wc-bind--tabindex' => 'state.thumbnailTabIndex',
-			'data-wc-on--keydown'    => 'actions.onSelectedLargeImageKeyDown',
-			'data-wc-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide' => 'state.isSelected',
-			'data-wc-on--touchstart' => 'actions.onTouchStart',
-			'data-wc-on--touchmove'  => 'actions.onTouchMove',
-			'data-wc-on--touchend'   => 'actions.onTouchEnd',
-		);
+	private function get_main_images_html( $context ) {
+		$base_classes = 'wc-block-woocommerce-product-gallery-large-image__image';
 
 		if ( $context['fullScreenOnClick'] ) {
-			$attributes['class'] .= ' wc-block-woocommerce-product-gallery-large-image__image--full-screen-on-click';
+			$base_classes .= ' wc-block-woocommerce-product-gallery-large-image__image--full-screen-on-click';
 		}
-
 		if ( $context['hoverZoom'] ) {
-			$attributes['class']              .= ' wc-block-woocommerce-product-gallery-large-image__image--hoverZoom';
-			$attributes['data-wc-bind--style'] = 'state.styles';
+			$base_classes .= ' wc-block-woocommerce-product-gallery-large-image__image--hoverZoom';
 		}
 
-		$main_images = ProductGalleryUtils::get_product_gallery_images(
-			$product_id,
-			'full',
-			$attributes,
-			'wc-block-product-gallery-large-image__image-element',
-			$context['cropImages']
-		);
+		ob_start();
+		?>
+		<template data-wc-each--largeimage="context.imageData" data-wc-each-key="context.largeimage.src">
+			<li class="wc-block-product-gallery-large-image__wrapper">
+				<img
+					class="<?php echo esc_attr( $base_classes ); ?>"
+					data-wc-bind--src="context.largeimage.src"
+					data-wc-bind--srcset="context.largeimage.srcSet"
+					data-wc-bind--sizes="context.largeimage.sizes"
+					data-wc-bind--id="context.largeimage.id"
+					data-wc-bind--tabindex="state.thumbnailTabIndex"
+					data-wc-on--keydown="actions.onSelectedLargeImageKeyDown"
+					data-wc-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="state.isSelected"
+					data-wc-on--touchstart="actions.onTouchStart"
+					data-wc-on--touchmove="actions.onTouchMove"
+					data-wc-on--touchend="actions.onTouchEnd"
+					alt=""
+				/>
+				</li>
+			</template>
+		<?php
+		$template = ob_get_clean();
 
-		$main_image_with_wrapper = array_map(
-			function ( $main_image_element ) {
-				return "<li class='wc-block-product-gallery-large-image__wrapper'>" . $main_image_element . '</li>';
-			},
-			$main_images
-		);
-
-		$visible_main_image = array_shift( $main_images );
-		return array( $visible_main_image, $main_image_with_wrapper );
+		return $template;
 	}
 
 	/**

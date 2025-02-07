@@ -119,13 +119,13 @@ class ProductGallery extends AbstractBlock {
 		$product_id          = strval( $product->get_id() );
 		$gallery_with_dialog = $this->inject_dialog( $content, $this->render_dialog( $product_gallery_full_images ) );
 		$p                   = new \WP_HTML_Tag_Processor( $gallery_with_dialog );
-
 		if ( $p->next_tag() ) {
 			$p->set_attribute( 'data-wc-interactive', wp_json_encode( array( 'namespace' => 'woocommerce/product-gallery' ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) );
 			$p->set_attribute(
 				'data-wc-context',
 				wp_json_encode(
 					array(
+						'imageData'           => ProductGalleryUtils::get_product_gallery_image_data( $product ),
 						'selectedImageNumber' => 1,
 						'isDialogOpen'        => false,
 						'disableLeft'         => true,
@@ -135,7 +135,7 @@ class ProductGallery extends AbstractBlock {
 						'touchCurrentX'       => 0,
 						'productId'           => $product_id,
 						'imageIds'            => ProductGalleryUtils::get_product_gallery_image_ids( $product, null, false ),
-
+						'userHasInteracted'   => false,
 					),
 					JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
 				)

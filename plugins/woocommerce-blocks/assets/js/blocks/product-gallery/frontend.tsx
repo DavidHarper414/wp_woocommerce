@@ -20,6 +20,13 @@ export interface ProductGalleryContext {
 	touchStartX: number;
 	touchCurrentX: number;
 	isDragging: boolean;
+	userHasInteracted: boolean;
+	imageData: {
+		id: string;
+		src: string;
+		srcSet: string;
+		sizes: string;
+	}[];
 }
 
 const getContext = ( ns?: string ) =>
@@ -62,6 +69,24 @@ const productGallery = {
 		get thumbnailTabIndex(): string {
 			return state.isSelected ? '0' : '-1';
 		},
+		get currentImageData() {
+			const { imageData, selectedImageNumber, userHasInteracted } =
+				getContext();
+			const index = selectedImageNumber - 1;
+
+			// Return empty image data if no user interaction and not first two images.
+			if ( ! userHasInteracted && index > 1 ) {
+				return {
+					id: '',
+					src: '',
+					srcSet: '',
+					sizes: '',
+				};
+			}
+
+			// For first two images or after user interaction, return the actual image data.
+			return imageData[ index ] || imageData[ 0 ];
+		},
 	},
 	actions: {
 		selectImage: ( newImageNumber: number ) => {
@@ -72,9 +97,24 @@ const productGallery = {
 				context.imageIds.length
 			);
 
+			context.userHasInteracted = true;
 			context.selectedImageNumber = newImageNumber;
 			context.disableLeft = disableLeft;
 			context.disableRight = disableRight;
+
+			const { imageData } = context;
+			const imageIndex = newImageNumber - 1;
+			const imageId = imageData[ imageIndex ].id;
+			if ( imageIndex !== -1 ) {
+				const imageElement = document.getElementById( imageId );
+				if ( imageElement ) {
+					imageElement.scrollIntoView( {
+						behavior: 'smooth',
+						block: 'nearest',
+						inline: 'center',
+					} );
+				}
+			}
 		},
 		selectCurrentImage: ( event?: MouseEvent ) => {
 			if ( event ) {
