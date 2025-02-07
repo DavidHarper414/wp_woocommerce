@@ -24,13 +24,12 @@ jobs:
             - name: Check if community contribution
               id: check
               run: |
-                  user='${{ github.event.pull_request.user.login || github.event.issue.user.login }}'
                   association='${{ github.event.pull_request.author_association || github.event.issue.author_association }}'
                   if [[ $association == 'COLLABORATOR' || $association == 'MEMBER' ]]; then
                       contributor='no'
                   else
                       contributor='yes'
-                      if [[ $user == 'gglobalstep' ]]; then
+                      if [[ '${{ github.event.pull_request.user.login || github.event.issue.user.login }}' == 'gglobalstep' ]]; then
                           contributor='no'
                       fi
                   fi
@@ -56,13 +55,12 @@ jobs:
         - name: Check if community contribution
           id: check
           run: |
-            user='${{ github.event.pull_request.user.login || github.event.issue.user.login }}'
             association='${{ github.event.pull_request.author_association || github.event.issue.author_association }}'
             if [[ $association == 'COLLABORATOR' || $association == 'MEMBER' ]]; then
                 contributor='no'
             else
                 contributor='yes'
-                if [[ $user == 'gglobalstep' ]]; then
+                if [[ '${{ github.event.pull_request.user.login || github.event.issue.user.login }}' == 'gglobalstep' ]]; then
                     contributor='no'
                 fi
             fi
