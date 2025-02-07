@@ -64,10 +64,12 @@ export const SettingsPaymentsMain = () => {
 			?.business_country_code || null
 	);
 
-	const urlParams = new URLSearchParams( window.location.search );
-
-	// Effect for handling URL parameters and displaying messages or modals.
 	useEffect( () => {
+		// Record the page view event
+		recordEvent( 'settings_payments_pageview' );
+
+		// Handle URL parameters and display messages or modals.
+		const urlParams = new URLSearchParams( window.location.search );
 		const isAccountTestDriveError =
 			urlParams.get( 'test_drive_error' ) === 'true';
 		if ( isAccountTestDriveError ) {
@@ -287,6 +289,11 @@ export const SettingsPaymentsMain = () => {
 						'getPaymentProviders'
 					);
 
+					// Record the plugin installation event.
+					recordEvent( 'settings_payments_provider_installed', {
+						provider_id: id,
+					} );
+
 					// Wait for the state update and fetch the latest providers.
 					const updatedProviders = await resolveSelect(
 						PAYMENT_SETTINGS_STORE_NAME
@@ -299,6 +306,11 @@ export const SettingsPaymentsMain = () => {
 							provider?._suggestion_id === id || // For suggestions that were replaced by a gateway.
 							provider.plugin.slug === slug // Last resort to find the provider.
 					);
+
+					// Record the event when user successfully enables a gateway.
+					recordEvent( 'settings_payments_provider_enable', {
+						provider_id: id,
+					} );
 
 					// If the installed and/or activated extension has recommended payment methods,
 					// redirect to the payment methods page.
