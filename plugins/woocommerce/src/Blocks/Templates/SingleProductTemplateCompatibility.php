@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Automattic\WooCommerce\Blocks\Templates;
 
-use Automattic\WooCommerce\Enums\ProductType;
 use Automattic\WooCommerce\Blocks\Utils\BlockTemplateUtils;
 
 /**
@@ -34,7 +33,12 @@ class SingleProductTemplateCompatibility extends AbstractTemplateCompatibility {
 
 		$block_name = $block['blockName'];
 
-		$block_hooks = $this->get_block_hooks( $block_name, $block_content, $block );
+		$block_hooks = array_filter(
+			$this->hook_data,
+			function ( $hook ) use ( $block_name ) {
+				return in_array( $block_name, $hook['block_names'], true );
+			}
+		);
 
 		$first_or_last_block_content = $this->inject_hook_to_first_and_last_blocks( $block_content, $block, $block_hooks );
 
@@ -252,88 +256,13 @@ class SingleProductTemplateCompatibility extends AbstractTemplateCompatibility {
 				'block_names' => array( 'woocommerce/add-to-cart-with-options' ),
 				'position'    => 'before',
 				'hooked'      => array(),
-				'conditional' => array( $this, 'is_template_descendent' ),
 			),
 			'woocommerce_after_add_to_cart_form'        => array(
 				'block_names' => array( 'woocommerce/add-to-cart-with-options' ),
 				'position'    => 'after',
 				'hooked'      => array(),
-				'conditional' => array( $this, 'is_template_descendent' ),
-			),
-			'woocommerce_before_add_to_cart_quantity'   => array(
-				'block_names' => array( 'woocommerce/add-to-cart-with-options-quantity-selector' ),
-				'position'    => 'before',
-				'hooked'      => array(),
-				'conditional' => array( $this, 'is_template_descendent' ),
-			),
-			'woocommerce_after_add_to_cart_quantity'    => array(
-				'block_names' => array( 'woocommerce/add-to-cart-with-options-quantity-selector' ),
-				'position'    => 'after',
-				'hooked'      => array(),
-				'conditional' => array( $this, 'is_template_descendent' ),
-			),
-			'woocommerce_before_add_to_cart_button'     => array(
-				'block_names' => array( 'woocommerce/add-to-cart-with-options-quantity-selector', 'woocommerce/product-button' ),
-				'position'    => 'before',
-				'hooked'      => array(),
-				'conditional' => array( $this, 'woocommerce_before_add_to_cart_button_conditional' ),
-			),
-			'woocommerce_after_add_to_cart_button'      => array(
-				'block_names' => array( 'woocommerce/product-button' ),
-				'position'    => 'after',
-				'hooked'      => array(),
-				'conditional' => array( $this, 'is_template_descendent' ),
 			),
 		);
-	}
-
-	/**
-	 * Check if the block is a descendent of the Single Product template instead of the Query Loop or the Single Product block.
-	 *
-	 * @param string $block_content Block content.
-	 * @param array  $block         Block.
-	 * @return bool
-	 */
-	protected static function is_template_descendent( $block_content, $block ) {
-		global $product;
-
-		if ( ! $product instanceof \WC_Product ) {
-			return false;
-		}
-
-		// Avoid running the compatibility layer for blocks which are not directly descendants of the Single Product template.
-		if (
-			( isset( $block['attrs']['isDescendentOfQueryLoop'] ) && $block['attrs']['isDescendentOfQueryLoop'] ) ||
-			( isset( $block['attrs']['isDescendentOfSingleProductBlock'] ) && $block['attrs']['isDescendentOfSingleProductBlock'] )
-		) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Run the hook conditionally before the Add to Cart Button block or the Quantity Selector block depending on the product type.
-	 *
-	 * @param string $block_content Block content.
-	 * @param array  $block         Block.
-	 * @return bool
-	 */
-	protected static function woocommerce_before_add_to_cart_button_conditional( $block_content, $block ) {
-		if ( ! self::is_template_descendent( $block_content, $block ) ) {
-			return false;
-		}
-
-		global $product;
-
-		if ( 'woocommerce/product-button' === $block['blockName'] && ProductType::SIMPLE !== $product->get_type() ) {
-			return true;
-		}
-		if ( 'woocommerce/add-to-cart-with-options-quantity-selector' === $block['blockName'] && ProductType::SIMPLE === $product->get_type() ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -473,7 +402,7 @@ class SingleProductTemplateCompatibility extends AbstractTemplateCompatibility {
 	 * @return bool True if the template has a single product template block, false otherwise.
 	 */
 	private static function has_single_product_template_blocks( $parsed_blocks ) {
-		$single_product_template_blocks = array( 'woocommerce/product-image-gallery', 'woocommerce/product-details', 'woocommerce/add-to-cart-form', 'woocommerce/add-to-cart-with-options', 'woocommerce/product-meta', 'woocommerce/product-price', 'woocommerce/breadcrumbs' );
+		$single_product_template_blocks = array( 'woocommerce/product-image-gallery', 'woocommerce/product-gallery', 'woocommerce/product-details', 'woocommerce/add-to-cart-form', 'woocommerce/add-to-cart-with-options', 'woocommerce/product-meta', 'woocommerce/product-price', 'woocommerce/breadcrumbs' );
 
 		return BlockTemplateUtils::has_block_including_patterns( $single_product_template_blocks, $parsed_blocks );
 	}

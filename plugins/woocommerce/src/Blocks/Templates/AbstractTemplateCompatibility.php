@@ -104,7 +104,6 @@ abstract class AbstractTemplateCompatibility {
 	 *       <function-name> => <priority>,
 	 *        ...
 	 *     ],
-	 *     conditional => <function-name>,
 	 *  ],
 	 * ]
 	 * Where:
@@ -114,32 +113,8 @@ abstract class AbstractTemplateCompatibility {
 	 * - hooked is an array of functions hooked to the hook that will be
 	 *   replaced. The key is the function name and the value is the
 	 *   priority.
-	 * - conditional is a function that will be used to determine if the hook
-	 *   should be injected. The function should return a boolean.
 	 */
 	abstract protected function set_hook_data();
-
-	/**
-	 * Get the hooks for a given block.
-	 *
-	 * @param string $block_name Block name.
-	 * @param string $block_content Block content.
-	 * @param array  $block Block.
-	 *
-	 * @return array
-	 */
-	protected function get_block_hooks( $block_name, $block_content, $block ) {
-		return array_filter(
-			$this->hook_data,
-			function ( $hook ) use ( $block_name, $block_content, $block ) {
-				if ( ! in_array( $block_name, $hook['block_names'], true ) ) {
-					return false;
-				}
-
-				return ! isset( $hook['conditional'] ) || $hook['conditional']( $block_content, $block );
-			}
-		);
-	}
 
 	/**
 	 * Remove the default callback added by WooCommerce. We replaced these

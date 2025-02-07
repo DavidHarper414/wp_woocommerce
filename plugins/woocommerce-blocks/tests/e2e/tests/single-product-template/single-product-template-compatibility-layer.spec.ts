@@ -83,7 +83,7 @@ const singleOccurrenceScenarios: Scenario[] = [
 	},
 ];
 
-const singleOccurrenceScenariosWithAddToCartWithOptionsBlock: Scenario[] = [
+const simpleProductAddToCartWithOptionsBlockHooks: Scenario[] = [
 	{
 		title: 'Before Add To Cart Form',
 		dataTestId: 'woocommerce_before_add_to_cart_form',
@@ -118,6 +118,20 @@ const singleOccurrenceScenariosWithAddToCartWithOptionsBlock: Scenario[] = [
 		title: 'After Add To Cart Button',
 		dataTestId: 'woocommerce_after_add_to_cart_button',
 		content: 'Hook: woocommerce_after_add_to_cart_button',
+		amount: 1,
+	},
+];
+const variableProductAddToCartWithOptionsBlockHooks: Scenario[] = [
+	{
+		title: 'Before Add To Cart Form',
+		dataTestId: 'woocommerce_before_add_to_cart_form',
+		content: 'Hook: woocommerce_before_add_to_cart_form',
+		amount: 1,
+	},
+	{
+		title: 'After Add To Cart Form',
+		dataTestId: 'woocommerce_after_add_to_cart_form',
+		content: 'Hook: woocommerce_after_add_to_cart_form',
 		amount: 1,
 	},
 	{
@@ -190,18 +204,33 @@ test.describe( 'Compatibility Layer in Single Product template', () => {
 			isOnlyCurrentEntityDirty: true,
 		} );
 
-		await page.goto( '/product/hoodie/' );
+		await page.goto( '/product/cap/' );
 
-		for ( const scenario of singleOccurrenceScenariosWithAddToCartWithOptionsBlock ) {
+		for ( const scenario of simpleProductAddToCartWithOptionsBlockHooks ) {
 			const hooks = page.getByTestId( scenario.dataTestId );
 
 			await expect(
 				hooks,
-				`Expected ${ scenario.dataTestId } hook to appear ${ scenario.amount } time(s)`
+				`Expected ${ scenario.dataTestId } hook to appear ${ scenario.amount } time(s) in simple product page`
 			).toHaveCount( scenario.amount );
 			await expect(
 				hooks,
-				`Expected ${ scenario.dataTestId } hook to have text "${ scenario.content }"`
+				`Expected ${ scenario.dataTestId } hook to have text "${ scenario.content }" in simple product page`
+			).toHaveText( scenario.content );
+		}
+
+		await page.goto( '/product/hoodie/' );
+
+		for ( const scenario of variableProductAddToCartWithOptionsBlockHooks ) {
+			const hooks = page.getByTestId( scenario.dataTestId );
+
+			await expect(
+				hooks,
+				`Expected ${ scenario.dataTestId } hook to appear ${ scenario.amount } time(s) in variable product page`
+			).toHaveCount( scenario.amount );
+			await expect(
+				hooks,
+				`Expected ${ scenario.dataTestId } hook to have text "${ scenario.content }" in variable product page`
 			).toHaveText( scenario.content );
 		}
 	} );
