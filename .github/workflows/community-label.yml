@@ -2,7 +2,7 @@ name: Add Community Label, Assign Reviewers
 
 on:
     pull_request_target:
-        types: [opened]
+        types: [opened, ready_for_review]
     issues:
         types: [opened]
 
@@ -17,6 +17,7 @@ permissions: {}
 jobs:
     verify:
         name: Add Community Label, Assign Reviewers
+        if: ${{ github.event.action == 'opened' }}
         runs-on: ubuntu-20.04
         permissions:
             contents: read
@@ -47,3 +48,14 @@ jobs:
               with:
                   config: '.github/project-community-pr-assigner.yml'
                   token: ${{ secrets.PR_ASSIGN_TOKEN }}
+    add-reviews:
+      name: Automate assigning team for review
+      if: ${{ github.event.pull_request && github.event.pull_request.draft == false && github.actor != 'dependabot[bot]' }}
+      runs-on: ubuntu-latest
+      steps:
+        - name: Check config and assign reviews
+          continue-on-error: ${{ ( github.event.pull_request.head.repo.fork && 'true' ) || 'false' }}
+          uses: acq688/Request-Reviewer-For-Team-Action@v1.1
+          with:
+            config: '.github/automate-team-review-assignment-config.yml'
+            GITHUB_TOKEN: ${{ secrets.PR_ASSIGN_TOKEN }}
