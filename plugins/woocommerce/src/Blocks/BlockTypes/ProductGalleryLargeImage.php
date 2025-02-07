@@ -73,6 +73,8 @@ class ProductGalleryLargeImage extends AbstractBlock {
 			return '';
 		}
 
+		wp_enqueue_script_module( $this->get_full_block_name() );
+
 		$processor = new \WP_HTML_Tag_Processor( $content );
 		$processor->next_tag();
 		$processor->remove_class( 'wp-block-woocommerce-product-gallery-large-image' );
