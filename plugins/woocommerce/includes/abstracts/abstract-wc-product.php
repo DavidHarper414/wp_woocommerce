@@ -1973,7 +1973,7 @@ class WC_Product extends WC_Abstract_Legacy_Product {
 		 * @param float $value The cost value that is being rendered.
 		 * @param WC_Product $product The product for which the cost is rendered.
 		 *
-		 * @since 9.7.0
+		 * @since 9.8.0
 		 */
 		return apply_filters( 'woocommerce_get_cogs_html', $html, $value, $this );
 	}
