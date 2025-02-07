@@ -62,75 +62,7 @@ exports.test = base.test.extend( {
 			},
 		} );
 
-		await use( {
-			/**
-			 * Deactivate WC.
-			 */
-			deactivateWC: async () => {
-				return await wcbtApi.fetch(
-					'./wp-json/wc-admin-test-helper/live-branches/deactivate/v1',
-					{ method: 'GET' }
-				);
-			},
-
-			/**
-			 * Install the latest WC including pre-releases.
-			 */
-			installLatest: async () => {
-				const response = await wcbtApi.fetch(
-					'./wp-json/wc-admin-test-helper/live-branches/install/latest/v1',
-					{
-						method: 'POST',
-						data: { include_pre_releases: true },
-					}
-				);
-
-				if ( ! response.ok() ) {
-					throw new Error(
-						`Failed to install latest WC: ${ response.status() } ${ await response.text() }`
-					);
-				}
-
-				return await response.json();
-			},
-
-			/**
-			 * Install a specific WC version.
-			 *
-			 * @param {string} resolvedVersion - The WooCommerce version (e.g., '9.6.0-beta').
-			 */
-			installSpecificVersion: async ( resolvedVersion ) => {
-				const downloadUrl = `https://github.com/woocommerce/woocommerce/releases/download/${ resolvedVersion }/woocommerce.zip`;
-				return await wcbtApi.fetch(
-					'./wp-json/wc-admin-test-helper/live-branches/install/v1',
-					{
-						method: 'POST',
-						data: {
-							pr_name: resolvedVersion,
-							download_url: downloadUrl,
-							version: resolvedVersion,
-						},
-					}
-				);
-			},
-
-			/**
-			 * Activate a specific WC version.
-			 *
-			 * @param {string} resolvedVersion - The WooCommerce version (e.g., '9.6.0-beta').
-			 */
-			activateWC: async ( resolvedVersion ) => {
-				return await wcbtApi.fetch(
-					'./wp-json/wc-admin-test-helper/live-branches/activate/v1',
-					{
-						method: 'POST',
-						data: {
-							version: resolvedVersion,
-						},
-					}
-				);
-			},
-		} );
+		await use( wcbtApi );
 	},
 
 	testPageTitlePrefix: [ '', { option: true } ],
