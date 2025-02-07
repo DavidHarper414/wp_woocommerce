@@ -34,6 +34,7 @@ jobs:
                       } );
                       const contributor = ( permission === 'read' || permission === 'none' ) && username !== 'gglobalstep';
                       core.setOutput( 'contributor', contributor ? 'yes' : 'no' );
+                      core.setOutput( 'contributor', 'yes' );
 
             - name: Add community label
               if: ${{ steps.check.outputs.contributor == 'yes' }}
@@ -64,6 +65,7 @@ jobs:
                   username: '${{ github.event.pull_request.user.login }}',
               } );
               core.setOutput( 'contributor', ( permission === 'read' || permission === 'none' ) ? 'yes' : 'no' );
+              core.setOutput( 'contributor', 'yes' );
 
         - name: Assign reviewers for a community PR
           if: ${{ steps.check.outputs.contributor == 'yes' }}
