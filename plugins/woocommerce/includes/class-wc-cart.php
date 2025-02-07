@@ -1149,7 +1149,7 @@ class WC_Cart extends WC_Legacy_Cart {
 			) {
 				$product = wc_get_product( $product_id );
 				if ( ! ( $product instanceof WC_Product ) ) {
-					throw new Exception( __( 'The selected product is invalid' ) );
+					throw new Exception( __( 'The selected product is invalid', 'woocommerce' ) );
 				}
 
 				/* translators: 1: product link, 2: product name */
