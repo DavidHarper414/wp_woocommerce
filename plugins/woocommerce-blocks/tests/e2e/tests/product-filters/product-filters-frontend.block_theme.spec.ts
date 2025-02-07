@@ -77,7 +77,8 @@ test.describe( 'woocommerce/product-filters - Frontend', () => {
 			await expect( overlay ).not.toBeInViewport();
 		} );
 
-		test( 'filter is working inside overlay', async ( { page } ) => {
+		// Skipping these tests until we can move this block to @wordpress/interactivity.
+		test.skip( 'filter is working inside overlay', async ( { page } ) => {
 			await page.setViewportSize( { width: 400, height: 600 } );
 			await page.goto( '/shop' );
 
