@@ -7,7 +7,7 @@ on:
         types: [opened]
 
 concurrency:
-    group: automate-team-review-assignment-${{ github.event_name }}-${{ github.event.pull_request.number || github.event.issue.number }}
+    group: automate-team-review-assignment-${{ github.event_name }}-${{ github.event.action }}-${{ github.event.pull_request.number || github.event.issue.number }}
     cancel-in-progress: true
 
 permissions:
