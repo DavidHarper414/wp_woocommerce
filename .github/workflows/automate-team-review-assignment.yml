@@ -41,7 +41,7 @@ jobs:
               uses: actions/github-script@v7
               with:
                   script: |
-                      github.rest.rest.issues.addLabels({
+                      github.rest.issues.addLabels({
                           issue_number: ${{ github.event.pull_request.number || github.event.issue.number }},
                           owner: context.repo.owner,
                           repo: context.repo.repo,
