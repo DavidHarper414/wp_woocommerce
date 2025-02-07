@@ -196,10 +196,15 @@ class CheckoutFieldsFrontend {
 
 			foreach ( $additional_fields as $key => $field_data ) {
 				// We can't skip, field might be required.
-				$field_value = wc_clean( wp_unslash( $_POST[ $key ] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$field_value = trim( wc_clean( wp_unslash( $_POST[ $key ] ?? '' ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
+				if ( 0 === strlen( $field_value ) && ! ( $field_data['required'] ?? false ) ) {
+					continue; // Skip, otherwise validation might prevent saving empty optional fields.
+				}
+
+				$validation = $this->checkout_fields_controller->validate_field( $key, $field_value );
+				// Sanitize should always be after validation to ensure char stripping doesn't affect validation.
 				$field_value = $this->checkout_fields_controller->sanitize_field( $key, $field_value );
-				$validation  = $this->checkout_fields_controller->validate_field( $key, $field_value );
 
 				if ( is_wp_error( $validation ) && $validation->has_errors() ) {
 					foreach ( $validation->get_error_messages() as $error_message ) {

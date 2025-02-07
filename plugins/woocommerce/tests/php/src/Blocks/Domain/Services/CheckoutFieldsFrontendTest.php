@@ -127,7 +127,7 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		woocommerce_register_additional_checkout_field(
 			array(
 				'id'                => 'mynamespace/generic_validation_error',
-				'label'             => 'Impossible field',
+				'label'             => 'Optional field with validation',
 				'location'          => 'contact',
 				'required'          => false,
 				'validate_callback' => function () {
@@ -148,6 +148,12 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$this->assertCount( 1, $mocked_messages );
 		$this->assertEquals( 'Generic validation error message', $mocked_messages[0]['message'] );
 		$this->assertEquals( 'error', $mocked_messages[0]['type'] );
+
+		$_POST['mynamespace/generic_validation_error'] = '';
+		$mocked_messages                               = [];
+
+		$this->sut->save_account_form_fields( 1 );
+		$this->assertCount( 0, $mocked_messages );
 
 		__internal_woocommerce_blocks_deregister_checkout_field( 'mynamespace/generic_validation_error' );
 	}
