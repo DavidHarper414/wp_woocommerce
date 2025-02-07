@@ -93,6 +93,10 @@
 
 		&-text {
 			margin-right: $gap;
+
+			@media screen and ( max-width: $break-medium ) {
+				margin-right: 0;
+			}
 		}
 
 		&-content {
@@ -137,7 +141,7 @@
 				align-self: center;
 
 				@media screen and ( min-width: $break-medium ) and ( max-width: $break-xlarge ) {
-					flex-wrap: wrap;
+					flex-wrap: nowrap;
 					justify-content: flex-end;
 				}
 
