@@ -41,13 +41,13 @@ jobs:
               with:
                   script: |
                       octokit.rest.issues.addLabels({
-                          issue_number: context.issue.number,
+                          issue_number: ${{ github.event.pull_request.number || github.event.issue.number }},
                           owner: context.repo.owner,
                           repo: context.repo.repo,
                           labels: [ 'type: community contribution' ]
                       })
 
-    add-reviews:
+    assign-reviewers:
       name: Assign reviewers
       if: ${{ github.event.pull_request }}
       runs-on: ubuntu-latest
@@ -74,7 +74,7 @@ jobs:
               token: ${{ secrets.PR_ASSIGN_TOKEN }}
 
         - name: Assign reviewers for a teams PR
-          if: ${{ steps.check.outputs.contributor == 'no' }}
+          if: ${{ steps.check.outputs.contributor == 'no' && github.event.pull_request.draft == false }}
           continue-on-error: ${{ ( github.event.pull_request.head.repo.fork && 'true' ) || 'false' }}
           uses: acq688/Request-Reviewer-For-Team-Action@v1.1
           with:
