@@ -400,10 +400,9 @@ add_action( 'woocommerce_order_status_completed', 'wc_paying_customer' );
  * @param string $customer_email Customer email to check.
  * @param int    $user_id User ID to check.
  * @param int    $product_id Product ID to check.
- * @param bool   $lookup_tables Whether to use lookup tables - it can optimize performance, but correctness depends on AS job.
  * @return bool
  */
-function wc_customer_bought_product( $customer_email, $user_id, $product_id, $lookup_tables = false ) {
+function wc_customer_bought_product( $customer_email, $user_id, $product_id ) {
 	global $wpdb;
 
 	$result = apply_filters( 'woocommerce_pre_customer_bought_product', null, $customer_email, $user_id, $product_id );
@@ -412,9 +411,22 @@ function wc_customer_bought_product( $customer_email, $user_id, $product_id, $lo
 		return $result;
 	}
 
-	$transient_name = 'wc_customer_bought_product_' . md5( $customer_email . $user_id . $lookup_tables );
+	/**
+	 * Whether to use lookup tables - it can optimize performance, but correctness depends on the frequency of the AS job.
+	 *
+	 * @since 9.6.2
+	 *
+	 * @param bool $enabled
+	 * @param string $customer_email Customer email to check.
+	 * @param int    $user_id User ID to check.
+	 * @param int    $product_id Product ID to check.
+	 * @return bool
+	 */
+	$use_lookup_tables = apply_filters( 'woocommerce_customer_bought_product_use_lookup_tables', false, $customer_email, $user_id, $product_id );
 
-	if ( $lookup_tables ) {
+	$transient_name = 'wc_customer_bought_product_' . md5( $customer_email . $user_id . $use_lookup_tables );
+
+	if ( $use_lookup_tables ) {
 		// Lookup tables get refreshed along with the `woocommerce_reports` transient version.
 		$transient_version = WC_Cache_Helper::get_transient_version( 'woocommerce_reports' );
 	} else {
@@ -459,7 +471,7 @@ function wc_customer_bought_product( $customer_email, $user_id, $product_id, $lo
 			if ( $user_id ) {
 				$user_id_clause = 'OR o.customer_id = ' . absint( $user_id );
 			}
-			if ( $lookup_tables ) {
+			if ( $use_lookup_tables ) {
 				$sql = "
 SELECT DISTINCT product_or_variation_id FROM (
 SELECT CASE WHEN product_id != 0 THEN product_id ELSE variation_id END AS product_or_variation_id
@@ -482,7 +494,7 @@ AND ( o.billing_email IN ('" . implode( "','", $customer_data ) . "') $user_id_c
 ";
 			}
 			$result = $wpdb->get_col( $sql );
-		} elseif ( $lookup_tables ) {
+		} elseif ( $use_lookup_tables ) {
 			$result = $wpdb->get_col(
 				"
 SELECT DISTINCT product_or_variation_id FROM (
