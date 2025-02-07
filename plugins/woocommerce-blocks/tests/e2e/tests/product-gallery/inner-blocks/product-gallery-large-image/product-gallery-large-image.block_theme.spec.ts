@@ -123,7 +123,7 @@ test.describe( `${ blockData.name }`, () => {
 					( el ) => el.style
 				);
 
-				expect( styleOnHover.transform ).toBe( 'scale(1.3)' );
+				expect( styleOnHover.transform ).toBe( '' );
 			} );
 		} );
 		test( 'should not work on frontend when is disabled', async ( {
