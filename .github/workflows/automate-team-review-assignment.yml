@@ -39,6 +39,7 @@ jobs:
               if: ${{ steps.check.outputs.contributor == 'yes' }}
               uses: actions/github-script@v7
               with:
+                  retries: 3
                   script: |
                       octokit.rest.issues.addLabels({
                           issue_number: ${{ github.event.pull_request.number || github.event.issue.number }},
