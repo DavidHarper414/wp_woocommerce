@@ -59,7 +59,7 @@ Follow the minimum width of each payment button size. Don't squeeze payment butt
 Use the same corner radius for all payment buttons. Don't make the corner radius larger or smaller than other payment buttons.
 
 - Default corner radius: 4px
-- Maximum corner radius: ½ button height
+- Maximum corner radius: half of the button height
 
 ![Corner radius.png](https://developer.woocommerce.com/docs/wp-content/uploads/sites/3/2024/01/Corner-radius.png)
 
