@@ -49,7 +49,7 @@ Use the same width size for all payment buttons. Don't make the width larger or 
 
 Buttons have a minimum width to ensure readability.
 
-![Layout and spacing-2.png](https://developer.woocommerce.com/docs/wp-content/uploads/sites/3/2024/01/Layout-and-spacing-2.png)
+![Layout and spacing-2.png](https://developer.woocommerce.com/docs/wp-content/uploads/sites/3/2025/02/Layout-and-spacing-2-Updated.png)
 
 Follow the minimum width of each payment button size. Don't squeeze payment buttons in a single line.
 
