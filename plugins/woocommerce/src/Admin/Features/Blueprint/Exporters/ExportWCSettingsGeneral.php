@@ -70,6 +70,6 @@ class ExportWCSettingsGeneral implements StepExporter, HasAlias {
 	 * @return string
 	 */
 	public function get_description() {
-		return __( 'It includes all settings in WooCommerce | Settings | General', 'woocommerce' );
+		return __( 'It includes all settings in WooCommerce | Settings | General.', 'woocommerce' );
 	}
 }
