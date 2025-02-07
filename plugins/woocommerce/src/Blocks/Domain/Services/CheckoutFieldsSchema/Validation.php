@@ -8,7 +8,6 @@ use Opis\JsonSchema\{
 	Helper,
 	Validator
 };
-use Opis\JsonSchema\Errors\ErrorFormatter;
 use WP_Error;
 
 /**
@@ -81,12 +80,8 @@ class Validation {
 			return true;
 		}
 
-		// Generate useful error message.
-		$formatter = new ErrorFormatter();
-		$formatted = $formatter->formatFlat( $result->error() );
-		$errors    = implode( ', ', count( $formatted ) > 2 ? array_slice( $formatted, 2 ) : $formatted );
-
-		return new WP_Error( 'woocommerce_rest_checkout_invalid_field', $errors );
+		// Return generic error message.
+		return new WP_Error( 'woocommerce_rest_checkout_invalid_field', __( 'Invalid field.', 'woocommerce' ) );
 	}
 
 	/**
