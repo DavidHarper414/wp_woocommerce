@@ -112,10 +112,9 @@ class AddToCartWithOptions extends AbstractBlock {
 			* @since 7.6.0
 			* @param boolean.
 			*/
-			$is_disabled_compatibility_layer       = apply_filters( 'woocommerce_disable_compatibility_layer', false );
-			$is_descendent_of_single_product_block = is_null( $previous_product ) || $post_id !== $previous_product->get_id();
+			$is_disabled_compatibility_layer = apply_filters( 'woocommerce_disable_compatibility_layer', false );
 
-			if ( ! $is_disabled_compatibility_layer && ! $is_descendent_of_single_product_block ) {
+			if ( ! $is_disabled_compatibility_layer ) {
 				ob_start();
 				if ( ProductType::SIMPLE === $product_type ) {
 					/**
