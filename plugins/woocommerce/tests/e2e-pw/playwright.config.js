@@ -69,9 +69,15 @@ if ( process.env.CI ) {
 
 export const setupProjects = [
 	{
+		name: 'install wc with wc beta tester',
+		testDir: `${ TESTS_ROOT_PATH }/fixtures`,
+		testMatch: 'install-wc.setup.js',
+	},
+	{
 		name: 'global authentication',
 		testDir: `${ TESTS_ROOT_PATH }/fixtures`,
 		testMatch: 'auth.setup.js',
+		dependencies: [ 'install wc with wc beta tester' ],
 	},
 	{
 		name: 'consumer token setup',
