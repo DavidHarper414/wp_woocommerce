@@ -296,7 +296,7 @@ class FeaturesController {
 						'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=advanced&section=woocommerce_com' ) . '">',
 						'</a>'
 					),
-					'enabled_by_default' => $tracking_enabled,
+					'enabled_by_default' => true,
 					'disable_ui'         => false,
 
 					/*
