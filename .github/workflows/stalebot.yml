@@ -112,7 +112,7 @@ jobs:
         runs-on: ubuntu-20.04
         permissions:
             pull-requests: write
-        if: github.event_name == 'pull_request' && github.event.action == 'converted_to_draft'
+        if: ${{ false }}
         steps:
             - name: Remove approvals from draft PR
               uses: actions/github-script@v7
