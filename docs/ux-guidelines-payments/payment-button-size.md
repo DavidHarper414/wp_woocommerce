@@ -14,7 +14,8 @@ Height for payment buttons ranges from 40px (Small) to 55px (Large). The default
 ### Anatomy
 
 Payment buttons consist of up to three elements: a button component, payment logo, and optional label.
-[Anatomy.png]
+
+![Anatomy of a payment button](https://developer.woocommerce.com/docs/wp-content/uploads/sites/3/2025/02/Anatomy-updated.png)
 
 Don't place any text outside the surface area of the button.
 
