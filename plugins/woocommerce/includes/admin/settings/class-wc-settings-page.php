@@ -258,7 +258,16 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 							$section_settings_data[] = $this->get_custom_view_object( $custom_section_after_view );
 						}
 					}
+
 					$section_settings_data[] = $this->populate_setting_value( $section_setting );
+
+					if ( 'title' === $section_setting['type'] && ! empty( $section_setting['id'] ) ) {
+						$custom_title_view = $this->get_custom_view( 'woocommerce_settings_' . $section_setting['id'] );
+						
+						if ( ! empty( $custom_title_view ) ) {
+							$section_settings_data[] = $this->get_custom_view_object( $custom_title_view );
+						}
+					}
 				}
 			}
 
