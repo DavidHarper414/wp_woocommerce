@@ -31,7 +31,7 @@ The spacing between and around the Label and Payment Logo adapts based on the si
 
 The height of the button can adapt based on the needs of the theme.
 
-![Layout and spacing.png](https://developer.woocommerce.com/docs/wp-content/uploads/sites/3/2024/01/Layout-and-spacing.png)
+![Layout and spacing](https://developer.woocommerce.com/docs/wp-content/uploads/sites/3/2025/02/Layout-and-spacing-1-updated.png)
 
 ### Button size
 
