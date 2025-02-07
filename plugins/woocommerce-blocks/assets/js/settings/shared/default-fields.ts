@@ -3,7 +3,7 @@
  */
 import type { AllHTMLAttributes, AriaAttributes } from 'react';
 import type { JSONSchemaType } from 'ajv';
-import type { DocumentSchema } from '@woocommerce/base-hooks';
+import type { DocumentObject } from '@woocommerce/base-hooks';
 
 /**
  * Internal dependencies
@@ -48,9 +48,9 @@ export interface FormField {
 	attributes?: Record< keyof CustomFieldAttributes, string >;
 	// The rules for the field.
 	rules?: {
-		required?: JSONSchemaType< DocumentSchema >;
-		validation?: JSONSchemaType< DocumentSchema >;
-		hidden?: JSONSchemaType< DocumentSchema >;
+		required?: JSONSchemaType< DocumentObject< 'global' > >;
+		validation?: JSONSchemaType< DocumentObject< 'global' > >;
+		hidden?: JSONSchemaType< DocumentObject< 'global' > >;
 	};
 }
 
@@ -100,6 +100,7 @@ export interface CoreAddress {
 	state: string;
 	postcode: string;
 	phone: string;
+	email?: string;
 	[ x: `${ string }/${ string }` ]: string | boolean; // Additional fields are named like: namespace/field_name
 }
 

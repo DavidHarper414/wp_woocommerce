@@ -28,6 +28,8 @@ import { ValidatedTextInputProps } from './types';
 export type ValidatedTextInputHandle = {
 	focus?: () => void;
 	revalidate: () => void;
+	isFocused: () => boolean;
+	setErrorMessage: ( errorMessage: string ) => void;
 };
 
 /**
@@ -100,7 +102,8 @@ const ValidatedTextInput = forwardRef<
 					validationErrorId:
 						store.getValidationErrorId( errorIdString ),
 				};
-			}
+			},
+			[ errorIdString ]
 		);
 
 		const validateInput = useCallback(
@@ -113,7 +116,7 @@ const ValidatedTextInput = forwardRef<
 
 				// Trim white space before validation.
 				inputObject.value = inputObject.value.trim();
-				inputObject.setCustomValidity( '' );
+				// inputObject.setCustomValidity( '' );
 
 				if (
 					inputObject.checkValidity() &&
@@ -153,6 +156,15 @@ const ValidatedTextInput = forwardRef<
 					},
 					revalidate() {
 						validateInput( ! value );
+					},
+					isFocused() {
+						return (
+							inputRef.current?.ownerDocument?.activeElement ===
+							inputRef.current
+						);
+					},
+					setErrorMessage( errorMessage: string ) {
+						inputRef.current?.setCustomValidity( errorMessage );
 					},
 				};
 			},

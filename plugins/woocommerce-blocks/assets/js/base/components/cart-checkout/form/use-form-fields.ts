@@ -24,7 +24,12 @@ export const useFormFields = (
 	// Default fields from settings.
 	defaultFields: FormFields,
 	// Form type, can be billing, shipping, contact, additional-information, or calculator.
-	formType: string,
+	formType:
+		| 'billing'
+		| 'shipping'
+		| 'contact'
+		| 'additional-information'
+		| 'calculator',
 	// Address country.
 	addressCountry = ''
 ): KeyedFormField[] => {
@@ -43,12 +48,26 @@ export const useFormFields = (
 			if (
 				defaultConfig.rules.required &&
 				typeof defaultConfig.rules.required === 'object' &&
+				! Array.isArray( defaultConfig.rules.required ) &&
 				Object.keys( defaultConfig.rules.required ).length > 0
 			) {
-				const schema = {
-					type: 'object',
-					properties: defaultConfig.rules.required,
-				};
+				let schema = {};
+				if (
+					Object.keys( defaultConfig.rules.required ).some(
+						( key ) =>
+							key === 'cart' ||
+							key === 'checkout' ||
+							key === 'customer'
+					)
+				) {
+					schema = {
+						type: 'object',
+						properties: defaultConfig.rules.required,
+					};
+				} else {
+					schema = defaultConfig.rules.required;
+				}
+
 				try {
 					const result = parser.validate( schema, data );
 					field.required = result;
@@ -62,6 +81,7 @@ export const useFormFields = (
 			if (
 				defaultConfig.rules.hidden &&
 				typeof defaultConfig.rules.hidden === 'object' &&
+				! Array.isArray( defaultConfig.rules.hidden ) &&
 				Object.keys( defaultConfig.rules.hidden ).length > 0
 			) {
 				const schema = {

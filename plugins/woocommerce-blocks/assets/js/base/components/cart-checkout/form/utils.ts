@@ -17,12 +17,12 @@ export interface FieldProps {
 	id: string;
 	errorId: string;
 	label: string;
-	autoCapitalize: string | undefined;
-	autoComplete: string | undefined;
-	errorMessage: string | undefined;
-	required: boolean | undefined;
-	placeholder: string | undefined;
-	className: string;
+	autoCapitalize?: string;
+	autoComplete?: string;
+	errorMessage?: string;
+	required?: boolean;
+	placeholder?: string;
+	className?: string;
 }
 
 export const createFieldProps = (
@@ -33,11 +33,11 @@ export const createFieldProps = (
 	id: `${ formId }-${ field?.key }`.replaceAll( '/', '-' ), // Replace all slashes with hyphens to avoid invalid HTML ID.
 	errorId: `${ fieldAddressType }_${ field?.key }`,
 	label: ( field?.required ? field?.label : field?.optionalLabel ) || '',
-	autoCapitalize: field?.autocapitalize,
-	autoComplete: field?.autocomplete,
-	errorMessage: field?.errorMessage,
-	required: field?.required,
-	placeholder: field?.placeholder,
+	autoCapitalize: field?.autocapitalize || '',
+	autoComplete: field?.autocomplete || '',
+	errorMessage: field?.errorMessage || '',
+	required: field?.required || false,
+	placeholder: field?.placeholder || '',
 	className: `wc-block-components-address-form__${ field?.key }`.replaceAll(
 		'/',
 		'-'

@@ -20,11 +20,17 @@ import { useInstanceId } from '@wordpress/compose';
 import { useShallowEqual, usePrevious } from '@woocommerce/base-hooks';
 import isShallowEqual from '@wordpress/is-shallow-equal';
 import clsx from 'clsx';
-import { AddressFormValues, ContactFormValues } from '@woocommerce/settings';
+import {
+	AddressFormValues,
+	ContactFormValues,
+	FormFields,
+} from '@woocommerce/settings';
 import { objectHasProp } from '@woocommerce/types';
 import { useCheckoutAddress } from '@woocommerce/base-context';
 import fastDeepEqual from 'fast-deep-equal/es6';
 import { decodeEntities } from '@wordpress/html-entities';
+import { validationStore } from '@woocommerce/block-data';
+import { dispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -32,7 +38,6 @@ import { decodeEntities } from '@wordpress/html-entities';
 import { AddressFormProps } from './types';
 import { useFormFields } from './use-form-fields';
 import validateCountry from './validate-country';
-import customValidationHandler from './custom-validation-handler';
 import AddressLineFields from './address-line-fields';
 import {
 	createFieldProps,
@@ -41,7 +46,7 @@ import {
 } from './utils';
 import { Select } from '../../select';
 import { validateState } from './validate-state';
-
+import { useFormValidation } from './use-form-validation';
 /**
  * Checkout form.
  */
@@ -81,6 +86,46 @@ const Form = < T extends AddressFormValues | ContactFormValues >( {
 	const inputsRef = useRef<
 		Record< string, ValidatedTextInputHandle | null >
 	>( {} );
+
+	const { errors, previousErrors } = useFormValidation(
+		formFields,
+		addressType
+	);
+
+	useEffect( () => {
+		Object.entries( errors as Record< keyof FormFields, string > ).forEach(
+			( [ key, error ] ) => {
+				const inputRef =
+					inputsRef.current[ key as keyof typeof inputsRef.current ];
+
+				inputRef?.setErrorMessage( error );
+
+				dispatch( validationStore ).setValidationErrors( {
+					[ `${ addressType }_${ key }` ]: {
+						message: error,
+						hidden:
+							!! inputRef?.isFocused() ||
+							values[ key as keyof T ] === '',
+					},
+				} );
+			}
+		);
+
+		if ( previousErrors ) {
+			Object.entries(
+				previousErrors as Record< keyof FormFields, string >
+			).forEach( ( [ key ] ) => {
+				const inputRef = inputsRef.current[ key ];
+				// If error was previously set but is now cleared
+				if ( ! errors[ key as keyof FormFields ] ) {
+					dispatch( validationStore ).clearValidationError(
+						`${ addressType }_${ key }`
+					);
+					inputRef?.setErrorMessage( '' );
+				}
+			} );
+		}
+	}, [ errors, previousErrors, addressType, values ] );
 
 	// Changing country may change format for postcodes.
 	useEffect( () => {
@@ -373,15 +418,6 @@ const Form = < T extends AddressFormValues | ContactFormValues >( {
 							}
 							return value;
 						} }
-						customValidation={ ( inputObject: HTMLInputElement ) =>
-							customValidationHandler(
-								inputObject,
-								field.key,
-								objectHasProp( values, 'country' )
-									? values.country
-									: ''
-							)
-						}
 					/>
 				);
 			} ) }

@@ -4,7 +4,11 @@
 import { useRef } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { snakeCaseKeys } from '@woocommerce/base-utils';
-import type { CoreAddress, AdditionalValues } from '@woocommerce/settings';
+import type {
+	AdditionalValues,
+	BillingAddress,
+	ShippingAddress,
+} from '@woocommerce/settings';
 import fastDeepEqual from 'fast-deep-equal/es6';
 import {
 	cartStore,
@@ -13,14 +17,21 @@ import {
 } from '@woocommerce/block-data';
 import type Ajv from 'ajv';
 
-const useDocumentObject = ( formType: string ): DocumentObject => {
-	const currentResults = useRef< DocumentObject >( {
+const useDocumentObject = (
+	formType:
+		| 'billing'
+		| 'shipping'
+		| 'contact'
+		| 'additional-information'
+		| 'calculator'
+): DocumentObject< typeof formType > => {
+	const currentResults = useRef< DocumentObject< typeof formType > >( {
 		cart: {},
 		checkout: {},
 		customer: {},
 	} );
 
-	const data: DocumentObject = useSelect(
+	const data: DocumentObject< typeof formType > = useSelect(
 		( select ) => {
 			const cartDataStore = select( cartStore );
 			const checkoutDataStore = select( checkoutStore );
@@ -97,15 +108,15 @@ const useDocumentObject = ( formType: string ): DocumentObject => {
 			};
 
 			return {
-				cart: snakeCaseKeys(
-					documentObject.cart
-				) as DocumentObject[ 'cart' ],
+				cart: snakeCaseKeys( documentObject.cart ) as DocumentObject<
+					typeof formType
+				>[ 'cart' ],
 				checkout: snakeCaseKeys(
 					documentObject.checkout
-				) as DocumentObject[ 'checkout' ],
+				) as DocumentObject< typeof formType >[ 'checkout' ],
 				customer: snakeCaseKeys(
 					documentObject.customer
-				) as DocumentObject[ 'customer' ],
+				) as DocumentObject< typeof formType >[ 'customer' ],
 			};
 		},
 		[ formType ]
@@ -122,10 +133,15 @@ const useDocumentObject = ( formType: string ): DocumentObject => {
 };
 
 export const useSchemaParser = (
-	formType: string
+	formType:
+		| 'billing'
+		| 'shipping'
+		| 'contact'
+		| 'additional-information'
+		| 'calculator'
 ): {
 	parser: Ajv | null;
-	data: DocumentObject | null;
+	data: DocumentObject< typeof formType > | null;
 } => {
 	const data = useDocumentObject( formType );
 	if ( window.schemaParser ) {
@@ -140,7 +156,15 @@ export const useSchemaParser = (
 	};
 };
 
-export interface DocumentObject {
+export interface DocumentObject<
+	T extends
+		| 'billing'
+		| 'shipping'
+		| 'contact'
+		| 'additional-information'
+		| 'calculator'
+		| 'global'
+> {
 	cart:
 		| {
 				coupons: string[];
@@ -169,9 +193,13 @@ export interface DocumentObject {
 	customer:
 		| {
 				id: number;
-				billing_address: CoreAddress;
-				shipping_address: CoreAddress;
-				address: CoreAddress;
+				billing_address: BillingAddress;
+				shipping_address: ShippingAddress;
+				address: T extends 'billing'
+					? BillingAddress
+					: T extends 'shipping'
+					? ShippingAddress
+					: undefined;
 		  }
 		| Record< string, never >;
 }
