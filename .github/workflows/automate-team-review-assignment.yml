@@ -25,21 +25,20 @@ jobs:
               id: check
               uses: actions/github-script@v7
               with:
-                  retries: 2
                   script: |
+                      const username = '${{ github.event.pull_request.user.login || github.event.issue.user.login }}';
                       const { data: { permission } } = await github.rest.repos.getCollaboratorPermissionLevel( {
                           owner: context.repo.owner,
                           repo: context.repo.repo,
-                          username: '${{ github.event.pull_request.user.login || github.event.issue.user.login }}',
+                          username: username,
                       } );
-                      console.log( 'persmission: ' + permission );
-                      core.setOutput( 'contributor', ( permission === 'read' || permission === 'none' ) ? 'yes' : 'no' );
+                      const contributor = ( permission === 'read' || permission === 'none' ) && username !== 'gglobalstep';
+                      core.setOutput( 'contributor', contributor ? 'yes' : 'no' );
 
             - name: Add community label
               if: ${{ steps.check.outputs.contributor == 'yes' }}
               uses: actions/github-script@v7
               with:
-                  retries: 2
                   script: |
                       github.rest.rest.issues.addLabels({
                           issue_number: ${{ github.event.pull_request.number || github.event.issue.number }},
@@ -64,7 +63,6 @@ jobs:
                   repo: context.repo.repo,
                   username: '${{ github.event.pull_request.user.login }}',
               } );
-              console.log( 'persmission: ' + permission );
               core.setOutput( 'contributor', ( permission === 'read' || permission === 'none' ) ? 'yes' : 'no' );
 
         - name: Assign reviewers for a community PR
