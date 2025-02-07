@@ -15,6 +15,7 @@ config = {
 			name: 'reset',
 			testDir: `${ config.TESTS_ROOT_PATH }/fixtures`,
 			testMatch: 'reset.setup.js',
+			dependencies: [ 'site setup' ],
 		},
 		{
 			name: 'e2e-wpcom',
@@ -24,7 +25,7 @@ config = {
 				'**/js-file-monitor/**',
 			],
 			grepInvert,
-			dependencies: [ 'reset', 'site setup' ],
+			dependencies: [ 'reset' ],
 		},
 		{
 			name: 'api-wpcom',
