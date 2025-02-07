@@ -116,6 +116,10 @@ class Init {
 	 * @return array
 	 */
 	public function get_step_groups_for_js() {
+		$all_plugins    = $this->wp_get_plugins();
+		$active_plugins = array_intersect_key( $all_plugins, array_flip( get_option( 'active_plugins', array() ) ) );
+		$active_theme   = $this->wp_get_theme();
+
 		return array(
 			array(
 				'id'          => 'settings',
@@ -145,8 +149,8 @@ class Init {
 							'label' => $plugin['Name'],
 						);
 					},
-					array_keys( $this->wp_get_plugins() ),
-					$this->wp_get_plugins()
+					array_keys( $active_plugins ),
+					$active_plugins
 				),
 			),
 			array(
@@ -154,15 +158,11 @@ class Init {
 				'description' => __( 'It includes all the installed themes.', 'woocommerce' ),
 				'label'       => __( 'Themes', 'woocommerce' ),
 				'icon'        => 'brush',
-				'items'       => array_map(
-					function ( $key, $theme ) {
-						return array(
-							'id'    => $key,
-							'label' => $theme['Name'],
-						);
-					},
-					array_keys( $this->wp_get_themes() ),
-					$this->wp_get_themes()
+				'items'       => array(
+					array(
+						'id'    => $active_theme->get_stylesheet(),
+						'label' => $active_theme->get( 'Name' ),
+					),
 				),
 			),
 		);
