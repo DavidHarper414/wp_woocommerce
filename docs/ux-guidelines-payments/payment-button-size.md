@@ -25,7 +25,7 @@ Don't place any text outside the surface area of the button.
 
 The spacing between and around the Label and Payment Logo adapts based on the size of the button.
 
-![Layout and spacing 0.png](https://developer.woocommerce.com/docs/wp-content/uploads/sites/3/2024/01/Layout-and-spacing-0.png)
+![Layout and spacing 0.png](https://developer.woocommerce.com/docs/wp-content/uploads/sites/3/2025/02/Layout-and-spacing-Updated.png)
 
 ### Adaptive height
 
