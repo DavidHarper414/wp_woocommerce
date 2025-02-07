@@ -100,7 +100,7 @@ jobs:
                             
                             // Dismiss all approvals
                             for (const review of approvalReviews) {
-                              console.log(`Dismissing approval from ${review.user.login}`);
+                              console.log(`(JUST A TEST. IGNORE THIS MESSAGE) Dismissing approval from ${review.user.login}`);
                             }
                           } else {
                             console.log(`Keeping approvals on PR #${pr.number} (latest approval on ${latestApproval.toISOString()})`);
