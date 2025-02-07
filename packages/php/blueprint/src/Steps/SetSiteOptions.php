@@ -63,7 +63,7 @@ class SetSiteOptions extends Step {
 	public function prepare_json_array(): array {
 		return array(
 			'step'    => static::get_step_name(),
-			'options' => $this->options,
+			'options' => (object) $this->options,
 		);
 	}
 }
