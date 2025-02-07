@@ -1,4 +1,4 @@
-name: Add Community Label, Assign Reviewers
+name: Add community label, Assign reviewers
 
 on:
     pull_request_target:
@@ -35,7 +35,7 @@ jobs:
                   fi
                   echo "contributor=$contributor" >> $GITHUB_OUTPUT
 
-            - name: Add community
+            - name: Add community label
               if: ${{ steps.check.outputs.contributor == 'yes' }}
               uses: actions/github-script@v7
               with:
@@ -55,14 +55,11 @@ jobs:
         - name: Check if community contribution
           id: check
           run: |
-            association='${{ github.event.pull_request.author_association || github.event.issue.author_association }}'
+            association='${{ github.event.pull_request.author_association }}'
             if [[ $association == 'COLLABORATOR' || $association == 'MEMBER' ]]; then
                 contributor='no'
             else
                 contributor='yes'
-                if [[ '${{ github.event.pull_request.user.login || github.event.issue.user.login }}' == 'gglobalstep' ]]; then
-                    contributor='no'
-                fi
             fi
             echo "contributor=$contributor" >> $GITHUB_OUTPUT
 
