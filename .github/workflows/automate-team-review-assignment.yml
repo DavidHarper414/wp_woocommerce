@@ -32,6 +32,7 @@ jobs:
                           repo: context.repo.repo,
                           username: '${{ github.event.pull_request.user.login || github.event.issue.user.login }}',
                       } );
+                      console.log( 'persmission: ' + permission );
                       core.setOutput( 'contributor', ( permission === 'read' || permission === 'none' ) ? 'yes' : 'no' );
 
             - name: Add community label
@@ -45,7 +46,7 @@ jobs:
                           owner: context.repo.owner,
                           repo: context.repo.repo,
                           labels: [ 'type: community contribution' ]
-                      })
+                      });
 
     assign-reviewers:
       name: Assign reviewers
@@ -54,14 +55,17 @@ jobs:
       steps:
         - name: Check if community contribution
           id: check
-          run: |
-            association='${{ github.event.pull_request.author_association }}'
-            if [[ $association == 'COLLABORATOR' || $association == 'MEMBER' ]]; then
-                contributor='no'
-            else
-                contributor='yes'
-            fi
-            echo "contributor=$contributor" >> $GITHUB_OUTPUT
+          uses: actions/github-script@v7
+          with:
+            retries: 2
+            script: |
+              const { data: { permission } } = await github.rest.repos.getCollaboratorPermissionLevel( {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  username: '${{ github.event.pull_request.user.login }}',
+              } );
+              console.log( 'persmission: ' + permission );
+              core.setOutput( 'contributor', ( permission === 'read' || permission === 'none' ) ? 'yes' : 'no' );
 
         - name: Assign reviewers for a community PR
           if: ${{ steps.check.outputs.contributor == 'yes' }}
