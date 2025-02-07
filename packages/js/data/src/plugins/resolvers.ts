@@ -116,7 +116,7 @@ export function* getJetpackConnectionData() {
 	yield setIsRequesting( 'getJetpackConnectionData', true );
 
 	try {
-		yield checkUserCapability( 'manage_woocommerce' );
+		yield checkUserCapability( 'jetpack_connect_user' );
 
 		const url = JETPACK_NAMESPACE + '/connection/data';
 
