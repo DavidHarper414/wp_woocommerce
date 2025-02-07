@@ -99,13 +99,6 @@ jobs:
                             // Dismiss all approvals
                             for (const review of approvalReviews) {
                               console.log(`Dismissing approval from ${review.user.login}`);
-                              await github.rest.pulls.dismissReview({
-                                owner: context.repo.owner,
-                                repo: context.repo.repo,
-                                pull_number: pr.number,
-                                review_id: review.id,
-                                message: 'This approval has been dismissed due to being stale (latest PR approval was 30+ days old). Please request a new review.'
-                              });
                             }
                           } else {
                             console.log(`Keeping approvals on PR #${pr.number} (latest approval on ${latestApproval.toISOString()})`);
