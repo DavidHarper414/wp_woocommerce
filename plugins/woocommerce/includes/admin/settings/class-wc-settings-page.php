@@ -261,6 +261,7 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 
 					$section_settings_data[] = $this->populate_setting_value( $section_setting );
 
+					// Add custom views for title.
 					if ( 'title' === $section_setting['type'] && ! empty( $section_setting['id'] ) ) {
 						$custom_title_view = $this->get_custom_view( 'woocommerce_settings_' . $section_setting['id'] );
 						
