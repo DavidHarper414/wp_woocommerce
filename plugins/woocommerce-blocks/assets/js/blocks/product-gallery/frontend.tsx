@@ -41,6 +41,25 @@ const getArrowsState = ( imageNumber: number, totalImages: number ) => ( {
 	disableRight: imageNumber === totalImages,
 } );
 
+/**
+ * Scrolls an image into view.
+ *
+ * @param {string} imageId - The ID of the image to scroll into view.
+ */
+const scrollImageIntoView = ( imageId: string ) => {
+	if ( ! imageId ) {
+		return;
+	}
+	const imageElement = document.getElementById( imageId );
+	if ( imageElement ) {
+		imageElement.scrollIntoView( {
+			behavior: 'smooth',
+			block: 'nearest',
+			inline: 'center',
+		} );
+	}
+};
+
 const productGallery = {
 	state: {
 		get isSelected() {
@@ -106,14 +125,7 @@ const productGallery = {
 			const imageIndex = newImageNumber - 1;
 			const imageId = imageData[ imageIndex ].id;
 			if ( imageIndex !== -1 ) {
-				const imageElement = document.getElementById( imageId );
-				if ( imageElement ) {
-					imageElement.scrollIntoView( {
-						behavior: 'smooth',
-						block: 'nearest',
-						inline: 'center',
-					} );
-				}
+				scrollImageIntoView( imageId );
 			}
 		},
 		selectCurrentImage: ( event?: MouseEvent ) => {
@@ -260,6 +272,7 @@ const productGallery = {
 				context.selectedImageNumber = newImageNumber;
 				context.disableLeft = disableLeft;
 				context.disableRight = disableRight;
+				scrollImageIntoView( context.imageIds[ newImageNumber - 1 ] );
 			};
 
 			const selectFirstImage = () => selectImage( 1 );
