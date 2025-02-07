@@ -29,6 +29,8 @@ echo "Cleaning up PHP dependencies..."
 composer install --no-dev --quiet --optimize-autoloader || exit "$?"
 echo "Run makepot..."
 pnpm --filter=@woocommerce/plugin-woocommerce makepot || exit "$?"
+echo "Generating blocks metadata..."
+pnpm --filter=@woocommerce/plugin-woocommerce blocks-json-to-php || exit "$?"
 echo "Syncing files..."
 rsync -rc --exclude-from="$PROJECT_PATH/.distignore" "$PROJECT_PATH/" "$DEST_PATH/" --delete --delete-excluded
 
