@@ -212,8 +212,8 @@ class AddToCartForm extends AbstractBlock {
 	 *
 	 * @return string The current URL.
 	 */
-	function add_to_cart_form_action() {
+	public function add_to_cart_form_action() {
 		global $wp;
-		return home_url( add_query_arg( $_GET, $wp->request ) );
+		return home_url( add_query_arg( $_GET, $wp->request ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	}
 }
