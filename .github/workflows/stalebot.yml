@@ -68,6 +68,8 @@ jobs:
                         per_page: 100
                       });
 
+                      console.log(`Number of PRs to check: ${prs.length}`);
+
                       for (const pr of prs) {
                         const reviews = await github.paginate(github.rest.pulls.listReviews, {
                           owner: context.repo.owner,
