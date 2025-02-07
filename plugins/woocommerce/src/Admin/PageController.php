@@ -328,7 +328,7 @@ class PageController {
 					$section = wc_clean( wp_unslash( $_GET['section'] ) );
 					if (
 						isset( $tabs_with_sections[ $tab ] ) &&
-						in_array( $section, array_keys( $tabs_with_sections[ $tab ] ) )
+						in_array( $section, array_values( $tabs_with_sections[ $tab ] ), true )
 					) {
 						$screen_pieces[] = $section;
 					}
