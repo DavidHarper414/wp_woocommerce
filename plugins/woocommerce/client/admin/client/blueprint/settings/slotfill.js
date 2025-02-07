@@ -200,8 +200,8 @@ const Blueprint = () => {
 			) ) }
 
 			<div id="download-link-container"></div>
-			<br></br>
 			<Button
+				className="blueprint-settings-export-button"
 				variant="primary"
 				onClick={ () => {
 					const selectedSteps = Object.entries( checkedState ).reduce(
