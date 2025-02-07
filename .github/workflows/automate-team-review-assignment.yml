@@ -12,7 +12,10 @@ concurrency:
     group: community-label-${{ github.event_name }}-${{ github.event.action }}-${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.ref || github.run_id }}
     cancel-in-progress: true
 
-permissions: {}
+permissions:
+    contents: read
+    pull-requests: write
+    issues: write
 
 jobs:
     add-community-label:
@@ -20,9 +23,6 @@ jobs:
         if: ${{ github.event.action == 'opened' }}
         runs-on: ubuntu-latest
         permissions:
-            contents: read
-            pull-requests: write
-            issues: write
         steps:
             # github.event.issue.author_association, github.event.pull_request.author_association: COLLABORATOR, MEMBER
             - uses: actions/checkout@v4
