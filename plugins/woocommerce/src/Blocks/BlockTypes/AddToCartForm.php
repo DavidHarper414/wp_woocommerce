@@ -138,13 +138,9 @@ class AddToCartForm extends AbstractBlock {
 		$is_external_product_with_url = $product instanceof \WC_Product_External && $product->get_product_url();
 		$is_stepper_style             = 'stepper' === $attributes['quantitySelectorStyle'] && ! $product->is_sold_individually() && Features::is_enabled( 'add-to-cart-with-options-stepper-layout' );
 
-		add_filter( 'woocommerce_add_to_cart_form_action', function ( $url ) use ( $is_descendent_of_single_product_block ) {
-			if ( $is_descendent_of_single_product_block ) {
-				global $wp;
-				return home_url( add_query_arg( $_GET, $wp->request ) );
-			}
-			return $url;
-		}, 10, 1 );
+		if ( $is_descendent_of_single_product_block ) {
+			add_filter( 'woocommerce_add_to_cart_form_action', array( $this, 'add_to_cart_form_action' ), 10 );
+		}
 
 		ob_start();
 
@@ -156,6 +152,10 @@ class AddToCartForm extends AbstractBlock {
 		do_action( 'woocommerce_' . $product->get_type() . '_add_to_cart' );
 
 		$product_html = ob_get_clean();
+
+		if ( $is_descendent_of_single_product_block ) {
+			remove_filter( 'woocommerce_add_to_cart_form_action', array( $this, 'add_to_cart_form_action' ), 10 );
+		}
 
 		if ( ! $product_html ) {
 			$product = $previous_product;
@@ -205,5 +205,15 @@ class AddToCartForm extends AbstractBlock {
 		$product = $previous_product;
 
 		return $form;
+	}
+
+	/**
+	 * Use current url as the add to cart form action.
+	 *
+	 * @return string The current URL.
+	 */
+	function add_to_cart_form_action() {
+		global $wp;
+		return home_url( add_query_arg( $_GET, $wp->request ) );
 	}
 }
