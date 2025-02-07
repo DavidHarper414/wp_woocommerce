@@ -5,11 +5,11 @@ menu_title: Payment Button Size
 
 Payment buttons must be consistent in visual appearance to other buttons in the shopper experience.
 
-Height for payment buttons ranges from 40px (Small) to 56px (Large). The default button height is 48px. The following presets can be used for button height.
+Height for payment buttons ranges from 40px (Small) to 55px (Large). The default button height is 48px. The following presets can be used for button height.
 
 - Small: Height 40px
 - Default: Height 48px
-- Large: Height 56
+- Large: Height 55px
 
 ### Anatomy
 
