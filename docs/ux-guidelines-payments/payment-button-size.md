@@ -34,7 +34,7 @@ The height of the button can adapt based on the needs of the theme.
 
 ### Button size
 
-Make payment buttons the same size, no bigger or smaller than other payment buttons, including the CTAs "Add to cart" and "Proceed to checkout"
+Make payment buttons the same size, no bigger or smaller than other payment buttons, including the CTAs "Add to cart" and "Proceed to checkout".
 
 ![Same button size.png](https://developer.woocommerce.com/docs/wp-content/uploads/sites/3/2024/01/Same-button-size.png)
 
@@ -65,16 +65,17 @@ Use the same corner radius for all payment buttons. Don't make the corner radius
 
 ### Button Label
 
-Provide variant buttons to accommodate merchant needs and payment experiences.
-Buy
-Pay
-Donate
-Book
-Checkout
-Subscribe
-Continue
-Order
-Icon only
+Provide variant buttons to accommodate merchant needs and payment experiences. 
+
+- Buy
+- Pay
+- Donate
+- Book
+- Checkout
+- Subscribe
+- Continue
+- Order
+- Icon only
 
 The button label should appear in sentence case, with only the first letter of the first word capitalized.
 
