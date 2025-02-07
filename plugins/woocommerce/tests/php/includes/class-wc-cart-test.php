@@ -103,8 +103,7 @@ class WC_Cart_Test extends \WC_Unit_Test_Case {
 		WC()->cart->empty_cart();
 		WC()->session->set( 'wc_notices', null );
 
-		$variable_product = WC_Helper_Product::create_variation_product();
-		$single_product   = WC_Helper_Product::create_simple_product();
+		$single_product = WC_Helper_Product::create_simple_product();
 
 		// Add variation using parent id.
 		WC()->cart->add_to_cart(
