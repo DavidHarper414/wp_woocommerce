@@ -111,6 +111,12 @@
 			}
 		}
 
+		.woocommerce-woopayments-payment-methods-logos {
+			@media screen and ( max-width: $break-medium ) {
+				padding-bottom: 0;
+			}
+		}
+
 		&-buttons {
 			display: inline-flex;
 			margin-left: auto;
@@ -122,6 +128,7 @@
 				grid-row: 2; /* Move to the second row */
 				margin-left: 0;
 				margin-top: $gap;
+				min-height: 0;
 			}
 
 			&__actions {
@@ -147,6 +154,7 @@
 
 			@media screen and ( max-width: $break-medium ) {
 				order: 3; /* Position the column in the 3rd spot to ensure the dots appear on the first row */
+				min-height: auto;
 			}
 
 			&.centered {

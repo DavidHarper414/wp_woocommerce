@@ -70,7 +70,7 @@
 			}
 		}
 
-		@media screen and ( max-width: $break-medium ) {
+		@media screen and ( max-width: $break-small ) {
 			display: none;
 		}
 	}
@@ -95,6 +95,10 @@
 
 		@media screen and ( max-width: $break-medium ) {
 			padding: $gap-large $gap;
+		}
+
+		@media screen and ( max-width: $break-small ) {
+			max-width: 100%;
 		}
 	}
 
