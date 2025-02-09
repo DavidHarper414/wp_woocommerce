@@ -66,8 +66,9 @@ if [ "$GITHUB_EVENT_NAME" == "push" ] || [ "$GITHUB_EVENT_NAME" == "pull_request
 
 		title "##[group]Building baseline"
 		( git -c core.hooksPath=/dev/null checkout --quiet $BASE_SHA > /dev/null || git reset --hard $BASE_SHA ) && echo 'On' $(git rev-parse HEAD)
+		composer install --working-dir=./plugins/woocommerce --quiet &
 		pnpm run --if-present clean:build &
-		pnpm install --filter='@woocommerce/plugin-woocommerce...' --frozen-lockfile --config.dedupe-peer-dependents=false
+		pnpm install --filter='@woocommerce/plugin-woocommerce...' --frozen-lockfile --config.dedupe-peer-dependents=false --ignore-scripts
 		WIREIT_CACHE=local pnpm --filter='@woocommerce/plugin-woocommerce' build
 		echo '##[endgroup]'
 
