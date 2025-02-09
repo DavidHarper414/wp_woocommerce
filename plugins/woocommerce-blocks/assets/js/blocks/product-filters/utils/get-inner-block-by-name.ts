@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { BlockInstance } from '@wordpress/blocks';
+import type { BlockInstance } from '@wordpress/blocks';
 
 /**
  * Recursively searches for an inner block that matches the given callback condition.

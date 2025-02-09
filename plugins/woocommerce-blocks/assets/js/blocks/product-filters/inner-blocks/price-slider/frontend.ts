@@ -2,8 +2,7 @@
  * External dependencies
  */
 import { store, getContext, getElement } from '@wordpress/interactivity';
-import { HTMLElementEvent } from '@woocommerce/types';
-import { debounce } from '@woocommerce/base-utils';
+import type { HTMLElementEvent } from '@woocommerce/types';
 
 /**
  * Internal dependencies
@@ -12,6 +11,7 @@ import {
 	ProductFilterPriceContext,
 	ProductFilterPriceStore,
 } from '../price-filter/frontend';
+import { debounce } from '../../utils/debounce';
 
 store( 'woocommerce/product-filter-price-slider', {
 	state: {
