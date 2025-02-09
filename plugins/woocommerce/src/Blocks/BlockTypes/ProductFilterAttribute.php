@@ -224,10 +224,10 @@ final class ProductFilterAttribute extends AbstractBlock {
 		);
 
 		$wrapper_attributes = array(
-			'data-wc-interactive'  => wp_json_encode( array( 'namespace' => $this->get_full_block_name() ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
-			'data-wc-key'          => 'product-filter-attribute-' . md5( wp_json_encode( $block_attributes ) ),
-			'data-wc-context'      => wp_json_encode( $context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
-			'data-wc-bind--hidden' => '!context.hasFilterOptions',
+			'data-wp-interactive'  => wp_json_encode( array( 'namespace' => $this->get_full_block_name() ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
+			'data-wp-key'          => 'product-filter-attribute-' . md5( wp_json_encode( $block_attributes ) ),
+			'data-wp-context'      => wp_json_encode( $context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
+			'data-wp-bind--hidden' => '!context.hasFilterOptions',
 		);
 
 		if ( empty( $filter_context ) ) {
