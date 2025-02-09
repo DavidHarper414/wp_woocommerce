@@ -56,6 +56,8 @@ class ProductFilters extends AbstractBlock {
 		 */
 		$active_filters = apply_filters( 'woocommerce_blocks_product_filters_selected_items', array(), $filter_params );
 
+		wp_enqueue_script_module( $this->get_full_block_name() );
+
 		usort(
 			$active_filters,
 			function ( $a, $b ) {

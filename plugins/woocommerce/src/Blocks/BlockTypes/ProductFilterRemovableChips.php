@@ -31,6 +31,8 @@ final class ProductFilterRemovableChips extends AbstractBlock {
 			return '';
 		}
 
+		wp_enqueue_script_module( $this->get_full_block_name() );
+
 		$context      = $block->context['filterData'];
 		$filter_items = $context['items'] ?? array();
 		$parent_block = $context['parent'];

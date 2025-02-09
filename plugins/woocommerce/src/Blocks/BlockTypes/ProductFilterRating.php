@@ -102,6 +102,8 @@ final class ProductFilterRating extends AbstractBlock {
 			return '';
 		}
 
+		wp_enqueue_script_module( $this->get_full_block_name() );
+
 		$min_rating    = $attributes['minRating'] ?? 0;
 		$rating_counts = $this->get_rating_counts( $block );
 		// User selected minimum rating to display.
