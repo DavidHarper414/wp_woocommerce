@@ -808,7 +808,8 @@
 		"build:project:actualize-translation-domains": {
 			"command": "node ./bin/package-update-textdomain.js",
 			"files": [
-				"packages/**/*.php"
+				"packages/action-scheduler/action-scheduler.php",
+				"packages/woocommerce-admin/woocommerce-admin.php"
 			],
 			"output": []
 		},
