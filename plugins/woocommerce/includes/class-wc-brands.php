@@ -396,7 +396,7 @@ class WC_Brands {
 
 		$has_block_template = apply_filters( 'woocommerce_has_block_template', false, 'taxonomy-product_brand' ); // phpcs:ignore WooCommerce.Commenting.CommentHooks.MissingHookComment
 
-		if ( is_singular( 'product' ) &&  ! $has_block_template ) {
+		if ( is_singular( 'product' ) && ! $has_block_template ) {
 			$terms       = get_the_terms( $post->ID, 'product_brand' );
 			$brand_count = is_array( $terms ) ? count( $terms ) : 0;
 
