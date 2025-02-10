@@ -26,8 +26,9 @@ declare global {
 			| 'single_select_page_with_search'
 			| 'single_select_country'
 			| 'slotfill_placeholder';
-		id?: string;
+		id: string;
 		desc?: string;
+		description?: string;
 		desc_tip?: boolean | string;
 		default?: string | number | boolean | object;
 		value: string | number | boolean | object;
@@ -47,17 +48,18 @@ declare global {
 	}
 
 	interface CustomSettingsField {
+		id: string;
 		type: 'custom';
 		content: string;
 	}
 
 	interface GroupSettingsField {
 		type: 'group';
-		label: string;
-		desc: string;
 		id: string;
-		title: string;
 		settings: Exclude< SettingsField, GroupSettingsField >[];
+		label?: string;
+		desc?: string;
+		title?: string;
 	}
 
 	interface CheckboxSettingsField extends BaseSettingsField {
@@ -65,9 +67,20 @@ declare global {
 		checkboxgroup?: 'start' | 'end' | '';
 	}
 
-	interface CheckboxGroupSettingsField extends BaseSettingsField {
+	interface CheckboxGroupSettingsField {
+		id: string;
 		type: 'checkboxgroup';
+		title: string;
 		settings: CheckboxSettingsField[];
+	}
+
+	interface InfoSettingsField {
+		id: string;
+		title: string;
+		type: 'info';
+		text: string;
+		row_class?: string;
+		css?: string;
 	}
 
 	type SettingsField =
@@ -75,7 +88,8 @@ declare global {
 		| CustomSettingsField
 		| GroupSettingsField
 		| CheckboxGroupSettingsField
-		| CheckboxSettingsField;
+		| CheckboxSettingsField
+		| InfoSettingsField;
 
 	interface SettingsSection {
 		label: string;
@@ -92,8 +106,13 @@ declare global {
 		is_modern: boolean;
 	}
 
-	interface SettingsData {
+	interface SettingsPages {
 		[ key: string ]: SettingsPage;
+	}
+
+	interface SettingsData {
+		start?: CustomSettingsField;
+		pages: SettingsPages;
 	}
 }
 
