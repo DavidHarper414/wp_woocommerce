@@ -302,7 +302,7 @@
 			"env": {
 				"DISABLE_TYPESCRIPT_CHECKING": {
 					"external": true,
-					"default": "true"
+					"default": "false"
 				},
 				"HIDE_TYPESCRIPT_WARNINGS": {
 					"external": true,
