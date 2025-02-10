@@ -1042,20 +1042,6 @@ WHERE
 
 		$order_table = self::get_orders_table_name();
 
-		$meta_key_includes = array();
-
-		if ( $include_tax_amount ) {
-			$meta_key_includes[] = 'tax_amount';
-		} else {
-			$meta_key_includes[] = '';
-		}
-
-		if ( $include_shipping_tax_amount ) {
-			$meta_key_includes[] = 'shipping_tax_amount';
-		} else {
-			$meta_key_includes[] = '';
-		}
-
 		$total = $wpdb->get_var(
 			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $order_table is hardcoded.
 			$wpdb->prepare(
@@ -1065,11 +1051,10 @@ WHERE
 				INNER JOIN {$wpdb->prefix}woocommerce_order_items AS order_items ON ( order_items.order_id = orders.id AND order_items.order_item_type = 'tax' )
 				WHERE order_itemmeta.order_item_id = order_items.order_item_id
 				AND order_itemmeta.meta_key IN (%s, %s)",
-				array_merge(
-					array(
-						$order->get_id(),
-					),
-					$meta_key_includes
+				array(
+					$order->get_id(),
+					$include_tax_amount ? 'tax_amount' : '',
+					$include_shipping_tax_amount ? 'shipping_tax_amount' : '',
 				)
 			)
 		) ?? 0;
