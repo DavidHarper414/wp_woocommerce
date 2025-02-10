@@ -30,7 +30,11 @@ const sharedConfig = {
 		timings: true,
 	},
 	watchOptions: {
-		ignored: /node_modules/,
+		ignored: [
+			'**/build',
+			'**/docs',
+			'**/node_modules'
+		],
 	},
 	devtool: NODE_ENV === 'development' ? 'source-map' : false,
 };
