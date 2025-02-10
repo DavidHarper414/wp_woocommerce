@@ -5,6 +5,7 @@ import {
 	store,
 	getContext as getContextFn,
 	useLayoutEffect,
+	withScope,
 } from '@wordpress/interactivity';
 
 /**
@@ -52,6 +53,22 @@ interface Store {
 }
 
 const { state: wooState } = store< WooStore >( 'woocommerce' );
+
+const dispatchAddToCart = (
+	productId: number,
+	quantity: number,
+	errorHandler: ( error: Error ) => void
+) => {
+	window.dispatchEvent(
+		new CustomEvent( 'block-data-dispatch-action', {
+			detail: {
+				action: 'addItemToCart',
+				args: [ productId, quantity ],
+				errorHandler,
+			},
+		} )
+	);
+};
 
 const { state } = store< Store >(
 	'woocommerce/product-button',
@@ -103,16 +120,42 @@ const { state } = store< Store >(
 				const context = getContext();
 				const { productId, quantityToAdd } = context;
 
-				// Todo: move the CartItems store part to its own module.
-				const { actions } = ( yield import(
-					'../../../../base/stores/cart-items'
-				) ) as WooStore;
+				// For now we communicate with the redux store via an event, so we pass
+				// an error handler using withScope to ensure that the stores and their
+				// context are still available.
+				const errorHandler = withScope( ( error: Error ) => {
+					// Question: can we import this dynamically so it's not loaded on page load?
+					const { actions: noticeActions } = store(
+						'woocommerce/store-notices'
+					);
 
-				// Question: should this action throw so we can capture the error here?
-				actions.addCartItem( {
-					id: productId,
-					quantity: state.quantity + quantityToAdd,
+					// If the user deleted the hooked store notice block, the
+					// store won't be present and we should not add a notice.
+					if ( 'addNotice' in noticeActions ) {
+						// The old implementation always overwrites the last
+						// notice, so we remove the last notice before adding a
+						// new one.
+						// Todo: Review this implementation.
+						if ( state.noticeId && state.noticeId !== '' ) {
+							noticeActions.removeNotice( state.noticeId );
+						}
+
+						const noticeId = noticeActions.addNotice( {
+							notice: error.message,
+							type: 'error',
+							dismissible: true,
+						} );
+
+						state.noticeId = noticeId;
+					}
+
+					// We don't care about errors blocking execution, but will
+					// console.error for troubleshooting.
+					// eslint-disable-next-line no-console
+					console.error( error );
 				} );
+
+				dispatchAddToCart( productId, quantityToAdd, errorHandler );
 
 				context.displayViewCart = true;
 			},

@@ -116,6 +116,34 @@ subscribe( () => {
 	previousCart = cartData;
 }, store );
 
+window.addEventListener(
+	'block-data-dispatch-action',
+	async ( event: Event ) => {
+		const customEvent = event as CustomEvent< {
+			action: string;
+			args: [];
+			errorHandler: ( error: Error ) => void;
+		} >;
+
+		console.log( 'customEvent', customEvent.detail );
+
+		// Only support one action for now. product-button uses this as
+		// an interim way to communicate with the redux store.
+		if ( customEvent.detail.action === 'addItemToCart' ) {
+			try {
+				await wpDispatch( store ).addItemToCart(
+					...customEvent.detail.args
+				);
+			} catch ( error ) {
+				console.log( 'error happened' );
+				if ( customEvent.detail.errorHandler ) {
+					customEvent.detail.errorHandler( error as Error );
+				}
+			}
+		}
+	}
+);
+
 // Listens to cart sync events from the iAPI store.
 window.addEventListener( 'woocommerce-cart-sync-required', ( event: Event ) => {
 	const customEvent = event as CustomEvent< {
