@@ -22,6 +22,7 @@ use Automattic\WooCommerce\Blocks\Domain\Services\Hydration;
 use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
 use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFieldsAdmin;
 use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFieldsFrontend;
+use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFieldsSchema;
 use Automattic\WooCommerce\Blocks\InboxNotifications;
 use Automattic\WooCommerce\Blocks\Installer;
 use Automattic\WooCommerce\Blocks\Migration;
@@ -37,9 +38,6 @@ use Automattic\WooCommerce\StoreApi\RoutesController;
 use Automattic\WooCommerce\StoreApi\SchemaController;
 use Automattic\WooCommerce\StoreApi\StoreApi;
 use Automattic\WooCommerce\Blocks\Shipping\ShippingController;
-use Automattic\WooCommerce\Blocks\Templates\SingleProductTemplateCompatibility;
-use Automattic\WooCommerce\Blocks\Templates\ArchiveProductTemplatesCompatibility;
-use Automattic\WooCommerce\Blocks\Domain\Services\OnboardingTasks\TasksController;
 use Automattic\WooCommerce\Blocks\TemplateOptions;
 
 
@@ -147,7 +145,6 @@ class Bootstrap {
 		$this->container->get( DraftOrders::class )->init();
 		$this->container->get( CreateAccount::class )->init();
 		$this->container->get( ShippingController::class )->init();
-		$this->container->get( TasksController::class )->init();
 		$this->container->get( CheckoutFields::class )->init();
 
 		// Load assets in admin and on the frontend.
@@ -299,9 +296,16 @@ class Bootstrap {
 			}
 		);
 		$this->container->register(
+			CheckoutFieldsSchema::class,
+			function () {
+				return new CheckoutFieldsSchema();
+			}
+		);
+		$this->container->register(
 			CheckoutFields::class,
 			function ( Container $container ) {
-				return new CheckoutFields( $container->get( AssetDataRegistry::class ) );
+				$schema = $container->get( CheckoutFieldsSchema::class );
+				return new CheckoutFields( $container->get( AssetDataRegistry::class ), $schema );
 			}
 		);
 		$this->container->register(
@@ -401,12 +405,6 @@ class Bootstrap {
 				$asset_api           = $container->get( AssetApi::class );
 				$asset_data_registry = $container->get( AssetDataRegistry::class );
 				return new ShippingController( $asset_api, $asset_data_registry );
-			}
-		);
-		$this->container->register(
-			TasksController::class,
-			function () {
-				return new TasksController();
 			}
 		);
 		$this->container->register(

@@ -1,22 +1,47 @@
 /**
  * External dependencies
  */
-import { createElement } from '@wordpress/element';
+import { createElement, Fragment } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { DataForm } from '@wordpress/dataviews';
 
 /**
  * Internal dependencies
  */
-import { SettingsGroup } from '../components/settings-group';
-import { SettingsItem } from '../components/settings-item';
+import { useSettingsForm } from '../hooks/use-settings-form';
+import { CustomView } from '../components/custom-view';
+
+const Form = ( { settings }: { settings: SettingsField[] } ) => {
+	const { data, fields, form, updateField } = useSettingsForm( settings );
+
+	return (
+		<form id="mainform">
+			<div className="woocommerce-settings-content">
+				<DataForm
+					fields={ fields }
+					form={ form }
+					data={ data }
+					onChange={ updateField }
+				/>
+			</div>
+			<div className="woocommerce-settings-content-footer">
+				<Button variant="primary">
+					{ __( 'Save', 'woocommerce' ) }
+				</Button>
+			</div>
+		</form>
+	);
+};
 
 export const LegacyContent = ( {
 	settingsPage,
 	activeSection,
+	settingsData,
 }: {
 	settingsPage: SettingsPage;
 	activeSection: string;
+	settingsData: SettingsData;
 } ) => {
 	const section = settingsPage.sections[ activeSection ];
 
@@ -25,37 +50,11 @@ export const LegacyContent = ( {
 	}
 
 	return (
-		<form id="mainform">
-			<div className="woocommerce-settings-content">
-				{ section.settings.map( ( data, index ) => {
-					const key = `${ data.type }-${ index }`;
-
-					if ( data.type === 'sectionend' ) {
-						return null;
-					}
-
-					if ( data.type === 'group' ) {
-						return (
-							<SettingsGroup
-								key={ key }
-								group={ data as GroupSettingsField }
-							/>
-						);
-					}
-
-					// Handle settings not in a group here.
-					return (
-						<fieldset key={ key }>
-							<SettingsItem setting={ data } />
-						</fieldset>
-					);
-				} ) }
-			</div>
-			<div className="woocommerce-settings-content-footer">
-				<Button variant="primary">
-					{ __( 'Save', 'woocommerce' ) }
-				</Button>
-			</div>
-		</form>
+		<>
+			{ settingsData.start && (
+				<CustomView html={ settingsData.start.content } />
+			) }
+			<Form settings={ section.settings } />
+		</>
 	);
 };
