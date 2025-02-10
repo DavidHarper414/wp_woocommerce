@@ -112,15 +112,6 @@ class Authentication {
 	}
 
 	/**
-	 * Gets the cart token from the request header.
-	 *
-	 * @return string
-	 */
-	protected function get_cart_token() {
-		return wc_clean( wp_unslash( $_SERVER['HTTP_CART_TOKEN'] ?? '' ) );
-	}
-
-	/**
 	 * Gets the secret for the cart token using wp_salt.
 	 *
 	 * @return string
