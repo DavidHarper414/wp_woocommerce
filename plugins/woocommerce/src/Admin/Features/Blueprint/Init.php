@@ -44,12 +44,11 @@ class Init {
 		add_filter(
 			'wooblueprint_export_landingpage',
 			function () {
-				return 'admin.php?page=wc-admin';
+				return '/wp-admin/admin.php?page=wc-admin';
 			}
 		);
 
 		add_filter( 'wooblueprint_exporters', array( $this, 'add_woo_exporters' ) );
-		add_filter( 'wooblueprint_importers', array( $this, 'add_woo_importers' ) );
 	}
 
 	/**
@@ -100,24 +99,6 @@ class Init {
 	}
 
 	/**
-	 * Add Woo Specific Importers.
-	 *
-	 * @param StepProcessor[] $importers Array of step processors.
-	 *
-	 * @return array
-	 */
-	public function add_woo_importers( array $importers ) {
-		return array_merge(
-			$importers,
-			array(
-				new ImportSetWCPaymentGateways(),
-				new ImportSetWCShipping(),
-				new ImportSetWCTaxRates(),
-			)
-		);
-	}
-
-	/**
 	 * Return step groups for JS.
 	 *
 	 * This is used to populate exportable items on the blueprint settings page.
@@ -125,53 +106,56 @@ class Init {
 	 * @return array
 	 */
 	public function get_step_groups_for_js() {
-			return array(
-				array(
-					'id'          => 'settings',
-					'description' => __( 'It includes all the items featured in WooCommerce | Settings.', 'woocommerce' ),
-					'label'       => __( 'Settings', 'woocommerce' ),
-					'items'       => array_map(
-						function ( $exporter ) {
-							return array(
-								'id'          => $exporter instanceof HasAlias ? $exporter->get_alias() : $exporter->get_step_name(),
-								'label'       => $exporter->get_label(),
-								'description' => $exporter->get_description(),
-							);
-						},
-						$this->get_woo_exporters()
-					),
+		return array(
+			array(
+				'id'          => 'settings',
+				'description' => __( 'It includes all the items featured in WooCommerce | Settings.', 'woocommerce' ),
+				'label'       => __( 'WooCommerce Settings', 'woocommerce' ),
+				'icon'        => 'settings',
+				'items'       => array_map(
+					function ( $exporter ) {
+						return array(
+							'id'          => $exporter instanceof HasAlias ? $exporter->get_alias() : $exporter->get_step_name(),
+							'label'       => $exporter->get_label(),
+							'description' => $exporter->get_description(),
+						);
+					},
+					$this->get_woo_exporters()
 				),
-				array(
-					'id'          => 'plugins',
-					'description' => __( 'It includes all the installed plugins and extensions.', 'woocommerce' ),
-					'label'       => __( 'Plugins and extensions', 'woocommerce' ),
-					'items'       => array_map(
-						function ( $key, $plugin ) {
-							return array(
-								'id'    => $key,
-								'label' => $plugin['Name'],
-							);
-						},
-						array_keys( $this->wp_get_plugins() ),
-						$this->wp_get_plugins()
-					),
+			),
+			array(
+				'id'          => 'plugins',
+				'description' => __( 'It includes all the installed plugins and extensions.', 'woocommerce' ),
+				'label'       => __( 'Plugins and extensions', 'woocommerce' ),
+				'icon'        => 'plugins',
+				'items'       => array_map(
+					function ( $key, $plugin ) {
+						return array(
+							'id'    => $key,
+							'label' => $plugin['Name'],
+						);
+					},
+					array_keys( $this->wp_get_plugins() ),
+					$this->wp_get_plugins()
 				),
-				array(
-					'id'          => 'themes',
-					'description' => __( 'It includes all the installed themes.', 'woocommerce' ),
-					'label'       => __( 'Themes', 'woocommerce' ),
-					'items'       => array_map(
-						function ( $key, $theme ) {
-							return array(
-								'id'    => $key,
-								'label' => $theme['Name'],
-							);
-						},
-						array_keys( $this->wp_get_themes() ),
-						$this->wp_get_themes()
-					),
+			),
+			array(
+				'id'          => 'themes',
+				'description' => __( 'It includes all the installed themes.', 'woocommerce' ),
+				'label'       => __( 'Themes', 'woocommerce' ),
+				'icon'        => 'brush',
+				'items'       => array_map(
+					function ( $key, $theme ) {
+						return array(
+							'id'    => $key,
+							'label' => $theme['Name'],
+						);
+					},
+					array_keys( $this->wp_get_themes() ),
+					$this->wp_get_themes()
 				),
-			);
+			),
+		);
 	}
 
 	/**
