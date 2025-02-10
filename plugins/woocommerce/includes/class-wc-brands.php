@@ -171,6 +171,10 @@ class WC_Brands {
 			return $permalink;
 		}
 
+		if ( empty( $permalink ) ) {
+			return $permalink;
+		}
+
 		// Abort early if the placeholder rewrite tag isn't in the generated URL.
 		if ( false === strpos( $permalink, '%' ) ) {
 			return $permalink;
@@ -179,13 +183,15 @@ class WC_Brands {
 		// Get the custom taxonomy terms in use by this post.
 		$terms = get_the_terms( $post->ID, 'product_brand' );
 
-		if ( empty( $terms ) ) {
-			// If no terms are assigned to this post, use a string instead (can't leave the placeholder there).
-			$product_brand = _x( 'uncategorized', 'slug', 'woocommerce' );
-		} else {
+		// If no terms are assigned to this post, use a string instead (can't leave the placeholder there).
+		$product_brand = _x( 'uncategorized', 'slug', 'woocommerce' );
+
+		if ( is_array( $terms ) && ! empty( $terms ) ) {
 			// Replace the placeholder rewrite tag with the first term's slug.
-			$first_term    = array_shift( $terms );
-			$product_brand = $first_term->slug;
+			$first_term = array_shift( $terms );
+			if ( $first_term instanceof WP_Term ) {
+				$product_brand = $first_term->slug;
+			}
 		}
 
 		$find = array(
@@ -411,6 +417,10 @@ class WC_Brands {
 	public function add_structured_data( $markup ) {
 		global $post;
 
+		if ( ! is_array( $markup ) ) {
+			$markup = array();
+		}
+
 		if ( array_key_exists( 'brand', $markup ) ) {
 			return $markup;
 		}
@@ -467,6 +477,10 @@ class WC_Brands {
 		}
 
 		$brands = wp_get_post_terms( $args['post_id'], 'product_brand', array( 'fields' => 'ids' ) );
+
+		if ( is_wp_error( $brands ) ) {
+			return '';
+		}
 
 		// Bail early if we don't have any brands registered.
 		if ( 0 === count( $brands ) ) {

@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { useEffect } from '@wordpress/element';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { Skeleton } from '@woocommerce/base-components/skeleton';
@@ -16,28 +15,12 @@ import { isBoolean } from '@woocommerce/types';
  * Internal dependencies
  */
 import './editor.scss';
-import { useIsDescendentOfSingleProductBlock } from '../../../atomic/blocks/product-elements/shared/use-is-descendent-of-single-product-block';
 import { QuantitySelectorStyle, AddToCartFormSettings } from './settings';
-import { shouldBlockifiedAddToCartWithOptionsBeRegistered } from '../../add-to-cart-with-options';
+import { shouldBlockifiedAddToCartWithOptionsBeRegistered } from '../../add-to-cart-with-options/utils';
 import { UpgradeNotice } from './components/upgrade-notice';
 import type { Attributes } from './';
 
-export type FeaturesKeys =
-	| 'isStepperLayoutFeatureEnabled'
-	| 'isBlockifiedAddToCart';
-
-export type FeaturesProps = {
-	[ key in FeaturesKeys ]?: boolean;
-};
-
 export type UpdateFeaturesType = ( key: FeaturesKeys, value: boolean ) => void;
-
-// Pick the value of the "blockify add to cart flag"
-const isBlockifiedAddToCart = getSettingWithCoercion(
-	'isBlockifiedAddToCart',
-	false,
-	isBoolean
-);
 
 const AddToCartFormEdit = ( props: BlockEditProps< Attributes > ) => {
 	const { setAttributes } = props;
@@ -57,16 +40,6 @@ const AddToCartFormEdit = ( props: BlockEditProps< Attributes > ) => {
 	const blockProps = useBlockProps( {
 		className: `wc-block-add-to-cart-form ${ quantitySelectorStyleClass }`,
 	} );
-	const { isDescendentOfSingleProductBlock } =
-		useIsDescendentOfSingleProductBlock( {
-			blockClientId: blockProps?.id,
-		} );
-
-	useEffect( () => {
-		setAttributes( {
-			isDescendentOfSingleProductBlock,
-		} );
-	}, [ setAttributes, isDescendentOfSingleProductBlock ] );
 
 	const isSiteEditor = useSelect(
 		( select ) => isSiteEditorPage( select( 'core/edit-site' ) ),
@@ -85,7 +58,6 @@ const AddToCartFormEdit = ( props: BlockEditProps< Attributes > ) => {
 				setAttributes={ setAttributes }
 				features={ {
 					isStepperLayoutFeatureEnabled,
-					isBlockifiedAddToCart,
 				} }
 			/>
 			<div { ...blockProps }>

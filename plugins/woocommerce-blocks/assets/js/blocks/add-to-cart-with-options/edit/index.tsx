@@ -16,8 +16,6 @@ import {
 /**
  * Internal dependencies
  */
-import { useIsDescendentOfSingleProductBlock } from '../../../atomic/blocks/product-elements/shared/use-is-descendent-of-single-product-block';
-import { AddToCartOptionsSettings } from '../settings';
 import ToolbarProductTypeGroup from '../components/toolbar-type-product-selector-group';
 import { DowngradeNotice } from '../components/downgrade-notice';
 import useProductTypeSelector from '../hooks/use-product-type-selector';
@@ -34,15 +32,10 @@ export type FeaturesProps = {
 export type UpdateFeaturesType = ( key: FeaturesKeys, value: boolean ) => void;
 
 const AddToCartOptionsEdit = ( props: BlockEditProps< Attributes > ) => {
-	const { setAttributes } = props;
 	const { product } = useProductDataContext();
 
 	const blockProps = useBlockProps();
 	const blockClientId = blockProps?.id;
-	const { isDescendentOfSingleProductBlock } =
-		useIsDescendentOfSingleProductBlock( {
-			blockClientId,
-		} );
 
 	const {
 		current: currentProductType,
@@ -51,20 +44,11 @@ const AddToCartOptionsEdit = ( props: BlockEditProps< Attributes > ) => {
 	} = useProductTypeSelector();
 
 	useEffect( () => {
-		setAttributes( {
-			isDescendentOfSingleProductBlock,
-		} );
 		registerListener( blockClientId );
 		return () => {
 			unregisterListener( blockClientId );
 		};
-	}, [
-		setAttributes,
-		isDescendentOfSingleProductBlock,
-		blockClientId,
-		registerListener,
-		unregisterListener,
-	] );
+	}, [ blockClientId, registerListener, unregisterListener ] );
 
 	const productType =
 		product.id === 0 ? currentProductType?.slug : product.type;
@@ -80,11 +64,6 @@ const AddToCartOptionsEdit = ( props: BlockEditProps< Attributes > ) => {
 			<BlockControls>
 				<ToolbarProductTypeGroup />
 			</BlockControls>
-			<AddToCartOptionsSettings
-				features={ {
-					isBlockifiedAddToCart: true,
-				} }
-			/>
 			{ isCoreProductType ? (
 				<AddToCartWithOptionsEditTemplatePart
 					productType={ productType }
