@@ -16,7 +16,7 @@ Before we attempt to load our class, we need to make sure that WooCommerce is ac
 
 ```php
 /**
- * If WooCommerce is active, then the class will exist.
+ * If WooCommerce is active, then these classes and function will exist.
  */
 if ( class_exists( 'woocommerce' ) && class_exists( 'WC_Shipping_Method' ) && function_exists( 'WC' ) ) {
 	// We add an action to init our shipping method class, and a filter to add our shipping method to the method list.
@@ -42,7 +42,7 @@ function your_shipping_method_init() {
 
 ## Create your class
 
-Now we create your class and place it inside the function just created. It is best to make sure the class doesn't already exist to make sure there are no unexpected fatal errors. Also, it will need to extend the shipping method class so that we have access to the API. We also make sure to declare neccessary properties and then define more options/properties in the constructor, and we end with a call to the init method.
+Now we create your class to place inside the function just created. It is best to make sure the class doesn't already exist to make sure there are no unexpected fatal errors. The class will need to extend the shipping method class so that we have access to the Shipping and Settings APIs. We also make sure to declare neccessary properties and then define more options/properties in the constructor, and we end with a call to the init method.
 
 ```php
 if ( ! class_exists( 'WC_Your_Shipping_Method' ) ) {
