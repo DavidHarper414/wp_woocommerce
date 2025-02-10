@@ -125,8 +125,6 @@ window.addEventListener(
 			errorHandler: ( error: Error ) => void;
 		} >;
 
-		console.log( 'customEvent', customEvent.detail );
-
 		// Only support one action for now. product-button uses this as
 		// an interim way to communicate with the redux store.
 		if ( customEvent.detail.action === 'addItemToCart' ) {
@@ -135,7 +133,6 @@ window.addEventListener(
 					...customEvent.detail.args
 				);
 			} catch ( error ) {
-				console.log( 'error happened' );
 				if ( customEvent.detail.errorHandler ) {
 					customEvent.detail.errorHandler( error as Error );
 				}
