@@ -65,7 +65,7 @@ import { getCountryStateOptions } from './services/country';
 import { CoreProfilerLoader } from './components/loader/Loader';
 import { Plugins } from './pages/Plugins/Plugins';
 import { NoPermissionsError } from './pages/Plugins/NoPermissions';
-import { getPluginSlug, useFullScreen } from '~/utils';
+import { useFullScreen } from '~/utils';
 import './style.scss';
 import {
 	InstalledPlugin,
@@ -114,7 +114,7 @@ export type CoreProfilerStateMachineContext = {
 	} & Partial< ProfileItems >;
 	pluginsAvailable: ExtensionList[ 'plugins' ] | [];
 	pluginsTruncated: string[];
-	pluginsSelected: string[]; // extension slugs
+	pluginsSelected: ExtensionList[ 'plugins' ][ number ][ 'key' ][];
 	pluginsInstallationErrors: PluginInstallError[];
 	geolocatedLocation: GeolocationResponse | undefined;
 	businessInfo: {
@@ -622,7 +622,7 @@ const getPlugins = fromPromise( async () => {
 	dispatch( ONBOARDING_STORE_NAME ).invalidateResolution(
 		'getFreeExtensions'
 	);
-	const extensionsBundles = await resolveSelect(
+	const extensionsBundles: ExtensionList[] = await resolveSelect(
 		ONBOARDING_STORE_NAME
 	).getFreeExtensions();
 	return (
@@ -682,7 +682,7 @@ const assignPluginsSelected = assign( {
 	}: {
 		event: PluginsInstallationRequestedEvent;
 	} ) => {
-		return event.payload.pluginsSelected.map( getPluginSlug );
+		return event.payload.pluginsSelected;
 	},
 } );
 

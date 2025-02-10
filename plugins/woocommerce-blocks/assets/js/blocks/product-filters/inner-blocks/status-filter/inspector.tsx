@@ -22,26 +22,19 @@ import {
  */
 import { BlockAttributes, EditProps } from './types';
 import { getInnerBlockByName } from '../../utils';
-import { toggleProductFilterClearButtonVisibilityFactory } from '../../utils/toggle-product-filter-clear-button-visibility';
 
 let displayStyleOptions: Block[] = [];
-const toggleProductFilterClearButtonVisibility =
-	toggleProductFilterClearButtonVisibilityFactory();
 
 export const Inspector = ( {
 	attributes,
 	setAttributes,
 	clientId,
 }: EditProps ) => {
-	const { displayStyle, showCounts, hideEmpty, clearButton } = attributes;
+	const { displayStyle, showCounts, hideEmpty } = attributes;
 
 	if ( displayStyleOptions.length === 0 ) {
-		displayStyleOptions = getBlockTypes().filter(
-			( blockType ) =>
-				blockType.name !== 'woocommerce/product-filter-clear-button' &&
-				blockType.ancestor?.includes(
-					'woocommerce/product-filter-status'
-				)
+		displayStyleOptions = getBlockTypes().filter( ( blockType ) =>
+			blockType.ancestor?.includes( 'woocommerce/product-filter-status' )
 		);
 	}
 
@@ -119,17 +112,6 @@ export const Inspector = ( {
 						onChange={ ( value ) =>
 							setAttributes( { hideEmpty: ! value } )
 						}
-					/>
-					<ToggleControl
-						label={ __( 'Clear button', 'woocommerce' ) }
-						checked={ clearButton }
-						onChange={ ( value ) => {
-							setAttributes( { clearButton: value } );
-							toggleProductFilterClearButtonVisibility( {
-								clientId,
-								showClearButton: value,
-							} );
-						} }
 					/>
 				</PanelBody>
 			</InspectorControls>

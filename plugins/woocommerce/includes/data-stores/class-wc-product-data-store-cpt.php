@@ -6,10 +6,13 @@
  */
 
 use Automattic\Jetpack\Constants;
+use Automattic\WooCommerce\Enums\ProductStatus;
 use Automattic\WooCommerce\Enums\ProductType;
+use Automattic\WooCommerce\Enums\CatalogVisibility;
 use Automattic\WooCommerce\Internal\CostOfGoodsSold\CostOfGoodsSoldController;
 use Automattic\WooCommerce\Internal\DownloadPermissionsAdjuster;
 use Automattic\WooCommerce\Utilities\NumberUtil;
+use Automattic\WooCommerce\Enums\ProductStockStatus;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -203,7 +206,7 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 				'woocommerce_new_product_data',
 				array(
 					'post_type'      => 'product',
-					'post_status'    => $product->get_status() ? $product->get_status() : 'publish',
+					'post_status'    => $product->get_status() ? $product->get_status() : ProductStatus::PUBLISH,
 					'post_author'    => get_current_user_id(),
 					'post_title'     => $product->get_name() ? $product->get_name() : __( 'Product', 'woocommerce' ),
 					'post_content'   => $product->get_description(),
@@ -324,7 +327,7 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 				'post_title'     => $product->get_name( 'edit' ),
 				'post_parent'    => $product->get_parent_id( 'edit' ),
 				'comment_status' => $product->get_reviews_allowed( 'edit' ) ? 'open' : 'closed',
-				'post_status'    => $product->get_status( 'edit' ) ? $product->get_status( 'edit' ) : 'publish',
+				'post_status'    => $product->get_status( 'edit' ) ? $product->get_status( 'edit' ) : ProductStatus::PUBLISH,
 				'menu_order'     => $product->get_menu_order( 'edit' ),
 				'post_password'  => $product->get_post_password( 'edit' ),
 				'post_name'      => $product->get_slug( 'edit' ),
@@ -418,7 +421,7 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 			do_action( 'woocommerce_delete_' . $post_type, $id );
 		} else {
 			wp_trash_post( $id );
-			$product->set_status( 'trash' );
+			$product->set_status( ProductStatus::TRASH );
 			do_action( 'woocommerce_trash_' . $post_type, $id );
 		}
 	}
@@ -499,7 +502,8 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 	 * @param WC_Product $product The product to apply the loaded data to.
 	 */
 	protected function load_cogs_data( $product ) {
-		$cogs_value = (float) ( get_post_meta( $product->get_id(), '_cogs_total_value', true ) );
+		$cogs_value = get_post_meta( $product->get_id(), '_cogs_total_value', true );
+		$cogs_value = '' === $cogs_value ? null : (float) $cogs_value;
 
 		/**
 		 * Filter to customize the Cost of Goods Sold value that gets loaded for a given product.
@@ -557,13 +561,13 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 		$exclude_catalog = in_array( 'exclude-from-catalog', $term_names, true );
 
 		if ( $exclude_search && $exclude_catalog ) {
-			$catalog_visibility = 'hidden';
+			$catalog_visibility = CatalogVisibility::HIDDEN;
 		} elseif ( $exclude_search ) {
-			$catalog_visibility = 'catalog';
+			$catalog_visibility = CatalogVisibility::CATALOG;
 		} elseif ( $exclude_catalog ) {
-			$catalog_visibility = 'search';
+			$catalog_visibility = CatalogVisibility::SEARCH;
 		} else {
-			$catalog_visibility = 'visible';
+			$catalog_visibility = CatalogVisibility::VISIBLE;
 		}
 
 		$product->set_props(
@@ -756,13 +760,13 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 			 *
 			 * @since 9.5.0
 			 *
-			 * @param float|null $cogs_value The value to be written to the database. If returned as null, nothing will be written.
+			 * @param float|null|false $cogs_value The value to be written to the database. If returned as false, nothing will be written.
 			 * @param WC_Product $product The product for which the value is being saved.
 			 */
 			$cogs_value = apply_filters( 'woocommerce_save_product_cogs_value', $cogs_value, $product );
 
-			if ( ! is_null( $cogs_value ) ) {
-				$updated = $this->update_or_delete_post_meta( $product, '_cogs_total_value', 0.0 === $cogs_value ? '' : $cogs_value );
+			if ( false !== $cogs_value ) {
+				$updated = $this->update_or_delete_post_meta( $product, '_cogs_total_value', is_null( $cogs_value ) ? '' : $cogs_value );
 				if ( $updated ) {
 					$this->updated_props[] = 'cogs_value';
 				}
@@ -936,8 +940,8 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 				$terms[] = 'featured';
 			}
 
-			if ( 'outofstock' === $product->get_stock_status() ) {
-				$terms[] = 'outofstock';
+			if ( ProductStockStatus::OUT_OF_STOCK === $product->get_stock_status() ) {
+				$terms[] = ProductStockStatus::OUT_OF_STOCK;
 			}
 
 			$rating = min( 5, NumberUtil::round( $product->get_average_rating(), 0 ) );
@@ -947,14 +951,14 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 			}
 
 			switch ( $product->get_catalog_visibility() ) {
-				case 'hidden':
+				case CatalogVisibility::HIDDEN:
 					$terms[] = 'exclude-from-search';
 					$terms[] = 'exclude-from-catalog';
 					break;
-				case 'catalog':
+				case CatalogVisibility::CATALOG:
 					$terms[] = 'exclude-from-search';
 					break;
-				case 'search':
+				case CatalogVisibility::SEARCH:
 					$terms[] = 'exclude-from-catalog';
 					break;
 			}
@@ -1106,8 +1110,8 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 		$non_published_where         = '';
 		$product_visibility_term_ids = wc_get_product_visibility_term_ids();
 
-		if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) && $product_visibility_term_ids['outofstock'] ) {
-			$exclude_term_ids[] = $product_visibility_term_ids['outofstock'];
+		if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) && $product_visibility_term_ids[ ProductStockStatus::OUT_OF_STOCK ] ) {
+			$exclude_term_ids[] = $product_visibility_term_ids[ ProductStockStatus::OUT_OF_STOCK ];
 		}
 
 		if ( count( $exclude_term_ids ) ) {
@@ -1582,8 +1586,8 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 			$exclude_term_ids[] = $product_visibility_term_ids['exclude-from-catalog'];
 		}
 
-		if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) && $product_visibility_term_ids['outofstock'] ) {
-			$exclude_term_ids[] = $product_visibility_term_ids['outofstock'];
+		if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) && $product_visibility_term_ids[ ProductStockStatus::OUT_OF_STOCK ] ) {
+			$exclude_term_ids[] = $product_visibility_term_ids[ ProductStockStatus::OUT_OF_STOCK ];
 		}
 
 		$query = array(
@@ -2241,7 +2245,7 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 		// Handle visibility.
 		if ( $manual_queries['visibility'] ) {
 			switch ( $manual_queries['visibility'] ) {
-				case 'search':
+				case CatalogVisibility::SEARCH:
 					$wp_query_args['tax_query'][] = array(
 						'taxonomy' => 'product_visibility',
 						'field'    => 'slug',
@@ -2249,7 +2253,7 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 						'operator' => 'NOT IN',
 					);
 					break;
-				case 'catalog':
+				case CatalogVisibility::CATALOG:
 					$wp_query_args['tax_query'][] = array(
 						'taxonomy' => 'product_visibility',
 						'field'    => 'slug',
@@ -2257,7 +2261,7 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 						'operator' => 'NOT IN',
 					);
 					break;
-				case 'visible':
+				case CatalogVisibility::VISIBLE:
 					$wp_query_args['tax_query'][] = array(
 						'taxonomy' => 'product_visibility',
 						'field'    => 'slug',
@@ -2265,7 +2269,7 @@ class WC_Product_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Da
 						'operator' => 'NOT IN',
 					);
 					break;
-				case 'hidden':
+				case CatalogVisibility::HIDDEN:
 					$wp_query_args['tax_query'][] = array(
 						'taxonomy' => 'product_visibility',
 						'field'    => 'slug',

@@ -7,6 +7,8 @@
  */
 
 use Automattic\Jetpack\Constants;
+use Automattic\WooCommerce\Enums\ProductStatus;
+use Automattic\WooCommerce\Enums\ProductStockStatus;
 use Automattic\WooCommerce\Enums\ProductType;
 use Automattic\WooCommerce\Internal\Orders\CouponsController;
 use Automattic\WooCommerce\Internal\Orders\TaxesController;
@@ -474,7 +476,7 @@ class WC_AJAX {
 			$variation    = $product->get_variation_attributes();
 		}
 
-		if ( $passed_validation && false !== WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation ) && 'publish' === $product_status ) {
+		if ( $passed_validation && false !== WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation ) && ProductStatus::PUBLISH === $product_status ) {
 
 			do_action( 'woocommerce_ajax_added_to_cart', $product_id );
 
@@ -2469,7 +2471,7 @@ class WC_AJAX {
 	private static function variation_bulk_action_toggle_enabled( $variations, $data ) {
 		foreach ( $variations as $variation_id ) {
 			$variation = wc_get_product( $variation_id );
-			$variation->set_status( 'private' === $variation->get_status( 'edit' ) ? 'publish' : 'private' );
+			$variation->set_status( ProductStatus::PRIVATE === $variation->get_status( 'edit' ) ? ProductStatus::PUBLISH : ProductStatus::PRIVATE );
 			$variation->save();
 		}
 	}
@@ -2543,7 +2545,7 @@ class WC_AJAX {
 	 * @used-by bulk_edit_variations
 	 */
 	private static function variation_bulk_action_variable_stock_status_instock( $variations, $data ) {
-		self::variation_bulk_set( $variations, 'stock_status', 'instock' );
+		self::variation_bulk_set( $variations, 'stock_status', ProductStockStatus::IN_STOCK );
 	}
 
 	/**
@@ -2555,7 +2557,7 @@ class WC_AJAX {
 	 * @used-by bulk_edit_variations
 	 */
 	private static function variation_bulk_action_variable_stock_status_outofstock( $variations, $data ) {
-		self::variation_bulk_set( $variations, 'stock_status', 'outofstock' );
+		self::variation_bulk_set( $variations, 'stock_status', ProductStockStatus::OUT_OF_STOCK );
 	}
 
 	/**
@@ -2567,7 +2569,7 @@ class WC_AJAX {
 	 * @used-by bulk_edit_variations
 	 */
 	private static function variation_bulk_action_variable_stock_status_onbackorder( $variations, $data ) {
-		self::variation_bulk_set( $variations, 'stock_status', 'onbackorder' );
+		self::variation_bulk_set( $variations, 'stock_status', ProductStockStatus::ON_BACKORDER );
 	}
 
 	/**
