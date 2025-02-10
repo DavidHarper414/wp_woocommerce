@@ -394,7 +394,8 @@ class WC_Brands {
 	public function show_brand() {
 		global $post;
 
-		if ( is_singular( 'product' ) ) {
+		$has_block_template = apply_filters( 'woocommerce_has_block_template', false, 'taxonomy-product_brand' );
+		if ( is_singular( 'product' ) &&  ! $has_block_template ) {
 			$terms       = get_the_terms( $post->ID, 'product_brand' );
 			$brand_count = is_array( $terms ) ? count( $terms ) : 0;
 
