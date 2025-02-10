@@ -11,7 +11,7 @@ import {
 } from '@wordpress/element';
 import clsx from 'clsx';
 import { isObject } from '@woocommerce/types';
-import { dispatch, useDispatch, useSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { validationStore } from '@woocommerce/block-data';
 import { usePrevious } from '@woocommerce/base-hooks';
 import { useInstanceId } from '@wordpress/compose';
@@ -117,10 +117,12 @@ const ValidatedTextInput = forwardRef<
 
 				// Trim white space before validation.
 				inputObject.value = inputObject.value.trim();
+				inputObject.setCustomValidity( '' );
 
 				if (
 					inputObject.checkValidity() &&
-					customValidationRef.current( inputObject )
+					customValidationRef.current( inputObject ) &&
+					errorsHidden
 				) {
 					clearValidationError( errorIdString );
 					return;

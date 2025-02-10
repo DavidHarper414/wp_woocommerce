@@ -11,7 +11,7 @@ import {
 } from '@woocommerce/base-components/cart-checkout/password-strength-meter';
 import { PRIVACY_URL, TERMS_URL } from '@woocommerce/block-settings';
 import { ValidatedTextInput, Spinner } from '@woocommerce/blocks-components';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 import { validationStore } from '@woocommerce/block-data';
 import { getSetting } from '@woocommerce/settings';
 
@@ -40,7 +40,6 @@ const PasswordField = ( {
 	password: string;
 	setPassword: ( password: string ) => void;
 } ) => {
-	const { setValidationErrors } = useDispatch( validationStore );
 	return (
 		<div>
 			<ValidatedTextInput
@@ -67,15 +66,12 @@ const PasswordField = ( {
 				} }
 				customValidation={ ( inputObject ) => {
 					if ( getPasswordStrength( inputObject.value ) < 2 ) {
-						setValidationErrors( {
-							'account-password': {
-								message: __(
-									'Please create a stronger password',
-									'woocommerce'
-								),
-								hidden: true,
-							},
-						} );
+						inputObject.setCustomValidity(
+							__(
+								'Please create a stronger password',
+								'woocommerce'
+							)
+						);
 						return false;
 					}
 					return true;
@@ -96,8 +92,10 @@ const Form = ( {
 } ) => {
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ password, setPassword ] = useState( '' );
-	const hasValidationError = useSelect( ( select ) =>
-		select( validationStore ).getValidationError( 'account-password' )
+	const hasValidationError = useSelect(
+		( select ) =>
+			select( validationStore ).getValidationError( 'account-password' ),
+		[]
 	);
 	const customerEmail =
 		blockAttributes?.customerEmail ||
