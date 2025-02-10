@@ -159,21 +159,6 @@ class WC_Product_Grouped extends WC_Product {
 		return array_filter( $grouped_products, 'wc_products_array_filter_visible_grouped' );
 	}
 
-	/**
-	 * Return the product's child ids - visible only.
-	 *
-	 * @since 9.8.0
-	 * @return array Child ids
-	 */
-	public function get_visible_child_ids() {
-		return array_map(
-			function ( $grouped_product ) {
-				return $grouped_product->get_id();
-			},
-			$this->get_visible_children(),
-		);
-	}
-
 	/*
 	|--------------------------------------------------------------------------
 	| Setters

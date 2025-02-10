@@ -707,7 +707,15 @@ class ProductSchema extends AbstractSchema {
 	 * @return array
 	 */
 	protected function get_grouped_products( \WC_Product $product ) {
-		return $product->is_type( ProductType::GROUPED ) ? $product->get_visible_child_ids() : [];
+		if ( $product->is_type( ProductType::GROUPED ) ) {
+			return array_map(
+				function ( $child ) {
+					return $child->get_id();
+				},
+				$product->get_visible_children(),
+			);
+		}
+		return [];
 	}
 
 	/**
