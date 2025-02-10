@@ -101,7 +101,6 @@ class AssetDataRegistry {
 			'wcVersion'                => defined( 'WC_VERSION' ) ? WC_VERSION : '',
 			'wpLoginUrl'               => wp_login_url(),
 			'wpVersion'                => get_bloginfo( 'version' ),
-			'__experimentalUseReact18' => defined( 'WC_EXPERIMENTAL_USE_REACT_18' ) && WC_EXPERIMENTAL_USE_REACT_18,
 		];
 	}
 
