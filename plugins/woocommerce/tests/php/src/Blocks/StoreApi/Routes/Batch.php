@@ -147,4 +147,33 @@ class Batch extends ControllerTestCase {
 
 		$this->assertEquals( 'rest_invalid_param', $response_data['code'] );
 	}
+
+	/**
+	 * Do a batch request with a get request.
+	 */
+	public function test_batch_get_requests() {
+		add_filter( '__experimental_woocommerce_store_api_batch_request_methods', function( $methods ) {
+			$methods[] = 'GET';
+			return $methods;
+		}, 10, 1 );
+
+		$request = new \WP_REST_Request( 'POST', '/wc/store/v1/batch' );
+		$request->set_header( 'Nonce', wp_create_nonce( 'wc_store_api' ) );
+		$request->set_body_params(
+			array(
+				'requests' => array(
+					array( 'method' => 'GET', 'path' => '/wc/store/v1/products' ),
+					array( 'method' => 'GET', 'path' => '/wc/store/v1/products/collection_data' ),
+				),
+			)
+		);
+
+		$response = rest_get_server()->dispatch( $request );
+		$response_data = $response->get_data();
+
+		$this->assertEquals( 2, count( $response_data['responses'] ) );
+		$this->assertEquals( 200, $response_data['responses'][0]['status'] );
+
+		remove_all_filters( '__experimental_woocommerce_store_api_batch_request_methods' );
+	}
 }
