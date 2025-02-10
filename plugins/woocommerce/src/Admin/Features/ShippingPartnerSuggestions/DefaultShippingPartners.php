@@ -261,7 +261,6 @@ class DefaultShippingPartners {
 				'name'              => 'WooCommerce Shipping',
 				'slug'              => 'woocommerce-shipping',
 				'description'       => __( 'Save time and money by printing your shipping labels right from your computer with WooCommerce Shipping. Try WooCommerce Shipping for free.', 'woocommerce' ),
-				'dependencies'      => array( 'jetpack' ),
 				'layout_column'     => array(
 					'image'    => $asset_base_url . 'wcs-column.svg',
 					'features' => array(
