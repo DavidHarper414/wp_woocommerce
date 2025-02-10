@@ -63,8 +63,6 @@ export const renderBlock = <
 	props = {} as BlockProps< TProps, TAttributes >,
 	errorBoundaryProps = {},
 }: RenderBlockParams< TProps, TAttributes > ): Root => {
-	const useReact18 = getSetting( '__experimentalUseReact18', false ) === true;
-
 	const BlockWrapper = () => {
 		useEffect( () => {
 			if ( container.classList ) {
@@ -87,12 +85,9 @@ export const renderBlock = <
 		);
 	};
 
-	if ( useReact18 ) {
-		const root = createRoot( container );
-		root.render( <BlockWrapper /> );
-		return root;
-	}
-	render( <BlockWrapper />, container );
+	const root = createRoot( container );
+	root.render( <BlockWrapper /> );
+	return root;
 };
 
 interface RenderBlockInContainersParams<
