@@ -34,7 +34,7 @@ exports.test = base.test.extend( {
 	/**
 	 * Fixture for interacting with the [WordPress REST API](https://developer.wordpress.org/rest-api/reference/) endpoints.
 	 *
-	 * @param {{baseURL: string}}                               fixtures
+	 * @param {{baseURL: string}} fixtures
 	 * @param {function(base.APIRequestContext): Promise<void>} use
 	 */
 	wpApi: async ( { baseURL }, use ) => {
