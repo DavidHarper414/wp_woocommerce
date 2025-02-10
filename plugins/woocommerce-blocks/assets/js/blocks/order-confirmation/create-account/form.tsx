@@ -11,7 +11,7 @@ import {
 } from '@woocommerce/base-components/cart-checkout/password-strength-meter';
 import { PRIVACY_URL, TERMS_URL } from '@woocommerce/block-settings';
 import { ValidatedTextInput, Spinner } from '@woocommerce/blocks-components';
-import { useSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { validationStore } from '@woocommerce/block-data';
 import { getSetting } from '@woocommerce/settings';
 
@@ -40,6 +40,7 @@ const PasswordField = ( {
 	password: string;
 	setPassword: ( password: string ) => void;
 } ) => {
+	const { setValidationErrors } = useDispatch( validationStore );
 	return (
 		<div>
 			<ValidatedTextInput
@@ -66,12 +67,15 @@ const PasswordField = ( {
 				} }
 				customValidation={ ( inputObject ) => {
 					if ( getPasswordStrength( inputObject.value ) < 2 ) {
-						inputObject.setCustomValidity(
-							__(
-								'Please create a stronger password',
-								'woocommerce'
-							)
-						);
+						setValidationErrors( {
+							'account-password': {
+								message: __(
+									'Please create a stronger password',
+									'woocommerce'
+								),
+								hidden: true,
+							},
+						} );
 						return false;
 					}
 					return true;

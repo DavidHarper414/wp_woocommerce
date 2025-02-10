@@ -11,7 +11,7 @@ import {
 } from '@wordpress/element';
 import clsx from 'clsx';
 import { isObject } from '@woocommerce/types';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 import { validationStore } from '@woocommerce/block-data';
 import { usePrevious } from '@woocommerce/base-hooks';
 import { useInstanceId } from '@wordpress/compose';
@@ -84,6 +84,7 @@ const ValidatedTextInput = forwardRef<
 			setValidationErrors,
 			hideValidationError,
 			clearValidationError,
+			showValidationError,
 		} = useDispatch( validationStore );
 
 		// Ref for validation callback.
@@ -116,7 +117,6 @@ const ValidatedTextInput = forwardRef<
 
 				// Trim white space before validation.
 				inputObject.value = inputObject.value.trim();
-				// inputObject.setCustomValidity( '' );
 
 				if (
 					inputObject.checkValidity() &&
@@ -126,16 +126,24 @@ const ValidatedTextInput = forwardRef<
 					return;
 				}
 
-				setValidationErrors( {
-					[ errorIdString ]: {
-						message: getValidityMessageForInput(
-							label,
-							inputObject,
-							customValidityMessage
-						),
-						hidden: errorsHidden,
-					},
-				} );
+				if ( ! errorsHidden ) {
+					showValidationError( errorIdString );
+				}
+
+				const validityMessage = getValidityMessageForInput(
+					label,
+					inputObject,
+					customValidityMessage
+				);
+
+				if ( validityMessage ) {
+					setValidationErrors( {
+						[ errorIdString ]: {
+							message: validityMessage,
+							hidden: errorsHidden,
+						},
+					} );
+				}
 			},
 			[
 				clearValidationError,
@@ -143,6 +151,7 @@ const ValidatedTextInput = forwardRef<
 				setValidationErrors,
 				label,
 				customValidityMessage,
+				showValidationError,
 			]
 		);
 

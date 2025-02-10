@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { ValidatedTextInput } from '@woocommerce/blocks-components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { checkoutStore } from '@woocommerce/block-data';
+import { checkoutStore, validationStore } from '@woocommerce/block-data';
 import PasswordStrengthMeter from '@woocommerce/base-components/cart-checkout/password-strength-meter';
 
 const CreatePassword = () => {
@@ -15,8 +15,9 @@ const CreatePassword = () => {
 		return {
 			customerPassword: store.getCustomerPassword(),
 		};
-	} );
+	}, [] );
 	const { __internalSetCustomerPassword } = useDispatch( checkoutStore );
+	const { setValidationErrors } = useDispatch( validationStore );
 
 	return (
 		<ValidatedTextInput
@@ -37,11 +38,17 @@ const CreatePassword = () => {
 					return __( 'Please enter a valid password', 'woocommerce' );
 				}
 			} }
-			customValidation={ ( inputObject ) => {
+			customValidation={ () => {
 				if ( passwordStrength < 2 ) {
-					inputObject.setCustomValidity(
-						__( 'Please create a stronger password', 'woocommerce' )
-					);
+					setValidationErrors( {
+						'account-password': {
+							message: __(
+								'Please create a stronger password',
+								'woocommerce'
+							),
+							hidden: true,
+						},
+					} );
 					return false;
 				}
 				return true;
