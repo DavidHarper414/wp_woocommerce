@@ -58,13 +58,17 @@ export const receiveCart =
 
 		// Get the new cart data before showing updates.
 		const newCart = select.getCartData();
-		notifyQuantityChanges( {
-			oldCart,
-			newCart,
-			cartItemsPendingQuantity: select.getItemsPendingQuantityUpdate(),
-			cartItemsPendingDelete: select.getItemsPendingDelete(),
-			productsPendingAdd: select.getProductsPendingAdd(),
-		} );
+
+		if ( options?.sync !== false ) {
+			notifyQuantityChanges( {
+				oldCart,
+				newCart,
+				cartItemsPendingQuantity:
+					select.getItemsPendingQuantityUpdate(),
+				cartItemsPendingDelete: select.getItemsPendingDelete(),
+				productsPendingAdd: select.getProductsPendingAdd(),
+			} );
+		}
 
 		updateCartErrorNotices( newCart.errors, oldCartErrors );
 		dispatch.setErrorData( null );
