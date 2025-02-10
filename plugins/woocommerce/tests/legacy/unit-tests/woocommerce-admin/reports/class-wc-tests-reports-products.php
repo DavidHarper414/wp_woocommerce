@@ -708,20 +708,36 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 
 		WC_Helper_Reports::reset_stats_dbs();
 
+		// Enable Tax.
+		update_option( 'woocommerce_prices_include_tax', 'no' );
+		update_option( 'woocommerce_calc_taxes', 'yes' );
+
+		// Create a 10% tax rate.
+		$tax_rate = array(
+			'tax_rate_country'  => '',
+			'tax_rate'          => '10',
+			'tax_rate_name'     => 'tax',
+			'tax_rate_order'    => '0',
+			'tax_rate_shipping' => '1',
+		);
+		WC_Tax::_insert_tax_rate( $tax_rate );
+
+		// Create product 1 with price $25.
 		$product_1 = new WC_Product_Simple();
 		$product_1->set_name( 'Test Product 1' );
 		$product_1->set_regular_price( 25 );
 		$product_1->save();
 
+		// Create product 2 with price $30.
 		$product_2 = new WC_Product_Simple();
 		$product_2->set_name( 'Test Product 2' );
 		$product_2->set_regular_price( 30 );
 		$product_2->save();
 
-		// Create an order and add product_1 as the order item.
+		// Create an order and add product_1 as the order item. The quantity is set to 4.
 		$order = WC_Helper_Order::create_order( 1, $product_1 );
 
-		// Add product_2 as the second order item.
+		// Add product_2 as the second order item. The quantity is set to 2.
 		$item = new WC_Order_Item_Product();
 		$item->set_props(
 			array(
@@ -734,13 +750,26 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 		$item->save();
 		$order->add_item( $item );
 
+		// Add a flat rate shipping method to the order. The shipping cost is $100.
+		$rate          = new WC_Shipping_Rate( 'flat_rate_shipping', 'Flat rate shipping', '100', array(), 'flat_rate' );
+		$shipping_item = new WC_Order_Item_Shipping();
+		$shipping_item->set_props(
+			array(
+				'method_title' => $rate->label,
+				'method_id'    => $rate->id,
+				'total'        => wc_format_decimal( $rate->cost ),
+				'taxes'        => $rate->taxes,
+			)
+		);
+		foreach ( $rate->get_meta_data() as $key => $value ) {
+			$shipping_item->add_meta_data( $key, $value, true );
+		}
+		// Remove existing shipping items that created by WC_Helper_Order::create_order.
+		$order->remove_order_items( 'shipping' );
+		$order->add_item( $shipping_item );
+
 		$order->set_status( OrderStatus::COMPLETED );
-		$order->set_shipping_total( 100 );
-		$order->set_discount_total( 0 );
-		$order->set_discount_tax( 0 );
-		$order->set_cart_tax( 0 );
-		$order->set_shipping_tax( 10 );
-		$order->set_total( 270 ); // $25x4 product_1 + $30x2 product_2 + $100 shipping + $10 shipping tax.
+		$order->calculate_totals( true );
 		$order->save();
 
 		WC_Helper_Queue::run_all_pending( 'wc-admin-data' );
@@ -766,10 +795,11 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 		);
 
 		$this->assertEquals( '-2', $result[0]->product_qty );
-		$this->assertEquals( -60.000000, $result[0]->product_net_revenue );   // -($30 product_2 * 2).
-		$this->assertEquals( -33.333333, $result[0]->shipping_amount );       // -($100 shipping / 6 total items * 2 product_2 ).
-		$this->assertEquals( -3.333333, $result[0]->shipping_tax_amount );    // -($10 shipping tax / 6 total items * 2 product_2 ).
-		$this->assertEquals( -96.666667, $result[0]->product_gross_revenue ); // product_net_revenue + shipping_amount + shipping_tax_amount + tax_amount.
+		$this->assertEquals( -60.000000, $result[0]->product_net_revenue );    // -($30 product_2 * 2).
+		$this->assertEquals( -33.333333, $result[0]->shipping_amount );        // -($100 shipping / 6 total items * 2 product_2 ).
+		$this->assertEquals( -3.333333, $result[0]->shipping_tax_amount );     // -($10 shipping tax / 6 total items * 2 product_2 ).
+		$this->assertEquals( -6, $result[0]->tax_amount );                     // -($30 product_2 * 10% tax * 2 quantity).
+		$this->assertEquals( -102.666667, $result[0]->product_gross_revenue ); // product_net_revenue + shipping_amount + shipping_tax_amount + tax_amount.
 	}
 
 	/**
@@ -783,16 +813,33 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 
 		WC_Helper_Reports::reset_stats_dbs();
 
+		// Enable Tax.
+		update_option( 'woocommerce_prices_include_tax', 'no' );
+		update_option( 'woocommerce_calc_taxes', 'yes' );
+
+		// Create a 10% tax rate.
+		$tax_rate = array(
+			'tax_rate_country'  => '',
+			'tax_rate'          => '10',
+			'tax_rate_name'     => 'tax',
+			'tax_rate_order'    => '0',
+			'tax_rate_shipping' => '1',
+		);
+		WC_Tax::_insert_tax_rate( $tax_rate );
+
+		// Create product 1 with price $25.
 		$product_1 = new WC_Product_Simple();
 		$product_1->set_name( 'Test Product 1' );
 		$product_1->set_regular_price( 25 );
 		$product_1->save();
 
+		// Create product 2 with price $30.
 		$product_2 = new WC_Product_Simple();
 		$product_2->set_name( 'Test Product 2' );
 		$product_2->set_regular_price( 30 );
 		$product_2->save();
 
+		// Create product 3 with price $40.
 		$product_3 = new WC_Product_Simple();
 		$product_3->set_name( 'Test Product 3' );
 		$product_3->set_regular_price( 40 );
@@ -827,13 +874,26 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 		$item->save();
 		$order->add_item( $item );
 
+		// Add a flat rate shipping method to the order. The shipping cost is $100.
+		$rate          = new WC_Shipping_Rate( 'flat_rate_shipping', 'Flat rate shipping', '100', array(), 'flat_rate' );
+		$shipping_item = new WC_Order_Item_Shipping();
+		$shipping_item->set_props(
+			array(
+				'method_title' => $rate->label,
+				'method_id'    => $rate->id,
+				'total'        => wc_format_decimal( $rate->cost ),
+				'taxes'        => $rate->taxes,
+			)
+		);
+		foreach ( $rate->get_meta_data() as $key => $value ) {
+			$shipping_item->add_meta_data( $key, $value, true );
+		}
+		// Remove existing shipping items that created by WC_Helper_Order::create_order.
+		$order->remove_order_items( 'shipping' );
+		$order->add_item( $shipping_item );
+
 		$order->set_status( OrderStatus::COMPLETED );
-		$order->set_shipping_total( 100 );
-		$order->set_discount_total( 0 );
-		$order->set_discount_tax( 0 );
-		$order->set_cart_tax( 0 );
-		$order->set_shipping_tax( 10 );
-		$order->set_total( 380 ); // $25x4 product_1 + $30x2 product_2 + $40x3 product_3 + $100 shipping.
+		$order->calculate_totals( true );
 		$order->save();
 
 		// Refund the first order item completely.
@@ -877,9 +937,10 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 		);
 
 		$this->assertEquals( '-3', $result[0]->product_qty );
-		$this->assertEquals( -120.000000, $result[0]->product_net_revenue );   // -($40 product_3 * 3).
-		$this->assertEquals( -60.000000, $result[0]->shipping_amount );        // -($100 shipping / ( 9 total items - 4 refunded items ) * 3 product_3 ).
-		$this->assertEquals( -6.000000, $result[0]->shipping_tax_amount );     // -($10 shipping tax / ( 9 total items - 4 refunded items ) * 3 product_3 ).
-		$this->assertEquals( -186.000000, $result[0]->product_gross_revenue ); // product_net_revenue + shipping_amount + shipping_tax_amount + tax_amount.
+		$this->assertEquals( -120.000000, $result[0]->product_net_revenue ); // -($40 product_3 * 3).
+		$this->assertEquals( -60.000000, $result[0]->shipping_amount );      // -($100 shipping / ( 9 total items - 4 refunded items ) * 3 product_3 ).
+		$this->assertEquals( -6.000000, $result[0]->shipping_tax_amount );   // -($10 shipping tax / ( 9 total items - 4 refunded items ) * 3 product_3 ).
+		$this->assertEquals( -12, $result[0]->tax_amount );                  // -($40 product_3 * 10% tax * 3 quantity ).
+		$this->assertEquals( -198, $result[0]->product_gross_revenue );      // product_net_revenue + shipping_amount + shipping_tax_amount + tax_amount.
 	}
 }

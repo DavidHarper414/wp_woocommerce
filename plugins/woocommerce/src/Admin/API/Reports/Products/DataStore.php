@@ -531,6 +531,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$shipping_amount     = $order->get_item_shipping_amount( $order_item );
 			$shipping_tax_amount = $order->get_item_shipping_tax_amount( $order_item );
 			$coupon_amount       = $order->get_item_coupon_amount( $order_item );
+			$tax_amount          = $order->get_item_cart_tax_amount( $order_item );
 			$net_revenue         = round( $order_item->get_total( 'edit' ), $decimals );
 
 			// If the order is a full refund and there is no order items. The order item here is the parent order item.
@@ -557,18 +558,21 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 					$shipping_total           = (float) $parent_order->get_shipping_total();
 					$total_shipping_to_refund = $shipping_total - $total_shipping_refunded;
 
+					if ( $total_shipping_to_refund > 0 ) {
+						$shipping_amount = -abs( $parent_order->get_item_shipping_amount( $order_item, $remaining_refund_items, $total_shipping_to_refund ) );
+					}
+
 					// Calculate the shipping tax amount to refund from the parent order.
 					$shipping_tax                 = (float) $parent_order->get_shipping_tax();
 					$total_shipping_tax_refunded  = $parent_order->get_total_tax_refunded( false, true );
 					$total_shipping_tax_to_refund = $shipping_tax - $total_shipping_tax_refunded;
 
-					if ( $total_shipping_to_refund > 0 ) {
-						$shipping_amount = -abs( $parent_order->get_item_shipping_amount( $order_item, $remaining_refund_items, $total_shipping_to_refund ) );
-					}
-
 					if ( $total_shipping_tax_to_refund > 0 ) {
 						$shipping_tax_amount = -abs( $parent_order->get_item_shipping_tax_amount( $order_item, $remaining_refund_items, $total_shipping_tax_to_refund ) );
 					}
+
+					// Calculate cart tax amount of the item from the parent order.
+					$tax_amount = -abs( $parent_order->get_item_cart_tax_amount( $order_item ) );
 				}
 			}
 
@@ -578,15 +582,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			if ( ! $product_qty && ! $is_refund ) {
 				++$num_updated;
 				continue;
-			}
-
-			// Tax amount.
-			$tax_amount  = 0;
-			$order_taxes = $order->get_taxes();
-			$tax_data    = $order_item->get_taxes();
-			foreach ( $order_taxes as $tax_item ) {
-				$tax_item_id = $tax_item->get_rate_id();
-				$tax_amount += isset( $tax_data['total'][ $tax_item_id ] ) ? (float) $tax_data['total'][ $tax_item_id ] : 0;
 			}
 
 			if ( $round_tax ) {

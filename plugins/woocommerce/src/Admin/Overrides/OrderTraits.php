@@ -88,4 +88,24 @@ trait OrderTraits {
 	public function get_item_coupon_amount( $item ) {
 		return floatval( $item->get_subtotal( 'edit' ) - $item->get_total( 'edit' ) );
 	}
+
+	/**
+	 * Calculate cart tax amount for line item/product.
+	 *
+	 * @param WC_Order_Item $item Line item from order.
+	 *
+	 * @return float|int
+	 */
+	public function get_item_cart_tax_amount( $item ) {
+		$order_taxes     = $this->get_taxes();
+		$tax_data        = $item->get_taxes();
+		$cart_tax_amount = 0;
+
+		foreach ( $order_taxes as $tax_item ) {
+			$tax_item_id      = $tax_item->get_rate_id();
+			$cart_tax_amount += isset( $tax_data['total'][ $tax_item_id ] ) ? (float) $tax_data['total'][ $tax_item_id ] : 0;
+		}
+
+		return $cart_tax_amount;
+	}
 }
