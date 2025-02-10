@@ -54,7 +54,7 @@ class WC_Post_Data {
 
 		// Status transitions.
 		add_action( 'transition_post_status', array( __CLASS__, 'transition_post_status' ), 10, 3 );
-		add_action( 'delete_post', array( __CLASS__, '_delete_post_data' ) );
+		add_action( 'delete_post', array( __CLASS__, 'delete_post_data' ) );
 		add_action( 'wp_trash_post', array( __CLASS__, 'trash_post' ) );
 		add_action( 'untrashed_post', array( __CLASS__, 'untrash_post' ) );
 		add_action( 'before_delete_post', array( __CLASS__, 'before_delete_order' ) );
@@ -310,7 +310,7 @@ class WC_Post_Data {
 	 *
 	 * @param mixed $id ID of post being deleted.
 	 */
-	public static function _delete_post_data( $id ) {
+	public static function delete_post_data( $id ) {
 		$container = wc_get_container();
 
 		$post_type = self::get_post_type( $id );
@@ -360,7 +360,7 @@ class WC_Post_Data {
 			return;
 		}
 
-		self::_delete_post_data( $id );
+		self::delete_post_data( $id );
 	}
 
 	/**
