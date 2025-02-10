@@ -812,7 +812,7 @@
 			"output": []
 		},
 		"watch:build:project:copy-assets": {
-			"command": "nodemon --exec \"pnpm run\" build:project",
+			"command": "nodemon --exec \"pnpm '/^build:project:copy-assets:.*$/'\"",
 			"service": true
 		},
 		"dependencyOutputs": {
