@@ -108,6 +108,9 @@ const Form = < T extends AddressFormValues | ContactFormValues >( {
 							values[ key as keyof T ] === '',
 					},
 				} );
+				if ( ! inputRef?.isFocused() ) {
+					inputRef?.revalidate();
+				}
 			}
 		);
 
