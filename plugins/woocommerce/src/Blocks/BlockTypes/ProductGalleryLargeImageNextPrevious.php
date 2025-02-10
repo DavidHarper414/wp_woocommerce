@@ -116,10 +116,9 @@ class ProductGalleryLargeImageNextPrevious extends AbstractBlock {
 		$button_side_class         = 'left';
 		$button_disabled_directive = 'context.disableLeft';
 
-
 		if ( 'next' === $button_type ) {
-			$icon_path         = $next_button_icon_path;
-			$button_side_class = 'right';
+			$icon_path                 = $next_button_icon_path;
+			$button_side_class         = 'right';
 			$button_disabled_directive = 'context.disableRight';
 		}
 
