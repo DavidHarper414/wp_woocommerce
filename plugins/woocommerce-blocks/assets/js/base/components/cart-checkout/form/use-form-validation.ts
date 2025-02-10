@@ -194,7 +194,6 @@ export const useFormValidation = (
 		const validate = parser.compile( schema );
 		const result = validate( data );
 
-		// console.log( 'extra errors:', customValidation );
 		if ( ! result && validate.errors ) {
 			schemaErrorsMap = getErrorsMap( validate.errors, formFields );
 		} else {
