@@ -30,11 +30,7 @@ import { Column } from './column';
 import InboxPanel from '../inbox-panel';
 import StatsOverview from './stats-overview';
 import { StoreManagementLinks } from '../store-management-links';
-import {
-	TasksPlaceholder,
-	useActiveSetupTasklist,
-	ProgressTitle,
-} from '../task-lists';
+import { TasksPlaceholder, ProgressTitle } from '../task-lists';
 import { MobileAppModal } from './mobile-app-modal';
 import './style.scss';
 import '../dashboard/style.scss';
@@ -77,10 +73,14 @@ export const Layout = ( {
 	isTaskListHidden,
 } ) => {
 	const userPrefs = useUserPreferences();
-	const shouldShowStoreLinks = taskListComplete || isTaskListHidden;
-	const shouldShowWCPayFeature = taskListComplete || isTaskListHidden;
+	const isTaskListCompleteOrHidden = taskListComplete || isTaskListHidden;
+	const shouldShowStoreLinks = isTaskListCompleteOrHidden;
+	const shouldShowWCPayFeature = isTaskListCompleteOrHidden;
 	const isDashboardShown = Object.keys( query ).length > 0 && ! query.task; // ?&task=<x> query param is used to show tasks instead of the homescreen
-	const activeSetupTaskList = useActiveSetupTasklist();
+	const isSetupTaskListVisible = getAdminSetting(
+		'visibleTaskListIds',
+		[]
+	).includes( 'setup' );
 
 	const twoColumns = hasTwoColumnLayout(
 		userPrefs.homepage_layout,
@@ -109,9 +109,9 @@ export const Layout = ( {
 	const renderTaskList = () => {
 		return (
 			<Suspense fallback={ <TasksPlaceholder query={ query } /> }>
-				{ activeSetupTaskList && isDashboardShown && (
+				{ isSetupTaskListVisible && isDashboardShown && (
 					<>
-						<ProgressTitle taskListId={ activeSetupTaskList } />
+						<ProgressTitle taskListId="setup" />
 					</>
 				) }
 				<TaskLists query={ query } />
@@ -207,12 +207,16 @@ export default compose(
 			getOption( 'woocommerce_default_homepage_layout' ) ||
 			'single_column';
 
+		const visibleTaskListIds = getAdminSetting( 'visibleTaskListIds', [] );
+		const isSetupTaskListVisible = visibleTaskListIds.includes( 'setup' );
+		const hasTaskList = visibleTaskListIds.length > 0;
+
 		return {
 			defaultHomescreenLayout,
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			isLoadingTaskLists,
-			isTaskListHidden: getTaskList( 'setup' )?.isHidden,
-			hasTaskList: getAdminSetting( 'visibleTaskListIds', [] ).length > 0,
+			isTaskListHidden: ! isSetupTaskListVisible,
+			hasTaskList,
 			showingProgressHeader: !! taskLists.find(
 				( list ) => list.isVisible && list.displayProgressHeader
 			),

@@ -21,7 +21,7 @@ import { getScreenFromPath, isWCAdmin, getPath } from '@woocommerce/navigation';
  */
 import './style.scss';
 import useIsScrolled from '../hooks/useIsScrolled';
-import { TasksReminderBar, useActiveSetupTasklist } from '../task-lists';
+import { TasksReminderBar } from '../task-lists';
 import {
 	LaunchYourStoreStatus,
 	useLaunchYourStore,
@@ -30,6 +30,7 @@ import {
 	OrderAttributionInstallBanner,
 	BANNER_TYPE_HEADER as ORDER_ATTRIBUTION_INSTALL_BANNER_TYPE_HEADER,
 } from '~/order-attribution-install-banner';
+import { getAdminSetting } from '~/utils/admin-settings';
 
 export const PAGE_TITLE_FILTER = 'woocommerce_admin_header_page_title';
 
@@ -55,7 +56,6 @@ export const getPageTitle = ( sections ) => {
 
 export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const headerElement = useRef( null );
-	const activeSetupList = useActiveSetupTasklist();
 	const siteTitle = getSetting( 'siteTitle', '' );
 	const pageTitle = getPageTitle( sections );
 	const { isScrolled } = useIsScrolled();
@@ -141,8 +141,13 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 			query?.tab === 'checkout'
 	);
 
+	const isSetupTaskListVisible = getAdminSetting(
+		'visibleTaskListIds',
+		[]
+	).includes( 'setup' );
+
 	const showReminderBar = Boolean(
-		activeSetupList && ! isReactifyPaymentsSettingsScreen
+		isSetupTaskListVisible && ! isReactifyPaymentsSettingsScreen
 	);
 
 	return (
@@ -150,7 +155,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 			{ showReminderBar && (
 				<TasksReminderBar
 					updateBodyMargin={ updateBodyMargin }
-					taskListId={ activeSetupList }
+					taskListId="setup"
 				/>
 			) }
 			<div className="woocommerce-layout__header-wrapper">

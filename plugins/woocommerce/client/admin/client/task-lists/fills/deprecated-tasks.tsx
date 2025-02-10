@@ -10,6 +10,7 @@ import {
 	DeprecatedTaskType,
 } from '@woocommerce/data';
 import { useEffect, useState } from '@wordpress/element';
+import { getAdminSetting } from '~/utils/admin-settings';
 
 type MergedTask = TaskType | DeprecatedTaskType;
 
@@ -18,6 +19,15 @@ const DeprecatedWooOnboardingTaskFills = () => {
 		[]
 	);
 	const { isResolving, taskLists } = useSelect( ( select ) => {
+		const visibleTaskListIds = getAdminSetting( 'visibleTaskListIds', [] );
+
+		if ( visibleTaskListIds.length === 0 ) {
+			return {
+				isResolving: false,
+				taskLists: [],
+			};
+		}
+
 		return {
 			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
