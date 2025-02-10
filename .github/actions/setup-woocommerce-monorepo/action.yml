@@ -59,7 +59,7 @@ runs:
               key: "${{ runner.os }}-pnpm-@woocommerce/plugin-woocommerce-build:${{ ( inputs.build-type == 'backend' && 'backend' ) || 'full' }}-${{ hashFiles( 'pnpm-lock.yaml' ) }}"
               restore-keys: "${{ runner.os }}-pnpm-@woocommerce/plugin-woocommerce-build:${{ ( inputs.build-type == 'backend' && 'backend' ) || 'full' }}-"
         - name: 'Cache: pnpm downloads (strategy - default)'
-          if: ${{ inputs.pull-package-deps != 'false' && steps.pnpm-downloads-caching-optimized.outputs.cache-hit == 'false' }}
+          if: ${{ inputs.pull-package-deps != 'false' && steps.pnpm-downloads-caching-optimized.outputs.cache-hit != 'true' }}
           uses: 'actions/cache@v4'
           with:
               path: "${{ env.PNPM_STORE_PATH }}"
