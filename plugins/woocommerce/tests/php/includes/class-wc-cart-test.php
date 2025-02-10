@@ -119,7 +119,7 @@ class WC_Cart_Test extends \WC_Unit_Test_Case {
 
 		$this->assertArrayHasKey( 'error', $notices );
 		$this->assertCount( 1, $notices['error'] );
-		$expected = sprintf( 'The selected product is invalid' );
+		$expected = sprintf( 'The selected product is invalid.' );
 		$this->assertEquals( $expected, $notices['error'][0]['notice'] );
 
 		// Reset cart.
