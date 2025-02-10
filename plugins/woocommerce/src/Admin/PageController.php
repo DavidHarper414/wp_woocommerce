@@ -298,7 +298,7 @@ class PageController {
 		$tabs_with_sections = apply_filters(
 			'woocommerce_navigation_page_tab_sections',
 			array(
-				'products'          => array( '', 'inventory', 'downloadable' ),
+				'products'          => array( '', 'inventory', 'downloadable', 'download_urls', 'advanced', 'pickup_location' ),
 				'shipping'          => array( '', 'options', 'classes' ),
 				'checkout'          => array( WC_Gateway_BACS::ID, WC_Gateway_Cheque::ID, WC_Gateway_COD::ID, WC_Gateway_Paypal::ID ),
 				'email'             => $wc_email_ids,
