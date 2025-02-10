@@ -186,6 +186,7 @@ class WC_Brands {
 		$product_brand = _x( 'uncategorized', 'slug', 'woocommerce' );
 
 		if ( is_array( $terms ) && ! empty( $terms ) ) {
+			// Replace the placeholder rewrite tag with the first term's slug.
 			$first_term = array_shift( $terms );
 			if ( $first_term instanceof WP_Term ) {
 				$product_brand = $first_term->slug;
