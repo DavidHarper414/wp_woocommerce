@@ -20,7 +20,10 @@ defined( 'ABSPATH' ) || exit;
  * provides also a mechanism for WooCommerce plugins to declare that they are compatible
  * (or incompatible) with a given feature.
  *
- * Features should not be enabled, or disabled, before init.
+ * Important: some of the features are defined from inside the 'woocommerce_register_feature_definitions' hook.
+ * This hook is fired from inside 'woocommerce_init'; therefore, features that need to be
+ * queried, enabled, or disabled before 'woocommerce_init' (e.g. during WP CLI initialization)
+ * must be hardcoded in the $legacy_features array defined inside get_feature_definitions.
  */
 class FeaturesController {
 
@@ -359,15 +362,6 @@ class FeaturesController {
 				$this->add_feature_definition( $slug, $definition['name'], $definition );
 			}
 
-			/**
-			 * The action for registering features.
-			 *
-			 * @since 8.3.0
-			 *
-			 * @param FeaturesController $features_controller The instance of FeaturesController.
-			 */
-			do_action( 'woocommerce_register_feature_definitions', $this );
-
 			foreach ( array_keys( $this->features ) as $feature_id ) {
 				$this->compatibility_info_by_feature[ $feature_id ] = array(
 					'compatible'   => array(),
@@ -377,6 +371,35 @@ class FeaturesController {
 		}
 
 		return $this->features;
+	}
+
+	/**
+	 * Function to trigger the 'woocommerce_register_feature_definitions' hook.
+	 *
+	 * This function must be called immediately before the 'before_woocommerce_init'
+	 * action is fired, so that feature compatibility declarations happening
+	 * in that action find all the features properly declared already.
+	 *
+	 * @internal
+	 */
+	public function register_additional_features() {
+		/**
+		 * The action for registering features.
+		 *
+		 * @since 8.3.0
+		 *
+		 * @param FeaturesController $features_controller The instance of FeaturesController.
+		 */
+		do_action( 'woocommerce_register_feature_definitions', $this );
+
+		foreach ( array_keys( $this->features ) as $feature_id ) {
+			if ( ! isset( $this->compatibility_info_by_feature[ $feature_id ] ) ) {
+				$this->compatibility_info_by_feature[ $feature_id ] = array(
+					'compatible'   => array(),
+					'incompatible' => array(),
+				);
+			}
+		}
 	}
 
 	/**

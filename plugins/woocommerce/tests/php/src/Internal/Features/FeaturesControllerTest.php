@@ -5,6 +5,7 @@
 
 namespace Automattic\WooCommerce\Tests\Internal\Features;
 
+use Automattic\WooCommerce\Container;
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use Automattic\WooCommerce\Internal\DataStores\Orders\DataSynchronizer;
 use Automattic\WooCommerce\Internal\Features\FeaturesController;
@@ -74,6 +75,7 @@ class FeaturesControllerTest extends \WC_Unit_Test_Case {
 
 		$this->sut = new FeaturesController();
 		$this->sut->init( wc_get_container()->get( LegacyProxy::class ), $this->fake_plugin_util );
+		$this->sut->register_additional_features();
 
 		delete_option( 'woocommerce_feature_mature1_enabled' );
 		delete_option( 'woocommerce_feature_mature2_enabled' );
@@ -534,6 +536,7 @@ class FeaturesControllerTest extends \WC_Unit_Test_Case {
 			20
 		);
 
+		$this->sut->register_additional_features();
 		$this->simulate_inside_before_woocommerce_init_hook();
 
 		$this->sut->declare_compatibility( 'mature1', 'the_plugin', true );
@@ -857,6 +860,9 @@ class FeaturesControllerTest extends \WC_Unit_Test_Case {
 		);
 
 		$local_sut->init( wc_get_container()->get( LegacyProxy::class ), $fake_plugin_util );
+		$local_sut->register_additional_features();
+		wc_get_container()->replace( FeaturesController::class, $local_sut );
+
 		$plugins = array( 'compatible_plugin1', 'compatible_plugin2' );
 		$fake_plugin_util->set_active_plugins( $plugins );
 		foreach ( $plugins as $plugin ) {
@@ -922,6 +928,8 @@ class FeaturesControllerTest extends \WC_Unit_Test_Case {
         // phpcs:enable Squiz.Commenting, Generic.CodeAnalysis.UnusedFunctionParameter.Found
 
 		$local_sut = new FeaturesController();
+		$local_sut->register_additional_features();
+		wc_get_container()->replace( FeaturesController::class, $local_sut );
 		$local_sut->change_feature_enable( 'custom_order_tables', $hpos_is_enabled );
 
 		add_action(
