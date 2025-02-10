@@ -68,6 +68,7 @@ const DefaultQueryOrderByControl = ( {
 
 	return (
 		<OrderByControl
+			label={ __( 'Default sort by', 'woocommerce' ) }
 			selectedValue={ value }
 			orderOptions={ orderOptions }
 			onChange={ onChange }

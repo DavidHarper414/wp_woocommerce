@@ -823,7 +823,10 @@ test.describe( 'Product Collection', () => {
 			await pageObject.focusProductCollection();
 
 			// Verify the default order matches the option in the database.
-			const orderBySelect = await pageObject.getOrderByElement();
+			const sidebarSettings = pageObject.locateSidebarSettings();
+			const orderBySelect = sidebarSettings.getByRole( 'combobox', {
+				name: 'Default sort by',
+			} );
 			const editorProductTitle = editor.canvas
 				.locator( SELECTORS.productTitle )
 				.first();

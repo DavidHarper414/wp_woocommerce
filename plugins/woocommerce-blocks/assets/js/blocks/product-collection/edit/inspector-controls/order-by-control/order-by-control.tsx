@@ -15,6 +15,7 @@ const OrderByControl = ( {
 	onChange,
 	onDeselect = () => void 0,
 	selectedValue,
+	label,
 	help,
 }: {
 	hasValue?: () => boolean;
@@ -22,11 +23,12 @@ const OrderByControl = ( {
 	onChange: ( value: string ) => void;
 	onDeselect?: () => void;
 	selectedValue: string;
+	label?: string;
 	help?: string;
 } ) => {
 	return (
 		<ToolsPanelItem
-			label={ __( 'Order by', 'woocommerce' ) }
+			label={ label || __( 'Order by', 'woocommerce' ) }
 			hasValue={ hasValue }
 			isShownByDefault
 			onDeselect={ onDeselect }
@@ -35,7 +37,7 @@ const OrderByControl = ( {
 			<SelectControl
 				value={ selectedValue }
 				options={ orderOptions }
-				label={ __( 'Order by', 'woocommerce' ) }
+				label={ label || __( 'Order by', 'woocommerce' ) }
 				onChange={ onChange }
 				help={ help }
 			/>
