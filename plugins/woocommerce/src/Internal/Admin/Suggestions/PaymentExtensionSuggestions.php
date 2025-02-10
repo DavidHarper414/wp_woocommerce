@@ -1844,17 +1844,6 @@ class PaymentExtensionSuggestions {
 	 *              Defaults to true if there is no specific logic for the extension.
 	 */
 	private function is_extension_allowed( string $extension_id, string $country_code, string $context = '' ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
-
-		/*
-		 * For now, we only need to run logic for the Square In-Person extension.
-		 * If more extensions need to be filtered out, we can add more logic here until we decide to abstract it.
-		 */
-
-		if ( self::SQUARE_IN_PERSON === $extension_id ) {
-			// Square (In-Person) is only allowed if the merchant is selling offline.
-			return $this->is_merchant_selling_offline();
-		}
-
 		return true;
 	}
 
