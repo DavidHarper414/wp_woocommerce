@@ -390,7 +390,12 @@
 				"tsconfig.base.json",
 				"babel.config.js",
 				"assets",
-				"packages"
+				"!assets/**/test/**",
+				"!assets/**/docs/**",
+				"packages",
+				"!packages/**/*.md",
+				"!packages/**/test/**",
+				"!packages/**/stories/**"
 			],
 			"output": [
 				"build",
