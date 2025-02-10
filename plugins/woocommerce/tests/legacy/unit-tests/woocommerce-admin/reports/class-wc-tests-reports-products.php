@@ -799,6 +799,7 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 		$this->assertEquals( -33.333333, $result[0]->shipping_amount );        // -($100 shipping / 6 total items * 2 product_2 ).
 		$this->assertEquals( -3.333333, $result[0]->shipping_tax_amount );     // -($10 shipping tax / 6 total items * 2 product_2 ).
 		$this->assertEquals( -6, $result[0]->tax_amount );                     // -($30 product_2 * 10% tax * 2 quantity).
+		$this->assertEquals( 0, $result[0]->coupon_amount );
 		$this->assertEquals( -102.666667, $result[0]->product_gross_revenue ); // product_net_revenue + shipping_amount + shipping_tax_amount + tax_amount.
 	}
 
@@ -941,6 +942,7 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 		$this->assertEquals( -60.000000, $result[0]->shipping_amount );      // -($100 shipping / ( 9 total items - 4 refunded items ) * 3 product_3 ).
 		$this->assertEquals( -6.000000, $result[0]->shipping_tax_amount );   // -($10 shipping tax / ( 9 total items - 4 refunded items ) * 3 product_3 ).
 		$this->assertEquals( -12, $result[0]->tax_amount );                  // -($40 product_3 * 10% tax * 3 quantity ).
+		$this->assertEquals( 0, $result[0]->coupon_amount );
 		$this->assertEquals( -198, $result[0]->product_gross_revenue );      // product_net_revenue + shipping_amount + shipping_tax_amount + tax_amount.
 	}
 }

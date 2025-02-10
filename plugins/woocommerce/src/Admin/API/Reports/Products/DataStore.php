@@ -550,6 +550,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 				$product_qty = -abs( $product_qty );
 
+				// Set coupon amount to 0 for full refunds without line items.
+				$coupon_amount = 0;
+
 				if ( $parent_order ) {
 					$remaining_refund_items = $parent_order->get_remaining_refund_items();
 
