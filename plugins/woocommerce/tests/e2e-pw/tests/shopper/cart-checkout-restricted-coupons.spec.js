@@ -11,7 +11,6 @@ import {
 import { tags } from '../../fixtures/fixtures';
 const { test, expect } = require( '@playwright/test' );
 const wcApi = require( '@woocommerce/woocommerce-rest-api' ).default;
-const { setComingSoon } = require( '../../utils/coming-soon' );
 const includedProductName = 'Included test product';
 const excludedProductName = 'Excluded test product';
 const includedCategoryName = 'Included Category';
@@ -31,8 +30,8 @@ const applyCoupon = async ( page, couponCode ) => {
 
 const expandCouponForm = async ( page ) => {
 	await page
-		.getByRole( 'link', {
-			name: 'Click here to enter your code',
+		.getByRole( 'button', {
+			name: 'Enter your coupon code',
 		} )
 		.click();
 	// This is to wait for the expand animation to finish, it avoids flakiness.
@@ -60,7 +59,6 @@ test.describe(
 		const couponBatchId = [];
 
 		test.beforeAll( async ( { baseURL } ) => {
-			await setComingSoon( { baseURL, enabled: 'no' } );
 			const api = new wcApi( {
 				url: baseURL,
 				consumerKey: process.env.CONSUMER_KEY,
