@@ -71,5 +71,5 @@ jobs:
                       gh cache delete $cacheKey && echo "Dropped cache entry $cacheKey"
                   done
               env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GH_TOKEN: ${{ secrets.PR_ASSIGN_TOKEN }}
                   GH_REPO: ${{ github.repository }}
