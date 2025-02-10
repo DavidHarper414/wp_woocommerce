@@ -209,9 +209,10 @@ class CheckoutFieldsFrontend {
 
 			if ( is_wp_error( $validation_result ) && $validation_result->has_errors() ) {
 				wc_add_notice( $validation_result->get_error_message(), 'error', array( 'id' => $field_key ) );
-			} else {
-				$this->checkout_fields_controller->persist_field_for_customer( $field_key, $field_value, $customer, 'other' );
+				continue;
 			}
+
+			$this->checkout_fields_controller->persist_field_for_customer( $field_key, $field_value, $customer, 'other' );
 		}
 
 		// Validate all fields for this location (this runs custom validation callbacks).
@@ -295,9 +296,10 @@ class CheckoutFieldsFrontend {
 
 			if ( is_wp_error( $validation_result ) && $validation_result->has_errors() ) {
 				wc_add_notice( $validation_result->get_error_message(), 'error', array( 'id' => $field_key ) );
-			} else {
-				$this->checkout_fields_controller->persist_field_for_customer( $field_key, $field_value, $customer, $address_type );
+				continue;
 			}
+
+			$this->checkout_fields_controller->persist_field_for_customer( $field_key, $field_value, $customer, $address_type );
 		}
 
 		// Validate all fields for this location.
