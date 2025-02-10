@@ -10,8 +10,8 @@ test.describe(
 	() => {
 		test.use( { storageState: ADMIN_STATE_PATH } );
 
-		test.beforeEach( async ( { api } ) => {
-			await api.post( 'onboarding/profile', {
+		test.beforeEach( async ( { wcAdminApi } ) => {
+			await wcAdminApi.post( 'onboarding/profile', {
 				skipped: true,
 			} );
 		} );
@@ -363,7 +363,7 @@ test.describe( 'Launch Your Store front end - logged out', () => {
 		}
 	} );
 
-	test.describe( 'Block Theme (Twenty Twenty Four)', () => {
+	test.describe( 'Block Theme (Twenty Twenty Four)', async () => {
 		test.beforeAll( async ( { baseURL } ) => {
 			await activateTheme( baseURL, 'twentytwentyfour' );
 		} );
@@ -373,10 +373,10 @@ test.describe( 'Launch Your Store front end - logged out', () => {
 			await activateTheme( baseURL, DEFAULT_THEME );
 		} );
 
-		runComingSoonTests( test.step, test.use );
+		await runComingSoonTests( 'Block Theme (Twenty Twenty Four)' );
 	} );
 
-	test.describe( 'Classic Theme (Storefront)', () => {
+	test.describe( 'Classic Theme (Storefront)', async () => {
 		test.beforeAll( async ( { baseURL } ) => {
 			await activateTheme( baseURL, 'storefront' );
 		} );
@@ -386,6 +386,6 @@ test.describe( 'Launch Your Store front end - logged out', () => {
 			await activateTheme( baseURL, DEFAULT_THEME );
 		} );
 
-		runComingSoonTests( test.step, test.use, 'Classic Theme (Storefront)' );
+		await runComingSoonTests( 'Classic Theme (Storefront)' );
 	} );
 } );
