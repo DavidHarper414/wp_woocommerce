@@ -308,6 +308,8 @@ class PageController {
 					'webhooks',
 					'legacy_api',
 					'woocommerce_com',
+					'features',
+					'blueprint',
 				),
 				'browse-extensions' => array( 'helper' ),
 			)
