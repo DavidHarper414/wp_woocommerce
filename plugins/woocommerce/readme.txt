@@ -173,6 +173,7 @@ WooCommerce comes with some sample data you can use to see how products look; im
 
 **WooCommerce**
 
+* Fix - Ensure that the Mini Cart item count remains visible even when the inherited color has an alpha channel, which would make the item count color transparent. [#55178](https://github.com/woocommerce/woocommerce/pull/55178)
 * Fix - Add check to "wc_get_price_excluding_tax" to verify the product variable is an actual product to avoid fatal errors. [#54470](https://github.com/woocommerce/woocommerce/pull/54470)
 * Fix - Added selected rate name when showing multiple shipping packages in cart and checkout. [#53579](https://github.com/woocommerce/woocommerce/pull/53579)
 * Fix - Add filter by attribute, stock and rating screen reader labels [#53694](https://github.com/woocommerce/woocommerce/pull/53694)

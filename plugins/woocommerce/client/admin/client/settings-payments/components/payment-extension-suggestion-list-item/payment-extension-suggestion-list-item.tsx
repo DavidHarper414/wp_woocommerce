@@ -24,6 +24,7 @@ import {
 import { DefaultDragHandle } from '~/settings-payments/components/sortable';
 import { StatusBadge } from '~/settings-payments/components/status-badge';
 import { IncentiveStatusBadge } from '~/settings-payments/components/incentive-status-badge';
+import { OfficialBadge } from '~/settings-payments/components/official-badge';
 
 type PaymentExtensionSuggestionListItemProps = {
 	/**
@@ -74,6 +75,14 @@ export const PaymentExtensionSuggestionListItem = ( {
 				'wc_settings_payments__banner'
 			) );
 
+	// Determine the CTA button label based on the extension state.
+	let ctaButtonLabel = __( 'Install', 'woocommerce' );
+	if ( pluginInstalled ) {
+		ctaButtonLabel = __( 'Enable', 'woocommerce' );
+	} else if ( installingPlugin === extension.id ) {
+		ctaButtonLabel = __( 'Installing', 'woocommerce' );
+	}
+
 	return (
 		<div
 			id={ extension.id }
@@ -103,6 +112,8 @@ export const PaymentExtensionSuggestionListItem = ( {
 						{ incentive && (
 							<IncentiveStatusBadge incentive={ incentive } />
 						) }
+						{ /* All payment extension suggestions are official. */ }
+						<OfficialBadge variant="expanded" />
 					</span>
 					<span
 						className="woocommerce-list__item-content"
@@ -148,9 +159,7 @@ export const PaymentExtensionSuggestionListItem = ( {
 							isBusy={ installingPlugin === extension.id }
 							disabled={ !! installingPlugin }
 						>
-							{ pluginInstalled
-								? __( 'Enable', 'woocommerce' )
-								: __( 'Install', 'woocommerce' ) }
+							{ ctaButtonLabel }
 						</Button>
 					</div>
 				</div>
