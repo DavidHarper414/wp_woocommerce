@@ -88,6 +88,7 @@ export const setupProjects = [
 ];
 
 export default defineConfig( {
+	fullyParallel: true,
 	timeout: 120 * 1000,
 	expect: { timeout: 20 * 1000 },
 	outputDir: TESTS_RESULTS_PATH,
