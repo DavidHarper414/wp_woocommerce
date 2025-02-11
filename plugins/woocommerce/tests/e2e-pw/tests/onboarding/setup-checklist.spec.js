@@ -25,7 +25,6 @@ const update_task_list_state = async ( wcAdminApi, new_state ) => {
 
 let init_task_list_state;
 
-// TODO (E2E Audit): This test should be combined with other WC Homepage setup tests like the tests in activate-and-setup/stats-overview.spec.js into a single spec.
 test.describe( 'WC Home Task List >', () => {
 	test.use( { storageState: ADMIN_STATE_PATH } );
 
