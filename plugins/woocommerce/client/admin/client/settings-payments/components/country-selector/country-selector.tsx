@@ -319,6 +319,8 @@ export const CountrySelector = < ItemType extends Item >( {
 								}
 								tabIndex={ -1 }
 								placeholder={ __( 'Search', 'woocommerce' ) }
+								aria-expanded={ isOpen }
+								role="combobox"
 							/>
 							<button
 								className="components-country-select-control__search--input-suffix"
