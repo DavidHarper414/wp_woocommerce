@@ -1,3 +1,4 @@
-Significance: patch
+Significance: minor
 Type: update
-Comment: Load cart during rest_api_init for Store API requests. This for a change requied to support schema based validation rules for additional checkout fields (behind feature flag).
+
+Implemented validation rules for additional checkout fields (behind feature flag).
