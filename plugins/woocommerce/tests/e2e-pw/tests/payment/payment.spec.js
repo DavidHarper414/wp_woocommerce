@@ -98,19 +98,6 @@ test.describe( 'Payment setup task', () => {
 		}
 	);
 
-	//todo audit follow-up: maybe the better place for this test is activate-and-setup/task-list.spec.js
-	test(
-		'Can visit the payment setup task from the homescreen if the setup wizard has been skipped',
-		{ tag: [ tags.NOT_E2E ] },
-		async ( { page } ) => {
-			await page.goto( 'wp-admin/admin.php?page=wc-admin' );
-			await page.getByRole( 'button', { name: '3 Get paid' } ).click();
-			await expect(
-				page.locator( '.woocommerce-layout__header-wrapper > h1' )
-			).toHaveText( 'Get paid' );
-		}
-	);
-
 	test(
 		'Enabling cash on delivery enables the payment method',
 		{ tag: [ tags.COULD_BE_LOWER_LEVEL_TEST ] },
