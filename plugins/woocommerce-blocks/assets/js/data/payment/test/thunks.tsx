@@ -8,6 +8,7 @@ import { EventObserversType } from '@woocommerce/base-context';
  * Internal dependencies
  */
 import { PAYMENT_STORE_KEY } from '../index';
+import '../../checkout';
 import { __internalEmitPaymentProcessingEvent } from '../thunks';
 
 /**

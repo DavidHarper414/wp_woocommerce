@@ -3,6 +3,7 @@
  */
 import { setDefaultPaymentMethod as setDefaultPaymentMethodOriginal } from '../utils/set-default-payment-method';
 import { PAYMENT_STORE_KEY } from '..';
+import '../../checkout';
 import { PlainPaymentMethods } from '../../../types';
 
 const originalDispatch = jest.requireActual( '@wordpress/data' ).dispatch;

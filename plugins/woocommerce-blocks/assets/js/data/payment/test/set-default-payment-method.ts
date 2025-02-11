@@ -10,7 +10,7 @@ import { select, dispatch } from '@wordpress/data';
 import { setDefaultPaymentMethod } from '../utils/set-default-payment-method';
 import { PlainPaymentMethods } from '../../../types';
 import { PAYMENT_STORE_KEY } from '..';
-
+import '../../checkout';
 const originalSelect = jest.requireActual( '@wordpress/data' ).select;
 const originalDispatch = jest.requireActual( '@wordpress/data' ).dispatch;
 
