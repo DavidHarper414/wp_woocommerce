@@ -37,6 +37,10 @@ import '../dashboard/style.scss';
 import { getAdminSetting } from '~/utils/admin-settings';
 import { WooHomescreenHeaderBanner } from './header-banner-slot';
 import { WooHomescreenWCPayFeature } from './wcpay-feature-slot';
+import {
+	isTaskListVisible,
+	isTaskListCompletedOrHidden,
+} from '~/hooks/use-tasklists-state';
 
 const TaskLists = lazy( () =>
 	import( /* webpackChunkName: "tasks" */ '../task-lists' ).then(
@@ -49,13 +53,10 @@ const TaskLists = lazy( () =>
 export const hasTwoColumnLayout = (
 	userPrefLayout,
 	defaultHomescreenLayout,
-	taskListComplete,
-	isTaskListHidden
+	isSetupTaskListCompleteOrHidden
 ) => {
 	const hasTwoColumnContent =
-		taskListComplete ||
-		isTaskListHidden ||
-		window.wcAdminFeatures.analytics;
+		isSetupTaskListCompleteOrHidden || window.wcAdminFeatures.analytics;
 
 	return (
 		( userPrefLayout || defaultHomescreenLayout ) === 'two_columns' &&
@@ -66,27 +67,20 @@ export const hasTwoColumnLayout = (
 export const Layout = ( {
 	defaultHomescreenLayout,
 	query,
-	taskListComplete,
 	hasTaskList,
 	showingProgressHeader,
 	isLoadingTaskLists,
-	isTaskListHidden,
 } ) => {
 	const userPrefs = useUserPreferences();
-	const isTaskListCompleteOrHidden = taskListComplete || isTaskListHidden;
-	const shouldShowStoreLinks = isTaskListCompleteOrHidden;
-	const shouldShowWCPayFeature = isTaskListCompleteOrHidden;
+	const isSetupTaskListCompleteOrHidden =
+		isTaskListCompletedOrHidden( 'setup' );
+	const shouldShowStoreLinks = isSetupTaskListCompleteOrHidden;
+	const shouldShowWCPayFeature = isSetupTaskListCompleteOrHidden;
 	const isDashboardShown = Object.keys( query ).length > 0 && ! query.task; // ?&task=<x> query param is used to show tasks instead of the homescreen
-	const isSetupTaskListVisible = getAdminSetting(
-		'visibleTaskListIds',
-		[]
-	).includes( 'setup' );
-
 	const twoColumns = hasTwoColumnLayout(
 		userPrefs.homepage_layout,
 		defaultHomescreenLayout,
-		taskListComplete,
-		isTaskListHidden
+		isSetupTaskListCompleteOrHidden
 	);
 
 	const isWideViewport = useRef( true );
@@ -109,7 +103,7 @@ export const Layout = ( {
 	const renderTaskList = () => {
 		return (
 			<Suspense fallback={ <TasksPlaceholder query={ query } /> }>
-				{ isSetupTaskListVisible && isDashboardShown && (
+				{ isTaskListVisible( 'setup' ) && isDashboardShown && (
 					<>
 						<ProgressTitle taskListId="setup" />
 					</>
@@ -134,7 +128,7 @@ export const Layout = ( {
 						/>
 					) }
 					{ shouldShowWCPayFeature && <WooHomescreenWCPayFeature /> }
-					{ isTaskListHidden && <ActivityPanel /> }
+					{ ! isTaskListVisible( 'setup' ) && <ActivityPanel /> }
 					{ hasTaskList && renderTaskList() }
 					<Promotions format="promo-card" />
 					<InboxPanel />
@@ -195,32 +189,34 @@ export default compose(
 	withSelect( ( select ) => {
 		const { isNotesRequesting } = select( NOTES_STORE_NAME );
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const {
-			getTaskList,
-			getTaskLists,
-			hasFinishedResolution: taskListFinishResolution,
-		} = select( ONBOARDING_STORE_NAME );
-		const taskLists = getTaskLists();
-		const isLoadingTaskLists = ! taskListFinishResolution( 'getTaskLists' );
-
 		const defaultHomescreenLayout =
 			getOption( 'woocommerce_default_homepage_layout' ) ||
 			'single_column';
 
+		const {
+			getTaskLists,
+			hasFinishedResolution: taskListFinishResolution,
+		} = select( ONBOARDING_STORE_NAME );
+
 		const visibleTaskListIds = getAdminSetting( 'visibleTaskListIds', [] );
-		const isSetupTaskListVisible = visibleTaskListIds.includes( 'setup' );
 		const hasTaskList = visibleTaskListIds.length > 0;
+
+		// Only fetch task lists if there are any visible task lists to avoid unnecessary API calls
+		let isLoadingTaskLists = false;
+		let taskLists = [];
+		if ( hasTaskList ) {
+			isLoadingTaskLists = ! taskListFinishResolution( 'getTaskLists' );
+			taskLists = getTaskLists();
+		}
 
 		return {
 			defaultHomescreenLayout,
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			isLoadingTaskLists,
-			isTaskListHidden: ! isSetupTaskListVisible,
 			hasTaskList,
 			showingProgressHeader: !! taskLists.find(
 				( list ) => list.isVisible && list.displayProgressHeader
 			),
-			taskListComplete: getTaskList( 'setup' )?.isComplete,
 		};
 	} )
 )( Layout );

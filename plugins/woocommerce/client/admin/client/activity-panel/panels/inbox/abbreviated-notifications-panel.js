@@ -20,7 +20,7 @@ import {
 } from '~/homescreen/activity-panel/orders/utils';
 import { getUnapprovedReviews } from '~/homescreen/activity-panel/reviews/utils';
 import { Bell } from './icons/bell';
-import { getAdminSetting } from '~/utils/admin-settings';
+import { isTaskListVisible } from '~/hooks/use-tasklists-state';
 
 const EXTENDED_TASK_LIST_ID = 'extended_task_list';
 const ORDER_PANEL_ID = 'orders-panel';
@@ -38,14 +38,13 @@ export const AbbreviatedNotificationsPanel = ( { thingsToDoNextCount } ) => {
 		isExtendedTaskListHidden,
 	} = useSelect( ( select ) => {
 		const orderStatuses = getOrderStatuses( select );
-		const visibleTaskListIds = getAdminSetting( 'visibleTaskListIds', [] );
+
 		return {
 			ordersToProcessCount: getUnreadOrders( select, orderStatuses ),
 			reviewsToModerateCount: getUnapprovedReviews( select ),
 			stockNoticesCount: getLowStockCount( select ),
-			isSetupTaskListHidden: ! visibleTaskListIds.includes( 'setup' ),
-			isExtendedTaskListHidden:
-				! visibleTaskListIds.includes( 'extended' ),
+			isSetupTaskListHidden: ! isTaskListVisible( 'setup' ),
+			isExtendedTaskListHidden: ! isTaskListVisible( 'extended' ),
 		};
 	} );
 

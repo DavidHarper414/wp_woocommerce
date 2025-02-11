@@ -38,7 +38,7 @@ import StoreAlertsPlaceholder from './placeholder';
 import { getAdminSetting } from '~/utils/admin-settings';
 import { getScreenName } from '../../utils';
 import { hasTwoColumnLayout } from '../../homescreen/layout';
-import { useTaskListsState } from '../../hooks/use-tasklists-state';
+import { isTaskListCompletedOrHidden } from '../../hooks/use-tasklists-state';
 
 import './style.scss';
 
@@ -57,15 +57,6 @@ function getUnactionedVisibleAlerts( alerts ) {
 
 export const StoreAlerts = () => {
 	const [ currentIndex, setCurrentIndex ] = useState( 0 );
-
-	const {
-		setupTaskListHidden,
-		setupTaskListComplete,
-		requestingTaskListOptions,
-	} = useTaskListsState( {
-		setupTasklist: true,
-		extendedTaskList: false,
-	} );
 
 	const {
 		alerts = [],
@@ -240,10 +231,6 @@ export const StoreAlerts = () => {
 		}
 	}
 
-	if ( requestingTaskListOptions ) {
-		return null;
-	}
-
 	const preloadAlertCount = getAdminSetting( 'alertCount', 0, ( count ) =>
 		parseInt( count, 10 )
 	);
@@ -254,8 +241,7 @@ export const StoreAlerts = () => {
 	const hasTwoColumns = hasTwoColumnLayout(
 		userPrefs.homepage_layout,
 		defaultHomescreenLayout,
-		setupTaskListComplete,
-		setupTaskListHidden
+		isTaskListCompletedOrHidden( 'setup' )
 	);
 
 	if ( preloadAlertCount > 0 && isLoading ) {

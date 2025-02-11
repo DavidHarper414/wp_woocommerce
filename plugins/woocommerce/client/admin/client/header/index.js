@@ -30,7 +30,7 @@ import {
 	OrderAttributionInstallBanner,
 	BANNER_TYPE_HEADER as ORDER_ATTRIBUTION_INSTALL_BANNER_TYPE_HEADER,
 } from '~/order-attribution-install-banner';
-import { getAdminSetting } from '~/utils/admin-settings';
+import { isTaskListVisible } from '~/hooks/use-tasklists-state';
 
 export const PAGE_TITLE_FILTER = 'woocommerce_admin_header_page_title';
 
@@ -141,13 +141,8 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 			query?.tab === 'checkout'
 	);
 
-	const isSetupTaskListVisible = getAdminSetting(
-		'visibleTaskListIds',
-		[]
-	).includes( 'setup' );
-
 	const showReminderBar = Boolean(
-		isSetupTaskListVisible && ! isReactifyPaymentsSettingsScreen
+		isTaskListVisible( 'setup' ) && ! isReactifyPaymentsSettingsScreen
 	);
 
 	return (

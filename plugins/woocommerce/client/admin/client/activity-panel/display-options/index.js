@@ -18,7 +18,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import { DisplayIcon } from './icons/display';
 import { SingleColumnIcon } from './icons/single-column';
 import { TwoColumnsIcon } from './icons/two-columns';
-import { useTaskListsState } from '../../hooks/use-tasklists-state';
+import { isTaskListCompletedOrHidden } from '../../hooks/use-tasklists-state';
 
 const { Fill, Slot } = createSlotFill( 'DisplayOptions' );
 
@@ -57,18 +57,13 @@ export const DisplayOptions = () => {
 				'single_column',
 		};
 	} );
-	const { setupTaskListHidden, setupTaskListComplete } = useTaskListsState( {
-		setupTasklist: true,
-		extendedTaskList: false,
-	} );
+
 	const { updateUserPreferences, homepage_layout: layout } =
 		useUserPreferences();
 
-	const setupTaskListCompleteOrHidden =
-		setupTaskListComplete || setupTaskListHidden;
-
 	const hasTwoColumnContent =
-		setupTaskListCompleteOrHidden || window.wcAdminFeatures.analytics;
+		isTaskListCompletedOrHidden( 'setup' ) ||
+		window.wcAdminFeatures.analytics;
 
 	return (
 		<Slot>
