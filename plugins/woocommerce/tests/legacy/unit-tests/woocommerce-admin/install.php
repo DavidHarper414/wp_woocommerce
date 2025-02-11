@@ -5,8 +5,6 @@
  * @package WooCommerce\Admin\Tests
  */
 
-use Automattic\WooCommerce\Internal\Features\FeaturesController;
-
 /**
  * Tests for \Automattic\WooCommerce\Internal\Admin\Install class.
  */
@@ -25,14 +23,6 @@ class WC_Admin_Tests_Install extends WP_UnitTestCase {
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
 		self::$initial_installed_version_number = WC()->version;
-	}
-
-	/**
-	 * Runs before each test
-	 */
-	public function setUp(): void {
-		parent::setUp();
-		wc_get_container()->get( FeaturesController::class )->register_additional_features();
 	}
 
 	/**
