@@ -174,7 +174,7 @@ export const Products = () => {
 					showOtherOptions={ false }
 					isTaskListItemClicked={ isRequesting }
 				/>
-				<Text className="woocommerce-products-stack woocommerce-stack__other-options">
+				<Text className="woocommerce-products-marketplace-link">
 					{ interpolateComponents( {
 						mixedString: __(
 							'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your products with additional options such as Subscriptions, Gift Cards, and more.',
