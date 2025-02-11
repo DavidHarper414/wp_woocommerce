@@ -11,6 +11,8 @@ import { getAdminLink } from '@woocommerce/settings';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import { recordEvent } from '@woocommerce/tracks';
 import { applyFilters } from '@wordpress/hooks';
+import interpolateComponents from '@automattic/interpolate-components';
+import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -172,6 +174,31 @@ export const Products = () => {
 					showOtherOptions={ false }
 					isTaskListItemClicked={ isRequesting }
 				/>
+				<Text className="woocommerce-products-stack woocommerce-stack__other-options">
+					{ interpolateComponents( {
+						mixedString: __(
+							'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your products with additional options such as Subscriptions, Gift Cards, and more.',
+							'woocommerce'
+						),
+						components: {
+							sbLink: (
+								<Link
+									onClick={ () => {
+										recordEvent(
+											'tasklist_add_product_visit_marketplace_click'
+										);
+										window.location.href = getAdminLink(
+											'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=merchandising'
+										);
+										return false;
+									} }
+									href=""
+									type="wc-admin"
+								/>
+							),
+						},
+					} ) }
+				</Text>
 			</div>
 			{ isLoadingSampleProducts ? (
 				<LoadSampleProductModal />
