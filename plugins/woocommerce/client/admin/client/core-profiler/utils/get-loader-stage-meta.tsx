@@ -25,6 +25,13 @@ const LightbulbStage = {
 				'woocommerce'
 			),
 		},
+		{
+			label: __( '#FunWooFact: ', 'woocommerce' ),
+			text: __(
+				'Explore powerful extensions and themes at WooCommerce.com to enhance your store.',
+				'woocommerce'
+			),
+		},
 	],
 };
 const LayoutStage = {
