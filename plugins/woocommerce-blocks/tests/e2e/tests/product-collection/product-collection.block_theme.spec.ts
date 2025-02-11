@@ -858,6 +858,10 @@ test.describe( 'Product Collection', () => {
 			page,
 			editor,
 		} ) => {
+			await wpCLI(
+				'option update woocommerce_default_catalog_orderby price'
+			);
+
 			const expectedProducts = [
 				'Hoodie',
 				'Hoodie with Logo',
@@ -884,12 +888,20 @@ test.describe( 'Product Collection', () => {
 			const products = editor.canvas.getByLabel( 'Block: Title' );
 
 			await expect( products ).toHaveText( expectedProducts );
+
+			await wpCLI(
+				'option update woocommerce_default_catalog_orderby menu_order'
+			);
 		} );
 		test( 'Products by specific tag template displays products from this tag', async ( {
 			admin,
 			page,
 			editor,
 		} ) => {
+			await wpCLI(
+				'option update woocommerce_default_catalog_orderby price'
+			);
+
 			const expectedProducts = [ 'Beanie', 'Hoodie' ];
 
 			await admin.visitSiteEditor( { path: '/wp_template' } );
@@ -912,6 +924,10 @@ test.describe( 'Product Collection', () => {
 			const products = editor.canvas.getByLabel( 'Block: Title' );
 
 			await expect( products ).toHaveText( expectedProducts );
+
+			await wpCLI(
+				'option update woocommerce_default_catalog_orderby menu_order'
+			);
 		} );
 	} );
 } );
