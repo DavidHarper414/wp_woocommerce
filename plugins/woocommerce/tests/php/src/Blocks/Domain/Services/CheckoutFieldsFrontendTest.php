@@ -149,11 +149,18 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$this->assertEquals( 'Generic validation error message', $mocked_messages[0]['message'] );
 		$this->assertEquals( 'error', $mocked_messages[0]['type'] );
 
+		$value = $this->controller->get_field_from_object( 'mynamespace/generic_validation_error', new WC_Customer( 1 ) );
+		$this->assertEquals( '', $value );
+
 		$_POST['mynamespace/generic_validation_error'] = '';
 		$mocked_messages                               = [];
 
 		$this->sut->save_account_form_fields( 1 );
+
 		$this->assertCount( 0, $mocked_messages );
+
+		$value = $this->controller->get_field_from_object( 'mynamespace/generic_validation_error', new WC_Customer( 1 ) );
+		$this->assertEquals( '', $value );
 
 		__internal_woocommerce_blocks_deregister_checkout_field( 'mynamespace/generic_validation_error' );
 	}
@@ -187,6 +194,8 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$this->assertCount( 1, $mocked_messages );
 		$this->assertStringContainsString( 'Location validation error message', $mocked_messages[0]['message'] );
 		$this->assertEquals( 'notice', $mocked_messages[0]['type'] );
+		$value = $this->controller->get_field_from_object( 'mynamespace/required_field', new WC_Customer( 1 ) );
+		$this->assertEquals( '', $value );
 
 		__internal_woocommerce_blocks_deregister_checkout_field( 'mynamespace/location_validation_error' );
 
@@ -216,6 +225,9 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$this->assertCount( 1, $mocked_messages );
 		$this->assertEquals( 'The field mynamespace/required_field is required.', $mocked_messages[0]['message'] );
 		$this->assertEquals( 'error', $mocked_messages[0]['type'] );
+
+		$value = $this->controller->get_field_from_object( 'mynamespace/required_field', new WC_Customer( 1 ) );
+		$this->assertEquals( '', $value );
 
 		$mocked_messages                     = [];
 		$hash                                = uniqid();
