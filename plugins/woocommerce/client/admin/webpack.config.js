@@ -88,6 +88,13 @@ require( 'fs-extra' ).ensureSymlinkSync(
 
 const webpackConfig = {
 	mode: NODE_ENV,
+	cache: {
+		type: 'filesystem',
+		cacheDirectory: path.resolve(
+			__dirname,
+			'../../../../node_modules/.cache/webpack-admin'
+		),
+	},
 	entry: getEntryPoints(),
 	output: {
 		filename: ( data ) => {
