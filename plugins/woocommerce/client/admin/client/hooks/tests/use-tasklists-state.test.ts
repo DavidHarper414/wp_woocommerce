@@ -74,26 +74,38 @@ describe( 'useTaskListsState', () => {
 				hasFinishedResolution: () => true,
 			} ) )
 		);
-		( getAdminSetting as jest.Mock ).mockReturnValue( [] );
+		( getAdminSetting as jest.Mock ).mockImplementation( ( setting ) => {
+			if ( setting === 'visibleTaskListIds' ) return [];
+			if ( setting === 'completedTaskListIds' ) return [];
+			return [];
+		} );
 	} );
 
 	it( 'should return default state when no task lists are visible', () => {
-		( getAdminSetting as jest.Mock ).mockReturnValue( [] );
+		( getAdminSetting as jest.Mock ).mockImplementation( ( setting ) => {
+			if ( setting === 'visibleTaskListIds' ) return [];
+			if ( setting === 'completedTaskListIds' ) return [];
+			return [];
+		} );
 
 		const { result } = renderHook( () => useTaskListsState() );
 
 		expect( result.current ).toEqual( {
 			requestingTaskListOptions: false,
 			setupTaskListHidden: true,
-			setupTaskListComplete: null,
-			setupTasksCount: null,
-			setupTasksCompleteCount: null,
-			thingsToDoNextCount: null,
+			setupTaskListComplete: false,
+			setupTasksCount: undefined,
+			setupTasksCompleteCount: undefined,
+			thingsToDoNextCount: undefined,
 		} );
 	} );
 
-	it( 'should return setup task list state when only setup is visible', () => {
-		( getAdminSetting as jest.Mock ).mockReturnValue( [ 'setup' ] );
+	it( 'should return setup task list state when only setup is visible and not completed', () => {
+		( getAdminSetting as jest.Mock ).mockImplementation( ( setting ) => {
+			if ( setting === 'visibleTaskListIds' ) return [ 'setup' ];
+			if ( setting === 'completedTaskListIds' ) return [];
+			return [];
+		} );
 		( useSelect as jest.Mock ).mockImplementation( ( callback ) =>
 			callback( () => ( {
 				getTaskList: () => mockSetupTaskList,
@@ -109,12 +121,16 @@ describe( 'useTaskListsState', () => {
 			setupTaskListComplete: false,
 			setupTasksCount: 1,
 			setupTasksCompleteCount: 0,
-			thingsToDoNextCount: null,
+			thingsToDoNextCount: undefined,
 		} );
 	} );
 
-	it( 'should return extended task list state when only extended is visible', () => {
-		( getAdminSetting as jest.Mock ).mockReturnValue( [ 'extended' ] );
+	it( 'should return extended task list state when only extended is visible and not completed', () => {
+		( getAdminSetting as jest.Mock ).mockImplementation( ( setting ) => {
+			if ( setting === 'visibleTaskListIds' ) return [ 'extended' ];
+			if ( setting === 'completedTaskListIds' ) return [];
+			return [];
+		} );
 		( useSelect as jest.Mock ).mockImplementation( ( callback ) =>
 			callback( () => ( {
 				getTaskList: () => mockExtendedTaskList,
@@ -132,18 +148,20 @@ describe( 'useTaskListsState', () => {
 		expect( result.current ).toEqual( {
 			requestingTaskListOptions: false,
 			setupTaskListHidden: true,
-			setupTaskListComplete: null,
-			setupTasksCount: null,
-			setupTasksCompleteCount: null,
+			setupTaskListComplete: false,
+			setupTasksCount: undefined,
+			setupTasksCompleteCount: undefined,
 			thingsToDoNextCount: 1,
 		} );
 	} );
 
-	it( 'should return full state when both task lists are visible', () => {
-		( getAdminSetting as jest.Mock ).mockReturnValue( [
-			'setup',
-			'extended',
-		] );
+	it( 'should return full state when both task lists are visible and not completed', () => {
+		( getAdminSetting as jest.Mock ).mockImplementation( ( setting ) => {
+			if ( setting === 'visibleTaskListIds' )
+				return [ 'setup', 'extended' ];
+			if ( setting === 'completedTaskListIds' ) return [];
+			return [];
+		} );
 		( useSelect as jest.Mock ).mockImplementation( ( callback ) =>
 			callback( () => ( {
 				getTaskList: ( id: string ) =>
@@ -165,10 +183,12 @@ describe( 'useTaskListsState', () => {
 	} );
 
 	it( 'should handle loading state correctly', () => {
-		( getAdminSetting as jest.Mock ).mockReturnValue( [
-			'setup',
-			'extended',
-		] );
+		( getAdminSetting as jest.Mock ).mockImplementation( ( setting ) => {
+			if ( setting === 'visibleTaskListIds' )
+				return [ 'setup', 'extended' ];
+			if ( setting === 'completedTaskListIds' ) return [];
+			return [];
+		} );
 		( useSelect as jest.Mock ).mockImplementation( ( callback ) =>
 			callback( () => ( {
 				getTaskList: () => null,
@@ -181,16 +201,18 @@ describe( 'useTaskListsState', () => {
 		expect( result.current.requestingTaskListOptions ).toBe( true );
 	} );
 
-	it( 'should handle empty task lists correctly', () => {
-		( getAdminSetting as jest.Mock ).mockReturnValue( [
-			'setup',
-			'extended',
-		] );
+	it( 'should handle completed task lists correctly', () => {
+		( getAdminSetting as jest.Mock ).mockImplementation( ( setting ) => {
+			if ( setting === 'visibleTaskListIds' )
+				return [ 'setup', 'extended' ];
+			if ( setting === 'completedTaskListIds' ) return [ 'setup' ];
+			return [];
+		} );
 		( useSelect as jest.Mock ).mockImplementation( ( callback ) =>
 			callback( () => ( {
 				getTaskList: () => ( {
 					...mockSetupTaskList,
-					tasks: [],
+					isHidden: true,
 				} ),
 				hasFinishedResolution: () => true,
 			} ) )
@@ -198,18 +220,30 @@ describe( 'useTaskListsState', () => {
 
 		const { result } = renderHook( () => useTaskListsState() );
 
-		expect( result.current.setupTasksCount ).toBe( 0 );
-		expect( result.current.setupTasksCompleteCount ).toBe( 0 );
+		expect( result.current ).toEqual( {
+			requestingTaskListOptions: false,
+			setupTaskListHidden: false,
+			setupTaskListComplete: true,
+			setupTasksCount: undefined,
+			setupTasksCompleteCount: undefined,
+			thingsToDoNextCount: 0,
+		} );
 	} );
 
-	it( 'should respect the options parameter', () => {
-		( getAdminSetting as jest.Mock ).mockReturnValue( [
-			'setup',
-			'extended',
-		] );
+	it( 'should respect the options parameter when task lists are completed', () => {
+		( getAdminSetting as jest.Mock ).mockImplementation( ( setting ) => {
+			if ( setting === 'visibleTaskListIds' )
+				return [ 'setup', 'extended' ];
+			if ( setting === 'completedTaskListIds' )
+				return [ 'setup', 'extended' ];
+			return [];
+		} );
 		( useSelect as jest.Mock ).mockImplementation( ( callback ) =>
 			callback( () => ( {
-				getTaskList: () => mockSetupTaskList,
+				getTaskList: () => ( {
+					...mockSetupTaskList,
+					isHidden: true,
+				} ),
 				hasFinishedResolution: () => true,
 			} ) )
 		);
@@ -223,11 +257,11 @@ describe( 'useTaskListsState', () => {
 
 		expect( result.current ).toEqual( {
 			requestingTaskListOptions: false,
-			setupTaskListHidden: true,
-			setupTaskListComplete: null,
-			setupTasksCount: null,
-			setupTasksCompleteCount: null,
-			thingsToDoNextCount: null,
+			setupTaskListHidden: false,
+			setupTaskListComplete: true,
+			setupTasksCount: undefined,
+			setupTasksCompleteCount: undefined,
+			thingsToDoNextCount: undefined,
 		} );
 	} );
 } );
