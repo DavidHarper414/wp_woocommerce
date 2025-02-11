@@ -23,4 +23,3 @@ export const store = createReduxStore( STORE_NAME, {
 } );
 
 register( store );
-
