@@ -32,7 +32,7 @@ class ExportWCShipping implements StepExporter, HasAlias {
 			$this->get_steps_for_methods_and_options()
 		);
 
-		$steps[] = $this->get_step_for_local_pickup();
+//		$steps[] = $this->get_step_for_local_pickup();
 		return $steps;
 	}
 
