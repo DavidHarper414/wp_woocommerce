@@ -58,7 +58,7 @@ runs:
               key: "${{ runner.os }}-pnpm-${{ inputs.pull-package-deps }}-build:${{ inputs.build-type }}-${{ hashFiles( 'pnpm-lock.yaml' ) }}"
               restore-keys: '${{ runner.os }}-pnpm-${{ inputs.pull-package-deps }}-build:${{ inputs.build-type }}-'
         - name: 'Cache: node cache'
-          if: ${{ inputs.pull-package-deps != 'false' }}
+          if: ${{ inputs.pull-package-deps != 'false' && ! startsWith( inputs.pull-package-deps, '@woocommerce/block-library') }}
           uses: 'actions/cache@v4'
           with:
               path: './node_modules/.cache'
