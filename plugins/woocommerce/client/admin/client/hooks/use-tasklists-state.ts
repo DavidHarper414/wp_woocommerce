@@ -15,6 +15,12 @@ import { getAdminSetting } from '~/utils/admin-settings';
 const VISIBLE_TASK_LIST_IDS = getAdminSetting( 'visibleTaskListIds', [] );
 const COMPLETED_TASK_LIST_IDS = getAdminSetting( 'completedTaskListIds', [] );
 
+/**
+ * Get the number of things to do next
+ *
+ * @param {Object} extendedTaskList The extended task list
+ * @return {number} The number of things to do next
+ */
 function getThingsToDoNextCount( extendedTaskList: TaskListType ) {
 	if (
 		! extendedTaskList ||
