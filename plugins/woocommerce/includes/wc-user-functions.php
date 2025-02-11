@@ -472,6 +472,7 @@ function wc_customer_bought_product( $customer_email, $user_id, $product_id ) {
 				$user_id_clause = 'OR o.customer_id = ' . absint( $user_id );
 			}
 			if ( $use_lookup_tables ) {
+				// HPOS: yes, Lookup table: yes.
 				$sql = "
 SELECT DISTINCT product_or_variation_id FROM (
 SELECT CASE WHEN product_id != 0 THEN product_id ELSE variation_id END AS product_or_variation_id
@@ -483,6 +484,7 @@ AND ( o.billing_email IN ('" . implode( "','", $customer_data ) . "') $user_id_c
 WHERE product_or_variation_id != 0
 ";
 			} else {
+				// HPOS: yes, Lookup table: no.
 				$sql = "
 SELECT DISTINCT im.meta_value FROM $order_table AS o
 INNER JOIN {$wpdb->prefix}woocommerce_order_items AS i ON o.id = i.order_id
@@ -495,6 +497,7 @@ AND ( o.billing_email IN ('" . implode( "','", $customer_data ) . "') $user_id_c
 			}
 			$result = $wpdb->get_col( $sql );
 		} elseif ( $use_lookup_tables ) {
+			// HPOS: no, Lookup table: yes.
 			$result = $wpdb->get_col(
 				"
 SELECT DISTINCT product_or_variation_id FROM (
@@ -510,6 +513,7 @@ WHERE product_or_variation_id != 0
 		"
 			); // WPCS: unprepared SQL ok.
 		} else {
+			// HPOS: no, Lookup table: no.
 			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
 			$result = $wpdb->get_col(
 				"
