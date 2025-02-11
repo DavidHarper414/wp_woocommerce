@@ -11,11 +11,45 @@ import type { Field, FormField } from '@wordpress/dataviews';
  */
 import { CustomView } from '../../components/custom-view';
 import { SettingsGroup } from '../../components/settings-group';
-import { CheckboxEdit } from '../../components/checkbox-edit';
+import { getCheckboxEdit } from '../../components/checkbox-edit';
 import { getInputEdit } from '../../components/inputEdit';
-import { SelectEdit } from '../../components/selectEdit';
+import { getTextareaEdit } from '../../components/textareaEdit';
+import { getColorEdit } from '../../components/colorEdit';
+import { getSelectEdit } from '../../components/selectEdit';
+import { getRadioEdit } from '../../components/radioEdit';
+import { InfoView } from '../../components/infoView';
 
 export type DataItem = Record< string, BaseSettingsField[ 'value' ] >;
+
+/**
+ * Helper function to determine label and help text from setting.
+ *
+ * @param setting The setting object containing description and tip information
+ * @return Object with label and help text
+ *
+ * Cases:
+ * - desc_tip === true: description becomes help text, empty label
+ * - desc_tip is string: string becomes help text, description becomes label
+ * - desc_tip === false: empty help text, description becomes label
+ * - desc_tip undefined: empty help text, description becomes label
+ */
+export const getLabelAndHelp = (
+	setting: BaseSettingsField | CheckboxSettingsField
+) => {
+	const description = setting.desc || setting.description || '';
+
+	if ( setting.desc_tip === true ) {
+		return {
+			label: '',
+			help: description,
+		};
+	}
+
+	return {
+		label: description,
+		help: typeof setting.desc_tip === 'string' ? setting.desc_tip : '',
+	};
+};
 
 /**
  * Transforms a single setting into initial form data.
@@ -64,21 +98,26 @@ export const transformToField = (
 			};
 
 		case 'checkboxgroup':
-			return setting.settings?.map( ( subSetting ) => ( {
-				id: subSetting.id,
-				type: 'text',
-				label: subSetting.desc,
-				Edit: CheckboxEdit,
-			} ) );
+			return setting.settings?.map( ( subSetting ) => {
+				const { label, help } = getLabelAndHelp( subSetting );
 
-		case 'checkbox':
+				return {
+					id: subSetting.id,
+					type: 'text',
+					label,
+					Edit: getCheckboxEdit( help ),
+				};
+			} );
+
+		case 'checkbox': {
+			const { label, help } = getLabelAndHelp( setting );
 			return {
 				id: setting.id,
 				type: 'text',
-				label: setting.desc,
-				Edit: CheckboxEdit,
+				label,
+				Edit: getCheckboxEdit( help ),
 			};
-
+		}
 		case 'text':
 		case 'password':
 		case 'datetime':
@@ -90,26 +129,82 @@ export const transformToField = (
 		case 'number':
 		case 'email':
 		case 'url':
-		case 'tel':
+		case 'tel': {
+			const { label, help } = getLabelAndHelp( setting );
+
+			return {
+				id: setting.id,
+				type: 'text',
+				label,
+				placeholder: setting.placeholder,
+				Edit: getInputEdit( setting.type, help ),
+			};
+		}
+		case 'select': {
+			const { label, help } = getLabelAndHelp( setting );
+
+			return {
+				id: setting.id,
+				type: 'text',
+				label,
+				elements: Object.entries( setting.options || {} ).map(
+					( [ _label, value ] ) => ( {
+						label: _label,
+						value,
+					} )
+				),
+				Edit: getSelectEdit( help ),
+			};
+		}
+		case 'textarea': {
+			const { label, help } = getLabelAndHelp( setting );
+
+			return {
+				id: setting.id,
+				type: 'text',
+				placeholder: setting.placeholder,
+				label,
+				Edit: getTextareaEdit( help ),
+			};
+		}
+
+		case 'radio': {
+			const { label, help } = getLabelAndHelp( setting );
+
+			return {
+				id: setting.id,
+				type: 'text',
+				label,
+				elements: Object.entries( setting.options || {} ).map(
+					( [ value, _label ] ) => ( {
+						label: _label,
+						value,
+					} )
+				),
+				Edit: getRadioEdit( help ),
+			};
+		}
+
+		case 'color':
 			return {
 				id: setting.id,
 				type: 'text',
 				label: setting.desc,
-				Edit: getInputEdit( setting.type ),
+				Edit: getColorEdit,
 			};
 
-		case 'select':
+		case 'info':
 			return {
 				id: setting.id,
 				type: 'text',
-				label: setting.desc + ' (TO BE IMPLEMENTED)',
-				elements: Object.entries( setting.options || {} ).map(
-					( [ label, value ] ) => ( {
-						label,
-						value,
-					} )
+				label: setting.title,
+				Edit: () => (
+					<InfoView
+						text={ setting.text }
+						className={ setting.row_class }
+						css={ setting.css }
+					/>
 				),
-				Edit: SelectEdit,
 			};
 
 		case 'custom':

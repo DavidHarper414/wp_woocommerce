@@ -1,6 +1,7 @@
 const { test, expect, request } = require( '@playwright/test' );
 const { setOption } = require( '../../utils/options' );
 const { tags } = require( '../../fixtures/fixtures' );
+const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
 
 const setFeatureFlag = async ( baseURL, value ) =>
 	await setOption(
@@ -17,7 +18,7 @@ const pickImageFromLibrary = async ( page, imageName ) => {
 };
 
 test.describe( 'WooCommerce Email Settings', () => {
-	test.use( { storageState: process.env.ADMINSTATE } );
+	test.use( { storageState: ADMIN_STATE_PATH } );
 
 	const storeName = 'WooCommerce Core E2E Test Suite';
 
@@ -68,11 +69,11 @@ test.describe( 'WooCommerce Email Settings', () => {
 			.selectOption( 'Reset password' );
 		// Email content
 		await expect(
-			await iframeContains( 'Password Reset Request' )
+			await iframeContains( 'Someone has requested a new password' )
 		).toBeVisible();
 		// Email subject
 		await expect( await getSubject() ).toContain(
-			`Password Reset Request for ${ storeName }`
+			`Reset your password for ${ storeName }`
 		);
 	} );
 

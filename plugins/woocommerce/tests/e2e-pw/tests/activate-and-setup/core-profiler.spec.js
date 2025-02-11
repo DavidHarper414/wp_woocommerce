@@ -1,6 +1,8 @@
 const { test, expect, request } = require( '@playwright/test' );
 const { tags } = require( '../../fixtures/fixtures' );
 const { setOption } = require( '../../utils/options' );
+const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
+const { setComingSoon } = require( '../../utils/coming-soon' );
 
 const getPluginLocator = ( page, slug ) => {
 	return page.locator(
@@ -8,20 +10,14 @@ const getPluginLocator = ( page, slug ) => {
 	);
 };
 
+test.use( { storageState: ADMIN_STATE_PATH } );
+
 test.describe(
 	'Store owner can complete the core profiler',
 	{ tag: tags.SKIP_ON_EXTERNAL_ENV },
 	() => {
-		test.use( { storageState: process.env.ADMINSTATE } );
-
 		test.beforeAll( async ( { baseURL } ) => {
 			try {
-				await setOption(
-					request,
-					baseURL,
-					'woocommerce_coming_soon',
-					'no'
-				);
 				await setOption(
 					request,
 					baseURL,
@@ -36,6 +32,10 @@ test.describe(
 		test( 'Can complete the core profiler skipping extension install', async ( {
 			page,
 		} ) => {
+			test.skip(
+				process.env.IS_MULTISITE,
+				'Test not working on a multisite setup, see https://github.com/woocommerce/woocommerce/issues/55066'
+			);
 			await page.goto(
 				'wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard'
 			);
@@ -197,6 +197,10 @@ test.describe(
 		test( 'Can complete the core profiler installing default extensions', async ( {
 			page,
 		} ) => {
+			test.skip(
+				process.env.IS_MULTISITE,
+				'Test not working on a multisite setup, see https://github.com/woocommerce/woocommerce/issues/55066'
+			);
 			await page.goto(
 				'wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard'
 			);
@@ -473,21 +477,6 @@ test.describe(
 	'Store owner can skip the core profiler',
 	{ tag: tags.SKIP_ON_EXTERNAL_ENV },
 	() => {
-		test.use( { storageState: process.env.ADMINSTATE } );
-
-		test.beforeAll( async ( { baseURL } ) => {
-			try {
-				await setOption(
-					request,
-					baseURL,
-					'woocommerce_coming_soon',
-					'no'
-				);
-			} catch ( error ) {
-				console.log( error );
-			}
-		} );
-
 		test( 'Can click skip guided setup', async ( { page } ) => {
 			await page.goto(
 				'wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard'
@@ -543,7 +532,7 @@ test.describe(
 
 			await test.step( 'Go to the extensions tab and connect store', async () => {
 				const connectButton = page.getByRole( 'link', {
-					name: 'Connect your store',
+					name: 'Connect',
 				} );
 				await page.goto(
 					'wp-admin/admin.php?page=wc-admin&tab=my-subscriptions&path=%2Fextensions'
@@ -584,3 +573,7 @@ test.describe(
 		} );
 	}
 );
+
+test.afterAll( async ( { baseURL } ) => {
+	await setComingSoon( { baseURL, enabled: 'no' } );
+} );

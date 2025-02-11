@@ -270,12 +270,6 @@ const entries = {
 			...cartAndCheckoutBlocks,
 		} ),
 
-		// Interactivity component styling
-		'wc-interactivity-checkbox-list':
-			'./packages/interactivity-components/checkbox-list/index.ts',
-		'wc-interactivity-dropdown':
-			'./packages/interactivity-components/dropdown/index.ts',
-
 		// Templates
 		'wc-blocks-classic-template-revert-button-style':
 			'./assets/js/templates/revert-button/index.tsx',
@@ -287,14 +281,9 @@ const entries = {
 		wcBlocksMiddleware: './assets/js/middleware/index.js',
 		wcBlocksSharedContext: './assets/js/shared/context/index.js',
 		wcBlocksSharedHocs: './assets/js/shared/hocs/index.js',
+		wcSchemaParser: './assets/js/utils/schema-parser/index.ts',
 		priceFormat: './packages/prices/index.js',
 		wcTypes: './assets/js/types/index.ts',
-
-		// interactivity components, exported as separate entries for now
-		'wc-interactivity-dropdown':
-			'./packages/interactivity-components/dropdown/index.ts',
-		'wc-interactivity-checkbox-list':
-			'./packages/interactivity-components/checkbox-list/index.ts',
 	},
 	main: {
 		// Shared blocks code

@@ -79,7 +79,7 @@
           "post_title": "Blocks reference",
           "menu_title": "Blocks Reference",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/building-a-woo-store/block-references.md",
-          "hash": "fee3ebe3c18bb39f0a8e9e1f43fe8153b4b5664913cd50b6e3c078ede151601b",
+          "hash": "16b8085da828ecf5369e9d78228f688ef178e24420491c15c41b63645b7331f9",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/building-a-woo-store/block-references.md",
           "id": "1fbe91d7fa4fafaf35f0297e4cee1e7958756aed"
         },
@@ -153,7 +153,7 @@
           "menu_title": "Frequently Asked Questions",
           "tags": "reference",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/faq.md",
-          "hash": "f83f3517106b024b853718d17c3c44a522156ea55aa441de9433d3f312d5f851",
+          "hash": "99b5533f684f62498098d55a6ba1e2dba71664cca7cf35d8c4272dd24d6686fa",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/faq.md",
           "id": "041787aca25af363a5eff3e710bd669cc8aebc4b",
           "links": {
@@ -195,7 +195,7 @@
           "menu_title": "Additional Checkout Fields",
           "tags": "reference",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/additional-checkout-fields.md",
-          "hash": "aa38325787bc1a130bfa301209fbdd27544d9ed474c85bbbe761bf2106bf9e97",
+          "hash": "8336fc88a08df2b41ec20234f7475ddc94b8605fdd7db9577e96c93dad716fee",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/additional-checkout-fields.md",
           "id": "cb5dd8d59043a4e53929121b45da7b33b1661ab8"
         }
@@ -298,7 +298,7 @@
               "menu_title": "Checkout Flow and Events",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/checkout-payment-methods/checkout-flow-and-events.md",
-              "hash": "8759412c671ef972d4ce737f14f786387a9cd8ea628a65bff13a2648245b407c",
+              "hash": "8da896fc4f27bad91140e6b5779ea70e929f2290e9dd382141af4fa456961b36",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/checkout-payment-methods/checkout-flow-and-events.md",
               "id": "499384cbb48ed96a2e12653cd68bd82d123a20a1",
               "links": {
@@ -451,7 +451,7 @@
           "menu_title": "Free shipping customizations",
           "tags": "code-snippets",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/code-snippets/free_shipping_customization.md",
-          "hash": "1711cff54da5c39385d06ff8d8e0a055d3d25f68ee4855d93fefa940c8ffc916",
+          "hash": "0f5793a00b7e2db6d0862ff4130951ebdd1845bd77237d8e94dc4e63f4fe70e9",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/code-snippets/free_shipping_customization.md",
           "id": "cac6f1ccd661588e9a5fa7405643e9c6d4da388e"
         },
@@ -508,7 +508,7 @@
           "post_title": "Change a currency symbol",
           "tags": "code-snippet",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/code-snippets/change-a-currency-symbol.md",
-          "hash": "1e25d4cf42f3b5907befc8d3b6d3999ca31c2f97b9512eadb749935685d1a7d6",
+          "hash": "c1d0018d19b242e3a0776572167adfee75014a509069f51f6440305508550500",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/code-snippets/change-a-currency-symbol.md",
           "id": "35ff98a542ad0b092aa44a049c6015cd43ed5857"
         },
@@ -1074,6 +1074,19 @@
           "hash": "f35b7458ea38f7c95f56888c76f139059bf38661991d7f0c37fbdd860786f5fc",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/localization-translation/translating-woocommerce.md",
           "id": "017b9f80a086d119f8bac193c9b4d87d1efff67d"
+        },
+        {
+          "post_title": "Updating Countries and Subdivisions",
+          "menu_title": "Countries and Subdivisions",
+          "tags": "how-to",
+          "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/localization-translation/countries-and-subdivisions.md",
+          "hash": "22938768e8f494d233a0f69a3332efa5e6acc6bcc83d6ae897788f628008cbae",
+          "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/localization-translation/countries-and-subdivisions.md",
+          "id": "385b95e7f5ca43eeb33472f883765e3b931b2f76",
+          "links": {
+            "../code-snippets/add-a-country.md": "3f20affcf41e51989b0a7408aefe32b95d1da073",
+            "../code-snippets/add-or-modify-states.md": "59ff38edfc09669967a06dd1dd3e6fb967422367"
+          }
         }
       ],
       "categories": []
@@ -1512,6 +1525,13 @@
       "categories": []
     },
     {
+      "content": "\nThe WooCommerce Store API provides public Rest API endpoints for interacting with products, and the Cart and Checkout process. It follows many of the patterns used in the WordPress REST API and  returns JSON formatted data.\n\n In contrast to the WooCommerce REST API, the Store API is specifically designed for frontend applications. It is unauthenticated and does not provide access to sensitive store data or other customer information.\n\nPlease see the [Store API Documentation on GitHub](https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce/src/StoreApi/README.md) for more information.\n",
+      "category_slug": "store-api",
+      "category_title": "Store API",
+      "posts": [],
+      "categories": []
+    },
+    {
       "content": "\nProperly setting up your test environment and writing tests when contributing to WooCommerce core are essential parts of our development pipeline. The links below are also included in our [Contributing Guidelines](https://github.com/woocommerce/woocommerce/blob/trunk/.github/CONTRIBUTING.md) on GitHub.\n\nIf you have any questions about testing please reach out to the developer community in our public channels([Developer Blog](https://developer.woocommerce.com/blog/), [GitHub Discussions](https://github.com/woocommerce/woocommerce/discussions), or [Community Slack](https://woocommerce.com/community-slack/)).\n\n## Unit Testing\n\n[End-to-end tests](https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce/tests/e2e-pw) are powered by `Playwright`. The test site is spun up using `wp-env` ([recommended](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)), but we will continue to support `e2e-environment` in the meantime, and slowly [deprecate](https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce/tests/e2e/README.md) `Puppeteer` testing. \n\n## API Testing\n\n`api-core-tests` is a [package](https://github.com/woocommerce/woocommerce/tree/trunk/packages/js/api-core-tests) that contains automated API tests for WooCommerce, based on `Playwright` and `wp-env`. It supersedes the SuperTest based `api-core-tests` package and `e2e-environment` setup, which we will gradually deprecate.\n\n## Calls for Testing\n\nKeep tabs on calls for testing on our developer blog, and make sure to read our beta testing instructions to help us build new features and enhancements.\n",
       "category_slug": "testing",
       "category_title": "Testing",
@@ -1520,7 +1540,7 @@
           "post_title": "Beta Testing",
           "tags": "how-to",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/testing/beta-testing.md",
-          "hash": "09be54c71d8805df451263a1cddd12d744b2b1d81f669fb539bd2f14cfdefeeb",
+          "hash": "fefc443d305a81703e63e812fab3ec5ccc8521893dd96031b40f78f7449b269b",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/testing/beta-testing.md",
           "id": "01f266904647aad0d44b5687fb5f143560dabc67"
         }
@@ -1724,7 +1744,7 @@
           "post_title": "User Experience Guidelines - Payment Button Size and Anatomy",
           "menu_title": "Payment Button Size",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/ux-guidelines-payments/payment-button-size.md",
-          "hash": "b9165eb27a79bb696d7f0fcea1ef8a36f56ffd01501447f4c266c95f515a8ee1",
+          "hash": "0be63cb8f44339510f92b6ce2cd9c39b751f2d468e49a34fbd73a548f1f79c6d",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/ux-guidelines-payments/payment-button-size.md",
           "id": "0920df1611e1b1b3e2f33c810a8f8e8ae09dd67c"
         },
@@ -1732,7 +1752,7 @@
           "post_title": "User Experience Guidelines - Payment Button Layout",
           "menu_title": "Payment Button Layout",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/ux-guidelines-payments/payment-button-layout.md",
-          "hash": "bc518454d8552c5da08d9635799c578d730341b115f7f8a63e9123628242c772",
+          "hash": "662daf80937372a1b8848a58e38417a5ab69c0c0f4fe55a59509d74494561af2",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/ux-guidelines-payments/payment-button-layout.md",
           "id": "96caecc340794e5c80af271e5cc844e0b3d80a04"
         }
@@ -1915,5 +1935,5 @@
       "categories": []
     }
   ],
-  "hash": "fde09b69fe66305c8599d0a5b9678f67fe72d825177637ba26f225a17fd80774"
+  "hash": "eb5d0b58ca6536ffb36d324a3d5716ca340ac2f5356b560109243ce01e8bc5f3"
 }
