@@ -199,6 +199,7 @@ class CheckoutFieldsFrontend {
 				$field_value = trim( wc_clean( wp_unslash( $_POST[ $key ] ?? '' ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
 				if ( 0 === strlen( $field_value ) && ! ( $field_data['required'] ?? false ) ) {
+					$field_values[ $key ] = '';
 					continue; // Skip, otherwise validation might prevent saving empty optional fields.
 				}
 
