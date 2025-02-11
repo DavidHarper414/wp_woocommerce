@@ -12,11 +12,19 @@ const {
 	plugin,
 	StyleAssetPlugin,
 } = require( '@woocommerce/internal-style-build' );
+const path = require("path");
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
 	mode: process.env.NODE_ENV || 'development',
+	cache: {
+		type: 'filesystem',
+		cacheDirectory: path.resolve(
+			__dirname,
+			'../../../.cache/webpack-settings-editor'
+		),
+	},
 	entry: {
 		'build-style': __dirname + '/src/style.scss',
 	},
