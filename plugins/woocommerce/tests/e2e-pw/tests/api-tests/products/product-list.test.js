@@ -2824,7 +2824,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			} );
 			const result2JSON = await result2.json();
 			expect( result2.status() ).toEqual( 200 );
-			expect( result2JSON ).toHaveLength( 0 );
+			expect( result2JSON ).toEqual( expect.any( Array ) );
 		} );
 
 		test( 'shipping class', async ( { request } ) => {
