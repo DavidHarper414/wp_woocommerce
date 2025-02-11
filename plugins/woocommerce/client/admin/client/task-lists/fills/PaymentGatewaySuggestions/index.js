@@ -14,8 +14,10 @@ import { useMemo, useCallback, useEffect } from '@wordpress/element';
 import { registerPlugin } from '@wordpress/plugins';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
 import { getNewPath, getQuery } from '@woocommerce/navigation';
-import { Button } from '@wordpress/components';
-import ExternalIcon from 'gridicons/dist/external';
+import { Text } from '@woocommerce/experimental';
+import interpolateComponents from '@automattic/interpolate-components';
+import { Link } from '@woocommerce/components';
+import { getAdminLink } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -262,15 +264,29 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 			paymentGateways={ additionalGateways }
 			markConfigured={ markConfigured }
 			footerLink={
-				<Button
-					href="https://woocommerce.com/product-category/woocommerce-extensions/payment-gateways/?utm_source=payments_recommendations"
-					target="_blank"
-					onClick={ trackSeeMore }
-					variant="tertiary"
-				>
-					{ __( 'See more', 'woocommerce' ) }
-					<ExternalIcon size={ 18 } />
-				</Button>
+				<Text>
+					{ interpolateComponents( {
+						mixedString: __(
+							'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find additional payment providers.',
+							'woocommerce'
+						),
+						components: {
+							sbLink: (
+								<Link
+									onClick={ () => {
+										trackSeeMore();
+										window.location.href = getAdminLink(
+											'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways'
+										);
+										return false;
+									} }
+									href=""
+									type="wc-admin"
+								/>
+							),
+						},
+					} ) }
+				</Text>
 			}
 		></List>
 	);
