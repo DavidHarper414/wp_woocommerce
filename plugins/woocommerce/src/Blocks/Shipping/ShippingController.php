@@ -434,8 +434,13 @@ class ShippingController {
 		$default_locale   = $address_fields['default'];
 		$country_locale   = $address_fields[ $locale_key ] ?? array();
 
-		// For all fields in $shipping_address, check if they are required in the country-specific locale first, if
-		// not set, orn$address_fields and if so, check if they are not empty.
+		/**
+		 * Checks all shipping address fields against the country's locale settings.
+		 *
+		 * If there's a `required` setting for the field in the country-specific locale, that setting is used, otherwise
+		 * the default locale's setting is used. If the default locale doesn't have a setting either, the field is
+		 * considered optional and therefore valid, even if empty.
+		 */
 		foreach ( $shipping_address as $key => $value ) {
 			// Skip further checks if the field has a value. From this point on $value is empty.
 			if ( ! empty( $value ) ) {
