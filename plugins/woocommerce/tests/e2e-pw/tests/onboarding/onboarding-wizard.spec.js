@@ -3,6 +3,7 @@ const { tags } = require( '../../fixtures/fixtures' );
 const { setOption } = require( '../../utils/options' );
 const { setComingSoon } = require( '../../utils/coming-soon' );
 const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
+const { setComingSoon } = require( '../../utils/coming-soon' );
 
 const getPluginLocator = ( page, slug ) => {
 	return page.locator(
@@ -577,3 +578,7 @@ test.describe(
 		} );
 	}
 );
+
+test.afterAll( async ( { baseURL } ) => {
+	await setComingSoon( { baseURL, enabled: 'no' } );
+} );
