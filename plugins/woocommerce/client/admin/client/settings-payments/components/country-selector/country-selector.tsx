@@ -73,6 +73,12 @@ const stateReducer = < ItemType extends Item >(
 					],
 				isOpen: true, // Keep menu open after selection.
 			};
+		case useSelect.stateChangeTypes.ToggleButtonBlur:
+			// This is triggered when the input is focused.
+			return {
+				...changes,
+				isOpen: true, // Keep menu open on toggle button blur (triggered by input focus).
+			};
 		default:
 			return changes;
 	}
@@ -259,6 +265,10 @@ export const CountrySelector = < ItemType extends Item >( {
 			const selectedItemIndex =
 				Array.from( visibleItems ).indexOf( selectedItem );
 			highlightSelectedCountry( selectedItemIndex );
+		}
+
+		if ( isOpen ) {
+			searchRef.current?.focus();
 		}
 	}, [ isOpen ] );
 
