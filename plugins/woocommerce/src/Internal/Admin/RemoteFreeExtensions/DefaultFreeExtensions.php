@@ -60,8 +60,8 @@ class DefaultFreeExtensions {
 				'title'   => __( 'Reach out to customers', 'woocommerce' ),
 				'plugins' => array(
 					self::get_plugin( 'mailpoet:alt' ),
-					self::get_plugin( 'mailchimp-for-woocommerce' ),
 					self::get_plugin( 'klaviyo' ),
+					self::get_plugin( 'mailchimp-for-woocommerce' ),
 				),
 			),
 			array(
