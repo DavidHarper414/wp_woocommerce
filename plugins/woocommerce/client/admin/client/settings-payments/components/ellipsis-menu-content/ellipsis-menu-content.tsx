@@ -32,6 +32,10 @@ interface EllipsisMenuContentProps {
 	 */
 	isSuggestion: boolean;
 	/**
+	 * The ID of the payment extension suggestion. Optional.
+	 */
+	suggestionId?: string;
+	/**
 	 * The URL to call when hiding a payment extension suggestion. Optional.
 	 */
 	suggestionHideUrl?: string;
@@ -66,6 +70,7 @@ export const EllipsisMenuContent = ( {
 	providerId,
 	pluginFile,
 	isSuggestion,
+	suggestionId,
 	suggestionHideUrl = '',
 	onToggle,
 	links = [],
@@ -166,6 +171,10 @@ export const EllipsisMenuContent = ( {
 	const hideSuggestion = () => {
 		setIsHidingSuggestion( true );
 
+		// Record the event before hiding the suggestion.
+		recordEvent( 'settings_payments_recommendations_dismiss', {
+			pes_id: suggestionId,
+		} );
 		hidePaymentExtensionSuggestion( suggestionHideUrl )
 			.then( () => {
 				invalidateResolutionForStoreSelector( 'getPaymentProviders' );
