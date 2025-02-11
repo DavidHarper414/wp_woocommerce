@@ -383,6 +383,8 @@ class FeaturesController {
 	 * @internal
 	 */
 	public function register_additional_features() {
+		$this->get_feature_definitions(); // To populate $this->features if needed.
+
 		/**
 		 * The action for registering features.
 		 *

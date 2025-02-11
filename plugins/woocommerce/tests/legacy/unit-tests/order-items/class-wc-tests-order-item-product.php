@@ -7,6 +7,7 @@
  */
 
 use Automattic\WooCommerce\Internal\CostOfGoodsSold\CogsAwareUnitTestSuiteTrait;
+use Automattic\WooCommerce\Internal\Features\FeaturesController;
 
 /**
  * Order Item Product unit tests.
@@ -14,6 +15,14 @@ use Automattic\WooCommerce\Internal\CostOfGoodsSold\CogsAwareUnitTestSuiteTrait;
 class WC_Tests_Order_Item_Product extends WC_Unit_Test_Case {
 
 	use CogsAwareUnitTestSuiteTrait;
+
+	/**
+	 * Runs before each test
+	 */
+	public function setUp(): void {
+		parent::setUp();
+		wc_get_container()->get( FeaturesController::class )->register_additional_features();
+	}
 
 	/**
 	 * Runs after each test.

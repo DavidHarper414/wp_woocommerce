@@ -5,6 +5,8 @@
  * @package WooCommerce\Tests\Util
  */
 
+use Automattic\WooCommerce\Internal\Features\FeaturesController;
+
 /**
  * Class WC_Tests_Install.
  *
@@ -16,6 +18,8 @@ class WC_Tests_Install extends WC_Unit_Test_Case {
 	 * Test check version.
 	 */
 	public function test_check_version() {
+		wc_get_container()->get( FeaturesController::class )->register_additional_features();
+
 		update_option( 'woocommerce_version', ( (float) WC()->version - 1 ) );
 		WC_Install::check_version();
 
@@ -105,7 +109,7 @@ class WC_Tests_Install extends WC_Unit_Test_Case {
 			define( 'WP_UNINSTALL_PLUGIN', true );
 			define( 'WC_REMOVE_ALL_DATA', true );
 		}
-		include dirname( dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) ) . '/uninstall.php';
+		include dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/uninstall.php';
 
 		WC_Install::create_roles();
 
@@ -166,5 +170,4 @@ class WC_Tests_Install extends WC_Unit_Test_Case {
 
 		$this->assertContains( 'some_table_name', WC_Install::get_tables() );
 	}
-
 }

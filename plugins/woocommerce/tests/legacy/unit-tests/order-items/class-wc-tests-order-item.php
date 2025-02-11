@@ -8,6 +8,7 @@
 declare( strict_types=1 );
 
 use Automattic\WooCommerce\Internal\CostOfGoodsSold\CogsAwareUnitTestSuiteTrait;
+use Automattic\WooCommerce\Internal\Features\FeaturesController;
 
 /**
  * Tests for the WC_Order_Item class.
@@ -27,6 +28,8 @@ class WC_Tests_Base_Order_Item extends WC_Unit_Test_Case {
 	 */
 	public function setUp(): void {
 		parent::setUp();
+
+		wc_get_container()->get( FeaturesController::class )->register_additional_features();
 
 		// phpcs:disable Squiz.Commenting
 		$this->sut = new class() extends WC_Order_Item {
