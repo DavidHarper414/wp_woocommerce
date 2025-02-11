@@ -24,6 +24,13 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
 	mode: process.env.NODE_ENV || 'development',
+	cache: {
+		type: 'filesystem',
+		cacheDirectory: path.resolve(
+			__dirname,
+			'../../../.cache/webpack-product-editor'
+		),
+	},
 	entry: {
 		'build-style': __dirname + '/src/style.scss',
 		...blockEntryPoints,
