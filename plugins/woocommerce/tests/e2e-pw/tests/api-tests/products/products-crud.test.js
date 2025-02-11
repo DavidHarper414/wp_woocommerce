@@ -1,7 +1,6 @@
 const {
 	test: baseTest,
 	expect,
-	tags,
 } = require( '../../../fixtures/api-tests-fixtures' );
 const { BASE_URL } = process.env;
 const { admin } = require( '../../../test-data/data' );
