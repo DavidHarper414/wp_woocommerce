@@ -2004,6 +2004,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 			);
 
 			// Skip these tests in WPCOM because they're not configurable there by design.
+			// eslint-disable-next-line playwright/no-conditional-in-test
 			if ( ! process.env.IS_WPCOM ) {
 				expect( responseJSON ).toEqual(
 					expect.arrayContaining( [
