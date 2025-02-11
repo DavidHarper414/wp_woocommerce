@@ -118,7 +118,7 @@
 		"@babel/preset-react": "7.23.3",
 		"@babel/preset-typescript": "7.23.2",
 		"@bartekbp/typescript-checkstyle": "5.0.0",
-		"@playwright/test": "^1.49.1",
+		"@playwright/test": "^1.50.1",
 		"@storybook/addon-a11y": "7.5.2",
 		"@storybook/addon-actions": "^7.6.4",
 		"@storybook/addon-docs": "^7.6.4",
@@ -456,20 +456,20 @@
 		"dependencyOutputs": {
 			"allowUsuallyExcludedPaths": true,
 			"files": [
-				"node_modules/@woocommerce/eslint-plugin/configs",
-				"node_modules/@woocommerce/eslint-plugin/rules",
-				"node_modules/@woocommerce/eslint-plugin/index.js",
-				"node_modules/@woocommerce/data/build",
-				"node_modules/@woocommerce/data/build-module",
-				"node_modules/@woocommerce/data/build-types",
+				"package.json",
+				"node_modules/@woocommerce/tracks/build",
+				"node_modules/@woocommerce/tracks/build-module",
+				"node_modules/@woocommerce/tracks/build-types",
 				"node_modules/@woocommerce/customer-effort-score/build",
 				"node_modules/@woocommerce/customer-effort-score/build-module",
 				"node_modules/@woocommerce/customer-effort-score/build-style",
 				"node_modules/@woocommerce/customer-effort-score/build-types",
-				"node_modules/@woocommerce/tracks/build",
-				"node_modules/@woocommerce/tracks/build-module",
-				"node_modules/@woocommerce/tracks/build-types",
-				"package.json"
+				"node_modules/@woocommerce/data/build",
+				"node_modules/@woocommerce/data/build-module",
+				"node_modules/@woocommerce/data/build-types",
+				"node_modules/@woocommerce/eslint-plugin/configs",
+				"node_modules/@woocommerce/eslint-plugin/rules",
+				"node_modules/@woocommerce/eslint-plugin/index.js"
 			]
 		}
 	}
