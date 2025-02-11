@@ -81,7 +81,12 @@ class Products extends ControllerTestCase {
 		$response = rest_get_server()->dispatch( new \WP_REST_Request( 'GET', '/wc/store/v1/products/' . $this->products[2]->get_id() ) );
 		$data     = $response->get_data();
 
-		$grouped_product_ids = $this->products[2]->get_visible_child_ids();
+		$grouped_product_ids = array_map(
+			function ( $child ) {
+				return $child->get_id();
+			},
+			$this->products[2]->get_visible_children(),
+		);
 		$total_ids           = count( $grouped_product_ids );
 
 		$this->assertEquals( 200, $response->get_status() );
