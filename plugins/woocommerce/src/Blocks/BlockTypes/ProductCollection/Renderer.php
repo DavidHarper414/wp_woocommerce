@@ -114,7 +114,7 @@ class Renderer {
 	 * Enhances the Product Collection block with client-side pagination.
 	 *
 	 * This function identifies Product Collection blocks and adds necessary data attributes
-	 * to enable client-side navigation and animation effects. It also enqueues the Interactivity API runtime.
+	 * to enable client-side navigation. It also enqueues the Interactivity API runtime.
 	 *
 	 * @param string $block_content The HTML content of the block.
 	 * @param array  $block         Block details, including its attributes.
@@ -274,18 +274,10 @@ class Renderer {
 		}
 
 		/**
-		 * Add two div's:
-		 * 1. Pagination animation for visual users.
-		 * 2. Accessibility div for screen readers, to announce page load states.
+		 * Add accessibility div for screen readers, to announce page load states.
 		 */
 		$last_tag_position                = strripos( $block_content, '</div>' );
-		$accessibility_and_animation_html = '
-				<div
-					data-wp-interactive="woocommerce/product-collection"
-					class="wc-block-product-collection__pagination-animation"
-					data-wp-class--start-animation="state.startAnimation"
-					data-wp-class--finish-animation="state.finishAnimation">
-				</div>
+		$accessibility_html = '
 				<div
 					data-wp-interactive="woocommerce/product-collection"
 					class="screen-reader-text"
@@ -295,7 +287,7 @@ class Renderer {
 			';
 		return substr_replace(
 			$block_content,
-			$accessibility_and_animation_html,
+			$accessibility_html,
 			$last_tag_position,
 			0
 		);

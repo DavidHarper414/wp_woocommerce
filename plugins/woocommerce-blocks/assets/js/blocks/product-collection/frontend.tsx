@@ -17,7 +17,6 @@ export type ProductCollectionStoreContext = {
 	// Available on the <li/> product element and deeper
 	productId?: number;
 	isPrefetchNextOrPreviousLink: boolean;
-	animation: 'start' | 'finish';
 	accessibilityMessage: string;
 	accessibilityLoadingMessage: string;
 	accessibilityLoadedMessage: string;
@@ -86,20 +85,6 @@ function scrollToFirstProductIfNotVisible( wpRouterRegionId?: string ) {
 }
 
 const productCollectionStore = {
-	state: {
-		get startAnimation() {
-			return (
-				getContext< ProductCollectionStoreContext >().animation ===
-				'start'
-			);
-		},
-		get finishAnimation() {
-			return (
-				getContext< ProductCollectionStoreContext >().animation ===
-				'finish'
-			);
-		},
-	},
 	actions: {
 		*navigate( event: MouseEvent ) {
 			const { ref } = getElement();
@@ -123,20 +108,11 @@ const productCollectionStore = {
 			if ( isValidLink( ref ) && isValidEvent( event ) ) {
 				event.preventDefault();
 
-				// Don't start animation if it doesn't take long to navigate.
-				const timeout = setTimeout( () => {
-					ctx.accessibilityMessage = ctx.accessibilityLoadingMessage;
-					ctx.animation = 'start';
-				}, 400 );
-
 				const { actions } = yield import(
 					'@wordpress/interactivity-router'
 				);
 
 				yield actions.navigate( ref.href );
-
-				// Clear the timeout if the navigation is fast.
-				clearTimeout( timeout );
 
 				// Announce that the page has been loaded. If the message is the
 				// same, we use a no-break space similar to the @wordpress/a11y
@@ -148,7 +124,6 @@ const productCollectionStore = {
 						? '\u00A0'
 						: '' );
 
-				ctx.animation = 'finish';
 				ctx.isPrefetchNextOrPreviousLink = !! ref.href;
 
 				scrollToFirstProductIfNotVisible( wpRouterRegion );
