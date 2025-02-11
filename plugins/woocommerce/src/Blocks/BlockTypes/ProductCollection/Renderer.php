@@ -249,7 +249,7 @@ class Renderer {
 		// Add `data-wp-navigation-id to the product collection block.
 		if ( $this->is_next_tag_product_collection( $p ) && isset( $this->parsed_block ) ) {
 			$p->set_attribute(
-				'data-wp-navigation-id',
+				'data-wp-router-region',
 				'wc-product-collection-' . $this->parsed_block['attrs']['queryId']
 			);
 			$current_context = json_decode( $p->get_attribute( 'data-wp-context' ) ?? '{}', true );

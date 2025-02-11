@@ -50,14 +50,14 @@ const forcePageReload = ( href: string ) => {
  * Ensures the visibility of the first product in the collection.
  * Scrolls the page to the first product if it's not in the viewport.
  *
- * @param {string} wcNavigationId Unique ID for each Product Collection block on page/post.
+ * @param {string} wpRouterRegionId Unique ID for each Product Collection block on page/post.
  */
-function scrollToFirstProductIfNotVisible( wcNavigationId?: string ) {
-	if ( ! wcNavigationId ) {
+function scrollToFirstProductIfNotVisible( wpRouterRegionId?: string ) {
+	if ( ! wpRouterRegionId ) {
 		return;
 	}
 
-	const productSelector = `[data-wp-router-region=${ wcNavigationId }] .wc-block-product-template .wc-block-product`;
+	const productSelector = `[data-wp-router-region=${ wpRouterRegionId }] .wc-block-product-template .wc-block-product`;
 	const product = document.querySelector( productSelector );
 	if ( product ) {
 		const rect = product.getBoundingClientRect();
@@ -97,14 +97,19 @@ const productCollectionStore = {
 	},
 	actions: {
 		*navigate( event: MouseEvent ) {
-			const ctx = getContext< ProductCollectionStoreContext >();
 			const { ref } = getElement();
-			const wcNavigationId = (
+
+			if ( ! ref ) {
+				return;
+			}
+
+			const ctx = getContext< ProductCollectionStoreContext >();
+			const dataset = (
 				ref?.closest( '[data-wp-router-region]' ) as HTMLDivElement
-			 )?.dataset?.wcNavigationId;
-			const isDisabled = (
-				ref?.closest( '[data-wp-router-region]' ) as HTMLDivElement
-			 )?.dataset.wcNavigationDisabled;
+			 )?.dataset;
+
+			const wpRouterRegionId = dataset?.wpRouterRegionId;
+			const isDisabled = dataset?.wcNavigationDisabled;
 
 			if ( isDisabled ) {
 				yield forcePageReload( ref.href );
@@ -141,7 +146,7 @@ const productCollectionStore = {
 				ctx.animation = 'finish';
 				ctx.isPrefetchNextOrPreviousLink = !! ref.href;
 
-				scrollToFirstProductIfNotVisible( wcNavigationId );
+				scrollToFirstProductIfNotVisible( wpRouterRegionId );
 
 				triggerProductListRenderedEvent( {
 					collection: ctx.collection,
