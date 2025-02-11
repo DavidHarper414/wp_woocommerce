@@ -16,6 +16,9 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { registerPlugin } from '@wordpress/plugins';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
 import { getNewPath } from '@woocommerce/navigation';
+import interpolateComponents from '@automattic/interpolate-components';
+import { Link } from '@woocommerce/components';
+import { getAdminLink } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -231,6 +234,34 @@ const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 					} ) }
 				</Card>
 			) }
+			<Text
+				as="div"
+				className="woocommerce-task-dashboard__container woocommerce-task-marketplace-link"
+			>
+				{ interpolateComponents( {
+					mixedString: __(
+						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your products with additional marketing solutions.',
+						'woocommerce'
+					),
+					components: {
+						sbLink: (
+							<Link
+								onClick={ () => {
+									recordEvent(
+										'tasklist_marketing_visit_marketplace_click'
+									);
+									window.location.href = getAdminLink(
+										'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=marketing-extensions'
+									);
+									return false;
+								} }
+								href=""
+								type="wc-admin"
+							/>
+						),
+					},
+				} ) }
+			</Text>
 		</div>
 	);
 };
