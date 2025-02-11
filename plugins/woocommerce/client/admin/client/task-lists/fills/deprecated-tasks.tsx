@@ -9,27 +9,38 @@ import {
 	TaskType,
 	DeprecatedTaskType,
 } from '@woocommerce/data';
-import { useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
-import { getAdminSetting } from '~/utils/admin-settings';
+import { isTaskListCompletedOrHidden } from '~/hooks/use-tasklists-state';
 
 type MergedTask = TaskType | DeprecatedTaskType;
 
 const DeprecatedWooOnboardingTaskFills = () => {
-	const [ deprecatedTasks, setDeprecatedTasks ] = useState< MergedTask[] >(
-		[]
-	);
-	const { isResolving, taskLists } = useSelect( ( select ) => {
-		const visibleTaskListIds = getAdminSetting( 'visibleTaskListIds', [] );
+	const { isResolving, deprecatedTasks } = useSelect( ( select ) => {
+		// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
+		const taskLists = select( ONBOARDING_STORE_NAME ).getTaskLists();
 
-		if ( visibleTaskListIds.length === 0 ) {
+		if ( ! taskLists || taskLists.length === 0 ) {
 			return {
 				isResolving: false,
-				taskLists: [],
+				deprecatedTasks: [],
 			};
+		}
+
+		const deprecatedTasksWithContainer: MergedTask[] = [];
+		for ( const tasklist of taskLists ) {
+			for ( const task of tasklist.tasks ) {
+				if (
+					'isDeprecated' in task &&
+					task.isDeprecated &&
+					'container' in task &&
+					task.container
+				) {
+					deprecatedTasksWithContainer.push( task );
+				}
+			}
 		}
 
 		return {
@@ -37,33 +48,14 @@ const DeprecatedWooOnboardingTaskFills = () => {
 			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
 				'getTaskLists'
 			),
-			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-			taskLists: select( ONBOARDING_STORE_NAME ).getTaskLists(),
+			deprecatedTasks: deprecatedTasksWithContainer,
 		};
 	}, [] );
-
-	useEffect( () => {
-		if ( taskLists && taskLists.length > 0 ) {
-			const deprecatedTasksWithContainer: MergedTask[] = [];
-			for ( const tasklist of taskLists ) {
-				for ( const task of tasklist.tasks ) {
-					if (
-						'isDeprecated' in task &&
-						task.isDeprecated &&
-						'container' in task &&
-						task.container
-					) {
-						deprecatedTasksWithContainer.push( task );
-					}
-				}
-			}
-			setDeprecatedTasks( deprecatedTasksWithContainer );
-		}
-	}, [ taskLists ] );
 
 	if ( isResolving ) {
 		return null;
 	}
+
 	return (
 		<>
 			{ deprecatedTasks.map( ( task ) => (
@@ -80,5 +72,15 @@ const DeprecatedWooOnboardingTaskFills = () => {
 
 registerPlugin( 'wc-admin-deprecated-task-container', {
 	scope: 'woocommerce-tasks',
-	render: () => <DeprecatedWooOnboardingTaskFills />,
+	render: () => {
+		if (
+			isTaskListCompletedOrHidden( 'setup' ) &&
+			isTaskListCompletedOrHidden( 'extended' )
+		) {
+			// Early return if the setup and extended task lists are completed or hidden
+			return null;
+		}
+
+		return <DeprecatedWooOnboardingTaskFills />;
+	},
 } );

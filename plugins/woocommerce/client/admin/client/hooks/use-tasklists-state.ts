@@ -12,6 +12,12 @@ import {
  */
 import { getAdminSetting } from '~/utils/admin-settings';
 
+// TODO: replace this with the actual selectors when @woocommerce/data types are updated.
+type Selectors = {
+	getTaskList: ( taskListId: string ) => TaskListType;
+	hasFinishedResolution: ( action: string ) => boolean;
+};
+
 /**
  * Get the number of things to do next
  *
@@ -32,24 +38,45 @@ function getThingsToDoNextCount( extendedTaskList: TaskListType ) {
 }
 
 /**
+ * Check if a task list is visible
+ *
+ * @param {string} taskListId The ID of the task list to check
+ * @return {boolean} True if the task list is visible, false otherwise
+ */
+export const isTaskListVisible = ( taskListId: string ) =>
+	getAdminSetting( 'visibleTaskListIds', [] ).includes( taskListId );
+
+/**
+ * Check if a task list is completed
+ *
+ * @param {string} taskListId The ID of the task list to check
+ * @return {boolean} True if the task list is completed, false otherwise
+ */
+export const isTaskListCompleted = ( taskListId: string ) =>
+	getAdminSetting( 'completedTaskListIds', [] ).includes( taskListId );
+
+/**
+ * Check if a task list is completed or hidden
+ *
+ * @param {string} taskListId The ID of the task list to check
+ * @return {boolean} True if the task list is completed or hidden, false otherwise
+ */
+export const isTaskListCompletedOrHidden = ( taskListId: string ) =>
+	isTaskListCompleted( taskListId ) || ! isTaskListVisible( taskListId );
+
+/**
  * Get default state values when task lists are not visible
  *
  * @return {Object} Default state values
  */
 const getDefaultState = () => ( {
 	requestingTaskListOptions: false,
-	setupTaskListHidden: true,
-	setupTaskListComplete: null,
-	setupTasksCount: null,
-	setupTasksCompleteCount: null,
-	thingsToDoNextCount: null,
+	setupTaskListHidden: ! isTaskListVisible( 'setup' ),
+	setupTaskListComplete: isTaskListCompleted( 'setup' ),
+	setupTasksCount: undefined,
+	setupTasksCompleteCount: undefined,
+	thingsToDoNextCount: undefined,
 } );
-
-// TODO: replace this with the actual selectors when @woocommerce/data types are updated.
-type Selectors = {
-	getTaskList: ( taskListId: string ) => TaskListType;
-	hasFinishedResolution: ( action: string ) => boolean;
-};
 
 /**
  * Get setup task list related states
@@ -90,33 +117,6 @@ const getExtendedTaskListState = ( selectors: Selectors ) => {
 };
 
 /**
- * Check if a task list is visible
- *
- * @param {string} taskListId The ID of the task list to check
- * @return {boolean} True if the task list is visible, false otherwise
- */
-export const isTaskListVisible = ( taskListId: string ) =>
-	getAdminSetting( 'visibleTaskListIds', [] ).includes( taskListId );
-
-/**
- * Check if a task list is completed
- *
- * @param {string} taskListId The ID of the task list to check
- * @return {boolean} True if the task list is completed, false otherwise
- */
-export const isTaskListCompleted = ( taskListId: string ) =>
-	getAdminSetting( 'completedTaskListIds', [] ).includes( taskListId );
-
-/**
- * Check if a task list is completed or hidden
- *
- * @param {string} taskListId The ID of the task list to check
- * @return {boolean} True if the task list is completed or hidden, false otherwise
- */
-export const isTaskListCompletedOrHidden = ( taskListId: string ) =>
-	isTaskListCompleted( taskListId ) || ! isTaskListVisible( taskListId );
-
-/**
  * Hook to get task list states
  *
  * This will only return the state for the task list that is currently visible.
@@ -134,9 +134,9 @@ export const useTaskListsState = (
 	}
 ) => {
 	const shouldGetSetupTaskList =
-		setupTasklist && isTaskListVisible( 'setup' );
+		setupTasklist && ! isTaskListCompletedOrHidden( 'setup' );
 	const shouldGetExtendedTaskList =
-		extendedTaskList && isTaskListVisible( 'extended' );
+		extendedTaskList && ! isTaskListCompletedOrHidden( 'extended' );
 
 	return useSelect(
 		( select ) => {
