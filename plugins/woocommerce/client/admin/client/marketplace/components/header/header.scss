@@ -23,8 +23,9 @@
 		padding: 0;
 	}
 
-	.woocommerce-marketplace__header-title-container {
-		grid-area: mktpl-title;
+	.woocommerce-marketplace__header-title {
+		font-size: 14px;
+		font-weight: 600;
 		margin: 0;
 		padding: 10px 0 0;
 
@@ -32,14 +33,6 @@
 			padding-left: var(--large-gap);
 		}
 
-		.woocommerce-marketplace__header-title {
-			font-size: 16px;
-			font-weight: 600;
-		}
-
-		.woocommerce-marketplace__header-subtitle {
-			margin: 0;
-		}
 	}
 }
 
@@ -55,6 +48,7 @@
 	align-items: center;
 	align-self: stretch;
 	display: flex;
+	grid-area: mktpl-title;
 	line-height: 18px;
 
 	@media screen and (max-width: $breakpoint-medium) {
