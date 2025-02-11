@@ -41,8 +41,8 @@ const stateReducer = < ItemType extends Item >(
 		actionAndChanges as UseSelectStateChangeOptionsProps< ItemType | null >; // Cast to the extended type
 
 	const { changes, type, props } = extendedAction;
-	const { items } = props;
 	const { selectedItem } = state;
+	const { items, refs } = props;
 
 	switch ( type ) {
 		case useSelect.stateChangeTypes.ItemClick:
@@ -80,10 +80,20 @@ const stateReducer = < ItemType extends Item >(
 			};
 		case useSelect.stateChangeTypes.ToggleButtonBlur:
 			// This is triggered when the input is focused.
-			return {
-				...changes,
-				isOpen: true, // Keep menu open on toggle button blur (triggered by input focus).
-			};
+			const searchRef = refs?.searchRef;
+
+			// Check if the new focused element is our search input
+			const isSearchFocused =
+				searchRef?.current?.ownerDocument?.activeElement?.classList?.contains(
+					'components-country-select-control__search--input'
+				);
+			if ( isSearchFocused ) {
+				return {
+					...state, // Maintain current state
+					isOpen: true, // Keep menu open
+				};
+			}
+			return changes; // Default blur behavior for other cases
 		default:
 			return changes;
 	}
