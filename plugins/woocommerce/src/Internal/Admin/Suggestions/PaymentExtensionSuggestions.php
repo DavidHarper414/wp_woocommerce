@@ -1844,6 +1844,8 @@ class PaymentExtensionSuggestions {
 	 *              Defaults to true if there is no specific logic for the extension.
 	 */
 	private function is_extension_allowed( string $extension_id, string $country_code, string $context = '' ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		// Add per-extension exclusion logic here.
+		// Returning true for now to avoid excluding any extensions.
 		return true;
 	}
 
