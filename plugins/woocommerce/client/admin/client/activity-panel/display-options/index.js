@@ -11,7 +11,7 @@ import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import {
 	useUserPreferences,
-	ONBOARDING_STORE_NAME,
+	onboardingStore,
 	OPTIONS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -54,7 +54,7 @@ export const DisplayOptions = () => {
 	const { defaultHomescreenLayout, taskListComplete, isTaskListHidden } =
 		useSelect( ( select ) => {
 			const { getOption } = select( OPTIONS_STORE_NAME );
-			const { getTaskList } = select( ONBOARDING_STORE_NAME );
+			const { getTaskList } = select( onboardingStore );
 			const taskList = getTaskList( 'setup' );
 
 			return {
