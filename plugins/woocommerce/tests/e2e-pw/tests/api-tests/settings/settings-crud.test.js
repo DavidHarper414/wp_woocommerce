@@ -7,7 +7,6 @@ const {
 const { setOption } = require( '../../../utils/options' );
 
 const { BASE_URL } = process.env;
-const shouldSkip = ! BASE_URL.includes( 'localhost' );
 
 const {
 	countries,
@@ -1787,45 +1786,37 @@ test.describe( 'Settings API tests: CRUD', () => {
 			expect( response.status() ).toEqual( 200 );
 			expect( Array.isArray( responseJSON ) ).toBe( true );
 
-			// not present in external host
-			// eslint-disable-next-line playwright/no-conditional-in-test
-			if ( ! shouldSkip ) {
-				expect( responseJSON ).toEqual(
-					expect.arrayContaining( [
-						expect.objectContaining( {
-							id: 'woocommerce_cart_page_id',
-							label: 'Cart page',
-							description:
-								'Page where shoppers review their shopping cart',
-							type: 'select',
-							default: '',
-							tip: 'Page where shoppers review their shopping cart',
-							value: expect.any( String ),
-							options: expect.any( Object ),
-						} ),
-					] )
-				);
-			}
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_cart_page_id',
+						label: 'Cart page',
+						description:
+							'Page where shoppers review their shopping cart',
+						type: 'select',
+						default: '',
+						tip: 'Page where shoppers review their shopping cart',
+						value: expect.any( String ),
+						options: expect.any( Object ),
+					} ),
+				] )
+			);
 
-			// not present in external host
-			// eslint-disable-next-line playwright/no-conditional-in-test
-			if ( ! shouldSkip ) {
-				expect( responseJSON ).toEqual(
-					expect.arrayContaining( [
-						expect.objectContaining( {
-							id: 'woocommerce_checkout_page_id',
-							label: 'Checkout page',
-							description:
-								'Page where shoppers go to finalize their purchase',
-							type: 'select',
-							default: expect.any( Number ),
-							tip: 'Page where shoppers go to finalize their purchase',
-							value: expect.any( String ),
-							options: expect.any( Object ),
-						} ),
-					] )
-				);
-			}
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_checkout_page_id',
+						label: 'Checkout page',
+						description:
+							'Page where shoppers go to finalize their purchase',
+						type: 'select',
+						default: expect.any( Number ),
+						tip: 'Page where shoppers go to finalize their purchase',
+						value: expect.any( String ),
+						options: expect.any( Object ),
+					} ),
+				] )
+			);
 
 			expect( responseJSON ).toEqual(
 				expect.arrayContaining( [
