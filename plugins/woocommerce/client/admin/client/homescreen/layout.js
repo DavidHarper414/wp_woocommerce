@@ -76,7 +76,9 @@ export const Layout = ( {
 		isTaskListCompletedOrHidden( 'setup' );
 	const shouldShowStoreLinks = isSetupTaskListCompleteOrHidden;
 	const shouldShowWCPayFeature = isSetupTaskListCompleteOrHidden;
-	const isDashboardShown = Object.keys( query ).length > 0 && ! query.task; // ?&task=<x> query param is used to show tasks instead of the homescreen
+	const isTaskScreen =
+		hasTaskList && Object.keys( query ).length > 0 && !! query.task;
+	const isDashboardShown = ! isTaskScreen; // ?&task=<x> query param is used to show tasks instead of the homescreen
 	const twoColumns = hasTwoColumnLayout(
 		userPrefs.homepage_layout,
 		defaultHomescreenLayout,
