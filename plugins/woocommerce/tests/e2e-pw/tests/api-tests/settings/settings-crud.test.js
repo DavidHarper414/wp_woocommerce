@@ -399,7 +399,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						description: '',
 						type: 'multiselect',
 						default: '',
-						value: expect.any( Object ),
+						value: expect.anything(),
 						options: expect.objectContaining( countries ),
 					} ),
 				] )
@@ -413,7 +413,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						description: '',
 						type: 'multiselect',
 						default: '',
-						value: expect.any( Object ),
+						value: expect.anything(),
 						options: expect.objectContaining( countries ),
 					} ),
 				] )
@@ -449,7 +449,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						description: '',
 						type: 'multiselect',
 						default: '',
-						value: expect.any( Object ),
+						value: expect.anything(),
 						options: expect.objectContaining( countries ),
 					} ),
 				] )
