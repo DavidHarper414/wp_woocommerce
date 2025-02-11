@@ -9,6 +9,7 @@
 use Automattic\Jetpack\Constants;
 use Automattic\WooCommerce\Admin\Notes\Notes;
 use Automattic\WooCommerce\Enums\ProductType;
+use Automattic\WooCommerce\Internal\BackInStockNotifications;
 use Automattic\WooCommerce\Internal\TransientFiles\TransientFilesEngine;
 use Automattic\WooCommerce\Internal\DataStores\Orders\{ CustomOrdersTableController, DataSynchronizer, OrdersTableDataStore };
 use Automattic\WooCommerce\Internal\Features\FeaturesController;
@@ -1521,6 +1522,10 @@ class WC_Install {
 			self::should_enable_hpos_for_new_shop();
 		$hpos_table_schema  = $hpos_enabled ? wc_get_container()->get( OrdersTableDataStore::class )->get_database_schema() : '';
 
+		// Back In Stock Notifications db tables schema.
+		$bis_enabled = BackInStockNotifications::is_enabled();
+		$bis_table_schema = $bis_enabled ? WC_BIS_Install::get_schema() : '';
+
 		$tables = "
 CREATE TABLE {$wpdb->prefix}woocommerce_sessions (
   session_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1867,6 +1872,7 @@ CREATE TABLE {$wpdb->prefix}wc_category_lookup (
 	PRIMARY KEY (category_tree_id,category_id)
 ) $collate;
 $hpos_table_schema;
+$bis_table_schema;
 		";
 
 		return $tables;
