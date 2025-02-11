@@ -248,12 +248,12 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 					// Add custom views for sectionend.
 					if ( 'sectionend' === $section_setting['type'] && ! empty( $section_setting['id'] ) ) {
 						$custom_section_end_view = $this->get_custom_view( 'woocommerce_settings_' . $section_setting['id'] . '_end' );
-						
+
 						if ( ! empty( $custom_section_end_view ) ) {
 							$section_settings_data[] = $this->get_custom_view_object( $custom_section_end_view );
 						}
 						$custom_section_after_view = $this->get_custom_view( 'woocommerce_settings_' . $section_setting['id'] . '_after' );
-						
+
 						if ( ! empty( $custom_section_after_view ) ) {
 							$section_settings_data[] = $this->get_custom_view_object( $custom_section_after_view );
 						}
@@ -264,7 +264,7 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 					// Add custom views for title.
 					if ( 'title' === $section_setting['type'] && ! empty( $section_setting['id'] ) ) {
 						$custom_title_view = $this->get_custom_view( 'woocommerce_settings_' . $section_setting['id'] );
-						
+
 						if ( ! empty( $custom_title_view ) ) {
 							$section_settings_data[] = $this->get_custom_view_object( $custom_title_view );
 						}
