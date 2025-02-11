@@ -46,12 +46,9 @@ class SetSiteOptions extends Step {
 					'type' => 'string',
 					'enum' => array( static::get_step_name() ),
 				),
-				'options' => array(
-					'type'                 => 'object',
-					'additionalProperties' => new \stdClass(),
-				),
+
 			),
-			'required'   => array( 'step', 'options' ),
+			'required'   => array( 'step'  ),
 		);
 	}
 
