@@ -14,6 +14,7 @@ import { controls as sharedControls } from '../shared-controls';
 import * as selectors from './selectors';
 import { pushChanges } from '../checkout/push-changes';
 
+export const PAYMENT_STORE_KEY = STORE_KEY;
 export const config = {
 	reducer,
 	selectors,
@@ -24,8 +25,6 @@ export const config = {
 };
 
 export const store = createReduxStore( STORE_KEY, config );
+export type PaymentStoreDescriptor = typeof store;
 register( store );
-
 subscribe( pushChanges, store );
-
-export const PAYMENT_STORE_KEY = STORE_KEY;

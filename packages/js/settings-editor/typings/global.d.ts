@@ -28,6 +28,7 @@ declare global {
 			| 'slotfill_placeholder';
 		id: string;
 		desc?: string;
+		description?: string;
 		desc_tip?: boolean | string;
 		default?: string | number | boolean | object;
 		value: string | number | boolean | object;
@@ -73,12 +74,22 @@ declare global {
 		settings: CheckboxSettingsField[];
 	}
 
+	interface InfoSettingsField {
+		id: string;
+		title: string;
+		type: 'info';
+		text: string;
+		row_class?: string;
+		css?: string;
+	}
+
 	type SettingsField =
 		| BaseSettingsField
 		| CustomSettingsField
 		| GroupSettingsField
 		| CheckboxGroupSettingsField
-		| CheckboxSettingsField;
+		| CheckboxSettingsField
+		| InfoSettingsField;
 
 	interface SettingsSection {
 		label: string;
@@ -93,10 +104,17 @@ declare global {
 			[ key: string ]: SettingsSection;
 		};
 		is_modern: boolean;
+		start?: CustomSettingsField;
+		end?: CustomSettingsField;
+	}
+
+	interface SettingsPages {
+		[ key: string ]: SettingsPage;
 	}
 
 	interface SettingsData {
-		[ key: string ]: SettingsPage;
+		start?: CustomSettingsField;
+		pages: SettingsPages;
 	}
 }
 
