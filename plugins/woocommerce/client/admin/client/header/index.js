@@ -30,7 +30,7 @@ import {
 	OrderAttributionInstallBanner,
 	BANNER_TYPE_HEADER as ORDER_ATTRIBUTION_INSTALL_BANNER_TYPE_HEADER,
 } from '~/order-attribution-install-banner';
-import { isTaskListCompletedOrHidden } from '~/hooks/use-tasklists-state';
+import { isTaskListActive } from '~/hooks/use-tasklists-state';
 
 export const PAGE_TITLE_FILTER = 'woocommerce_admin_header_page_title';
 
@@ -142,8 +142,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	);
 
 	const showReminderBar = Boolean(
-		! isTaskListCompletedOrHidden( 'setup' ) &&
-			! isReactifyPaymentsSettingsScreen
+		isTaskListActive( 'setup' ) && ! isReactifyPaymentsSettingsScreen
 	);
 
 	return (

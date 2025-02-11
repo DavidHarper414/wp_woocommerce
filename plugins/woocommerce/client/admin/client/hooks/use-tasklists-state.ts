@@ -56,13 +56,13 @@ export const isTaskListCompleted = ( taskListId: string ) =>
 	getAdminSetting( 'completedTaskListIds', [] ).includes( taskListId );
 
 /**
- * Check if a task list is completed or hidden
+ * Check if a task list is active (visible and not completed)
  *
  * @param {string} taskListId The ID of the task list to check
- * @return {boolean} True if the task list is completed or hidden, false otherwise
+ * @return {boolean} True if the task list is active, false otherwise
  */
-export const isTaskListCompletedOrHidden = ( taskListId: string ) =>
-	isTaskListCompleted( taskListId ) || ! isTaskListVisible( taskListId );
+export const isTaskListActive = ( taskListId: string ) =>
+	isTaskListVisible( taskListId ) && ! isTaskListCompleted( taskListId );
 
 /**
  * Get default state values when task lists are not visible
@@ -133,10 +133,9 @@ export const useTaskListsState = (
 		extendedTaskList: true,
 	}
 ) => {
-	const shouldGetSetupTaskList =
-		setupTasklist && ! isTaskListCompletedOrHidden( 'setup' );
+	const shouldGetSetupTaskList = setupTasklist && isTaskListActive( 'setup' );
 	const shouldGetExtendedTaskList =
-		extendedTaskList && ! isTaskListCompletedOrHidden( 'extended' );
+		extendedTaskList && isTaskListActive( 'extended' );
 
 	return useSelect(
 		( select ) => {

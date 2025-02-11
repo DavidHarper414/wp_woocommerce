@@ -13,7 +13,7 @@ import {
 /**
  * Internal dependencies
  */
-import { isTaskListCompletedOrHidden } from '~/hooks/use-tasklists-state';
+import { isTaskListActive } from '~/hooks/use-tasklists-state';
 
 type MergedTask = TaskType | DeprecatedTaskType;
 
@@ -73,14 +73,10 @@ const DeprecatedWooOnboardingTaskFills = () => {
 registerPlugin( 'wc-admin-deprecated-task-container', {
 	scope: 'woocommerce-tasks',
 	render: () => {
-		if (
-			isTaskListCompletedOrHidden( 'setup' ) &&
-			isTaskListCompletedOrHidden( 'extended' )
-		) {
-			// Early return if the setup and extended task lists are completed or hidden
-			return null;
+		if ( isTaskListActive( 'setup' ) || isTaskListActive( 'extended' ) ) {
+			return <DeprecatedWooOnboardingTaskFills />;
 		}
 
-		return <DeprecatedWooOnboardingTaskFills />;
+		return null;
 	},
 } );

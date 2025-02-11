@@ -39,7 +39,7 @@ import { WooHomescreenHeaderBanner } from './header-banner-slot';
 import { WooHomescreenWCPayFeature } from './wcpay-feature-slot';
 import {
 	isTaskListVisible,
-	isTaskListCompletedOrHidden,
+	isTaskListActive,
 } from '~/hooks/use-tasklists-state';
 
 const TaskLists = lazy( () =>
@@ -53,10 +53,10 @@ const TaskLists = lazy( () =>
 export const hasTwoColumnLayout = (
 	userPrefLayout,
 	defaultHomescreenLayout,
-	isSetupTaskListCompleteOrHidden
+	isSetupTaskListActive
 ) => {
 	const hasTwoColumnContent =
-		isSetupTaskListCompleteOrHidden || window.wcAdminFeatures.analytics;
+		! isSetupTaskListActive || window.wcAdminFeatures.analytics;
 
 	return (
 		( userPrefLayout || defaultHomescreenLayout ) === 'two_columns' &&
@@ -73,15 +73,14 @@ export const Layout = ( {
 } ) => {
 	const userPrefs = useUserPreferences();
 
-	const isSetupTaskListCompleteOrHidden =
-		isTaskListCompletedOrHidden( 'setup' );
+	const isSetupTaskListActive = isTaskListActive( 'setup' );
 	const isTaskScreen =
 		hasTaskList && Object.keys( query ).length > 0 && !! query.task;
 	const isDashboardShown = ! isTaskScreen; // ?&task=<x> query param is used to show tasks instead of the homescreen
 	const twoColumns = hasTwoColumnLayout(
 		userPrefs.homepage_layout,
 		defaultHomescreenLayout,
-		isSetupTaskListCompleteOrHidden
+		isSetupTaskListActive
 	);
 
 	const isWideViewport = useRef( true );
@@ -128,9 +127,7 @@ export const Layout = ( {
 							) }
 						/>
 					) }
-					{ isSetupTaskListCompleteOrHidden && (
-						<WooHomescreenWCPayFeature />
-					) }
+					{ ! isSetupTaskListActive && <WooHomescreenWCPayFeature /> }
 					{ ! isTaskListVisible( 'setup' ) && <ActivityPanel /> }
 					{ hasTaskList && renderTaskList() }
 					<Promotions format="promo-card" />
@@ -138,9 +135,7 @@ export const Layout = ( {
 				</Column>
 				<Column shouldStick={ shouldStickColumns }>
 					{ window.wcAdminFeatures.analytics && <StatsOverview /> }
-					{ isSetupTaskListCompleteOrHidden && (
-						<StoreManagementLinks />
-					) }
+					{ ! isSetupTaskListActive && <StoreManagementLinks /> }
 				</Column>
 			</>
 		);
