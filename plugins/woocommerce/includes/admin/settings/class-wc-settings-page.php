@@ -211,9 +211,8 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 				'is_modern' => $this->is_modern,
 			);
 
-
 			$pages[ $this->id ]['start'] = $this->get_custom_view( 'woocommerce_before_settings_' . $this->id );
-			$pages[ $this->id ]['end'] = $this->get_custom_view( 'woocommerce_after_settings_' . $this->id );
+			$pages[ $this->id ]['end']   = $this->get_custom_view( 'woocommerce_after_settings_' . $this->id );
 
 			return $pages;
 		}
@@ -247,7 +246,7 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 
 					// Add custom views for title.
 					if ( 'title' === $section_setting['type'] && ! empty( $section_setting['id'] ) ) {
-						$section_settings_data[] =  $this->get_custom_view( 'woocommerce_settings_' . $section_setting['id'] );
+						$section_settings_data[] = $this->get_custom_view( 'woocommerce_settings_' . $section_setting['id'] );
 					}
 				}
 			}
