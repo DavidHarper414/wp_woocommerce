@@ -24,6 +24,11 @@ export type ProductCollectionStoreContext = {
 	collection: CoreCollectionNames;
 };
 
+const datasetKeys = {
+	wpRouterRegion: 'wpRouterRegion',
+	wpNavigationDisabled: 'wpNavigationDisabled',
+};
+
 const isValidLink = ( ref: HTMLAnchorElement ) =>
 	ref &&
 	ref instanceof window.HTMLAnchorElement &&
@@ -108,8 +113,8 @@ const productCollectionStore = {
 				ref?.closest( '[data-wp-router-region]' ) as HTMLDivElement
 			 )?.dataset;
 
-			const wpRouterRegionId = dataset?.wpRouterRegionId;
-			const isDisabled = dataset?.wcNavigationDisabled;
+			const wpRouterRegion = dataset?.[ datasetKeys.wpRouterRegion ];
+			const isDisabled = dataset?.[ datasetKeys.wpNavigationDisabled ];
 
 			if ( isDisabled ) {
 				yield forcePageReload( ref.href );
@@ -146,7 +151,7 @@ const productCollectionStore = {
 				ctx.animation = 'finish';
 				ctx.isPrefetchNextOrPreviousLink = !! ref.href;
 
-				scrollToFirstProductIfNotVisible( wpRouterRegionId );
+				scrollToFirstProductIfNotVisible( wpRouterRegion );
 
 				triggerProductListRenderedEvent( {
 					collection: ctx.collection,
@@ -162,7 +167,7 @@ const productCollectionStore = {
 
 			const isDisabled = (
 				ref?.closest( '[data-wp-router-region]' ) as HTMLDivElement
-			 )?.dataset.wcNavigationDisabled;
+			 )?.dataset[ datasetKeys.wpNavigationDisabled ];
 
 			if ( isDisabled ) {
 				return;
@@ -193,7 +198,7 @@ const productCollectionStore = {
 			const { ref } = getElement();
 			const isDisabled = (
 				ref?.closest( '[data-wp-router-region]' ) as HTMLDivElement
-			 )?.dataset.wcNavigationDisabled;
+			 )?.dataset[ datasetKeys.wpNavigationDisabled ];
 
 			if ( isDisabled ) {
 				return;
