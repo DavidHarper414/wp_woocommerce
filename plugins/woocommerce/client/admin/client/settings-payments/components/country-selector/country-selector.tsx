@@ -195,8 +195,8 @@ export const CountrySelector = < ItemType extends Item >( {
 		[ menuRef ]
 	);
 
-	const getSearchSuffix = ( focused: boolean ) => {
-		if ( focused ) {
+	const getSearchSuffix = ( hasContent: boolean ) => {
+		if ( hasContent ) {
 			return (
 				<img
 					src={ WC_ASSET_URL + 'images/icons/clear.svg' }
