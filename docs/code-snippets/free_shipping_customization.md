@@ -24,7 +24,7 @@ Add this code to your child theme's `functions.php`, or via a plugin that allows
 
 ### How do I only show Free Shipping?
 
-The following snippet will hide all other shipping methods if Free Shipping available for the customer.
+The following snippet will hide all other shipping methods if Free Shipping is available for the customer.
 
 ```php
 /**
