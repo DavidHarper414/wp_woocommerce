@@ -12,11 +12,25 @@ import { DataForm } from '@wordpress/dataviews';
 import { useSettingsForm } from '../hooks/use-settings-form';
 import { CustomView } from '../components/custom-view';
 
-const Form = ( { settings }: { settings: SettingsField[] } ) => {
+const Form = ( {
+	settings,
+	settingsData,
+	settingsPage,
+}: {
+	settings: SettingsField[];
+	settingsData: SettingsData;
+	settingsPage: SettingsPage;
+} ) => {
 	const { data, fields, form, updateField } = useSettingsForm( settings );
 
 	return (
 		<form id="mainform">
+			{ settingsData.start && (
+				<CustomView html={ settingsData.start.content } />
+			) }
+			{ settingsPage.start && (
+				<CustomView html={ settingsPage.start.content } />
+			) }
 			<div className="woocommerce-settings-content">
 				<DataForm
 					fields={ fields }
@@ -30,6 +44,9 @@ const Form = ( { settings }: { settings: SettingsField[] } ) => {
 					{ __( 'Save', 'woocommerce' ) }
 				</Button>
 			</div>
+			{ settingsPage.end && (
+				<CustomView html={ settingsPage.end.content } />
+			) }
 		</form>
 	);
 };
@@ -51,16 +68,11 @@ export const LegacyContent = ( {
 
 	return (
 		<>
-			{ settingsData.start && (
-				<CustomView html={ settingsData.start.content } />
-			) }
-			{ settingsPage.start && (
-				<CustomView html={ settingsPage.start.content } />
-			) }
-			<Form settings={ section.settings } />
-			{ settingsPage.end && (
-				<CustomView html={ settingsPage.end.content } />
-			) }
+			<Form
+				settings={ section.settings }
+				settingsData={ settingsData }
+				settingsPage={ settingsPage }
+			/>
 		</>
 	);
 };
