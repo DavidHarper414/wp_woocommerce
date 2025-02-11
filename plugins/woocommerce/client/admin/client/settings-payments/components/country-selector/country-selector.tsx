@@ -18,7 +18,12 @@ import { check, chevronDown, Icon } from '@wordpress/icons';
  * Internal dependencies
  */
 import { WC_ASSET_URL } from '~/utils/admin-settings';
-import { Item, ControlProps, UseSelectStateChangeOptionsProps } from './types';
+import {
+	Item,
+	ControlProps,
+	UseSelectStateChangeOptionsProps,
+	ExtendedUseSelectProps,
+} from './types';
 import './country-selector.scss';
 
 // Retrieves the display label for a given value from a list of options.
@@ -118,6 +123,8 @@ export const CountrySelector = < ItemType extends Item >( {
 	children,
 }: ControlProps< ItemType > ): JSX.Element => {
 	const [ searchText, setSearchText ] = useState( '' );
+	const menuRef = useRef< HTMLInputElement >( null );
+	const searchRef = useRef< HTMLInputElement >( null );
 
 	// only run filter every 200ms even if the user is typing
 	const throttledApplySearchToItems = useThrottle(
@@ -154,13 +161,13 @@ export const CountrySelector = < ItemType extends Item >( {
 		initialSelectedItem: value,
 		items: [ ...visibleItems ],
 		stateReducer,
-	} );
+		refs: {
+			searchRef,
+		},
+	} as ExtendedUseSelectProps< ItemType > );
 
 	const itemString = getOptionLabel( value.key, items );
 	const selectedValue = selectedItem ? selectedItem.key : '';
-
-	const menuRef = useRef< HTMLInputElement >( null );
-	const searchRef = useRef< HTMLInputElement >( null );
 
 	function getDescribedBy() {
 		if ( describedBy ) {
