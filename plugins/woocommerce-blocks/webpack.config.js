@@ -14,11 +14,6 @@ const {
 	getCartAndCheckoutFrontendConfig,
 } = require( './bin/webpack-configs.js' );
 
-/**
- * External dependencies
- */
-const path = require( 'path' );
-
 // Only options shared between all configs should be defined here.
 const sharedConfig = {
 	mode: NODE_ENV,
@@ -42,40 +37,18 @@ const sharedConfig = {
 
 const CartAndCheckoutFrontendConfig = {
 	...sharedConfig,
-	cache: {
-		type: 'filesystem',
-		cacheDirectory: path.resolve(
-			__dirname,
-			'../../node_modules/.cache/webpack1'
-		),
-	},
 	...getCartAndCheckoutFrontendConfig( { alias: getAlias() } ),
 };
 
 // Core config for shared libraries.
 const CoreConfig = {
 	...sharedConfig,
-	cache: {
-		type: 'filesystem',
-		cacheDirectory: path.resolve(
-			__dirname,
-			'../../node_modules/.cache/webpack2'
-		),
-	},
 	...getCoreConfig( { alias: getAlias() } ),
 };
 
 // Main Blocks config for registering Blocks and for the Editor.
 const MainConfig = {
 	...sharedConfig,
-	cache: {
-		type: 'filesystem',
-		cacheDirectory: path.resolve(
-			__dirname,
-			'../../node_modules/.cache/webpack3'
-		),
-	},
-
 	...getMainConfig( {
 		alias: getAlias(),
 	} ),
@@ -84,13 +57,6 @@ const MainConfig = {
 // Frontend config for scripts used in the store itself.
 const FrontendConfig = {
 	...sharedConfig,
-	cache: {
-		type: 'filesystem',
-		cacheDirectory: path.resolve(
-			__dirname,
-			'../../node_modules/.cache/webpack4'
-		),
-	},
 	...getFrontConfig( { alias: getAlias() } ),
 };
 
@@ -99,13 +65,6 @@ const FrontendConfig = {
  */
 const ExtensionsConfig = {
 	...sharedConfig,
-	cache: {
-		type: 'filesystem',
-		cacheDirectory: path.resolve(
-			__dirname,
-			'../../node_modules/.cache/webpack5'
-		),
-	},
 	...getExtensionsConfig( { alias: getAlias() } ),
 };
 
@@ -114,13 +73,6 @@ const ExtensionsConfig = {
  */
 const PaymentsConfig = {
 	...sharedConfig,
-	cache: {
-		type: 'filesystem',
-		cacheDirectory: path.resolve(
-			__dirname,
-			'../../node_modules/.cache/webpack6'
-		),
-	},
 	...getPaymentsConfig( { alias: getAlias() } ),
 };
 
@@ -129,13 +81,6 @@ const PaymentsConfig = {
  */
 const StylingConfig = {
 	...sharedConfig,
-	cache: {
-		type: 'filesystem',
-		cacheDirectory: path.resolve(
-			__dirname,
-			'../../node_modules/.cache/webpack7'
-		),
-	},
 	...getStylingConfig( { alias: getAlias() } ),
 };
 
@@ -144,13 +89,6 @@ const StylingConfig = {
  */
 const InteractivityConfig = {
 	...sharedConfig,
-	cache: {
-		type: 'filesystem',
-		cacheDirectory: path.resolve(
-			__dirname,
-			'../../node_modules/.cache/webpack8'
-		),
-	},
 	...getInteractivityAPIConfig( { alias: getAlias() } ),
 };
 
@@ -159,13 +97,6 @@ const InteractivityConfig = {
  */
 const SiteEditorConfig = {
 	...sharedConfig,
-	cache: {
-		type: 'filesystem',
-		cacheDirectory: path.resolve(
-			__dirname,
-			'../../node_modules/.cache/webpack9'
-		),
-	},
 	...getSiteEditorConfig( { alias: getAlias() } ),
 };
 
