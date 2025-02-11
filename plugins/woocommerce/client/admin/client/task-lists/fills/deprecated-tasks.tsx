@@ -10,6 +10,10 @@ import {
 	DeprecatedTaskType,
 } from '@woocommerce/data';
 import { useEffect, useState } from '@wordpress/element';
+
+/**
+ * Internal dependencies
+ */
 import { getAdminSetting } from '~/utils/admin-settings';
 
 type MergedTask = TaskType | DeprecatedTaskType;
