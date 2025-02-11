@@ -470,24 +470,23 @@ class ShippingController {
 
 		$has_full_address = $this->has_full_shipping_address();
 
-		if ( ! $has_full_address ) {
-			$packages = array_map(
-				function ( $package ) {
-					// Package rates is always an array due to a check in core.
-					$package['rates'] = array_filter(
-						$package['rates'],
-						function ( $rate ) {
-							return $rate instanceof WC_Shipping_Rate && in_array( $rate->get_method_id(), LocalPickupUtils::get_local_pickup_method_ids(), true );
-						}
-					);
-					return $package;
-				},
-				$packages
-			);
-
+		if ( $has_full_address ) {
+			return $packages;
 		}
 
-		return $packages;
+		return array_map(
+			function ( $package ) {
+				// Package rates is always an array due to a check in core.
+				$package['rates'] = array_filter(
+					$package['rates'],
+					function ( $rate ) {
+						return $rate instanceof WC_Shipping_Rate && in_array( $rate->get_method_id(), LocalPickupUtils::get_local_pickup_method_ids(), true );
+					}
+				);
+				return $package;
+			},
+			$packages
+		);
 	}
 	/**
 	 * Track local pickup settings changes via Store API
