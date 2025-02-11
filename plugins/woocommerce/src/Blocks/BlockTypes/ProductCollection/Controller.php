@@ -294,13 +294,14 @@ class Controller extends AbstractBlock {
 			$collection_args = call_user_func( $handlers['editor_args'], $collection_args, $query, $request );
 		}
 
+		$orderby = $request->get_param( 'orderby' );
+
 		// When requested, short-circuit the query and return the preview query args.
 		$preview_state = $request->get_param( 'previewState' );
 		if ( isset( $preview_state['isPreview'] ) && 'true' === $preview_state['isPreview'] ) {
-			return $this->query_builder->get_preview_query_args( $collection_args, $query, $request );
+			return $this->query_builder->get_preview_query_args( $collection_args, array_merge( $query, array( 'orderby' => $orderby ) ), $request );
 		}
 
-		$orderby             = $request->get_param( 'orderby' );
 		$on_sale             = $request->get_param( 'woocommerceOnSale' ) === 'true';
 		$stock_status        = $request->get_param( 'woocommerceStockStatus' );
 		$product_attributes  = $request->get_param( 'woocommerceAttributes' );
