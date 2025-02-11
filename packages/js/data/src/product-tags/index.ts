@@ -3,6 +3,8 @@
  */
 import { STORE_NAME, WC_PRODUCT_TAGS_NAMESPACE } from './constants';
 import { createCrudDataStore } from '../crud';
+import { PromiseifySelectors } from '../types/promiseify-selectors';
+import { ProductTagSelectors } from './types';
 
 createCrudDataStore( {
 	storeName: STORE_NAME,
@@ -12,3 +14,9 @@ createCrudDataStore( {
 } );
 
 export const EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME = STORE_NAME;
+
+declare module '@wordpress/data' {
+	function resolveSelect(
+		key: typeof STORE_NAME
+	): PromiseifySelectors< ProductTagSelectors >;
+}
