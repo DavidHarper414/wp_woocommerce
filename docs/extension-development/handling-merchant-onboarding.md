@@ -171,7 +171,7 @@ Next, we create a [functional component](https://reactjs.org/docs/components-and
 
 ```js
 const Task = ( { onComplete, task } ) =&gt; {
-	const { actionTask } = useDispatch( ONBOARDING_STORE_NAME );
+	const { actionTask } = useDispatch( onboardingStore );
 	const { isActioned } = task;
 
 	return (
