@@ -2770,7 +2770,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			expect( result2JSON ).toEqual( expect.arrayContaining( after ) );
 		} );
 
-		test.only( 'attributes', async ( { request } ) => {
+		test( 'attributes', async ( { request } ) => {
 			const red = sampleData.attributes.colors.find(
 				( term ) => term.name === 'Red'
 			);
@@ -2827,7 +2827,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			expect( result2JSON ).toHaveLength( 0 );
 		} );
 
-		test.only( 'shipping class', async ( { request } ) => {
+		test( 'shipping class', async ( { request } ) => {
 			const result = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					shipping_class: sampleData.shippingClasses.freightJSON.id,
@@ -2867,7 +2867,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			expect( resultJSON[ 0 ].name ).toBe( `T-Shirt ${ RAND_NUM }` );
 		} );
 
-		test.only( 'tags', async ( { request } ) => {
+		test( 'tags', async ( { request } ) => {
 			const coolProducts = [
 				expect.objectContaining( {
 					name: `Sunglasses ${ RAND_NUM }`,
@@ -2927,23 +2927,23 @@ test.describe( 'Products API tests: List All Products', () => {
 		test.describe( 'orderby', () => {
 			const productNamesAsc = [
 				`Album ${ RAND_NUM }`,
-				`Beanie with Logo ${ RAND_NUM }`,
 				`Beanie ${ RAND_NUM }`,
+				`Beanie with Logo ${ RAND_NUM }`,
 				`Belt ${ RAND_NUM }`,
 				`Cap ${ RAND_NUM }`,
 				`Child Product ${ RAND_NUM }`,
+				`Hoodie ${ RAND_NUM }`,
 				`Hoodie with Logo ${ RAND_NUM }`,
 				`Hoodie with Pocket ${ RAND_NUM }`,
 				`Hoodie with Zipper ${ RAND_NUM }`,
-				`Hoodie ${ RAND_NUM }`,
 				`Logo Collection ${ RAND_NUM }`,
 				`Long Sleeve Tee ${ RAND_NUM }`,
 				`Parent Product ${ RAND_NUM }`,
 				`Polo ${ RAND_NUM }`,
 				`Single ${ RAND_NUM }`,
 				`Sunglasses ${ RAND_NUM }`,
-				`T-Shirt with Logo ${ RAND_NUM }`,
 				`T-Shirt ${ RAND_NUM }`,
+				`T-Shirt with Logo ${ RAND_NUM }`,
 				`V-Neck T-Shirt ${ RAND_NUM }`,
 				`WordPress Pennant ${ RAND_NUM }`,
 			];
