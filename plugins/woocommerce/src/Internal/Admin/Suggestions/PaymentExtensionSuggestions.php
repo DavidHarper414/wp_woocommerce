@@ -1722,6 +1722,11 @@ class PaymentExtensionSuggestions {
 				continue;
 			}
 
+			// Determine if the extension should be included based on the store's state, the provided country and context.
+			if ( ! $this->is_extension_allowed( $extension_id, $country_code, $context ) ) {
+				continue;
+			}
+
 			$extension_base_details = $this->get_extension_base_details( $extension_id ) ?? array();
 			$extension_details      = $this->with_country_details( $extension_base_details, $extension_country_details );
 
@@ -1825,6 +1830,21 @@ class PaymentExtensionSuggestions {
 	 */
 	public function dismiss_incentive( string $incentive_id, string $suggestion_id, string $context = 'all' ): bool {
 		return $this->suggestion_incentives->dismiss_incentive( $incentive_id, $suggestion_id, $context );
+	}
+
+
+	/**
+	 * Determine if a payment extension is allowed to be suggested.
+	 *
+	 * @param string $extension_id The extension ID.
+	 * @param string $country_code The two-letter country code.
+	 * @param string $context      Optional. The context ID of where the extension is being used.
+	 *
+	 * @return bool True if the extension is allowed, false otherwise.
+	 *              Defaults to true if there is no specific logic for the extension.
+	 */
+	private function is_extension_allowed( string $extension_id, string $country_code, string $context = '' ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		return true;
 	}
 
 	/**
