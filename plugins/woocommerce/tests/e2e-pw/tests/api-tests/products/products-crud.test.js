@@ -2,9 +2,9 @@ const {
 	test: baseTest,
 	expect,
 } = require( '../../../fixtures/api-tests-fixtures' );
-const { BASE_URL } = process.env;
+const { IS_WPCOM, IS_PRESSABLE } = process.env;
 const { admin } = require( '../../../test-data/data' );
-const shouldSkip = BASE_URL !== undefined;
+const shouldSkip = IS_WPCOM || IS_PRESSABLE;
 
 /**
  * Internal dependencies
