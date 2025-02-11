@@ -110,7 +110,7 @@ abstract class FeaturedItem extends AbstractDynamicBlock {
 		if ( isset( $attributes['ariaLabel'] ) && ! empty( $attributes['ariaLabel'] ) ) {
 			$p = new \WP_HTML_Tag_Processor( $content );
 
-			if ( $p->next_tag('a', ['class' => 'wp-block-button__link'] ) ) {
+			if ( $p->next_tag( 'a', [ 'class' => 'wp-block-button__link' ] ) ) {
 				$p->set_attribute( 'aria-label', $attributes['ariaLabel'] );
 				$content = $p->get_updated_html();
 			}
