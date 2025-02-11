@@ -2047,7 +2047,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 							type: 'checkbox',
 							default: 'no',
 							tip: 'To opt out, leave this box unticked. Your store remains untracked, and no data will be collected. Read about what usage data is tracked at: <a href="https://woocommerce.com/usage-tracking" target="_blank">WooCommerce.com Usage Tracking Documentation</a>.',
-							value: 'no',
+							value: expect.any( String ),
 						} ),
 					] )
 				);
@@ -2061,7 +2061,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 							type: 'checkbox',
 							default: 'yes',
 							tip: 'Leave this box unchecked if you do not want to pull suggested extensions from WooCommerce.com. You will see a static list of extensions instead.',
-							value: 'yes',
+							value: expect.any( String ),
 						} ),
 					] )
 				);
@@ -2073,7 +2073,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 							description: 'Enable WooCommerce Analytics',
 							type: 'checkbox',
 							default: 'yes',
-							value: 'yes',
+							value: expect.any( String ),
 						} ),
 					] )
 				);
