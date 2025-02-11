@@ -88,10 +88,6 @@ require( 'fs-extra' ).ensureSymlinkSync(
 
 const webpackConfig = {
 	mode: NODE_ENV,
-	ignoreWarnings:
-		process.env.HIDE_TYPESCRIPT_WARNINGS === 'true'
-			? [ { message: /TS\d{4,6}:\ / } ]
-			: [],
 	entry: getEntryPoints(),
 	output: {
 		filename: ( data ) => {
@@ -182,9 +178,7 @@ const webpackConfig = {
 	plugins: [
 		...styleConfig.plugins,
 		// Runs TypeScript type checker on a separate process.
-		! process.env.STORYBOOK &&
-			! ( process.env.DISABLE_TYPESCRIPT_CHECKING === 'true' ) &&
-			new ForkTsCheckerWebpackPlugin(),
+		! process.env.STORYBOOK && new ForkTsCheckerWebpackPlugin(),
 		new CustomTemplatedPathPlugin( {
 			modulename( outputPath, data ) {
 				const entryName = get( data, [ 'chunk', 'name' ] );

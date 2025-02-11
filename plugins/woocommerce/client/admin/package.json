@@ -300,16 +300,6 @@
 		},
 		"watch:build:project:bundle": {
 			"command": "webpack --watch",
-			"env": {
-				"DISABLE_TYPESCRIPT_CHECKING": {
-					"external": true,
-					"default": "false"
-				},
-				"HIDE_TYPESCRIPT_WARNINGS": {
-					"external": true,
-					"default": "false"
-				}
-			},
 			"service": true
 		},
 		"dependencyOutputs": {
