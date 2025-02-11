@@ -57,6 +57,7 @@ class Packages {
 	 */
 	protected static $merged_packages = array(
 		'woocommerce-brands' => '\\Automattic\\WooCommerce\\Internal\\Brands',
+		'woocommerce-bis-notifications' => '\\Automattic\\WooCommerce\\Internal\\BackInStockNotifications',
 	);
 
 
