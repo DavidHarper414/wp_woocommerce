@@ -392,45 +392,33 @@ test.describe( 'Settings API tests: CRUD', () => {
 				] )
 			);
 
-			// different on external host
-			// eslint-disable-next-line playwright/no-conditional-in-test
-			if ( ! shouldSkip ) {
-				expect( responseJSON ).toEqual(
-					expect.arrayContaining( [
-						expect.objectContaining( {
-							id: 'woocommerce_all_except_countries',
-							label: 'Sell to all countries, except for&hellip;',
-							description: '',
-							type: 'multiselect',
-							default: '',
-							value: '',
-							options: expect.objectContaining( countries ),
-						} ),
-					] )
-				);
-			} else {
-				// Test is failing on external hosts
-			}
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_all_except_countries',
+						label: 'Sell to all countries, except for&hellip;',
+						description: '',
+						type: 'multiselect',
+						default: '',
+						value: expect.any( Object ),
+						options: expect.objectContaining( countries ),
+					} ),
+				] )
+			);
 
-			// different on external host
-			// eslint-disable-next-line playwright/no-conditional-in-test
-			if ( ! shouldSkip ) {
-				expect( responseJSON ).toEqual(
-					expect.arrayContaining( [
-						expect.objectContaining( {
-							id: 'woocommerce_specific_allowed_countries',
-							label: 'Sell to specific countries',
-							description: '',
-							type: 'multiselect',
-							default: '',
-							value: '',
-							options: expect.objectContaining( countries ),
-						} ),
-					] )
-				);
-			} else {
-				// Test is failing on external hosts
-			}
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_specific_allowed_countries',
+						label: 'Sell to specific countries',
+						description: '',
+						type: 'multiselect',
+						default: '',
+						value: expect.any( Object ),
+						options: expect.objectContaining( countries ),
+					} ),
+				] )
+			);
 
 			expect( responseJSON ).toEqual(
 				expect.arrayContaining( [
@@ -454,25 +442,19 @@ test.describe( 'Settings API tests: CRUD', () => {
 				] )
 			);
 
-			// different on external host
-			// eslint-disable-next-line playwright/no-conditional-in-test
-			if ( ! shouldSkip ) {
-				expect( responseJSON ).toEqual(
-					expect.arrayContaining( [
-						expect.objectContaining( {
-							id: 'woocommerce_specific_ship_to_countries',
-							label: 'Ship to specific countries',
-							description: '',
-							type: 'multiselect',
-							default: '',
-							value: '',
-							options: expect.objectContaining( countries ),
-						} ),
-					] )
-				);
-			} else {
-				// Test is failing on external hosts
-			}
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_specific_ship_to_countries',
+						label: 'Ship to specific countries',
+						description: '',
+						type: 'multiselect',
+						default: '',
+						value: expect.any( Object ),
+						options: expect.objectContaining( countries ),
+					} ),
+				] )
+			);
 
 			expect( responseJSON ).toEqual(
 				expect.arrayContaining( [
@@ -537,26 +519,21 @@ test.describe( 'Settings API tests: CRUD', () => {
 				] )
 			);
 
-			// eslint-disable-next-line playwright/no-conditional-in-test
-			if ( ! shouldSkip ) {
-				expect( responseJSON ).toEqual(
-					expect.arrayContaining( [
-						expect.objectContaining( {
-							id: 'woocommerce_currency',
-							label: 'Currency',
-							description:
-								'This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.',
-							type: 'select',
-							default: 'USD',
-							options: expect.objectContaining( currencies ),
-							tip: 'This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.',
-							value: 'USD',
-						} ),
-					] )
-				);
-			} else {
-				// This test is also failing on external hosts
-			}
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_currency',
+						label: 'Currency',
+						description:
+							'This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.',
+						type: 'select',
+						default: 'USD',
+						options: expect.objectContaining( currencies ),
+						tip: 'This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.',
+						value: 'USD',
+					} ),
+				] )
+			);
 
 			expect( responseJSON ).toEqual(
 				expect.arrayContaining( [
