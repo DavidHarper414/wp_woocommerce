@@ -12,9 +12,6 @@ import {
  */
 import { getAdminSetting } from '~/utils/admin-settings';
 
-const VISIBLE_TASK_LIST_IDS = getAdminSetting( 'visibleTaskListIds', [] );
-const COMPLETED_TASK_LIST_IDS = getAdminSetting( 'completedTaskListIds', [] );
-
 /**
  * Get the number of things to do next
  *
@@ -99,7 +96,7 @@ const getExtendedTaskListState = ( selectors: Selectors ) => {
  * @return {boolean} True if the task list is visible, false otherwise
  */
 export const isTaskListVisible = ( taskListId: string ) =>
-	VISIBLE_TASK_LIST_IDS.includes( taskListId );
+	getAdminSetting( 'visibleTaskListIds', [] ).includes( taskListId );
 
 /**
  * Check if a task list is completed
@@ -108,7 +105,7 @@ export const isTaskListVisible = ( taskListId: string ) =>
  * @return {boolean} True if the task list is completed, false otherwise
  */
 export const isTaskListCompleted = ( taskListId: string ) =>
-	COMPLETED_TASK_LIST_IDS.includes( taskListId );
+	getAdminSetting( 'completedTaskListIds', [] ).includes( taskListId );
 
 /**
  * Check if a task list is completed or hidden
