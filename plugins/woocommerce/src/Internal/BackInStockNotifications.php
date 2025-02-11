@@ -26,7 +26,7 @@ class BackInStockNotifications {
 	 */
 	final public static function init() {
 
-		if ( ! self::is_enabled_for_rollout() ) { //TODO: should this only run in case is_enabled is true?
+		if ( ! self::is_enabled() ) { //TODO: should this only run in case is_enabled is true?
 			return;
 		}
 
@@ -47,28 +47,22 @@ class BackInStockNotifications {
 	}
 
 	/**
-	 * As of WooCommerce 9.8, Back In Stock Notifications is merged, but disabled for all users.
-	 * As of WooCommerce 9.9, Back In Stock Notifications is enabled for 5% of users.
-	 * As of WooCommerce 10.0, Back In Stock Notifications is enabled for all users.
+	 * Returns true if the feature is enabled for all users during the rollout period.
 	 *
-	 * Can be disabled via option `update_option( 'wc_feature_woocommerce_bis_enabled', 'no' )`,
+	 * As of WooCommerce 9.9, Back In Stock Notifications will be merged, but disabled for all users.
+	 * As of WooCommerce 10.0, Back In Stock Notifications will be enabled for 5% of users.
+	 * As of WooCommerce 10.1, Back In Stock Notifications will be enabled for all users.
+	 *
+	 * Feature can be disabled via option `update_option( 'wc_feature_woocommerce_bis_notifications_enabled', 'no' )`,
 	 * even when this method returns true.
 	 *
 	 * See also \Automattic\WooCommerce\Packages::get_enabled_packages.
 	 *
 	 * @return bool
 	 */
-	public static function is_enabled_for_rollout() {
-		return true;
-	}
-
-	/**
-	 * If the feature is actually enabled, not just for rollout.
-	 *
-	 * @return bool
-	 */
 	public static function is_enabled() {
-		return self::is_enabled_for_rollout() && Packages::is_package_enabled( 'BackInStockNotifications' );
+		return true;
+
 	}
 
 	/**
@@ -80,7 +74,7 @@ class BackInStockNotifications {
 	 */
 	public static function prepare() {
 
-		if ( ! self::is_enabled_for_rollout() ) {
+		if ( ! self::is_enabled() ) {
 			return;
 		}
 
