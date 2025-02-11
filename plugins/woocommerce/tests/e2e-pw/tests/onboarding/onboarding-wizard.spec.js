@@ -481,7 +481,7 @@ test.describe(
 	'Store owner can skip the core profiler',
 	{ tag: tags.SKIP_ON_EXTERNAL_ENV },
 	() => {
-		test( 'Can click skip guided setup', async ( { page } ) => {
+		test( 'Can skip the guided setup', async ( { page } ) => {
 			await page.goto(
 				'wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard'
 			);
@@ -524,7 +524,5 @@ test.describe(
 				).toBeVisible();
 			} );
 		} );
-
-
 	}
 );
