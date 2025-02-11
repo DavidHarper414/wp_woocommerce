@@ -23,9 +23,17 @@ export type ProductCollectionStoreContext = {
 	collection: CoreCollectionNames;
 };
 
-const datasetKeys = {
-	wpRouterRegion: 'wpRouterRegion',
-	wpNavigationDisabled: 'wpNavigationDisabled',
+const getRouterRegion = ( ref: HTMLDivElement ) =>
+	ref?.closest( '[data-wp-router-region]' ) as HTMLDivElement;
+
+const getRouterRegionId = ( ref: HTMLDivElement ) => {
+	const routerRegionElement = getRouterRegion( ref );
+	return routerRegionElement?.dataset?.wpRouterRegion;
+};
+
+const getNavDisabled = ( ref: HTMLDivElement ) => {
+	const routerRegionElement = getRouterRegion( ref );
+	return routerRegionElement?.dataset?.wpNavigationDisabled;
 };
 
 const isValidLink = ( ref: HTMLAnchorElement ) =>
@@ -94,14 +102,11 @@ const productCollectionStore = {
 			}
 
 			const ctx = getContext< ProductCollectionStoreContext >();
-			const dataset = (
-				ref?.closest( '[data-wp-router-region]' ) as HTMLDivElement
-			 )?.dataset;
 
-			const wpRouterRegion = dataset?.[ datasetKeys.wpRouterRegion ];
-			const isDisabled = dataset?.[ datasetKeys.wpNavigationDisabled ];
+			const routerRegionId = getRouterRegionId( ref );
+			const isNavDisabled = getNavDisabled( ref );
 
-			if ( isDisabled ) {
+			if ( isNavDisabled ) {
 				yield forcePageReload( ref.href );
 			}
 
@@ -126,7 +131,7 @@ const productCollectionStore = {
 
 				ctx.isPrefetchNextOrPreviousLink = !! ref.href;
 
-				scrollToFirstProductIfNotVisible( wpRouterRegion );
+				scrollToFirstProductIfNotVisible( routerRegionId );
 
 				triggerProductListRenderedEvent( {
 					collection: ctx.collection,
@@ -140,11 +145,9 @@ const productCollectionStore = {
 		*prefetchOnHover() {
 			const { ref } = getElement();
 
-			const isDisabled = (
-				ref?.closest( '[data-wp-router-region]' ) as HTMLDivElement
-			 )?.dataset[ datasetKeys.wpNavigationDisabled ];
+			const isNavDisabled = getNavDisabled( ref );
 
-			if ( isDisabled ) {
+			if ( isNavDisabled ) {
 				return;
 			}
 
@@ -171,11 +174,9 @@ const productCollectionStore = {
 		 */
 		*prefetch() {
 			const { ref } = getElement();
-			const isDisabled = (
-				ref?.closest( '[data-wp-router-region]' ) as HTMLDivElement
-			 )?.dataset[ datasetKeys.wpNavigationDisabled ];
+			const isNavDisabled = getNavDisabled( ref );
 
-			if ( isDisabled ) {
+			if ( isNavDisabled ) {
 				return;
 			}
 
