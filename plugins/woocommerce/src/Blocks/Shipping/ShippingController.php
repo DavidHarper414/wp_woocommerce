@@ -7,6 +7,7 @@ use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
 use Automattic\WooCommerce\Enums\ProductTaxStatus;
 use Automattic\WooCommerce\StoreApi\Utilities\LocalPickupUtils;
 use Automattic\WooCommerce\Utilities\ArrayUtil;
+use WC_Customer;
 use WC_Shipping_Rate;
 use WC_Tracks;
 
@@ -421,6 +422,10 @@ class ShippingController {
 	 */
 	public function has_full_shipping_address() {
 		$customer = WC()->customer;
+
+		if ( ! $customer instanceof WC_Customer ) {
+			return false;
+		}
 
 		// These are the important fields required to get the shipping rates.
 		$shipping_address = array(
