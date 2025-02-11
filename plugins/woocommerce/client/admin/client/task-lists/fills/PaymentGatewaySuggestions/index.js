@@ -75,39 +75,46 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 		[ installedPaymentGateways, paymentGatewaySuggestions ]
 	);
 
-	const enablePaymentGateway = ( id ) => {
-		if ( ! id ) {
-			return;
-		}
+	const enablePaymentGateway = useCallback(
+		( id ) => {
+			if ( ! id ) {
+				return;
+			}
 
-		const gateway = getPaymentGateway( id );
+			const gateway = getPaymentGateway( id );
 
-		if ( ! gateway ) {
-			return;
-		}
+			if ( ! gateway ) {
+				return;
+			}
 
-		updatePaymentGateway( id, {
-			enabled: true,
-		} ).then( () => {
-			onComplete(
-				// use the paymentGateways variable.
-				// gateway variable doesn't have hasPlugins property.
-				! paymentGateways.get( id )?.hasPlugins
-					? {
-							// If we are already on a task page, don't redirect.
-							// Otherwise, redirect to Payments task page.
-							redirectPath: getQuery()?.task
-								? getNewPath(
-										{ task: getQuery().task },
-										{},
-										'/'
-								  )
-								: getNewPath( { task: 'payments' }, {}, '/' ),
-					  }
-					: {}
-			);
-		} );
-	};
+			updatePaymentGateway( id, {
+				enabled: true,
+			} ).then( () => {
+				onComplete(
+					// use the paymentGateways variable.
+					// gateway variable doesn't have hasPlugins property.
+					! paymentGateways.get( id )?.hasPlugins
+						? {
+								// If we are already on a task page, don't redirect.
+								// Otherwise, redirect to Payments task page.
+								redirectPath: getQuery()?.task
+									? getNewPath(
+											{ task: getQuery().task },
+											{},
+											'/'
+									  )
+									: getNewPath(
+											{ task: 'payments' },
+											{},
+											'/'
+									  ),
+						  }
+						: {}
+				);
+			} );
+		},
+		[ getPaymentGateway, updatePaymentGateway, onComplete, paymentGateways ]
+	);
 
 	const markConfigured = useCallback(
 		async ( id ) => {
@@ -121,7 +128,7 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 
 			enablePaymentGateway( id );
 		},
-		[ paymentGateways ]
+		[ paymentGateways, enablePaymentGateway ]
 	);
 
 	const recommendation = useMemo(
