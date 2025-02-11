@@ -22,7 +22,7 @@ module.exports = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../../.cache/webpack-settings-editor'
+			'../../../node_modules/.cache/webpack-settings-editor'
 		),
 	},
 	entry: {

@@ -10,7 +10,7 @@ module.exports = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../../.cache/webpack-onboarding'
+			'../../../node_modules/.cache/webpack-onboarding'
 		),
 	},
 	entry: {
