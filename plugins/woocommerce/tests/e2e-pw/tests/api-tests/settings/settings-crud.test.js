@@ -2092,140 +2092,143 @@ test.describe( 'Settings API tests: CRUD', () => {
 	test.describe( 'List all Email New Order settings', () => {
 		test.beforeAll( enableEmailImprovementsFeature );
 		test.afterAll( disableEmailImprovementsFeature );
-		test( 'can retrieve all email new order settings', async ( {
-			request,
-		} ) => {
-			// call API to retrieve all settings options
-			const response = await request.get(
-				'./wp-json/wc/v3/settings/email_new_order'
-			);
-			const responseJSON = await response.json();
-			expect( response.status() ).toEqual( 200 );
-			expect( Array.isArray( responseJSON ) ).toBe( true );
-			expect( responseJSON ).toEqual(
-				expect.arrayContaining( [
-					expect.objectContaining( {
-						id: 'enabled',
-						label: 'Enable/Disable',
-						description: '',
-						type: 'checkbox',
-						default: 'yes',
-						value: 'yes',
-					} ),
-				] )
-			);
-			expect( responseJSON ).toEqual(
-				expect.arrayContaining( [
-					expect.objectContaining( {
-						id: 'recipient',
-						label: 'Recipient(s)',
-						description: expect.stringContaining(
-							'Enter recipients (comma separated) for this email. Defaults to'
-						),
-						type: 'text',
-						default: '',
-						tip: expect.stringContaining(
-							'Enter recipients (comma separated) for this email. Defaults to'
-						),
-						value: expect.any( String ),
-					} ),
-				] )
-			);
-			expect( responseJSON ).toEqual(
-				expect.arrayContaining( [
-					expect.objectContaining( {
-						id: 'subject',
-						label: 'Subject',
-						description:
-							'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
-						type: 'text',
-						default: '',
-						tip: 'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
-						value: '',
-					} ),
-				] )
-			);
-			expect( responseJSON ).toEqual(
-				expect.arrayContaining( [
-					expect.objectContaining( {
-						id: 'heading',
-						label: 'Email heading',
-						description:
-							'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
-						type: 'text',
-						default: '',
-						tip: 'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
-						value: '',
-					} ),
-				] )
-			);
-			expect( responseJSON ).toEqual(
-				expect.arrayContaining( [
-					expect.objectContaining( {
-						id: 'additional_content',
-						label: 'Additional content',
-						description:
-							'Text to appear below the main email content. Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
-						type: 'textarea',
-						default: 'Congratulations on the sale!',
-						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
-						value: 'Congratulations on the sale!',
-					} ),
-				] )
-			);
-			expect( responseJSON ).toEqual(
-				expect.arrayContaining( [
-					expect.objectContaining( {
-						id: 'email_type',
-						label: 'Email type',
-						description: 'Choose which format of email to send.',
-						type: 'select',
-						default: 'html',
-						options: {
-							plain: 'Plain text',
-							html: 'HTML',
-							multipart: 'Multipart',
-						},
-						tip: 'Choose which format of email to send.',
-						value: 'html',
-					} ),
-				] )
-			);
-			expect( responseJSON ).toEqual(
-				expect.arrayContaining( [
-					expect.objectContaining( {
-						id: 'cc',
-						label: 'Cc(s)',
-						description: expect.stringContaining(
-							'Enter Cc recipients (comma-separated) for this email.'
-						),
-						type: 'text',
-						default: '',
-						tip: expect.stringContaining(
-							'Enter Cc recipients (comma-separated) for this email.'
-						),
-						value: expect.any( String ),
-					} ),
-				] )
-			);
-			expect( responseJSON ).toEqual(
-				expect.arrayContaining( [
-					expect.objectContaining( {
-						id: 'bcc',
-						label: 'Bcc(s)',
-						description: expect.stringContaining(
-							'Enter Bcc recipients (comma-separated) for this email.'
-						),
-						type: 'text',
-						default: '',
-						tip: expect.stringContaining(
-							'Enter Bcc recipients (comma-separated) for this email.'
-						),
-						value: expect.any( String ),
-					} ),
-				] )
-			);
-		} );
+		test(
+			'can retrieve all email new order settings',
+			{ tag: [ tags.SKIP_ON_PRESSABLE, tags.SKIP_ON_WPCOM ] },
+			async ( { request } ) => {
+				// call API to retrieve all settings options
+				const response = await request.get(
+					'./wp-json/wc/v3/settings/email_new_order'
+				);
+				const responseJSON = await response.json();
+				expect( response.status() ).toEqual( 200 );
+				expect( Array.isArray( responseJSON ) ).toBe( true );
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'enabled',
+							label: 'Enable/Disable',
+							description: '',
+							type: 'checkbox',
+							default: 'yes',
+							value: 'yes',
+						} ),
+					] )
+				);
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'recipient',
+							label: 'Recipient(s)',
+							description: expect.stringContaining(
+								'Enter recipients (comma separated) for this email. Defaults to'
+							),
+							type: 'text',
+							default: '',
+							tip: expect.stringContaining(
+								'Enter recipients (comma separated) for this email. Defaults to'
+							),
+							value: expect.any( String ),
+						} ),
+					] )
+				);
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'subject',
+							label: 'Subject',
+							description:
+								'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+							type: 'text',
+							default: '',
+							tip: 'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+							value: '',
+						} ),
+					] )
+				);
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'heading',
+							label: 'Email heading',
+							description:
+								'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+							type: 'text',
+							default: '',
+							tip: 'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+							value: '',
+						} ),
+					] )
+				);
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'additional_content',
+							label: 'Additional content',
+							description:
+								'Text to appear below the main email content. Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+							type: 'textarea',
+							default: 'Congratulations on the sale!',
+							tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+							value: 'Congratulations on the sale!',
+						} ),
+					] )
+				);
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'email_type',
+							label: 'Email type',
+							description:
+								'Choose which format of email to send.',
+							type: 'select',
+							default: 'html',
+							options: {
+								plain: 'Plain text',
+								html: 'HTML',
+								multipart: 'Multipart',
+							},
+							tip: 'Choose which format of email to send.',
+							value: 'html',
+						} ),
+					] )
+				);
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'cc',
+							label: 'Cc(s)',
+							description: expect.stringContaining(
+								'Enter Cc recipients (comma-separated) for this email.'
+							),
+							type: 'text',
+							default: '',
+							tip: expect.stringContaining(
+								'Enter Cc recipients (comma-separated) for this email.'
+							),
+							value: expect.any( String ),
+						} ),
+					] )
+				);
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'bcc',
+							label: 'Bcc(s)',
+							description: expect.stringContaining(
+								'Enter Bcc recipients (comma-separated) for this email.'
+							),
+							type: 'text',
+							default: '',
+							tip: expect.stringContaining(
+								'Enter Bcc recipients (comma-separated) for this email.'
+							),
+							value: expect.any( String ),
+						} ),
+					] )
+				);
+			}
+		);
 	} );
 
 	test.describe( 'List all Email Failed Order settings', () => {
@@ -2233,7 +2236,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 		test.afterAll( disableEmailImprovementsFeature );
 		test(
 			'can retrieve all email failed order settings',
-			{ tag: tags.SKIP_ON_PRESSABLE },
+			{ tag: [ tags.SKIP_ON_PRESSABLE, tags.SKIP_ON_WPCOM ] },
 			async ( { request } ) => {
 				// call API to retrieve all settings options
 				const response = await request.get(
