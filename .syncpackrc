@@ -191,7 +191,7 @@
 			"packages": [
 				"**"
 			],
-			"pinVersion": "^1.49.1"
+			"pinVersion": "^1.50.1"
 		},
 		{
 			"dependencies": [
