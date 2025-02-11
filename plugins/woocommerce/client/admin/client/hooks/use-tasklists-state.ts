@@ -2,13 +2,17 @@
  * External dependencies
  */
 import { useSelect } from '@wordpress/data';
-import { ONBOARDING_STORE_NAME, getVisibleTasks } from '@woocommerce/data';
+import {
+	ONBOARDING_STORE_NAME,
+	getVisibleTasks,
+	TaskListType,
+} from '@woocommerce/data';
 /**
  * Internal dependencies
  */
 import { getAdminSetting } from '~/utils/admin-settings';
 
-function getThingsToDoNextCount( extendedTaskList ) {
+function getThingsToDoNextCount( extendedTaskList: TaskListType ) {
 	if (
 		! extendedTaskList ||
 		! extendedTaskList.tasks.length ||
@@ -35,13 +39,19 @@ const getDefaultState = () => ( {
 	thingsToDoNextCount: null,
 } );
 
+// TODO: replace this with the actual selectors when @woocommerce/data types are updated.
+type Selectors = {
+	getTaskList: ( taskListId: string ) => TaskListType;
+	hasFinishedResolution: ( action: string ) => boolean;
+};
+
 /**
  * Get setup task list related states
  *
  * @param {Object} selectors Store selectors
  * @return {Object} Setup task list states
  */
-const getSetupTaskListState = ( selectors ) => {
+const getSetupTaskListState = ( selectors: Selectors ) => {
 	const { getTaskList, hasFinishedResolution } = selectors;
 	const setupList = getTaskList( 'setup' );
 	const setupVisibleTasks = getVisibleTasks( setupList?.tasks || [] );
@@ -63,7 +73,7 @@ const getSetupTaskListState = ( selectors ) => {
  * @param {Object} selectors Store selectors
  * @return {Object} Extended task list states
  */
-const getExtendedTaskListState = ( selectors ) => {
+const getExtendedTaskListState = ( selectors: Selectors ) => {
 	const { getTaskList, hasFinishedResolution } = selectors;
 	const extendedTaskList = getTaskList( 'extended' );
 
@@ -98,12 +108,12 @@ export const useTaskListsState = (
 
 	return useSelect(
 		( select ) => {
-			const selectors = select( ONBOARDING_STORE_NAME );
-
 			// If no task lists are visible, return default state
 			if ( ! isSetupTaskListVisible && ! isExtendedTaskListVisible ) {
-				return getDefaultState( selectors.getTask );
+				return getDefaultState();
 			}
+
+			const selectors = select( ONBOARDING_STORE_NAME );
 
 			// If setup task list is not visible, return extended-only state
 			if ( ! isSetupTaskListVisible ) {
