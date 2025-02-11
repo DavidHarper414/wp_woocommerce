@@ -72,10 +72,9 @@ export const Layout = ( {
 	isLoadingTaskLists,
 } ) => {
 	const userPrefs = useUserPreferences();
+
 	const isSetupTaskListCompleteOrHidden =
 		isTaskListCompletedOrHidden( 'setup' );
-	const shouldShowStoreLinks = isSetupTaskListCompleteOrHidden;
-	const shouldShowWCPayFeature = isSetupTaskListCompleteOrHidden;
 	const isTaskScreen =
 		hasTaskList && Object.keys( query ).length > 0 && !! query.task;
 	const isDashboardShown = ! isTaskScreen; // ?&task=<x> query param is used to show tasks instead of the homescreen
@@ -129,7 +128,9 @@ export const Layout = ( {
 							) }
 						/>
 					) }
-					{ shouldShowWCPayFeature && <WooHomescreenWCPayFeature /> }
+					{ isSetupTaskListCompleteOrHidden && (
+						<WooHomescreenWCPayFeature />
+					) }
 					{ ! isTaskListVisible( 'setup' ) && <ActivityPanel /> }
 					{ hasTaskList && renderTaskList() }
 					<Promotions format="promo-card" />
@@ -137,7 +138,9 @@ export const Layout = ( {
 				</Column>
 				<Column shouldStick={ shouldStickColumns }>
 					{ window.wcAdminFeatures.analytics && <StatsOverview /> }
-					{ shouldShowStoreLinks && <StoreManagementLinks /> }
+					{ isSetupTaskListCompleteOrHidden && (
+						<StoreManagementLinks />
+					) }
 				</Column>
 			</>
 		);

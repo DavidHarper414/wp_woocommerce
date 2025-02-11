@@ -19,7 +19,7 @@ import { DisplayIcon } from './icons/display';
 import { SingleColumnIcon } from './icons/single-column';
 import { TwoColumnsIcon } from './icons/two-columns';
 import { isTaskListCompletedOrHidden } from '../../hooks/use-tasklists-state';
-
+import
 const { Fill, Slot } = createSlotFill( 'DisplayOptions' );
 
 Fill.Slot = Slot;

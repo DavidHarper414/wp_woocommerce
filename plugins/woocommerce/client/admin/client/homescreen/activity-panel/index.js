@@ -28,7 +28,7 @@ import { getAllPanels } from './panels';
 import { getUnapprovedReviews } from './reviews/utils';
 import { getUrlParams } from '../../utils';
 import { getAdminSetting } from '~/utils/admin-settings';
-import { isTaskListCompletedOrHidden } from '~/hooks/use-tasklists-state';
+import { isTaskListVisible } from '~/hooks/use-tasklists-state';
 
 const ORDERS_QUERY_PARAMS = { _fields: [ 'id' ] };
 const PUBLISHED_PRODUCTS_QUERY_PARAMS = {
@@ -73,7 +73,7 @@ export const ActivityPanel = () => {
 			unapprovedReviewsCount,
 			unreadOrdersCount,
 			manageStock,
-			isTaskListHidden: isTaskListCompletedOrHidden( 'setup' ),
+			isTaskListHidden: ! isTaskListVisible( 'setup' ),
 			publishedProductCount,
 			reviewsEnabled,
 			totalOrderCount,
