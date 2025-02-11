@@ -1,8 +1,6 @@
 const { test, expect } = require( '../../../fixtures/api-tests-fixtures' );
 const { admin } = require( '../../../test-data/data' );
 
-let isMultisite;
-
 test.describe( 'Customers API tests: CRUD', () => {
 	let adminId;
 	let customerId;
@@ -65,20 +63,6 @@ test.describe( 'Customers API tests: CRUD', () => {
 		const responseJSON = await response.json();
 		expect( response.status() ).toEqual( 200 );
 		expect( responseJSON.role ).toEqual( 'subscriber' );
-
-		// Determine whether this is a multisite to conditionally skip multisite-incompatible tests.
-		const systemStatusResponse = await request.get(
-			'./wp-json/wc/v3/system_status',
-			{
-				data: { _fields: [ 'environment.wp_multisite' ] },
-				failOnStatusCode: true,
-			}
-		);
-		const ssrJSON = await systemStatusResponse.json();
-		expect( ssrJSON ).toMatchObject( {
-			environment: { wp_multisite: expect.any( Boolean ) },
-		} );
-		isMultisite = ssrJSON.environment.wp_multisite;
 	} );
 
 	test.afterAll( async ( { request } ) => {
@@ -359,7 +343,7 @@ test.describe( 'Customers API tests: CRUD', () => {
 	test.describe( 'Delete a customer', () => {
 		test( 'can permanently delete an customer', async ( { request } ) => {
 			test.skip(
-				isMultisite,
+				process.env.IS_MULTISITE === 'true',
 				'Skip tests on deleting a customer on multisites until bug #384 in private repo is resolved.'
 			);
 
@@ -533,7 +517,7 @@ test.describe( 'Customers API tests: CRUD', () => {
 
 		test( 'can batch delete customers', async ( { request } ) => {
 			test.skip(
-				isMultisite,
+				process.env.IS_MULTISITE === 'true',
 				'Skip tests on deleting a customer on multisites until bug #384 in private repo is resolved.'
 			);
 
