@@ -11,10 +11,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'WC_BIS_Background_Process', false ) ) {
-	include_once WC_BIS_ABSPATH . 'includes/class-wc-bis-background-process.php';
-}
-
 /**
  * Background Updater.
  *
@@ -24,7 +20,7 @@ if ( ! class_exists( 'WC_BIS_Background_Process', false ) ) {
  * @class    WC_BIS_Background_Updater
  * @version  2.0.0
  */
-class WC_BIS_Background_Updater extends WC_BIS_Background_Process {
+class WC_BIS_Background_Updater extends WC_Background_Process {
 
 	/**
 	 * Initiate new background process.
