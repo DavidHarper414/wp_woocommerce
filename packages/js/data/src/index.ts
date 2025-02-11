@@ -6,7 +6,6 @@ import '@wordpress/core-data';
 // Export store names
 export { SETTINGS_STORE_NAME } from './settings';
 export { PLUGINS_STORE_NAME } from './plugins';
-export { ONBOARDING_STORE_NAME } from './onboarding';
 export { USER_STORE_NAME } from './user';
 export { REVIEWS_STORE_NAME } from './reviews';
 export { NOTES_STORE_NAME } from './notes';
@@ -47,6 +46,9 @@ export {
 	RecommendedPaymentMethod,
 } from './payment-settings/types';
 export { ShippingMethod } from './shipping-methods/types';
+
+// Export stores
+export { store as onboardingStore } from './onboarding';
 
 // Export hooks
 export { withSettingsHydration } from './settings/with-settings-hydration';
@@ -141,7 +143,6 @@ export { UserPreferences } from './user/types';
 import type { REVIEWS_STORE_NAME } from './reviews';
 import type { SETTINGS_STORE_NAME } from './settings';
 import type { PLUGINS_STORE_NAME } from './plugins';
-import type { ONBOARDING_STORE_NAME } from './onboarding';
 import type { USER_STORE_NAME } from './user';
 import type { OPTIONS_STORE_NAME } from './options';
 import type { NAVIGATION_STORE_NAME } from './navigation';
@@ -168,7 +169,6 @@ export type WCDataStoreName =
 	| typeof REVIEWS_STORE_NAME
 	| typeof SETTINGS_STORE_NAME
 	| typeof PLUGINS_STORE_NAME
-	| typeof ONBOARDING_STORE_NAME
 	| typeof USER_STORE_NAME
 	| typeof OPTIONS_STORE_NAME
 	| typeof NAVIGATION_STORE_NAME
@@ -199,7 +199,6 @@ import { PaymentSelectors } from './payment-gateways/selectors';
 import { PaymentSettingsSelectors } from './payment-settings/selectors';
 import { ShippingMethodsSelectors } from './shipping-methods/selectors';
 import { PluginSelectors } from './plugins/selectors';
-import { OnboardingSelectors } from './onboarding/selectors';
 import { OptionsSelectors } from './options/types';
 import { ProductsSelectors } from './products/selectors';
 import { OrdersSelectors } from './orders/selectors';
@@ -221,8 +220,6 @@ export type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
 	? WPDataSelectors
 	: T extends typeof PLUGINS_STORE_NAME
 	? PluginSelectors
-	: T extends typeof ONBOARDING_STORE_NAME
-	? OnboardingSelectors
 	: T extends typeof PAYMENT_GATEWAYS_STORE_NAME
 	? PaymentSelectors
 	: T extends typeof PAYMENT_SETTINGS_STORE_NAME
