@@ -58,7 +58,7 @@ runs:
               key: "${{ runner.os }}-pnpm-${{ inputs.pull-package-deps }}-build:${{ ( inputs.build-type == 'backend' && 'backend' ) || 'full' }}-${{ hashFiles( 'pnpm-lock.yaml' ) }}"
               restore-keys: "${{ runner.os }}-pnpm-${{ inputs.pull-package-deps }}-build:${{ ( inputs.build-type == 'backend' && 'backend' ) || 'full' }}-"
         - name: 'Cache: node cache'
-          if: ${{ inputs.pull-package-deps != 'false' && inputs.build-type != 'backend' && ! startsWith( inputs.pull-package-deps, '@woocommerce/block-library') }}
+          if: ${{ inputs.pull-package-deps != 'false' && inputs.build-type != 'backend' }}
           uses: 'actions/cache@v4'
           with:
               path: './node_modules/.cache'
