@@ -1,7 +1,8 @@
 /**
  * External dependencies
  */
-import { UseSelectStateChangeOptions } from 'downshift';
+import { UseSelectStateChangeOptions, UseSelectProps } from 'downshift';
+import { RefObject } from 'react';
 
 export interface Item {
 	key: string;
@@ -26,5 +27,15 @@ export interface UseSelectStateChangeOptionsProps< ItemType >
 	extends UseSelectStateChangeOptions< ItemType > {
 	props: {
 		items: ItemType[];
+		refs: {
+			searchRef: RefObject< HTMLInputElement >;
+		};
+	};
+}
+
+export interface ExtendedUseSelectProps< ItemType >
+	extends UseSelectProps< ItemType > {
+	refs: {
+		searchRef: RefObject< HTMLInputElement >;
 	};
 }
