@@ -2034,8 +2034,9 @@ test.describe( 'Settings API tests: CRUD', () => {
 					} ),
 				] )
 			);
-			// eslint-disable-next-line playwright/no-conditional-in-test
-			if ( ! shouldSkip ) {
+
+			// Skip these tests in WPCOM because they're not configurable there by design.
+			if ( ! process.env.IS_WPCOM ) {
 				expect( responseJSON ).toEqual(
 					expect.arrayContaining( [
 						expect.objectContaining( {
@@ -2050,34 +2051,33 @@ test.describe( 'Settings API tests: CRUD', () => {
 						} ),
 					] )
 				);
-			} else {
-				// Test is failing on external hosts
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'woocommerce_show_marketplace_suggestions',
+							label: 'Show Suggestions',
+							description:
+								'Display suggestions within WooCommerce',
+							type: 'checkbox',
+							default: 'yes',
+							tip: 'Leave this box unchecked if you do not want to pull suggested extensions from WooCommerce.com. You will see a static list of extensions instead.',
+							value: 'yes',
+						} ),
+					] )
+				);
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'woocommerce_analytics_enabled',
+							label: 'Analytics',
+							description: 'Enable WooCommerce Analytics',
+							type: 'checkbox',
+							default: 'yes',
+							value: 'yes',
+						} ),
+					] )
+				);
 			}
-			expect( responseJSON ).toEqual(
-				expect.arrayContaining( [
-					expect.objectContaining( {
-						id: 'woocommerce_show_marketplace_suggestions',
-						label: 'Show Suggestions',
-						description: 'Display suggestions within WooCommerce',
-						type: 'checkbox',
-						default: 'yes',
-						tip: 'Leave this box unchecked if you do not want to pull suggested extensions from WooCommerce.com. You will see a static list of extensions instead.',
-						value: 'yes',
-					} ),
-				] )
-			);
-			expect( responseJSON ).toEqual(
-				expect.arrayContaining( [
-					expect.objectContaining( {
-						id: 'woocommerce_analytics_enabled',
-						label: 'Analytics',
-						description: 'Enable WooCommerce Analytics',
-						type: 'checkbox',
-						default: 'yes',
-						value: 'yes',
-					} ),
-				] )
-			);
 		} );
 	} );
 
