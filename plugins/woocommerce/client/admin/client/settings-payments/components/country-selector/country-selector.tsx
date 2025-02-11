@@ -255,6 +255,8 @@ export const CountrySelector = < ItemType extends Item >( {
 					highlightSelectedCountry( items.indexOf( selectedItem ) );
 				}, 10 );
 			}
+
+			searchRef.current?.focus();
 		},
 		[ searchText, selectedItem ]
 	);
