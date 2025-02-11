@@ -51,7 +51,6 @@
 		"build:project:validate-blocks-manifests": "wireit",
 		"build:project:bundle": "wireit",
 		"build:project:blocks-json-to-php": "wireit",
-		"build:check-assets": "rimraf build/* && cross-env ASSET_CHECK=true BABEL_ENV=default NODE_ENV=production webpack",
 		"prebuild:docs": "rimraf docs/extensibility/actions.md & rimraf docs/extensibility/filters.md",
 		"build:docs": "./vendor/bin/wp-hooks-generator --input=src --output=bin/hook-docs/data && node ./bin/hook-docs && pnpm build:docs:block-references",
 		"build:docs:block-references": "node ./bin/gen-block-list-doc.js",
@@ -393,7 +392,12 @@
 				"tsconfig.base.json",
 				"babel.config.js",
 				"assets",
-				"packages"
+				"!assets/**/docs/**",
+				"!assets/**/test/**",
+				"packages",
+				"!packages/**/*.md",
+				"!packages/**/test/**",
+				"!packages/**/stories/**"
 			],
 			"output": [
 				"build",
