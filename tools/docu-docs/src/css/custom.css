@@ -1,0 +1,302 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #7f54b3;
+  --ifm-color-primary-dark: #724ca1;
+  --ifm-color-primary-darker: #6b4798;
+  --ifm-color-primary-darkest: #583b7d;
+  --ifm-color-primary-light: #8c65bc;
+  --ifm-color-primary-lighter: #936dc0;
+  --ifm-color-primary-lightest: #a686cc;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --ifm-navbar-background-color: #ffffff;
+  --ifm-navbar-height: 60px;
+  --ifm-menu-color: #444;
+  --ifm-font-family-base: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Override the default font size for specific elements */
+html {
+  font-size: 14px;
+}
+
+body {
+  font-family: var(--ifm-font-family-base);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #a686cc;
+  --ifm-color-primary-dark: #936dc0;
+  --ifm-color-primary-darker: #8c65bc;
+  --ifm-color-primary-darkest: #7f54b3;
+  --ifm-color-primary-light: #b99fd8;
+  --ifm-color-primary-lighter: #c0a7dc;
+  --ifm-color-primary-lightest: #d9cbeb;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-menu-color: #ffffff;
+}
+
+.navbar {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.navbar__title {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Sidebar styling */
+.menu {
+  padding: 1rem 0.8rem !important;
+}
+
+.menu__list {
+  margin: 0;
+  transition: height var(--ifm-transition-fast) linear;
+}
+
+.menu__list-item {
+  margin: 0.3rem 0;
+}
+
+.menu__link {
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: normal;
+  color: var(--ifm-menu-color);
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+}
+
+.menu__link:hover {
+  background: rgba(127, 84, 179, 0.05);
+  color: var(--ifm-color-primary);
+}
+
+.menu__link--active {
+  font-weight: 600;
+  background: rgba(127, 84, 179, 0.08);
+}
+
+.menu__list-item--header {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  padding: 1.2rem 0.6rem 0.4rem;
+  color: #757575;
+  letter-spacing: 0.05em;
+  cursor: default;
+  pointer-events: none;
+}
+
+.theme-doc-sidebar-item-category > .menu__link {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: #757575;
+  padding-top: 1.2rem;
+  letter-spacing: 0.05em;
+}
+
+.theme-doc-sidebar-item-category-level-1 > .menu__link {
+  letter-spacing: 0.05em;
+}
+
+/* Search bar styles */
+.navbar__search {
+  padding: 0;
+}
+
+.navbar__search-input {
+  width: 12rem;
+  padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+  background-color: #f5f5f5;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.navbar__search-input::placeholder {
+  color: #666;
+}
+
+.navbar__search-input:focus {
+  width: 18rem;
+  background-color: #fff;
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 0 0 2px rgba(127, 84, 179, 0.25);
+}
+
+/* Dark mode search bar */
+[data-theme='dark'] .navbar__search-input {
+  background-color: #2d2d2d;
+}
+
+[data-theme='dark'] .navbar__search-input:focus {
+  background-color: #1c1c1c;
+}
+
+/* Lunr search results styling */
+.search-result-match {
+  background-color: rgba(127, 84, 179, 0.15);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.search-result-item {
+  padding: 1rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-heading {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.search-result-snippet {
+  font-size: 0.875rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* Content area styling */
+.markdown > h1:first-child {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.markdown > h2 {
+  font-size: 1.8rem;
+  margin-top: 2.5rem;
+  font-weight: 500;
+}
+
+.markdown > h3 {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+article {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+  --ifm-breadcrumb-size-multiplier: 0.8;
+  margin-bottom: 1.2rem;
+}
+
+.breadcrumbs__link {
+  color: var(--ifm-color-primary);
+}
+
+/* Table of contents */
+.table-of-contents {
+  font-size: 16px;
+}
+
+.table-of-contents__link {
+  color: var(--ifm-menu-color);
+}
+
+.table-of-contents__link:hover {
+  color: var(--ifm-color-primary);
+}
+
+.table-of-contents__link--active {
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+}
+
+/* Card styles for documentation links */
+.card-wrapper {
+  padding: 1rem;
+  background: var(--ifm-background-color);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.card-wrapper:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.card-wrapper a {
+  color: var(--ifm-font-color-base);
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-wrapper a::before {
+  content: attr(data-icon);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--ifm-color-primary);
+  border-radius: 4px;
+  color: white;
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .card-wrapper {
+  background: var(--ifm-background-color);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .card-wrapper:hover {
+  box-shadow: 0 3px 6px rgba(255, 255, 255, 0.1);
+}
+
+/* Style for ordered categories in sidebar */
+.menu__list-item--header[class*="GETTING_STARTED"],
+.menu__list-item--header[class*="EXTENSION_DEVELOPMENT"],
+.menu__list-item--header[class*="BUILDING_WOO_STORE"],
+.menu__list-item--header[class*="WC_CLI"],
+.menu__list-item--header[class*="CODE_SNIPPETS"],
+.menu__list-item--header[class*="THEMING"],
+.menu__list-item--header[class*="FEATURES"],
+.menu__list-item--header[class*="REST_API"],
+.menu__list-item--header[class*="REPORTING"],
+.menu__list-item--header[class*="BLOCK_DEVELOPMENT"],
+.menu__list-item--header[class*="BEST_PRACTICES"] {
+  font-size: calc(0.75rem + 2px);
+  font-weight: 700;
+}
+
+/* Dark mode sidebar text colors */
+[data-theme='dark'] .menu__link {
+  color: var(--ifm-menu-color);
+}
+
+[data-theme='dark'] .menu__list-item--header {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme='dark'] .theme-doc-sidebar-item-category > .menu__link {
+  color: rgba(255, 255, 255, 0.8);
+}
