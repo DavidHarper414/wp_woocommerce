@@ -26,13 +26,16 @@ import { cartStore } from '@woocommerce/block-data';
 /**
  * Internal dependencies
  */
-import { notifyQuantityChanges } from './notify-quantity-changes';
+import {
+	notifyQuantityChanges,
+	QuantityChanges,
+} from './notify-quantity-changes';
 import { updateCartErrorNotices } from './notify-errors';
 import { apiFetchWithHeaders } from '../shared-controls';
 import {
 	getIsCustomerDataDirty,
 	setIsCustomerDataDirty,
-	setIgnoreSync,
+	setSyncingStores,
 } from './utils';
 
 interface CartThunkArgs {
@@ -45,30 +48,44 @@ interface CartThunkArgs {
  * of any unexpected quantity changes occurred.
  */
 export const receiveCart =
-	( response: Partial< CartResponse >, options?: { sync?: boolean } ) =>
+	(
+		response: Partial< CartResponse >,
+		options?: {
+			isSyncingStores: boolean;
+			quantityChanges: QuantityChanges;
+		}
+	) =>
 	( { dispatch, select }: CartThunkArgs ) => {
 		const cartResponse = camelCaseKeys( response ) as unknown as Cart;
 		const oldCart = select.getCartData();
 		const oldCartErrors = [ ...oldCart.errors, ...select.getCartErrors() ];
+		const isSyncingStores = options?.isSyncingStores === true;
 
 		// Set data from the response.
-		if ( options?.sync === false ) setIgnoreSync( true );
-		dispatch.setCartData( cartResponse, options );
-		if ( options?.sync === false ) setIgnoreSync( false );
+		if ( isSyncingStores ) setSyncingStores( true );
+		dispatch.setCartData( cartResponse );
+		if ( isSyncingStores ) setSyncingStores( false );
 
 		// Get the new cart data before showing updates.
 		const newCart = select.getCartData();
 
-		if ( options?.sync !== false ) {
-			notifyQuantityChanges( {
-				oldCart,
-				newCart,
-				cartItemsPendingQuantity:
-					select.getItemsPendingQuantityUpdate(),
-				cartItemsPendingDelete: select.getItemsPendingDelete(),
-				productsPendingAdd: select.getProductsPendingAdd(),
-			} );
-		}
+		const cartItemsPendingQuantity = isSyncingStores
+			? options.quantityChanges.cartItemsPendingQuantity
+			: select.getItemsPendingQuantityUpdate();
+		const cartItemsPendingDelete = isSyncingStores
+			? options.quantityChanges.cartItemsPendingDelete
+			: select.getItemsPendingDelete();
+		const productsPendingAdd = isSyncingStores
+			? options.quantityChanges.productsPendingAdd
+			: select.getProductsPendingAdd();
+
+		notifyQuantityChanges( {
+			oldCart,
+			newCart,
+			cartItemsPendingQuantity,
+			cartItemsPendingDelete,
+			productsPendingAdd,
+		} );
 
 		updateCartErrorNotices( newCart.errors, oldCartErrors );
 		dispatch.setErrorData( null );
@@ -152,7 +169,7 @@ export const applyExtensionCartUpdate =
  * @throws Will throw an error if there is an API problem.
  */
 export const syncCartWithIAPIStore =
-	() =>
+	( { quantityChanges }: { quantityChanges: QuantityChanges } ) =>
 	async ( { dispatch }: CartThunkArgs ) => {
 		try {
 			const { response } = await apiFetchWithHeaders< {
@@ -162,7 +179,10 @@ export const syncCartWithIAPIStore =
 				method: 'GET',
 				cache: 'no-store',
 			} );
-			dispatch.receiveCart( response, { sync: false } );
+			dispatch.receiveCart( response, {
+				isSyncingStores: true,
+				quantityChanges,
+			} );
 			return response;
 		} catch ( error ) {
 			dispatch.receiveError( isApiErrorResponse( error ) ? error : null );

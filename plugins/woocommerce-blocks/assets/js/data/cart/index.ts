@@ -29,7 +29,8 @@ import {
 	isAddingToCart,
 } from './persistence-layer';
 import { defaultCartState } from './default-state';
-import { getIgnoreSync } from './utils';
+import { getSyncingStores } from './utils';
+import type { QuantityChanges } from './notify-quantity-changes';
 
 export const config = {
 	reducer,
@@ -93,13 +94,12 @@ function diffObjects(
 }
 
 let previousCart: object | null = null;
-let id = 0;
 
 // Emmits event to sync iAPI store.
 subscribe( () => {
 	const cartData = select( STORE_KEY ).getCartData();
 	if (
-		! getIgnoreSync() &&
+		getSyncingStores() === false &&
 		previousCart !== null &&
 		previousCart !== cartData
 	) {
@@ -108,8 +108,8 @@ subscribe( () => {
 
 		window.dispatchEvent(
 			// Question: What are the usual names for WooCommerce events?
-			new CustomEvent( 'woocommerce-cart-sync-required', {
-				detail: { type: 'from_@wordpress/data', id },
+			new CustomEvent( 'woocommerce-store-sync-required', {
+				detail: { type: 'from_@wordpress/data' },
 			} )
 		);
 	}
@@ -117,16 +117,20 @@ subscribe( () => {
 }, store );
 
 // Listens to cart sync events from the iAPI store.
-window.addEventListener( 'woocommerce-cart-sync-required', ( event: Event ) => {
-	const customEvent = event as CustomEvent< {
-		type: string;
-		id: number;
-	} >;
-	if ( customEvent.detail.type === 'from_iAPI' ) {
-		// Todo: investigate how to avoid infinite loops without causing racing conditions.
-		wpDispatch( store ).syncCartWithIAPIStore();
+window.addEventListener(
+	'woocommerce-store-sync-required',
+	( event: Event ) => {
+		const customEvent = event as CustomEvent< {
+			type: string;
+			quantityChanges: QuantityChanges;
+		} >;
+		const { type, quantityChanges } = customEvent.detail;
+		if ( type === 'from_iAPI' ) {
+			// Todo: investigate how to avoid infinite loops without causing racing conditions.
+			wpDispatch( store ).syncCartWithIAPIStore( { quantityChanges } );
+		}
 	}
-} );
+);
 
 // This will skip the debounce and immediately push changes to the server when a field is blurred.
 document.body.addEventListener( 'focusout', ( event: FocusEvent ) => {
