@@ -717,7 +717,7 @@ test.describe( 'Products API tests: List All Products', () => {
 								stock_status: 'instock',
 							},
 							{
-								name: 'Hoodie with Pocket xxx',
+								name: `Hoodie with Pocket ${ RAND_NUM }`,
 								date_created_gmt: '2021-09-08T15:50:19',
 								type: 'simple',
 								status: 'publish',
@@ -794,7 +794,7 @@ test.describe( 'Products API tests: List All Products', () => {
 								stock_status: 'instock',
 							},
 							{
-								name: 'Sunglasses xxx',
+								name: `Sunglasses ${ RAND_NUM }`,
 								date_created_gmt: '2021-09-09T15:50:19',
 								type: 'simple',
 								status: 'publish',
@@ -863,7 +863,7 @@ test.describe( 'Products API tests: List All Products', () => {
 								stock_status: 'instock',
 							},
 							{
-								name: 'Cap xxx',
+								name: `Cap ${ RAND_NUM }`,
 								date_created_gmt: '2021-09-10T15:50:19',
 								type: 'simple',
 								status: 'publish',
@@ -936,7 +936,7 @@ test.describe( 'Products API tests: List All Products', () => {
 								stock_status: 'instock',
 							},
 							{
-								name: 'Belt xxx',
+								name: `Belt ${ RAND_NUM }`,
 								date_created_gmt: '2021-09-12T15:50:19',
 								type: 'simple',
 								status: 'publish',
@@ -1001,7 +1001,7 @@ test.describe( 'Products API tests: List All Products', () => {
 								stock_status: 'instock',
 							},
 							{
-								name: 'Beanie xxx',
+								name: `Beanie ${ RAND_NUM }`,
 								date_created_gmt: '2021-09-13T15:50:19',
 								type: 'simple',
 								status: 'publish',
@@ -1078,7 +1078,7 @@ test.describe( 'Products API tests: List All Products', () => {
 								stock_status: 'instock',
 							},
 							{
-								name: 'T-Shirt xxx',
+								name: `T-Shirt ${ RAND_NUM }`,
 								date_created_gmt: '2021-09-14T15:50:19',
 								type: 'simple',
 								status: 'publish',
@@ -1151,7 +1151,7 @@ test.describe( 'Products API tests: List All Products', () => {
 								stock_status: 'onbackorder',
 							},
 							{
-								name: 'Hoodie with Logo xxx',
+								name: `Hoodie with Logo ${ RAND_NUM }`,
 								date_created_gmt: '2021-09-15T15:50:19',
 								type: 'simple',
 								status: 'publish',
@@ -1239,7 +1239,7 @@ test.describe( 'Products API tests: List All Products', () => {
 					data: {
 						create: [
 							{
-								name: 'WordPress Pennant xxx',
+								name: `WordPress Pennant ${ RAND_NUM }`,
 								date_created_gmt: '2021-09-16T15:50:20',
 								type: 'external',
 								status: 'publish',
@@ -1334,7 +1334,7 @@ test.describe( 'Products API tests: List All Products', () => {
 					data: {
 						create: [
 							{
-								name: 'Logo Collection xxx',
+								name: `Logo Collection ${ RAND_NUM }`,
 								date_created_gmt: '2021-09-17T15:50:20',
 								type: 'grouped',
 								status: 'publish',
@@ -1423,7 +1423,7 @@ test.describe( 'Products API tests: List All Products', () => {
 
 			const hoodie = await request.post( './wp-json/wc/v3/products', {
 				data: {
-					name: 'Hoodie xxx',
+					name: `Hoodie ${ RAND_NUM }`,
 					date_created_gmt: '2021-09-18T15:50:19',
 					type: 'variable',
 					status: 'publish',
@@ -1708,7 +1708,7 @@ test.describe( 'Products API tests: List All Products', () => {
 
 			const vneck = await request.post( './wp-json/wc/v3/products', {
 				data: {
-					name: 'V-Neck T-Shirt xxx',
+					name: `V-Neck T-Shirt ${ RAND_NUM }`,
 					date_created_gmt: '2021-09-23T15:50:19',
 					type: 'variable',
 					status: 'publish',
@@ -1932,7 +1932,7 @@ test.describe( 'Products API tests: List All Products', () => {
 		const createSampleHierarchicalProducts = async () => {
 			const parent = await request.post( './wp-json/wc/v3/products', {
 				data: {
-					name: 'Parent Product xxx',
+					name: `Parent Product ${ RAND_NUM }`,
 					date_created_gmt: '2021-09-27T15:50:19',
 				},
 			} );
@@ -1940,7 +1940,7 @@ test.describe( 'Products API tests: List All Products', () => {
 
 			const child = await request.post( './wp-json/wc/v3/products', {
 				data: {
-					name: 'Child Product xxx',
+					name: `Child Product ${ RAND_NUM }`,
 					parent_id: parentJSON.id,
 					date_created_gmt: '2021-09-28T15:50:19',
 				},
@@ -1954,12 +1954,14 @@ test.describe( 'Products API tests: List All Products', () => {
 		};
 
 		const createSampleProductReviews = async ( simpleProducts ) => {
-			const cap = simpleProducts.find( ( p ) => p.name === 'Cap xxx' );
+			const cap = simpleProducts.find(
+				( p ) => p.name === `Cap ${ RAND_NUM }`
+			);
 			const shirt = simpleProducts.find(
-				( p ) => p.name === 'T-Shirt xxx'
+				( p ) => p.name === `T-Shirt ${ RAND_NUM }`
 			);
 			const sunglasses = simpleProducts.find(
-				( p ) => p.name === 'Sunglasses xxx'
+				( p ) => p.name === `Sunglasses ${ RAND_NUM }`
 			);
 
 			const review1 = await request.post(
@@ -2033,13 +2035,13 @@ test.describe( 'Products API tests: List All Products', () => {
 
 		const createSampleProductOrders = async ( simpleProducts ) => {
 			const single = simpleProducts.find(
-				( p ) => p.name === 'Single xxx'
+				( p ) => p.name === `Single ${ RAND_NUM }`
 			);
 			const beanie = simpleProducts.find(
-				( p ) => p.name === 'Beanie with Logo xxx'
+				( p ) => p.name === `Beanie with Logo ${ RAND_NUM }`
 			);
 			const shirt = simpleProducts.find(
-				( p ) => p.name === 'T-Shirt xxx'
+				( p ) => p.name === `T-Shirt ${ RAND_NUM }`
 			);
 
 			const order = await request.post( './wp-json/wc/v3/orders', {
@@ -2238,7 +2240,7 @@ test.describe( 'Products API tests: List All Products', () => {
 		test( 'defaults', async ( { request } ) => {
 			const result = await request.get( 'wp-json/wc/v3/products', {
 				params: {
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 
@@ -2254,7 +2256,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			const page1 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					per_page: pageSize,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const page1JSON = await page1.json();
@@ -2262,7 +2264,7 @@ test.describe( 'Products API tests: List All Products', () => {
 				params: {
 					per_page: pageSize,
 					page: 2,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const page2JSON = await page2.json();
@@ -2296,7 +2298,7 @@ test.describe( 'Products API tests: List All Products', () => {
 					per_page: pageSize,
 					page: 2,
 					offset: pageSize + 1,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const page2OffsetJSON = await page2Offset.json();
@@ -2315,7 +2317,7 @@ test.describe( 'Products API tests: List All Products', () => {
 				params: {
 					per_page: pageSize,
 					page: 4,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const lastPageJSON = await lastPage.json();
@@ -2327,7 +2329,7 @@ test.describe( 'Products API tests: List All Products', () => {
 				params: {
 					per_page: pageSize,
 					page: 6,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const page6JSON = await page6.json();
@@ -2348,7 +2350,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			expect( result1JSON ).toEqual(
 				expect.arrayContaining( [
 					expect.objectContaining( {
-						name: 'WordPress Pennant xxx',
+						name: `WordPress Pennant ${ RAND_NUM }`,
 					} ),
 				] )
 			);
@@ -2356,20 +2358,22 @@ test.describe( 'Products API tests: List All Products', () => {
 			// Match in the product name.
 			const result2 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
-					search: 'pocket xxx',
+					search: `pocket ${ RAND_NUM }`,
 				},
 			} );
 			const result2JSON = await result2.json();
 			expect( result2.status() ).toEqual( 200 );
 			expect( result2JSON ).toHaveLength( 1 );
-			expect( result2JSON[ 0 ].name ).toBe( 'Hoodie with Pocket xxx' );
+			expect( result2JSON[ 0 ].name ).toBe(
+				`Hoodie with Pocket ${ RAND_NUM }`
+			);
 		} );
 
 		test( 'inclusion / exclusion', async ( { request } ) => {
 			const allProducts = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					per_page: 20,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const allProductsJSON = await allProducts.json();
@@ -2431,13 +2435,15 @@ test.describe( 'Products API tests: List All Products', () => {
 			// Match by slug.
 			const result1 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
-					slug: 't-shirt-with-logo-xxx',
+					slug: `t-shirt-with-logo-${ RAND_NUM }`,
 				},
 			} );
 			const result1JSON = await result1.json();
 			expect( result1.status() ).toEqual( 200 );
 			expect( result1JSON ).toHaveLength( 1 );
-			expect( result1JSON[ 0 ].slug ).toBe( 't-shirt-with-logo-xxx' );
+			expect( result1JSON[ 0 ].slug ).toBe(
+				`t-shirt-with-logo-${ RAND_NUM }`
+			);
 
 			// No matches
 			const result2 = await request.get( 'wp-json/wc/v3/products', {
@@ -2477,7 +2483,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			const result1 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					type: 'simple',
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			expect( result1.status() ).toEqual( 200 );
@@ -2486,18 +2492,20 @@ test.describe( 'Products API tests: List All Products', () => {
 			const result2 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					type: 'external',
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result2JSON = await result2.json();
 			expect( result2.status() ).toEqual( 200 );
 			expect( result2JSON ).toHaveLength( 1 );
-			expect( result2JSON[ 0 ].name ).toBe( 'WordPress Pennant xxx' );
+			expect( result2JSON[ 0 ].name ).toBe(
+				`WordPress Pennant ${ RAND_NUM }`
+			);
 
 			const result3 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					type: 'variable',
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result3JSON = await result3.json();
@@ -2507,13 +2515,15 @@ test.describe( 'Products API tests: List All Products', () => {
 			const result4 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					type: 'grouped',
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result4JSON = await result4.json();
 			expect( result4.status() ).toEqual( 200 );
 			expect( result4JSON ).toHaveLength( 1 );
-			expect( result4JSON[ 0 ].name ).toBe( 'Logo Collection xxx' );
+			expect( result4JSON[ 0 ].name ).toBe(
+				`Logo Collection ${ RAND_NUM }`
+			);
 		} );
 
 		test( 'featured', async ( { request } ) => {
@@ -2522,23 +2532,23 @@ test.describe( 'Products API tests: List All Products', () => {
 					name: `Hoodie with Zipper ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Hoodie with Pocket xxx',
+					name: `Hoodie with Pocket ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Sunglasses xxx',
+					name: `Sunglasses ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Cap xxx',
+					name: `Cap ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'V-Neck T-Shirt xxx',
+					name: `V-Neck T-Shirt ${ RAND_NUM }`,
 				} ),
 			];
 
 			const result1 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					featured: true,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result1JSON = await result1.json();
@@ -2549,7 +2559,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			const result2 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					featured: false,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result2JSON = await result2.json();
@@ -2562,7 +2572,7 @@ test.describe( 'Products API tests: List All Products', () => {
 		test( 'categories', async ( { request } ) => {
 			const accessory = [
 				expect.objectContaining( {
-					name: 'Beanie xxx',
+					name: `Beanie ${ RAND_NUM }`,
 				} ),
 			];
 			const hoodies = [
@@ -2570,13 +2580,13 @@ test.describe( 'Products API tests: List All Products', () => {
 					name: `Hoodie with Zipper ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Hoodie with Pocket xxx',
+					name: `Hoodie with Pocket ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Hoodie with Logo xxx',
+					name: `Hoodie with Logo ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Hoodie xxx',
+					name: `Hoodie ${ RAND_NUM }`,
 				} ),
 			];
 
@@ -2611,32 +2621,32 @@ test.describe( 'Products API tests: List All Products', () => {
 		test( 'on sale', async ( { request } ) => {
 			const onSale = [
 				expect.objectContaining( {
-					name: 'Beanie with Logo xxx',
+					name: `Beanie with Logo ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Hoodie with Pocket xxx',
+					name: `Hoodie with Pocket ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Single xxx',
+					name: `Single ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Cap xxx',
+					name: `Cap ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Belt xxx',
+					name: `Belt ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Beanie xxx',
+					name: `Beanie ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Hoodie xxx',
+					name: `Hoodie ${ RAND_NUM }`,
 				} ),
 			];
 
 			const result1 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					on_sale: true,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result1JSON = await result1.json();
@@ -2647,7 +2657,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			const result2 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					on_sale: false,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result2JSON = await result2.json();
@@ -2662,7 +2672,7 @@ test.describe( 'Products API tests: List All Products', () => {
 				params: {
 					min_price: 21,
 					max_price: 28,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result1JSON = await result1.json();
@@ -2676,13 +2686,13 @@ test.describe( 'Products API tests: List All Products', () => {
 			const result2 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					max_price: 5,
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result2JSON = await result2.json();
 			expect( result2.status() ).toEqual( 200 );
 			expect( result2JSON ).toHaveLength( 1 );
-			expect( result2JSON[ 0 ].name ).toBe( 'Single xxx' );
+			expect( result2JSON[ 0 ].name ).toBe( `Single ${ RAND_NUM }` );
 			expect( result2JSON[ 0 ].price ).toBe( '2' );
 
 			const result3 = await request.get( 'wp-json/wc/v3/products', {
@@ -2690,7 +2700,7 @@ test.describe( 'Products API tests: List All Products', () => {
 					min_price: 5,
 					order: 'asc',
 					orderby: 'price',
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result3JSON = await result3.json();
@@ -2698,7 +2708,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			expect( result3JSON ).toEqual(
 				expect.not.arrayContaining( [
 					expect.objectContaining( {
-						name: 'Single xxx',
+						name: `Single ${ RAND_NUM }`,
 					} ),
 				] )
 			);
@@ -2710,34 +2720,34 @@ test.describe( 'Products API tests: List All Products', () => {
 					name: `Album ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Single xxx',
+					name: `Single ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'T-Shirt with Logo xxx',
+					name: `T-Shirt with Logo ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Beanie with Logo xxx',
+					name: `Beanie with Logo ${ RAND_NUM }`,
 				} ),
 			];
 			const after = [
 				expect.objectContaining( {
-					name: 'Hoodie xxx',
+					name: `Hoodie ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'V-Neck T-Shirt xxx',
+					name: `V-Neck T-Shirt ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Parent Product xxx',
+					name: `Parent Product ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Child Product xxx',
+					name: `Child Product ${ RAND_NUM }`,
 				} ),
 			];
 
 			const result1 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					before: '2021-09-05T15:50:19',
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result1JSON = await result1.json();
@@ -2748,7 +2758,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			const result2 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					after: '2021-09-18T15:50:18',
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result2JSON = await result2.json();
@@ -2767,22 +2777,22 @@ test.describe( 'Products API tests: List All Products', () => {
 
 			const redProducts = [
 				expect.objectContaining( {
-					name: 'V-Neck T-Shirt xxx',
+					name: `V-Neck T-Shirt ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Hoodie xxx',
+					name: `Hoodie ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Beanie xxx',
+					name: `Beanie ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Beanie with Logo xxx',
+					name: `Beanie with Logo ${ RAND_NUM }`,
 				} ),
 			];
 
 			const result = await request.get( 'wp-json/wc/v3/products', {
 				params: {
-					attribute: 'pa_colorxxx',
+					attribute: `pa_color${ RAND_NUM }`,
 					attribute_term: red.id,
 				},
 			} );
@@ -2799,7 +2809,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			const result1 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					status: 'pending',
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const result1JSON = await result1.json();
@@ -2835,38 +2845,38 @@ test.describe( 'Products API tests: List All Products', () => {
 			const result = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					tax_class: 'reduced-rate',
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const resultJSON = await result.json();
 			expect( result.status() ).toEqual( 200 );
 			expect( resultJSON ).toHaveLength( 1 );
-			expect( resultJSON[ 0 ].name ).toBe( 'Sunglasses xxx' );
+			expect( resultJSON[ 0 ].name ).toBe( `Sunglasses ${ RAND_NUM }` );
 		} );
 
 		test( 'stock status', async ( { request } ) => {
 			const result = await request.get( 'wp-json/wc/v3/products', {
 				params: {
 					stock_status: 'onbackorder',
-					search: 'xxx',
+					search: RAND_NUM,
 				},
 			} );
 			const resultJSON = await result.json();
 			expect( result.status() ).toEqual( 200 );
 			expect( resultJSON ).toHaveLength( 1 );
-			expect( resultJSON[ 0 ].name ).toBe( 'T-Shirt xxx' );
+			expect( resultJSON[ 0 ].name ).toBe( `T-Shirt ${ RAND_NUM }` );
 		} );
 
 		test.only( 'tags', async ( { request } ) => {
 			const coolProducts = [
 				expect.objectContaining( {
-					name: 'Sunglasses xxx',
+					name: `Sunglasses ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Hoodie with Pocket xxx',
+					name: `Hoodie with Pocket ${ RAND_NUM }`,
 				} ),
 				expect.objectContaining( {
-					name: 'Beanie xxx',
+					name: `Beanie ${ RAND_NUM }`,
 				} ),
 			];
 
@@ -2893,7 +2903,9 @@ test.describe( 'Products API tests: List All Products', () => {
 			const result1JSON = await result1.json();
 			expect( result1.status() ).toEqual( 200 );
 			expect( result1JSON ).toHaveLength( 1 );
-			expect( result1JSON[ 0 ].name ).toBe( 'Child Product xxx' );
+			expect( result1JSON[ 0 ].name ).toBe(
+				`Child Product ${ RAND_NUM }`
+			);
 
 			const result2 = await request.get( 'wp-json/wc/v3/products', {
 				params: {
@@ -2906,7 +2918,7 @@ test.describe( 'Products API tests: List All Products', () => {
 			expect( result2JSON ).toEqual(
 				expect.not.arrayContaining( [
 					expect.objectContaining( {
-						name: 'Child Product xxx',
+						name: `Child Product ${ RAND_NUM }`,
 					} ),
 				] )
 			);
@@ -2915,39 +2927,39 @@ test.describe( 'Products API tests: List All Products', () => {
 		test.describe( 'orderby', () => {
 			const productNamesAsc = [
 				`Album ${ RAND_NUM }`,
-				'Beanie with Logo xxx',
-				'Beanie xxx',
-				'Belt xxx',
-				'Cap xxx',
-				'Child Product xxx',
-				'Hoodie with Logo xxx',
-				'Hoodie with Pocket xxx',
+				`Beanie with Logo ${ RAND_NUM }`,
+				`Beanie ${ RAND_NUM }`,
+				`Belt ${ RAND_NUM }`,
+				`Cap ${ RAND_NUM }`,
+				`Child Product ${ RAND_NUM }`,
+				`Hoodie with Logo ${ RAND_NUM }`,
+				`Hoodie with Pocket ${ RAND_NUM }`,
 				`Hoodie with Zipper ${ RAND_NUM }`,
-				'Hoodie xxx',
-				'Logo Collection xxx',
+				`Hoodie ${ RAND_NUM }`,
+				`Logo Collection ${ RAND_NUM }`,
 				`Long Sleeve Tee ${ RAND_NUM }`,
-				'Parent Product xxx',
+				`Parent Product ${ RAND_NUM }`,
 				`Polo ${ RAND_NUM }`,
-				'Single xxx',
-				'Sunglasses xxx',
-				'T-Shirt with Logo xxx',
-				'T-Shirt xxx',
-				'V-Neck T-Shirt xxx',
-				'WordPress Pennant xxx',
+				`Single ${ RAND_NUM }`,
+				`Sunglasses ${ RAND_NUM }`,
+				`T-Shirt with Logo ${ RAND_NUM }`,
+				`T-Shirt ${ RAND_NUM }`,
+				`V-Neck T-Shirt ${ RAND_NUM }`,
+				`WordPress Pennant ${ RAND_NUM }`,
 			];
 			const productNamesDesc = [ ...productNamesAsc ].reverse();
 			const productNamesByRatingAsc = [
-				'Sunglasses xxx',
-				'Cap xxx',
-				'T-Shirt xxx',
+				`Sunglasses ${ RAND_NUM }`,
+				`Cap ${ RAND_NUM }`,
+				`T-Shirt ${ RAND_NUM }`,
 			];
 			const productNamesByRatingDesc = [
 				...productNamesByRatingAsc,
 			].reverse();
 			const productNamesByPopularityDesc = [
-				'Beanie with Logo xxx',
-				'Single xxx',
-				'T-Shirt xxx',
+				`Beanie with Logo ${ RAND_NUM }`,
+				`Single ${ RAND_NUM }`,
+				`T-Shirt ${ RAND_NUM }`,
 			];
 			const productNamesByPopularityAsc = [
 				...productNamesByPopularityDesc,
@@ -2957,7 +2969,7 @@ test.describe( 'Products API tests: List All Products', () => {
 				// Default = date desc.
 				const result = await request.get( 'wp-json/wc/v3/products', {
 					params: {
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const resultJSON = await result.json();
@@ -2977,7 +2989,7 @@ test.describe( 'Products API tests: List All Products', () => {
 					params: {
 						order: 'asc',
 						orderby: 'date',
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const resultJSON = await result.json();
@@ -2997,7 +3009,7 @@ test.describe( 'Products API tests: List All Products', () => {
 					params: {
 						order: 'asc',
 						orderby: 'id',
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const result1JSON = await result1.json();
@@ -3014,7 +3026,7 @@ test.describe( 'Products API tests: List All Products', () => {
 					params: {
 						order: 'desc',
 						orderby: 'id',
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const result2JSON = await result2.json();
@@ -3034,7 +3046,7 @@ test.describe( 'Products API tests: List All Products', () => {
 						order: 'asc',
 						orderby: 'title',
 						per_page: productNamesAsc.length,
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const result1JSON = await result1.json();
@@ -3050,7 +3062,7 @@ test.describe( 'Products API tests: List All Products', () => {
 						order: 'desc',
 						orderby: 'title',
 						per_page: productNamesDesc.length,
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const result2JSON = await result2.json();
@@ -3078,7 +3090,7 @@ test.describe( 'Products API tests: List All Products', () => {
 						order: 'asc',
 						orderby: 'slug',
 						per_page: productNamesBySlugAsc.length,
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const result1JSON = await result1.json();
@@ -3094,7 +3106,7 @@ test.describe( 'Products API tests: List All Products', () => {
 						order: 'desc',
 						orderby: 'slug',
 						per_page: productNamesBySlugDesc.length,
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const result2JSON = await result2.json();
@@ -3108,33 +3120,33 @@ test.describe( 'Products API tests: List All Products', () => {
 
 			test( 'price orderby', async ( { request } ) => {
 				const productNamesMinPriceAsc = [
-					'Parent Product xxx',
-					'Child Product xxx',
-					'Single xxx',
-					'WordPress Pennant xxx',
+					`Parent Product ${ RAND_NUM }`,
+					`Child Product ${ RAND_NUM }`,
+					`Single ${ RAND_NUM }`,
+					`WordPress Pennant ${ RAND_NUM }`,
 					`Album ${ RAND_NUM }`,
-					'V-Neck T-Shirt xxx',
-					'Cap xxx',
-					'Beanie with Logo xxx',
-					'T-Shirt with Logo xxx',
-					'Beanie xxx',
-					'T-Shirt xxx',
-					'Logo Collection xxx',
+					`V-Neck T-Shirt ${ RAND_NUM }`,
+					`Cap ${ RAND_NUM }`,
+					`Beanie with Logo ${ RAND_NUM }`,
+					`T-Shirt with Logo ${ RAND_NUM }`,
+					`Beanie ${ RAND_NUM }`,
+					`T-Shirt ${ RAND_NUM }`,
+					`Logo Collection ${ RAND_NUM }`,
 					`Polo ${ RAND_NUM }`,
 					`Long Sleeve Tee ${ RAND_NUM }`,
-					'Hoodie with Pocket xxx',
-					'Hoodie xxx',
+					`Hoodie with Pocket ${ RAND_NUM }`,
+					`Hoodie ${ RAND_NUM }`,
 					`Hoodie with Zipper ${ RAND_NUM }`,
-					'Hoodie with Logo xxx',
-					'Belt xxx',
-					'Sunglasses xxx',
+					`Hoodie with Logo ${ RAND_NUM }`,
+					`Belt ${ RAND_NUM }`,
+					`Sunglasses ${ RAND_NUM }`,
 				];
 				const result1 = await request.get( 'wp-json/wc/v3/products', {
 					params: {
 						order: 'asc',
 						orderby: 'price',
 						per_page: productNamesMinPriceAsc.length,
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const result1JSON = await result1.json();
@@ -3151,26 +3163,26 @@ test.describe( 'Products API tests: List All Products', () => {
 				} );
 
 				const productNamesMaxPriceDesc = [
-					'Sunglasses xxx',
-					'Belt xxx',
-					'Hoodie xxx',
-					'Logo Collection xxx',
-					'Hoodie with Logo xxx',
+					`Sunglasses ${ RAND_NUM }`,
+					`Belt ${ RAND_NUM }`,
+					`Hoodie ${ RAND_NUM }`,
+					`Logo Collection ${ RAND_NUM }`,
+					`Hoodie with Logo ${ RAND_NUM }`,
 					`Hoodie with Zipper ${ RAND_NUM }`,
-					'Hoodie with Pocket xxx',
+					`Hoodie with Pocket ${ RAND_NUM }`,
 					`Long Sleeve Tee ${ RAND_NUM }`,
-					'V-Neck T-Shirt xxx',
+					`V-Neck T-Shirt ${ RAND_NUM }`,
 					`Polo ${ RAND_NUM }`,
-					'T-Shirt xxx',
-					'Beanie xxx',
-					'T-Shirt with Logo xxx',
-					'Beanie with Logo xxx',
-					'Cap xxx',
+					`T-Shirt ${ RAND_NUM }`,
+					`Beanie ${ RAND_NUM }`,
+					`T-Shirt with Logo ${ RAND_NUM }`,
+					`Beanie with Logo ${ RAND_NUM }`,
+					`Cap ${ RAND_NUM }`,
 					`Album ${ RAND_NUM }`,
-					'WordPress Pennant xxx',
-					'Single xxx',
-					'Child Product xxx',
-					'Parent Product xxx',
+					`WordPress Pennant ${ RAND_NUM }`,
+					`Single ${ RAND_NUM }`,
+					`Child Product ${ RAND_NUM }`,
+					`Parent Product ${ RAND_NUM }`,
 				];
 
 				const result2 = await request.get( 'wp-json/wc/v3/products', {
@@ -3178,7 +3190,7 @@ test.describe( 'Products API tests: List All Products', () => {
 						order: 'desc',
 						orderby: 'price',
 						per_page: productNamesMaxPriceDesc.length,
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const result2JSON = await result2.json();
@@ -3242,7 +3254,7 @@ test.describe( 'Products API tests: List All Products', () => {
 						order: 'desc',
 						orderby: 'rating',
 						per_page: productNamesByRatingDesc.length,
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const result2JSON = await result2.json();
@@ -3262,7 +3274,7 @@ test.describe( 'Products API tests: List All Products', () => {
 						order: 'asc',
 						orderby: 'rating',
 						per_page: productNamesByRatingAsc.length,
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				expect( result1.status() ).toEqual( 200 );
@@ -3282,7 +3294,7 @@ test.describe( 'Products API tests: List All Products', () => {
 						order: 'asc',
 						orderby: 'popularity',
 						per_page: productNamesByPopularityAsc.length,
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const result1JSON = await result1.json();
@@ -3300,7 +3312,7 @@ test.describe( 'Products API tests: List All Products', () => {
 						order: 'desc',
 						orderby: 'popularity',
 						per_page: productNamesByPopularityDesc.length,
-						search: 'xxx',
+						search: RAND_NUM,
 					},
 				} );
 				const result2JSON = await result2.json();
