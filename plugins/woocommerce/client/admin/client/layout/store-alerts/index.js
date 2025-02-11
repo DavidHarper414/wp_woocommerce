@@ -20,7 +20,7 @@ import {
 	NOTES_STORE_NAME,
 	QUERY_DEFAULTS,
 	OPTIONS_STORE_NAME,
-	ONBOARDING_STORE_NAME,
+	onboardingStore,
 	useUserPreferences,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -69,7 +69,7 @@ export const StoreAlerts = () => {
 		const { getNotes, hasFinishedResolution } = select( NOTES_STORE_NAME );
 		const { getOption } = select( OPTIONS_STORE_NAME );
 		const { getTaskList, hasFinishedResolution: taskListFinishResolution } =
-			select( ONBOARDING_STORE_NAME );
+			select( onboardingStore );
 
 		return {
 			alerts: getUnactionedVisibleAlerts( getNotes( ALERTS_QUERY ) ),

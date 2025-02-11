@@ -11,7 +11,7 @@ import {
 	__experimentalText as Text,
 } from '@wordpress/components';
 import {
-	ONBOARDING_STORE_NAME,
+	onboardingStore,
 	ORDERS_STORE_NAME,
 	PRODUCTS_STORE_NAME,
 } from '@woocommerce/data';
@@ -69,7 +69,7 @@ export const ActivityPanel = () => {
 				PUBLISHED_PRODUCTS_QUERY_PARAMS,
 				0,
 			] );
-		const taskList = select( ONBOARDING_STORE_NAME ).getTaskList( 'setup' );
+		const taskList = select( onboardingStore ).getTaskList( 'setup' );
 
 		return {
 			loadingOrderAndProductCount,

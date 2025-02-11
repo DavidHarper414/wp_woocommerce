@@ -5,7 +5,7 @@ import { registerPlugin } from '@wordpress/plugins';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
 import { useSelect } from '@wordpress/data';
 import {
-	ONBOARDING_STORE_NAME,
+	onboardingStore,
 	TaskType,
 	DeprecatedTaskType,
 } from '@woocommerce/data';
@@ -19,12 +19,11 @@ const DeprecatedWooOnboardingTaskFills = () => {
 	);
 	const { isResolving, taskLists } = useSelect( ( select ) => {
 		return {
-			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
-				'getTaskLists'
+			isResolving: select( onboardingStore ).isResolving(
+				'getTaskLists',
+				[]
 			),
-			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-			taskLists: select( ONBOARDING_STORE_NAME ).getTaskLists(),
+			taskLists: select( onboardingStore ).getTaskLists(),
 		};
 	}, [] );
 
