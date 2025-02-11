@@ -20,37 +20,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_BIS_Install {
 
 	/**
-	 * DB updates and callbacks that need to be run per version.
-	 *
-	 * @var array
-	 */
-	private static $db_updates = array(
-		'1.1.0' => array(
-			'wc_bis_update_110_main',
-			'wc_bis_update_110_db_version',
-		),
-	);
-
-	/**
 	 * Background update class.
 	 *
 	 * @var WC_BIS_Background_Updater
 	 */
 	private static $background_updater;
-
-	/**
-	 * Current plugin version.
-	 *
-	 * @var string
-	 */
-	private static $current_version;
-
-	/**
-	 * Current DB version.
-	 *
-	 * @var string
-	 */
-	private static $current_db_version;
 
 	/**
 	 * Whether install() ran in this request.
@@ -66,18 +40,10 @@ class WC_BIS_Install {
 
 		// Installation and DB updates handling.
 		add_action( 'init', array( __CLASS__, 'init_background_updater' ), 5 );
-		add_action( 'init', array( __CLASS__, 'define_updating_constant' ) );
-//		add_action( 'init', array( __CLASS__, 'maybe_install' ) );
-		add_action( 'admin_init', array( __CLASS__, 'maybe_update' ) );
 
-		// Show row meta on the plugin screen.
-		add_filter( 'plugin_row_meta', array( __CLASS__, 'plugin_row_meta' ), 10, 2 );
+		//TODO: Haven't ported the db upgrade when updating to 1.1.0, so perhaps add some info to folks on older BIS?
 
-		// Get PB plugin and DB versions.
-		self::$current_version    = get_option( 'wc_bis_version', null );
-		self::$current_db_version = get_option( 'wc_bis_db_version', null );
-
-		include_once WC_BIS_ABSPATH . 'includes/class-wc-bis-background-updater.php';
+		include_once WC_ABSPATH . 'includes/bis/class-wc-bis-background-updater.php';
 	}
 
 	/**
@@ -88,137 +54,27 @@ class WC_BIS_Install {
 	}
 
 	/**
-	 * Installation needed?
-	 *
-	 * @return boolean
-	 */
-	private static function must_install() {
-		//TODO: plug this into WC core's install routine.
-		if ( is_null( self::$current_version ) ) {
-			return true;
-		}
-
-		return version_compare( self::$current_version, WC_BIS()->get_plugin_version(), '<' );
-	}
-
-	/**
-	 * Installation possible?
-	 *
-	 * @return boolean
-	 */
-	private static function can_install() {
-		//TODO: plug this into WC core's install routine.
-		return ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) && ! defined( 'IFRAME_REQUEST' ) && ! self::is_installing();
-	}
-
-	/**
 	 * Check version and run the installer if necessary.
 	 */
 	public static function maybe_install() {
-		//TODO: plug this into WC core's install routine.
-		if ( self::can_install() && self::must_install() ) {
-			self::install();
-		}
-	}
-
-	/**
-	 * Is currently installing?
-	 *
-	 * @return boolean
-	 */
-	private static function is_installing() {
-		//TODO: plug this into WC core's install routine.
-		return 'yes' === get_transient( 'wc_bis_installing' );
-	}
-
-	/**
-	 * DB update needed?
-	 *
-	 * @return boolean
-	 */
-	private static function must_update() {
-
-		if ( is_null( self::$current_db_version ) ) {
-			return false;
-		}
-
-		$db_update_versions = array_keys( self::$db_updates );
-
-		if ( empty( $db_update_versions ) ) {
-			return false;
-		}
-
-		$db_version_target = end( $db_update_versions );
-
-		return version_compare( self::$current_db_version, $db_version_target, '<' );
-	}
-
-	/**
-	 * DB update possible?
-	 *
-	 * @return boolean
-	 */
-	private static function can_update() {
-		return ( self::$is_install_request || ( self::can_install() && current_user_can( 'manage_woocommerce' ) ) ) && version_compare( self::$current_db_version, WC_BIS()->get_plugin_version( true ), '<' );
+		wc_deprecated_function( 'WC_BIS_Install::maybe_install', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
 	 * Run the updater if triggered.
 	 */
 	public static function maybe_update() {
-
-		if ( ! empty( $_GET['force_wc_bis_db_update'] ) && isset( $_GET['_wc_bis_admin_nonce'] ) && wp_verify_nonce( wc_clean( $_GET['_wc_bis_admin_nonce'] ), 'wc_bis_force_db_update_nonce' ) ) {
-
-			if ( self::can_update() && self::must_update() ) {
-				self::force_update();
-			}
-		} elseif ( ! empty( $_GET['trigger_wc_bis_db_update'] ) && isset( $_GET['_wc_bis_admin_nonce'] ) && wp_verify_nonce( wc_clean( $_GET['_wc_bis_admin_nonce'] ), 'wc_bis_trigger_db_update_nonce' ) ) {
-
-			if ( self::can_update() && self::must_update() ) {
-				self::trigger_update();
-			}
-		} else {
-
-			// Queue upgrade tasks.
-			if ( self::can_update() ) {
-
-				if ( ! is_blog_installed() ) {
-					return;
-				}
-
-				// Plugin data exists - queue upgrade tasks.
-				if ( self::must_update() ) {
-
-					if ( ! class_exists( 'WC_BIS_Admin_Notices' ) ) {
-						require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
-					}
-
-					// Add 'update' notice and save early -- saving on the 'shutdown' action will fail if a chained request arrives before the 'shutdown' hook fires.
-					WC_BIS_Admin_Notices::add_maintenance_notice( 'update' );
-					WC_BIS_Admin_Notices::save_notices();
-
-					if ( self::auto_update_enabled() ) {
-						self::update();
-					} else {
-						delete_transient( 'wc_bis_installing' );
-						delete_option( 'wc_bis_update_init' );
-					}
-
-					// Nothing found - this is a new install :)
-				} else {
-					self::update_db_version();
-				}
-			}
-		}
+		wc_deprecated_function( 'WC_BIS_Install::maybe_update', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
 	 * If the DB version is out-of-date, a DB update must be in progress: define a 'WC_BIS_UPDATING' constant.
 	 */
 	public static function define_updating_constant() {
-		if ( self::is_update_pending() && ! defined( 'WC_BIS_TESTING' ) ) {
-			wc_maybe_define_constant( 'WC_BIS_UPDATING', true );
-		}
+		wc_deprecated_function( 'WC_BIS_Install::define_updating_constant', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
@@ -264,16 +120,6 @@ class WC_BIS_Install {
 
 		// Flush rules to include our new endpoint.
 //		flush_rewrite_rules();
-	}
-
-	/**
-	 * Set up the database tables which the plugin needs to function.
-	 */
-	private static function create_tables() {
-		global $wpdb;
-		$wpdb->hide_errors();
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		dbDelta( self::get_schema() );
 	}
 
 	/**
@@ -355,52 +201,6 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 		return $tables;
 	}
 
-	/**
-	 * Update WC BIS version to current.
-	 */
-	private static function update_version() {
-		delete_option( 'wc_bis_version' );
-		add_option( 'wc_bis_version', WC_BIS()->get_plugin_version() );
-	}
-
-	/**
-	 * Push all needed DB updates to the queue for processing.
-	 */
-	private static function update() {
-
-		if ( ! is_object( self::$background_updater ) ) {
-			self::init_background_updater();
-		}
-
-		$update_queued = false;
-
-		foreach ( self::$db_updates as $version => $update_callbacks ) {
-
-			if ( version_compare( self::$current_db_version, $version, '<' ) ) {
-
-				$update_queued = true;
-				WC_BIS()->log( sprintf( 'Updating to version %s.', $version ), 'info', 'wc_bis_db_updates' );
-
-				foreach ( $update_callbacks as $update_callback ) {
-					WC_BIS()->log( sprintf( '- Queuing %s callback.', $update_callback ), 'info', 'wc_bis_db_updates' );
-					self::$background_updater->push_to_queue( $update_callback );
-				}
-			}
-		}
-
-		if ( $update_queued ) {
-
-			// Define 'WC_BIS_UPDATING' constant.
-			wc_maybe_define_constant( 'WC_BIS_UPDATING', true );
-
-			// Keep track of time.
-			delete_option( 'wc_bis_update_init' );
-			add_option( 'wc_bis_update_init', gmdate( 'U' ) );
-
-			// Dispatch.
-			self::$background_updater->save()->dispatch();
-		}
-	}
 
 	/**
 	 * Is auto-updating enabled?
@@ -408,44 +208,32 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	 * @return boolean
 	 */
 	public static function auto_update_enabled() {
-		return apply_filters( 'wc_bis_auto_update_db', true );
+		wc_deprecated_function( 'WC_BIS_Install::auto_update_enabled', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
 	 * Trigger DB update.
 	 */
 	public static function trigger_update() {
-		self::update();
-		wp_safe_redirect( admin_url() );
-		exit;
+		wc_deprecated_function( 'WC_BIS_Install::trigger_update', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
 	 * Force re-start the update cron if everything else fails.
 	 */
 	public static function force_update() {
-
-		if ( ! is_object( self::$background_updater ) ) {
-			self::init_background_updater();
-		}
-
-		/**
-		 * Updater cron action.
-		 */
-		do_action( self::$background_updater->get_cron_hook_identifier() );
-		wp_safe_redirect( admin_url() );
-		exit;
+		wc_deprecated_function( 'WC_BIS_Install::force_update', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
 	 * Updates plugin DB version when all updates have been processed.
 	 */
 	public static function update_complete() {
-
-		WC_BIS()->log( 'Data update complete.', 'info', 'wc_bis_db_updates' );
-		self::update_db_version();
-		delete_option( 'wc_bis_update_init' );
-		wp_cache_flush();
+		wc_deprecated_function( 'WC_BIS_Install::update_complete', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
@@ -454,7 +242,8 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	 * @return boolean
 	 */
 	public static function is_update_pending() {
-		return self::must_update();
+		wc_deprecated_function( 'WC_BIS_Install::is_update_pending', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
@@ -463,7 +252,8 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	 * @return boolean
 	 */
 	public static function is_update_incomplete() {
-		return false !== get_option( 'wc_bis_update_init', false );
+		wc_deprecated_function( 'WC_BIS_Install::is_update_incomplete', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 
@@ -473,7 +263,8 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	 * @return boolean
 	 */
 	public static function is_update_queued() {
-		return self::$background_updater->is_update_queued();
+		wc_deprecated_function( 'WC_BIS_Install::is_update_queued', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
@@ -482,7 +273,8 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	 * @return boolean
 	 */
 	public static function is_update_process_running() {
-		return self::is_update_cli_process_running() || self::is_update_background_process_running();
+		wc_deprecated_function( 'WC_BIS_Install::is_update_process_running', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
@@ -491,7 +283,8 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	 * @return boolean
 	 */
 	public static function is_update_background_process_running() {
-		return self::$background_updater->is_process_running();
+		wc_deprecated_function( 'WC_BIS_Install::is_update_background_process_running', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
@@ -500,7 +293,8 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	 * @return boolean
 	 */
 	public static function is_update_cli_process_running() {
-		return false !== get_transient( 'wc_bis_update_cli_init', false );
+		wc_deprecated_function( 'WC_BIS_Install::is_update_cli_process_running', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
@@ -509,16 +303,8 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	 * @param  string $version
 	 */
 	public static function update_db_version( $version = null ) {
-
-		$version = is_null( $version ) ? WC_BIS()->get_plugin_version() : $version;
-
-		// Remove suffixes.
-		$version = WC_BIS()->get_plugin_version( true, $version );
-
-		delete_option( 'wc_bis_db_version' );
-		add_option( 'wc_bis_db_version', $version );
-
-		WC_BIS()->log( sprintf( 'Database version is %s.', get_option( 'wc_bis_db_version', 'unknown' ) ), 'info', 'wc_bis_db_updates' );
+		wc_deprecated_function( 'WC_BIS_Install::update_db_version', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
@@ -527,7 +313,8 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	 * @return array
 	 */
 	public static function get_db_update_callbacks() {
-		return self::$db_updates;
+		wc_deprecated_function( 'WC_BIS_Install::get_db_update_callbacks', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
@@ -538,17 +325,8 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	 * @return  array
 	 */
 	public static function plugin_row_meta( $links, $file ) {
-
-		if ( WC_BIS()->get_plugin_basename() == $file ) {
-			$row_meta = array(
-				'docs'    => '<a href="' . WC_BIS()->get_resource_url( 'docs-contents' ) . '">' . __( 'Documentation', 'woocommerce-back-in-stock-notifications' ) . '</a>',
-				'support' => '<a href="' . WC_BIS()->get_resource_url( 'ticket-form' ) . '">' . __( 'Support', 'woocommerce-back-in-stock-notifications' ) . '</a>',
-			);
-
-			return array_merge( $links, $row_meta );
-		}
-
-		return $links;
+		wc_deprecated_function( 'WC_BIS_Install::plugin_row_meta', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 }
 
