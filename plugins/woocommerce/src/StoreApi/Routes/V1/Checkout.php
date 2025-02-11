@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Automattic\WooCommerce\StoreApi\Routes\V1;
 
 use Automattic\WooCommerce\StoreApi\Payments\PaymentResult;
@@ -228,8 +229,8 @@ class Checkout extends AbstractCartRoute {
 	/**
 	 * Validate required order and contact fields.
 	 *
-	 * @param \WP_REST_Request $request Request object.
-	 * @param DocumentObject $document_object Document object.
+	 * @param  \WP_REST_Request    $request Request object.
+	 * @param  DocumentObject|null $document_object Document object.
 	 * @throws RouteException When a required order or contact field is missing.
 	 */
 	private function validate_required_additional_fields_for_order( \WP_REST_Request $request, $document_object ) {
@@ -246,7 +247,8 @@ class Checkout extends AbstractCartRoute {
 	/**
 	 * Validate required address fields.
 	 *
-	 * @param \WP_REST_Request $request Request object.
+	 * @param \WP_REST_Request    $request Request object.
+	 * @param  DocumentObject|null $document_object Document object.
 	 * @throws RouteException When a required address field is missing.
 	 */
 	private function validate_required_additional_fields_for_customer( \WP_REST_Request $request, $document_object ) {
