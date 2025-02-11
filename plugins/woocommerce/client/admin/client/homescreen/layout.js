@@ -39,7 +39,7 @@ import { WooHomescreenHeaderBanner } from './header-banner-slot';
 import { WooHomescreenWCPayFeature } from './wcpay-feature-slot';
 import {
 	isTaskListVisible,
-	isTaskListActive,
+	useTaskListsState,
 } from '~/hooks/use-tasklists-state';
 
 const TaskLists = lazy( () =>
@@ -73,7 +73,11 @@ export const Layout = ( {
 } ) => {
 	const userPrefs = useUserPreferences();
 
-	const isSetupTaskListActive = isTaskListActive( 'setup' );
+	const { setupTaskListActive: isSetupTaskListActive } = useTaskListsState( {
+		setupTasklist: true,
+		extendedTaskList: false,
+	} );
+
 	const isTaskScreen =
 		hasTaskList && Object.keys( query ).length > 0 && !! query.task;
 	const isDashboardShown = ! isTaskScreen; // ?&task=<x> query param is used to show tasks instead of the homescreen

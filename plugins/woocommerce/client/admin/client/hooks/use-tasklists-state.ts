@@ -69,14 +69,21 @@ export const isTaskListActive = ( taskListId: string ) =>
  *
  * @return {Object} Default state values
  */
-const getDefaultState = () => ( {
-	requestingTaskListOptions: false,
-	setupTaskListHidden: ! isTaskListVisible( 'setup' ),
-	setupTaskListComplete: isTaskListCompleted( 'setup' ),
-	setupTasksCount: undefined,
-	setupTasksCompleteCount: undefined,
-	thingsToDoNextCount: undefined,
-} );
+const getDefaultState = () => {
+	const setupTaskListHidden = ! isTaskListVisible( 'setup' );
+	const setupTaskListComplete = isTaskListCompleted( 'setup' );
+	const setupTaskListActive = isTaskListActive( 'setup' );
+
+	return {
+		requestingTaskListOptions: false,
+		setupTaskListHidden,
+		setupTaskListComplete,
+		setupTaskListActive,
+		setupTasksCount: undefined,
+		setupTasksCompleteCount: undefined,
+		thingsToDoNextCount: undefined,
+	};
+};
 
 /**
  * Get setup task list related states
@@ -89,13 +96,20 @@ const getSetupTaskListState = ( selectors: Selectors ) => {
 	const setupList = getTaskList( 'setup' );
 	const setupVisibleTasks = getVisibleTasks( setupList?.tasks || [] );
 
+	// Use the task list object to determine the state to override the default state.
+	const setupTaskListHidden = setupList ? setupList.isHidden : true;
+	const setupTaskListComplete = setupList?.isComplete;
+	const setupTaskListActive =
+		! setupTaskListHidden && ! setupTaskListComplete;
+
 	return {
-		setupTaskListHidden: setupList ? setupList.isHidden : true,
+		setupTaskListHidden,
+		setupTaskListComplete,
+		setupTaskListActive,
 		setupTasksCount: setupVisibleTasks.length,
 		setupTasksCompleteCount: setupVisibleTasks.filter(
 			( task ) => task.isComplete
 		).length,
-		setupTaskListComplete: setupList?.isComplete,
 		requestingTaskListOptions: ! hasFinishedResolution( 'getTaskLists' ),
 	};
 };
