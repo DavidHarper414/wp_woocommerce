@@ -1800,7 +1800,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 		} );
 	} );
 
-	test.describe.only( 'List all Advanced settings options', () => {
+	test.describe( 'List all Advanced settings options', () => {
 		test( 'can retrieve all advanced settings', async ( { request } ) => {
 			// call API to retrieve all settings options
 			const response = await request.get(
