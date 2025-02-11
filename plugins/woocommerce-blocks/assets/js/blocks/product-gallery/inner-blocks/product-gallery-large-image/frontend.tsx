@@ -77,14 +77,14 @@ const productGalleryLargeImage = {
 			}
 
 			const { ref } = getElement();
-      if (ref) {
-        // Scroll to the selected image with a smooth animation.
-        ref.scrollIntoView( {
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'center',
-        } );
-      }
+			if ( ref ) {
+				// Scroll to the selected image with a smooth animation.
+				ref.scrollIntoView( {
+					behavior: 'smooth',
+					block: 'nearest',
+					inline: 'center',
+				} );
+			}
 		},
 	},
 };
