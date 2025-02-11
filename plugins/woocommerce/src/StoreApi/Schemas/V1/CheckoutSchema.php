@@ -389,23 +389,23 @@ class CheckoutSchema extends AbstractSchema {
 	 *
 	 * @see rest_validate_value_from_schema
 	 *
-	 * @param array            $values Value being sanitized.
+	 * @param array            $fields Value being sanitized.
 	 * @param \WP_REST_Request $request The Request.
 	 * @return true|\WP_Error
 	 */
-	public function validate_additional_fields( $values, $request ) {
+	public function validate_additional_fields( $fields, $request ) {
 		$errors                  = new \WP_Error();
-		$values                  = $this->sanitize_additional_fields( $values );
+		$fields                  = $this->sanitize_additional_fields( $fields );
 		$additional_field_schema = $this->get_additional_fields_schema();
 
 		// Loop over the schema instead of the fields. This is to ensure missing fields are validated.
 		foreach ( $additional_field_schema as $key => $field_schema ) {
 			// Optional fields can go missing.
-			if ( ! isset( $values[ $key ] ) && ! $field_schema['required'] ) {
+			if ( ! isset( $fields[ $key ] ) && ! $field_schema['required'] ) {
 				continue;
 			}
 
-			$field_value = isset( $values[ $key ] ) ? $values[ $key ] : null;
+			$field_value = isset( $fields[ $key ] ) ? $fields[ $key ] : null;
 			$result      = rest_validate_value_from_schema( $field_value, $field_schema, $key );
 
 			if ( is_wp_error( $result ) && $result->has_errors() ) {

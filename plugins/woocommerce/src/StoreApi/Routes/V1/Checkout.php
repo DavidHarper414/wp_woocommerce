@@ -189,24 +189,19 @@ class Checkout extends AbstractCartRoute {
 		$sanitized_request->sanitize_params();
 
 		if ( Features::is_enabled( 'experimental-blocks' ) ) {
-			$document_object = new DocumentObject(
+			$additional_field_values = $sanitized_request->get_param( 'additional_fields' ) ?? [];
+			$document_object         = new DocumentObject(
 				[
 					'customer' => [
 						'billing_address'   => $sanitized_request->get_param( 'billing_address' ),
 						'shipping_address'  => $sanitized_request->get_param( 'shipping_address' ),
-						'additional_fields' => $this->additional_fields_controller->filter_values_for_location(
-							$sanitized_request->get_param( 'additional_fields' ) ?? [],
-							'contact'
-						),
+						'additional_fields' => array_intersect_key( $additional_field_values, array_flip( $this->additional_fields_controller->get_contact_fields_keys() ) ),
 					],
 					'checkout' => [
 						'payment_method'    => $sanitized_request->get_param( 'payment_method' ),
 						'create_account'    => $sanitized_request->get_param( 'create_account' ),
 						'customer_note'     => $sanitized_request->get_param( 'customer_note' ),
-						'additional_fields' => $this->additional_fields_controller->filter_values_for_location(
-							$sanitized_request->get_param( 'additional_fields' ) ?? [],
-							'order'
-						),
+						'additional_fields' => array_intersect_key( $additional_field_values, array_flip( $this->additional_fields_controller->get_order_fields_keys() ) ),
 					],
 				]
 			);

@@ -6,8 +6,7 @@ namespace Automattic\WooCommerce\Blocks\Domain\Services;
 use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
 use Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry;
 use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFieldsSchema\{
-	DocumentObject,
-	Validation
+	DocumentObject, Validation
 };
 use Automattic\WooCommerce\Admin\Features\Features;
 use WC_Customer;
@@ -275,6 +274,10 @@ class CheckoutFields {
 		}
 
 		$location = $this->get_field_location( $field_id );
+
+		if ( ! $location ) {
+			return;
+		}
 
 		// Remove the field from the fields_locations array.
 		$this->fields_locations[ $location ] = array_diff( $this->fields_locations[ $location ], array( $field_id ) );
@@ -735,6 +738,9 @@ class CheckoutFields {
 	 * @return string The location of the field.
 	 */
 	public function get_field_location( $field_key ) {
+		if ( ! $this->is_field( $field_key ) ) {
+			return '';
+		}
 		foreach ( $this->fields_locations as $location => $fields ) {
 			if ( in_array( $field_key, $fields, true ) ) {
 				return $location;
@@ -1337,23 +1343,6 @@ class CheckoutFields {
 	}
 
 	/**
-	 * From a set of field values, returns only the ones for a given location.
-	 *
-	 * @param array  $values The values to filter.
-	 * @param string $location The location to validate the field for (address|contact|order).
-	 * @return array The filtered values.
-	 */
-	public function filter_values_for_location( array $values, string $location ) {
-		return array_filter(
-			$values,
-			function ( $value, $key ) use ( $location ) {
-				return $this->is_field( $key ) && $this->get_field_location( $key ) === $location;
-			},
-			ARRAY_FILTER_USE_BOTH
-		);
-	}
-
-	/**
 	 * From a set of fields, returns only the ones for a given location.
 	 *
 	 * @param array  $fields The fields to filter.
@@ -1369,7 +1358,7 @@ class CheckoutFields {
 		return array_filter(
 			$fields,
 			function ( $key ) use ( $location ) {
-				return $this->is_field( $key ) && $this->get_field_location( $key ) === $location;
+				return $this->get_field_location( $key ) === $location;
 			},
 			ARRAY_FILTER_USE_KEY
 		);

@@ -247,11 +247,15 @@ abstract class AbstractAddressSchema extends AbstractSchema {
 		$additional_keys = array_keys( $this->get_additional_address_fields_schema() );
 
 		foreach ( array_keys( $address ) as $key ) {
+			// Skip email here it will be validated in BillingAddressSchema.
+			if ( 'email' === $key ) {
+				continue;
+			}
+
 			// Only run specific validation on properties that are defined in the schema and present in the address.
 			// This is for partial address pushes when only part of a customer address is sent.
 			// Full schema address validation still happens later, so empty, required values are disallowed.
-			// Also skip email here it will be validated in BillingAddressSchema.
-			if ( 'email' === $key || empty( $schema[ $key ] ) || empty( $address[ $key ] ) ) {
+			if ( empty( $schema[ $key ] ) || empty( $address[ $key ] ) ) {
 				continue;
 			}
 
