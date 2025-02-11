@@ -30,7 +30,7 @@ class PaymentExtensionSuggestions {
 	const PAYSTACK          = 'paystack';
 	const PAYU_INDIA        = 'payu_india';
 	const RAZORPAY          = 'razorpay';
-	const SQUARE_IN_PERSON  = 'square_in_person';
+	const SQUARE            = 'square';
 	const STRIPE            = 'stripe';
 	const TILOPAY           = 'tilopay';
 	const VIVA_WALLET       = 'viva_wallet';
@@ -132,7 +132,7 @@ class PaymentExtensionSuggestions {
 			self::WOOPAYMENTS,
 			self::PAYPAL_FULL_STACK,
 			self::STRIPE,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -173,7 +173,7 @@ class PaymentExtensionSuggestions {
 			self::PAYPAL_FULL_STACK,
 			self::STRIPE,
 			self::AIRWALLEX,
-			self::SQUARE_IN_PERSON, // Use the default details.
+			self::SQUARE, // Use the default details.
 			self::PAYPAL_WALLET,
 			self::AMAZON_PAY,
 			self::AFFIRM,
@@ -189,7 +189,7 @@ class PaymentExtensionSuggestions {
 			self::MOLLIE,
 			self::AIRWALLEX,
 			self::VIVA_WALLET,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -400,7 +400,7 @@ class PaymentExtensionSuggestions {
 			self::MOLLIE,
 			self::AIRWALLEX,
 			self::VIVA_WALLET,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -539,7 +539,7 @@ class PaymentExtensionSuggestions {
 			self::MOLLIE,
 			self::AIRWALLEX,
 			self::VIVA_WALLET,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -806,7 +806,7 @@ class PaymentExtensionSuggestions {
 			self::MOLLIE,
 			self::AIRWALLEX,
 			self::VIVA_WALLET,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -1249,7 +1249,7 @@ class PaymentExtensionSuggestions {
 			self::STRIPE,
 			self::AIRWALLEX,
 			self::ANTOM,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -1339,7 +1339,7 @@ class PaymentExtensionSuggestions {
 			self::PAYPAL_FULL_STACK,
 			self::STRIPE,
 			self::ANTOM,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -2500,7 +2500,7 @@ class PaymentExtensionSuggestions {
 					),
 				),
 			),
-			self::SQUARE_IN_PERSON  => array(
+			self::SQUARE  => array(
 				'_type'       => self::TYPE_PSP,
 				'title'       => esc_html__( 'Square', 'woocommerce' ),
 				'description' => esc_html__( 'Securely accept credit and debit cards with one low rate, no surprise fees (custom rates available). Sell in store and track sales and inventory in one place.', 'woocommerce' ),
