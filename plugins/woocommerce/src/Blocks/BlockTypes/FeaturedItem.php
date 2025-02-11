@@ -107,6 +107,15 @@ abstract class FeaturedItem extends AbstractDynamicBlock {
 			$output .= $this->render_bg_image( $attributes, $image_url );
 		}
 
+		if ( isset( $attributes['ariaLabel'] ) && ! empty( $attributes['ariaLabel'] ) ) {
+			$p = new \WP_HTML_Tag_Processor( $content );
+
+			if ( $p->next_tag('a', ['class' => 'wp-block-button__link'] ) ) {
+				$p->set_attribute( 'aria-label', $attributes['ariaLabel'] );
+				$content = $p->get_updated_html();
+			}
+		}
+
 		$output .= $this->render_attributes( $item, $attributes );
 		$output .= sprintf( '<div class="wc-block-%s__link">%s</div>', $this->block_name, $content );
 		$output .= '</div>';
