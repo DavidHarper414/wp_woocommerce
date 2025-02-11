@@ -99,7 +99,7 @@ class Transformer {
 	 * @param array $transformed_settings Transformed settings array.
 	 */
 	private function process_setting( ?array $setting, array &$transformed_settings ): void {
-		if ( ! $setting ) {
+		if ( ! isset( $setting ) ) {
 			return;
 		}
 
