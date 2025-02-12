@@ -77,7 +77,7 @@ export const Partners = ( {
 			>
 				{ interpolateComponents( {
 					mixedString: __(
-						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your products with additional marketing solutions.',
+						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more tax solutions.',
 						'woocommerce'
 					),
 					components: {
@@ -85,7 +85,7 @@ export const Partners = ( {
 							<Link
 								onClick={ () => {
 									recordEvent(
-										'tasklist_marketing_visit_marketplace_click'
+										'tasklist_tax_visit_marketplace_click'
 									);
 									window.location.href = getAdminLink(
 										'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=operations'
