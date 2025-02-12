@@ -333,7 +333,7 @@ class CheckoutFieldsFrontend {
 	 * @param WC_Customer $customer Customer object.
 	 * @param string      $location Location to save fields for.
 	 * @param string      $group    Group to save fields for.
-	 * @return array Field values.
+	 * @return array Field values. Missing fields are set to null.
 	 */
 	protected function sanitize_additional_fields_for_location_group( WC_Customer $customer, $location, $group ) {
 		if ( ! in_array( $group, array( 'other', 'billing', 'shipping' ), true ) || ! in_array( $location, array( 'contact', 'address' ), true ) ) {
@@ -349,8 +349,9 @@ class CheckoutFieldsFrontend {
 		foreach ( $additional_fields as $field_key => $field_data ) {
 			$post_key = CheckoutFields::get_group_key( $group ) . $field_key;
 
-			if ( ! isset( $_POST[ $post_key ] ) ) {
-				$values[ $field_key ] = '';
+			// If the field is not set or empty, set to null. This is so we can determine later if the field had a value before sanitization.
+			if ( ! isset( $_POST[ $post_key ] ) || '' === $_POST[ $post_key ] ) {
+				$values[ $field_key ] = null;
 				continue;
 			}
 

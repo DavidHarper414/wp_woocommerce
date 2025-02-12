@@ -278,4 +278,54 @@ class CheckoutFieldsFrontendTest extends TestCase {
 
 		__internal_woocommerce_blocks_deregister_checkout_field( 'mynamespace/optional_field' );
 	}
+
+	/**
+	 * @testDox Contact additional field validation error for an optional email field to ensure validation rules are applied.
+	 */
+	public function test_save_account_form_fields_contact_email_validation_error_optional_field() {
+		woocommerce_register_additional_checkout_field(
+			array(
+				'id'                => 'mynamespace/email_validation_error',
+				'label'             => 'Optional field with validation',
+				'location'          => 'contact',
+				'required'          => false,
+				'sanitize_callback' => function () {
+					return sanitize_email( $field_value );
+				},
+				'validate_callback' => function () {
+					if ( ! is_email( $field_value ) ) {
+						return new WP_Error(
+							'email_validation_error',
+							'Email validation error message'
+						);
+					}
+				},
+			),
+		);
+
+		$_POST['_wc_other/mynamespace/email_validation_error'] = 'invalidvalue';
+		global $mocked_messages;
+		$mocked_messages = [];
+
+		$this->sut->save_account_form_fields( 1 );
+
+		$this->assertCount( 1, $mocked_messages );
+		$this->assertEquals( 'Email validation error message', $mocked_messages[0]['message'] );
+		$this->assertEquals( 'error', $mocked_messages[0]['type'] );
+
+		$value = $this->controller->get_field_from_object( 'mynamespace/email_validation_error', new WC_Customer( 1 ) );
+		$this->assertEquals( '', $value );
+
+		$_POST['_wc_other/mynamespace/email_validation_error'] = '';
+		$mocked_messages                                       = [];
+
+		$this->sut->save_account_form_fields( 1 );
+
+		$this->assertCount( 0, $mocked_messages );
+
+		$value = $this->controller->get_field_from_object( 'mynamespace/email_validation_error', new WC_Customer( 1 ) );
+		$this->assertEquals( '', $value );
+
+		__internal_woocommerce_blocks_deregister_checkout_field( 'mynamespace/email_validation_error' );
+	}
 }

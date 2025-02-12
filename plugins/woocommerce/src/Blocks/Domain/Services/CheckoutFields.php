@@ -825,15 +825,14 @@ class CheckoutFields {
 			}
 
 			$is_required = $this->is_required_field( $field, $document_object, $document_object_context );
-			$has_value   = ! is_null( $field_value ) && '' !== $field_value;
+
+			if ( is_null( $field_value ) && ! $is_required ) {
+				// Skip optional fields that are not set.
+				return $errors;
+			}
 
 			// Empty field handling.
-			if ( ! $has_value ) {
-				// Validate optional fields only if they have a value.
-				if ( ! $is_required ) {
-					return $errors;
-				}
-
+			if ( empty( $field_value ) && $is_required ) {
 				/* translators: %s: is the field label */
 				$error_message = sprintf( __( '%s is required', 'woocommerce' ), $field['label'] );
 				$error_code    = 'woocommerce_required_checkout_field';
