@@ -2900,6 +2900,9 @@ importers:
       '@types/wordpress__blocks':
         specifier: 11.0.7
         version: 11.0.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@woocommerce/navigation':
+        specifier: workspace:*
+        version: link:../navigation
       '@woocommerce/product-editor':
         specifier: workspace:^
         version: link:../product-editor
@@ -34330,9 +34333,7 @@ snapshots:
       source-map: 0.6.1
       string-length: 2.0.0
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   '@jest/reporters@25.5.1':
     dependencies:
@@ -55678,9 +55679,7 @@ snapshots:
       pretty-format: 24.9.0
       throat: 4.1.0
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   jest-jasmine2@25.5.4:
     dependencies:

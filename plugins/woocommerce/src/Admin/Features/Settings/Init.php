@@ -180,6 +180,8 @@ class Init {
 			$settings['settingsData']['start'] = $setting_pages[0]->get_custom_view_object( $start_hook_content );
 		}
 
+		$settings['settingsData']['_wpnonce'] = wp_create_nonce( 'woocommerce-settings' );
+
 		return $settings;
 	}
 

@@ -5,6 +5,7 @@ import { createElement, useRef } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { DataForm } from '@wordpress/dataviews';
+import { getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -55,8 +56,19 @@ export const Form = ( {
 
 	const handleSubmit = ( event: React.FormEvent< HTMLFormElement > ) => {
 		event.preventDefault();
+
+		const query: Record< string, string > = {
+			page: 'wc-settings',
+			tab: settingsPage.slug,
+		};
+		if ( activeSection !== 'default' ) {
+			query.section = activeSection;
+		}
+
 		const formData = getFormData();
 		formData.save = 'Save changes';
+		formData._wpnonce = settingsData._wpnonce;
+		formData._w_http_referer = '/wp-admin/' + getNewPath( query );
 
 		// eslint-disable-next-line no-console
 		console.log(

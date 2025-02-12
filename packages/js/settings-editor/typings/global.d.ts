@@ -115,6 +115,7 @@ declare global {
 	interface SettingsData {
 		start?: CustomSettingsField;
 		pages: SettingsPages;
+		_wpnonce: string;
 	}
 }
 
