@@ -39,7 +39,7 @@ const updatedCustomerShipping = {
 };
 
 test.describe.serial( 'Orders API tests', () => {
-	let orderId, sampleData;
+	let orderId, sampleData, reducedRatePreexists;
 
 	test.beforeAll( async ( { request } ) => {
 		const createSampleCategories = async () => {
@@ -221,30 +221,25 @@ test.describe.serial( 'Orders API tests', () => {
 
 		const createSampleTaxClasses = async () => {
 			//check to see if Reduced Rate tax class exists - if not, create it
-			let reducedRate = await request.get(
+			const response_getReducedRate = await request.get(
 				'./wp-json/wc/v3/taxes/classes/reduced-rate'
 			);
-			let reducedRateJSON = await reducedRate.json();
-			expect( Array.isArray( reducedRateJSON ) ).toBe( true );
+			reducedRatePreexists = response_getReducedRate.ok();
 
 			//if tax class does not exist then create it
-			if ( reducedRateJSON.length < 1 ) {
-				reducedRate = await request.post(
+			if ( ! reducedRatePreexists ) {
+				const reducedRate = await request.post(
 					'./wp-json/wc/v3/taxes/classes',
 					{
 						data: {
-							name: 'Reduced Rate',
+							name: 'Reduced rate',
 						},
 						failOnStatusCode: true,
 					}
 				);
-				reducedRateJSON = await reducedRate.json();
+				const reducedRateJSON = await reducedRate.json();
 				return { reducedRateJSON };
 			}
-
-			// return an empty object as nothing new was created so nothing will
-			// need deleted during cleanup
-			return {};
 		};
 
 		const createSampleSimpleProducts = async (
@@ -2146,7 +2141,7 @@ test.describe.serial( 'Orders API tests', () => {
 
 			const shippingClasses = await createSampleShippingClasses();
 
-			const taxClasses = await createSampleTaxClasses();
+			await createSampleTaxClasses();
 
 			const simpleProducts = await createSampleSimpleProducts(
 				categories,
@@ -2181,7 +2176,6 @@ test.describe.serial( 'Orders API tests', () => {
 				attributes,
 				productTags,
 				shippingClasses,
-				taxClasses,
 				simpleProducts,
 				externalProducts,
 				groupedProducts,
@@ -2528,7 +2522,6 @@ test.describe.serial( 'Orders API tests', () => {
 				attributes,
 				productTags,
 				shippingClasses,
-				taxClasses,
 				simpleProducts,
 				externalProducts,
 				groupedProducts,
@@ -2556,9 +2549,6 @@ test.describe.serial( 'Orders API tests', () => {
 			const tagIds = Object.values( productTags ).map( ( { id } ) => id );
 			const shippingClassIds = Object.values( shippingClasses ).map(
 				( { id } ) => id
-			);
-			const taxClassSlugs = Object.values( taxClasses ).map(
-				( { slug } ) => slug
 			);
 
 			await request.post( './wp-json/wc/v3/orders/batch', {
@@ -2606,9 +2596,10 @@ test.describe.serial( 'Orders API tests', () => {
 				}
 			);
 
-			for ( const slug of taxClassSlugs ) {
+			// Delete Reduced rate tax class if it didn't exist.
+			if ( ! reducedRatePreexists ) {
 				await request.delete(
-					`./wp-json/wc/v3/taxes/classes/${ slug }`,
+					'./wp-json/wc/v3/taxes/classes/reduced-rate',
 					{
 						data: {
 							force: true,
