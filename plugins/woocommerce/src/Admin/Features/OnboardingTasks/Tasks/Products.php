@@ -226,6 +226,11 @@ class Products extends Task {
 		return $products_query->found_posts;
 	}
 
+	/**
+	 * Redirect to the add product tasklist if there are no products.
+	 *
+	 * @return void
+	 */
 	public function maybe_redirect_to_add_product_tasklist() {
 		$screen = get_current_screen();
 		if ( 'edit' === $screen->base && 'product' === $screen->post_type ) {
@@ -236,7 +241,7 @@ class Products extends Task {
 			if ( $count > 0 ) {
 				return;
 			}
-			wp_redirect( admin_url( 'admin.php?page=wc-admin&task=products' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=wc-admin&task=products' ) );
 			exit;
 		}
 	}

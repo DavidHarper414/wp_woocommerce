@@ -187,7 +187,7 @@ class TaskList {
 		$viewable_tasks  = $this->get_viewable_tasks();
 		$completed_count = array_reduce(
 			$viewable_tasks,
-			function( $total, $task ) {
+			function ( $total, $task ) {
 				return $task->is_complete() ? $total + 1 : $total;
 			},
 			0
@@ -285,7 +285,7 @@ class TaskList {
 		return current(
 			array_filter(
 				$this->tasks,
-				function( $task ) use ( $task_id ) {
+				function ( $task ) use ( $task_id ) {
 					return $task->get_id() === $task_id;
 				}
 			)
@@ -301,7 +301,7 @@ class TaskList {
 		return array_values(
 			array_filter(
 				$this->tasks,
-				function( $task ) {
+				function ( $task ) {
 					return $task->can_view();
 				}
 			)
@@ -362,7 +362,7 @@ class TaskList {
 		if ( 0 !== count( $sort_by ) ) {
 			usort(
 				$this->tasks,
-				function( $a, $b ) use ( $sort_by ) {
+				function ( $a, $b ) use ( $sort_by ) {
 					return Task::sort( $a, $b, $sort_by );
 				}
 			);
@@ -415,7 +415,6 @@ class TaskList {
 		$this->possibly_track_completion();
 		$tasks_json = array();
 
-		
 		foreach ( $this->tasks as $task ) {
 			// We have no use for hidden lists, it's expensive to compute individual tasks completion.
 			// Exception: Secret tasklist is always hidden, or a task is always accessible.

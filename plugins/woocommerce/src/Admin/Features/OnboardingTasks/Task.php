@@ -613,5 +613,4 @@ abstract class Task {
 		}
 		return $result;
 	}
-
 }
