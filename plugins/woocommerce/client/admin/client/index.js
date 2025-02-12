@@ -9,7 +9,6 @@ import {
 	withSettingsHydration,
 } from '@woocommerce/data';
 import debugFactory from 'debug';
-
 /**
  * Internal dependencies
  */
