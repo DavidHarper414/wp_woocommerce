@@ -154,17 +154,15 @@ function wc_cleanup_email_logs() {
 
 	// Check if the table exists before truncating.
 	$table_exists = $wpdb->get_var(
-		$wpdb->prepare(
-			`SHOW TABLES LIKE %s`,
-			$table_name
-		)
+		$prepared_query = $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name );
+        $wpdb->query( $prepared_query );
 	);
 
 	if ( $table_exists ) {
-		$wpdb->query( "TRUNCATE TABLE {$table_name}" );
+		$wpdb->query( "TRUNCATE TABLE " . esc_sql( $table_name ) );
 	}
 
-	// Ensure WP Mail Logging cache is cleared
+	// Ensure WP Mail Logging cache is cleared.
 	delete_transient( 'wpml_mail_log_cache' );
 	delete_option( 'wpml_mail_log_cache' );
 	wp_cache_flush();
