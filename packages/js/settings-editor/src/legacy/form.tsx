@@ -36,7 +36,7 @@ export const Form = ( {
 			formRef.current as HTMLFormElement
 		 ).querySelectorAll( 'input, select, textarea' );
 
-		const data = {};
+		const formData: Record< string, string > = {};
 		formElements.forEach( ( input ) => {
 			// Avoid generic Gutenberg input ids. This will require upstream fixes.
 			if ( input.id.startsWith( 'inspector-' ) ) {
@@ -45,13 +45,13 @@ export const Form = ( {
 
 			const value = ( input as HTMLInputElement ).value;
 			// Need to type data as Record<string, string> to allow string indexing
-			( data as Record< string, string > )[
+			( formData as Record< string, string > )[
 				( input as HTMLInputElement ).name ||
 					( input as HTMLInputElement ).id
 			] = value;
 		} );
 
-		return data;
+		return formData;
 	};
 
 	const handleSubmit = ( event: React.FormEvent< HTMLFormElement > ) => {
