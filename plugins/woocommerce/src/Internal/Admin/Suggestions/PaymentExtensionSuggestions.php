@@ -42,6 +42,8 @@ class PaymentExtensionSuggestions {
 	const KLARNA            = 'klarna';
 	const HELIOPAY          = 'heliopay';
 
+	const MONEI              = 'monei';
+
 	/*
 	 * The extension types.
 	 *
@@ -804,6 +806,7 @@ class PaymentExtensionSuggestions {
 			self::PAYPAL_FULL_STACK,
 			self::STRIPE,
 			self::MOLLIE,
+			self::MONEI,
 			self::AIRWALLEX,
 			self::VIVA_WALLET,
 			self::SQUARE_IN_PERSON => array(
@@ -1760,7 +1763,6 @@ class PaymentExtensionSuggestions {
 	 */
 	public function get_by_id( string $extension_id ): ?array {
 		$extension_id = sanitize_title( $extension_id );
-
 		$extensions = $this->get_all_extensions_base_details();
 		if ( isset( $extensions[ $extension_id ] ) ) {
 			$extension_details              = $extensions[ $extension_id ];
@@ -2873,6 +2875,39 @@ class PaymentExtensionSuggestions {
 					array(
 						'_type' => self::LINK_TYPE_SUPPORT,
 						'url'   => 'https://woocommerce.com/my-account/contact-support/?select=helio-pay',
+					),
+				),
+			),
+			self::MONEI            => array(
+				'_type'       => self::TYPE_PSP,
+				'title'       => esc_html__( 'MONEI', 'woocommerce' ),
+				'description' => esc_html__( 'Accept Cards, Apple Pay, Google Pay, Bizum, PayPal, and many more payment methods in your store.', 'woocommerce' ),
+				'image'       => plugins_url( 'assets/images/onboarding/mollie.svg', WC_PLUGIN_FILE ),
+				'icon'        => plugins_url( 'assets/images/onboarding/icons/monei.svg', WC_PLUGIN_FILE ),
+				'plugin'      => array(
+					'_type' => self::PLUGIN_TYPE_WPORG,
+					'slug'  => 'monei',
+				),
+				'links'       => array(
+					array(
+						'_type' => self::LINK_TYPE_PRICING,
+						'url'   => 'https://monei.com/pricing/',
+					),
+					array(
+						'_type' => self::LINK_TYPE_ABOUT,
+						'url'   => 'https://monei.com/',
+					),
+					array(
+						'_type' => self::LINK_TYPE_TERMS,
+						'url'   => 'https://monei.com/legal-notice/',
+					),
+					array(
+						'_type' => self::LINK_TYPE_DOCS,
+						'url'   => 'https://support.monei.com/hc/en-us/articles/360017801677-Get-started-with-MONEI',
+					),
+					array(
+						'_type' => self::LINK_TYPE_SUPPORT,
+						'url'   => 'https://support.monei.com/hc/en-us/requests/new',
 					),
 				),
 			),
