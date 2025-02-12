@@ -414,7 +414,7 @@ function wc_customer_bought_product( $customer_email, $user_id, $product_id ) {
 	/**
 	 * Whether to use lookup tables - it can optimize performance, but correctness depends on the frequency of the AS job.
 	 *
-	 * @since 9.6.2
+	 * @since 9.7.0
 	 *
 	 * @param bool $enabled
 	 * @param string $customer_email Customer email to check.
