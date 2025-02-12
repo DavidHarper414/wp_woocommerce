@@ -2168,8 +2168,8 @@ importers:
   packages/js/internal-style-build:
     dependencies:
       '@automattic/color-studio':
-        specifier: ^2.5.0
-        version: 2.5.0
+        specifier: ^4.0.0
+        version: 4.1.0
       '@wordpress/base-styles':
         specifier: wp-6.6
         version: 5.0.1
@@ -2441,6 +2441,9 @@ importers:
       '@wordpress/components':
         specifier: wp-6.6
         version: 28.0.3(@emotion/is-prop-valid@1.2.1)(@types/react@18.3.16)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@wordpress/compose':
+        specifier: wp-6.6
+        version: 7.0.1(react@18.3.1)
       '@wordpress/element':
         specifier: wp-6.6
         version: 6.0.1
@@ -4379,8 +4382,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@automattic/color-studio':
-        specifier: ^2.5.0
-        version: 2.5.0
+        specifier: ^4.0.0
+        version: 4.1.0
       '@babel/cli':
         specifier: ^7.23.4
         version: 7.23.4(@babel/core@7.23.5)
@@ -5414,11 +5417,11 @@ packages:
   '@automattic/calypso-url@1.1.0':
     resolution: {integrity: sha512-oA6pzfrp538gq5JEjE0ARDjvR8Efhw+jrK15TJPjAq5Q+vhPSJhH8sYKEsMAoYZV3d5nnyUcmI5Evge+yq4zeg==}
 
-  '@automattic/color-studio@2.5.0':
-    resolution: {integrity: sha512-gZWaJbx3p1oennAIoJtMGluTmoM95Efk4rc44TSBxWSZZ8gH3Am2eh1o3i1NhrZmg2Zt3AiVFeZZ4AJccIpBKQ==}
-
   '@automattic/color-studio@4.0.0':
     resolution: {integrity: sha512-L49rqIzCLnqLFoNJsANUXfmIWqlfgsEaDWcgXHt+lUbpZYDtWphUCVS/kIkSlAPHo3LmcRRzCTIq/DyU5C/nEA==}
+
+  '@automattic/color-studio@4.1.0':
+    resolution: {integrity: sha512-1iWNsCHANeVDjBeXnlslaf7zoWheGbFxGDYu/cXj5FhV6TJBm2QF4KzHfQ7FDinkJCPpL0IbZpnXzpn0IZudxA==}
 
   '@automattic/components@2.1.1':
     resolution: {integrity: sha512-PqGwe1CI0PtQIaTka5cbX/gKqEkhk4GYTdkExigHdzifnYtPZSmuLsw5mlPdfA8qY141s8wokARU7cDIZE0DCw==}
@@ -26883,9 +26886,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@automattic/color-studio@2.5.0': {}
-
   '@automattic/color-studio@4.0.0': {}
+
+  '@automattic/color-studio@4.1.0': {}
 
   '@automattic/components@2.1.1(@emotion/is-prop-valid@1.2.1)(@types/react@18.3.16)(@wordpress/data@10.0.2(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -34102,7 +34105,10 @@ snapshots:
       jest-runner: 25.5.4
       jest-runtime: 25.5.4
     transitivePeerDependencies:
+      - bufferutil
+      - canvas
       - supports-color
+      - utf-8-validate
 
   '@jest/test-sequencer@26.6.3':
     dependencies:
