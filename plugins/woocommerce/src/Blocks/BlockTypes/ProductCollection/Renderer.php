@@ -276,7 +276,7 @@ class Renderer {
 		/**
 		 * Add accessibility div for screen readers, to announce page load states.
 		 */
-		$last_tag_position                = strripos( $block_content, '</div>' );
+		$last_tag_position  = strripos( $block_content, '</div>' );
 		$accessibility_html = '
 				<div
 					data-wp-interactive="woocommerce/product-collection"
