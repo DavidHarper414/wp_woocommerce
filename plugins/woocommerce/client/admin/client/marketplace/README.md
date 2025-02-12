@@ -19,22 +19,10 @@ The Marketplace API handles interactions with WooCommerce.com and local product 
 1. **Product Discovery**:
    - `/wc/v3/marketplace/featured`: Gets curated extensions and themes for the Discover page.
      (Source: `class-wc-helper-admin.php` → `class-wc-admin-addons.php`)
-   - `/wc/v3/marketplace/search`: Searches WooCommerce.com products.
-     (Source: `class-wc-rest-marketplace-search-controller.php`)
-   - `/wc/v3/marketplace/products`: Filters products by category/type  .
-     (Source: `class-wc-rest-marketplace-products-controller.php`)
-
-2. **Account & Subscriptions**:
-   - `/wc/v3/marketplace/connect`: Handles site-to-WooCommerce.com account connections  .
-     (Source: `class-wc-rest-marketplace-connect-controller.php`)
-   - `/wc/v3/marketplace/subscriptions`: Manages purchased products (install/update/renew)  .
-     (Source: `class-wc-helper-subscriptions-api.php`)
-
-3. **Configuration**:
-   - `/wc/v3/marketplace/categories`: Lists product categories  .
-     (Source: `class-wc-rest-marketplace-categories-controller.php`)
-   - `/wc/v3/marketplace/constants`: Provides static marketplace settings  .
-     (Source: `class-wc-rest-marketplace-constants-controller.php`)
+   - `/wp-json/wccom-extensions/1.0/search`: Searches WooCommerce.com products.
+     (Source: `fetchJsonWithCache()` in `./utils/functions.tsx`)
+   - `wp-json/wccom-extensions/1.0/categories`: Returns a list of categories.
+     (Source: `fetchCategories()` in `./utils/functions.tsx`)
 
 API responses are cached locally for performance, with automatic cache invalidation on product updates and user activity.
 
