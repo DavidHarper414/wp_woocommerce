@@ -9,6 +9,7 @@ use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile;
 use Automattic\WooCommerce\Internal\Admin\Settings\PaymentProviders;
 use WC_Abstract_Order;
 use WC_Payment_Gateway;
+use WooCommerce\Admin\Experimental_Abtest;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -192,6 +193,13 @@ class WooPayments extends PaymentGateway {
 			$this->has_enabled_other_ecommerce_gateways() &&
 			$this->has_orders()
 		) {
+			$live_onboarding = true;
+		}
+
+		// We run an experiment to determine the efficiency of test-account-first onboarding vs straight-to-live onboarding.
+		// If the experiment is active and the store is in the treatment group, we will do live onboarding.
+		// Otherwise, we will do test-account-first onboarding (control group).
+		if ( ! $live_onboarding && Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_onboarding_2025_v1' ) ) {
 			$live_onboarding = true;
 		}
 
