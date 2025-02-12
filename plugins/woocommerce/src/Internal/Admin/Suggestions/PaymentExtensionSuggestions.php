@@ -41,8 +41,7 @@ class PaymentExtensionSuggestions {
 	const CLEARPAY          = 'clearpay';
 	const KLARNA            = 'klarna';
 	const HELIOPAY          = 'heliopay';
-
-	const MONEI              = 'monei';
+	const MONEI             = 'monei';
 
 	/*
 	 * The extension types.
@@ -1763,6 +1762,7 @@ class PaymentExtensionSuggestions {
 	 */
 	public function get_by_id( string $extension_id ): ?array {
 		$extension_id = sanitize_title( $extension_id );
+
 		$extensions = $this->get_all_extensions_base_details();
 		if ( isset( $extensions[ $extension_id ] ) ) {
 			$extension_details              = $extensions[ $extension_id ];
@@ -2878,7 +2878,7 @@ class PaymentExtensionSuggestions {
 					),
 				),
 			),
-			self::MONEI            => array(
+			self::MONEI             => array(
 				'_type'       => self::TYPE_PSP,
 				'title'       => esc_html__( 'MONEI', 'woocommerce' ),
 				'description' => esc_html__( 'Accept Cards, Apple Pay, Google Pay, Bizum, PayPal, and many more payment methods in your store.', 'woocommerce' ),

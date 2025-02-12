@@ -160,7 +160,7 @@ class PaymentExtensionSuggestionsTest extends WC_Unit_Test_Case {
 			'RO' => 7,
 			'SM' => 2,
 			'SK' => 6,
-			'ES' => 9, // Minus Square (in-person).
+			'ES' => 10, // Minus Square (in-person).
 			'SE' => 7,
 			'CH' => 7,
 			'AG' => 4,
@@ -394,7 +394,7 @@ class PaymentExtensionSuggestionsTest extends WC_Unit_Test_Case {
 			'RO' => 7,
 			'SM' => 2,
 			'SK' => 6,
-			'ES' => 10, // Including Square (in-person).
+			'ES' => 11, // Including Square (in-person).
 			'SE' => 7,
 			'CH' => 7,
 			'AG' => 4,
