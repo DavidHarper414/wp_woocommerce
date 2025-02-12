@@ -46,7 +46,7 @@ const CartAndCheckoutFrontendConfig = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../node_modules/.cache/webpack-admin-cart-and-checkout'
+			'../../node_modules/.cache/webpack-blocks-cart-and-checkout'
 		),
 	},
 	...getCartAndCheckoutFrontendConfig( { alias: getAlias() } ),
@@ -59,7 +59,7 @@ const CoreConfig = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../node_modules/.cache/webpack-admin-core'
+			'../../node_modules/.cache/webpack-blocks-core'
 		),
 	},
 	...getCoreConfig( { alias: getAlias() } ),
@@ -72,7 +72,7 @@ const MainConfig = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../node_modules/.cache/webpack-admin-main'
+			'../../node_modules/.cache/webpack-blocks-main'
 		),
 	},
 	...getMainConfig( {
@@ -87,7 +87,7 @@ const FrontendConfig = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../node_modules/.cache/webpack-admin-frontend'
+			'../../node_modules/.cache/webpack-blocks-frontend'
 		),
 	},
 	...getFrontConfig( { alias: getAlias() } ),
@@ -102,7 +102,7 @@ const ExtensionsConfig = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../node_modules/.cache/webpack-admin-extensions'
+			'../../node_modules/.cache/webpack-blocks-extensions'
 		),
 	},
 	...getExtensionsConfig( { alias: getAlias() } ),
@@ -117,7 +117,7 @@ const PaymentsConfig = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../node_modules/.cache/webpack-admin-payments'
+			'../../node_modules/.cache/webpack-blocks-payments'
 		),
 	},
 	...getPaymentsConfig( { alias: getAlias() } ),
@@ -132,7 +132,7 @@ const StylingConfig = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../node_modules/.cache/webpack-admin-styling'
+			'../../node_modules/.cache/webpack-blocks-styling'
 		),
 	},
 	...getStylingConfig( { alias: getAlias() } ),
@@ -147,7 +147,7 @@ const InteractivityConfig = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../node_modules/.cache/webpack-admin-interactivity'
+			'../../node_modules/.cache/webpack-blocks-interactivity'
 		),
 	},
 	...getInteractivityAPIConfig( { alias: getAlias() } ),
@@ -162,7 +162,7 @@ const SiteEditorConfig = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../node_modules/.cache/webpack-admin-site-editor'
+			'../../node_modules/.cache/webpack-blocks-site-editor'
 		),
 	},
 	...getSiteEditorConfig( { alias: getAlias() } ),
