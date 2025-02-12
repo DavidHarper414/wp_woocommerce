@@ -109,3 +109,9 @@ setup( 'disable coming soon', async ( { baseURL } ) => {
 setup( 'disable onboarding wizard', async () => {
 	await skipOnboardingWizard();
 } );
+
+setup( 'determine if multisite', async ( { api } ) => {
+	const response = await api.get( 'system_status' );
+	const { environment } = response.data;
+	process.env.IS_MULTISITE = environment.wp_multisite;
+} );
