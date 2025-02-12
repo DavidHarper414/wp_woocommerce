@@ -134,8 +134,15 @@ class TaskLists {
 			unset( $tasks[ $store_customisation_task_index ] );
 		}
 
+		// Adding try-catch because in non-production environments it may fail (for example, e2e tests).
+		try {
+			$in_treatment = Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' );
+		} catch ( \Exception $e ) {
+			$in_treatment = false;
+		}
+
 		// If the React-based Payments settings page is enabled, we don't need the dedicated WooPayments task.
-		if ( Features::is_enabled( 'reactify-classic-payments-settings' ) && Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' ) ) {
+		if ( Features::is_enabled( 'reactify-classic-payments-settings' ) && $in_treatment ) {
 			$key = array_search( 'WooCommercePayments', $tasks, true );
 			if ( false !== $key ) {
 				unset( $tasks[ $key ] );
