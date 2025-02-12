@@ -105,7 +105,7 @@ export const getExpectedExpressPaymentProps = ( name: string ) => ( {
 			CHECKOUT_ACTIONS: 'wc/checkout/checkout-actions',
 			CONTACT_INFORMATION: 'wc/checkout/contact-information',
 			EXPRESS_PAYMENTS: 'wc/checkout/express-payments',
-			ORDER_INFORMATION: 'wc/checkout/additional-information',
+			ORDER_INFORMATION: 'wc/checkout/order-information',
 			PAYMENTS: 'wc/checkout/payments',
 			SHIPPING_ADDRESS: 'wc/checkout/shipping-address',
 			SHIPPING_METHODS: 'wc/checkout/shipping-methods',

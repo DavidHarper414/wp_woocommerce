@@ -2,11 +2,12 @@
  * External dependencies
  */
 import {
-	KeyedFormField,
+	KeyedFormFields,
 	FormFields,
-	AdditionalValues,
-	BillingAddress,
-	ShippingAddress,
+	AddressFormValues,
+	ContactFormValues,
+	OrderFormValues,
+	FormType,
 } from '@woocommerce/settings';
 import {
 	useSchemaParser,
@@ -19,6 +20,11 @@ import { useRef } from '@wordpress/element';
 import fastDeepEqual from 'fast-deep-equal/es6';
 import { isPostcode } from '@woocommerce/blocks-checkout';
 import { isEmail } from '@wordpress/url';
+import { nonNullable } from '@woocommerce/types';
+
+type FormErrors = Partial< {
+	[ key in keyof FormFields ]: string;
+} >;
 
 const getFieldLabelCasing = ( fieldLabel: string ): string => {
 	const localeData = getLocaleData();
@@ -41,19 +47,19 @@ const getFieldKey = (
 	return instancePath
 		.split( '/' )
 		.pop()
-		?.replace( '~1', '/' ) as keyof FormFields;
+		?.replace( '~1', '/' ) as keyof FormFields; // Only place where we need to use as keyof FormFields because we're transforming a string.
 };
 
 const getErrorsMap = (
 	errors: ErrorObject[],
-	formFields: KeyedFormField[]
-): Record< KeyedFormField[ 'key' ], string > => {
-	return errors.reduce( ( acc, error ) => {
+	formFields: KeyedFormFields
+): FormErrors => {
+	return errors.reduce< FormErrors >( ( acc, error ) => {
 		const fieldKey = getFieldKey( error.instancePath );
 		const formField = formFields.find(
 			( field ) => field.key === fieldKey
 		);
-		if ( ! formField ) {
+		if ( ! formField || ! fieldKey ) {
 			return acc;
 		}
 
@@ -83,29 +89,23 @@ const getErrorsMap = (
 		}
 
 		return acc;
-	}, {} as Record< keyof FormFields, string > );
+	}, {} );
 };
 
-const EMPTY_OBJECT = {} as Record< keyof FormFields, string >;
+const EMPTY_OBJECT: FormErrors = {};
 /**
  * Combines address fields, including fields from the locale, and sorts them by index.
  */
 export const useFormValidation = (
-	formFields: KeyedFormField[],
-	// Form type, can be billing, shipping, contact, additional-information, or calculator.
-	formType:
-		| 'billing'
-		| 'shipping'
-		| 'contact'
-		| 'additional-information'
-		| 'calculator'
+	formFields: KeyedFormFields,
+	// Form type, can be billing, shipping, contact, order, or calculator.
+	formType: FormType
 ): {
-	errors: Record< keyof FormFields, string >;
-	previousErrors: Record< keyof FormFields, string > | undefined;
+	errors: FormErrors;
+	previousErrors: FormErrors | undefined;
 } => {
-	const { parser, data } = useSchemaParser( formType );
-	const currentResults =
-		useRef< Record< keyof FormFields, string > >( EMPTY_OBJECT );
+	const { parser, data } = useSchemaParser< typeof formType >( formType );
+	const currentResults = useRef< FormErrors >( EMPTY_OBJECT );
 	const previousErrors = usePrevious( currentResults.current );
 
 	if ( ! data ) {
@@ -115,33 +115,44 @@ export const useFormValidation = (
 		};
 	}
 
-	let values = {} as BillingAddress | ShippingAddress | AdditionalValues;
+	let values:
+		| AddressFormValues
+		| ContactFormValues
+		| OrderFormValues
+		| Record< string, never >;
+
 	switch ( formType ) {
 		case 'billing':
 		case 'shipping':
-			values = data.customer
-				.address as DocumentObject< 'billing' >[ 'customer' ][ 'address' ];
+			values = data.customer.address || {};
 			break;
 		case 'contact':
-		case 'additional-information':
-			values = data.checkout.additional_fields;
+		case 'order':
+			values = data.checkout.additional_fields || {};
 			break;
 		default:
-			values = {} as Record< keyof FormFields, string >;
+			values = {};
 			break;
 	}
 
-	const partialSchema = formFields.reduce( ( acc, field ) => {
+	const partialSchema = formFields.reduce<
+		Partial<
+			Record<
+				keyof FormFields,
+				JSONSchemaType< DocumentObject< typeof formType > >
+			>
+		>
+	>( ( acc, field ) => {
 		if (
 			! field.hidden &&
 			typeof field.rules?.validation === 'object' &&
 			! Array.isArray( field.rules.validation ) &&
-			( field.required || values[ field.key as keyof typeof values ] )
+			( field.required || field.key in values )
 		) {
 			acc[ field.key ] = field.rules.validation;
 		}
 		return acc;
-	}, {} as Record< keyof FormFields, JSONSchemaType< DocumentObject< typeof formType > > > );
+	}, {} );
 
 	let schemaErrorsMap = EMPTY_OBJECT;
 
@@ -201,65 +212,53 @@ export const useFormValidation = (
 		}
 	}
 
-	const customValidation =
-		values &&
-		formFields
-			.map( ( field ) => {
-				if ( schemaErrorsMap[ field.key ] ) {
-					return [ field.key, schemaErrorsMap[ field.key ] ];
-				}
+	const customValidation = formFields
+		.map( ( field ) => {
+			if ( schemaErrorsMap[ field.key ] ) {
+				return [ field.key, schemaErrorsMap[ field.key ] ];
+			}
 
-				// Pass validation if the field is not required and is empty.
-				if (
-					! field.required &&
-					! values[ field.key as keyof typeof values ]
-				) {
-					return null;
-				}
-
-				if (
-					field.key === 'postcode' &&
-					'country' in values &&
-					! isPostcode( {
-						postcode: values.postcode,
-						country: values.country,
-					} )
-				) {
-					return [
-						field.key,
-						__( 'Please enter a valid postcode', 'woocommerce' ),
-					];
-				}
-
-				if (
-					field.key === 'email' &&
-					'email' in values &&
-					! isEmail( values.email )
-				) {
-					return [
-						field.key,
-						__(
-							'Please enter a valid email address',
-							'woocommerce'
-						),
-					];
-				}
-
+			// Pass validation if the field is not required and is empty.
+			if ( ! field.required && ! ( field.key in values ) ) {
 				return null;
-			} )
-			.filter( Boolean );
+			}
+
+			if (
+				field.key === 'postcode' &&
+				'country' in values &&
+				! isPostcode( {
+					postcode: values.postcode,
+					country: values.country,
+				} )
+			) {
+				return [
+					field.key,
+					__( 'Please enter a valid postcode', 'woocommerce' ),
+				];
+			}
+
+			if (
+				field.key === 'email' &&
+				'email' in values &&
+				! isEmail( values.email )
+			) {
+				return [
+					field.key,
+					__( 'Please enter a valid email address', 'woocommerce' ),
+				];
+			}
+
+			return null;
+		} )
+		.filter( nonNullable );
 
 	if (
 		! fastDeepEqual(
 			currentResults.current,
-			Object.fromEntries(
-				customValidation as [ keyof FormFields, string ][]
-			)
+			Object.fromEntries( customValidation )
 		)
 	) {
-		currentResults.current = Object.fromEntries(
-			customValidation as [ keyof FormFields, string ][]
-		) as Record< keyof FormFields, string >;
+		currentResults.current = Object.fromEntries( customValidation );
 	}
 
 	return {

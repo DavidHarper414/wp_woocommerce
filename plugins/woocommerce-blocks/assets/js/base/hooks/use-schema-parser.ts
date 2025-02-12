@@ -5,9 +5,9 @@ import { useRef } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { snakeCaseKeys } from '@woocommerce/base-utils';
 import type {
-	AdditionalValues,
-	BillingAddress,
-	ShippingAddress,
+	OrderFormValues,
+	AddressFormValues,
+	FormType,
 } from '@woocommerce/settings';
 import fastDeepEqual from 'fast-deep-equal/es6';
 import {
@@ -17,21 +17,16 @@ import {
 } from '@woocommerce/block-data';
 import type Ajv from 'ajv';
 
-const useDocumentObject = (
-	formType:
-		| 'billing'
-		| 'shipping'
-		| 'contact'
-		| 'additional-information'
-		| 'calculator'
-): DocumentObject< typeof formType > => {
-	const currentResults = useRef< DocumentObject< typeof formType > >( {
+const useDocumentObject = < T extends FormType | 'global' >(
+	formType: T
+): DocumentObject< T > => {
+	const currentResults = useRef< DocumentObject< T > >( {
 		cart: {},
 		checkout: {},
 		customer: {},
 	} );
 
-	const data: DocumentObject< typeof formType > = useSelect(
+	const data: DocumentObject< T > = useSelect(
 		( select ) => {
 			const cartDataStore = select( cartStore );
 			const checkoutDataStore = select( checkoutStore );
@@ -132,18 +127,13 @@ const useDocumentObject = (
 	return currentResults.current;
 };
 
-export const useSchemaParser = (
-	formType:
-		| 'billing'
-		| 'shipping'
-		| 'contact'
-		| 'additional-information'
-		| 'calculator'
+export const useSchemaParser = < T extends FormType | 'global' >(
+	formType: T
 ): {
 	parser: Ajv | null;
-	data: DocumentObject< typeof formType > | null;
+	data: DocumentObject< T > | null;
 } => {
-	const data = useDocumentObject( formType );
+	const data = useDocumentObject< T >( formType );
 	if ( window.schemaParser ) {
 		return {
 			parser: window.schemaParser,
@@ -156,15 +146,7 @@ export const useSchemaParser = (
 	};
 };
 
-export interface DocumentObject<
-	T extends
-		| 'billing'
-		| 'shipping'
-		| 'contact'
-		| 'additional-information'
-		| 'calculator'
-		| 'global'
-> {
+export interface DocumentObject< T extends FormType | 'global' > {
 	cart:
 		| {
 				coupons: string[];
@@ -187,19 +169,19 @@ export interface DocumentObject<
 				create_account: boolean;
 				customer_note: string;
 				payment_method: string;
-				additional_fields: AdditionalValues;
+				additional_fields: OrderFormValues;
 		  }
 		| Record< string, never >;
 	customer:
 		| {
 				id: number;
-				billing_address: BillingAddress;
-				shipping_address: ShippingAddress;
+				billing_address: AddressFormValues;
+				shipping_address: AddressFormValues;
 				address: T extends 'billing'
-					? BillingAddress
+					? AddressFormValues
 					: T extends 'shipping'
-					? ShippingAddress
-					: undefined;
+					? AddressFormValues
+					: null;
 		  }
 		| Record< string, never >;
 }

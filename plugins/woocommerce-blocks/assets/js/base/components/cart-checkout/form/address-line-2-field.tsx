@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { ValidatedTextInput } from '@woocommerce/blocks-components';
-import { AddressFormValues, ContactFormValues } from '@woocommerce/settings';
 import { useState, Fragment, useCallback, useEffect } from '@wordpress/element';
 import { usePrevious } from '@woocommerce/base-hooks';
 import { __, sprintf, getLocaleData } from '@wordpress/i18n';
@@ -14,12 +13,12 @@ import { Button } from '@ariakit/react';
 import { AddressLineFieldProps } from './types';
 import './style.scss';
 
-const AddressLine2Field = < T extends AddressFormValues | ContactFormValues >( {
+const AddressLine2Field = ( {
 	field,
 	props,
 	onChange,
 	value,
-}: AddressLineFieldProps< T > ): JSX.Element => {
+}: AddressLineFieldProps ): JSX.Element => {
 	const isFieldRequired = field?.required ?? false;
 	const previousIsFieldRequired = usePrevious( isFieldRequired );
 
@@ -41,10 +40,10 @@ const AddressLine2Field = < T extends AddressFormValues | ContactFormValues >( {
 
 	const handleHiddenInputChange = useCallback(
 		( newValue: string ) => {
-			onChange( field.key as keyof T, newValue );
+			onChange( newValue );
 			setIsFieldVisible( true );
 		},
-		[ field.key, onChange ]
+		[ onChange ]
 	);
 
 	return (
@@ -56,11 +55,9 @@ const AddressLine2Field = < T extends AddressFormValues | ContactFormValues >( {
 					label={
 						isFieldRequired ? field.label : field.optionalLabel
 					}
-					className={ `wc-block-components-address-form__${ field.key }` }
+					className={ `wc-block-components-address-form__address_2` }
 					value={ value }
-					onChange={ ( newValue: string ) =>
-						onChange( field.key as keyof T, newValue )
-					}
+					onChange={ ( newValue: string ) => onChange( newValue ) }
 				/>
 			) : (
 				<>

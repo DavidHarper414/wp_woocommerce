@@ -4,7 +4,8 @@
 import {
 	CURRENT_USER_IS_ADMIN,
 	FormFields,
-	KeyedFormField,
+	KeyedFormFields,
+	FormType,
 } from '@woocommerce/settings';
 import { useSchemaParser } from '@woocommerce/base-hooks';
 import { useRef } from '@wordpress/element';
@@ -23,17 +24,12 @@ export const useFormFields = (
 	fieldKeys: ( keyof FormFields )[],
 	// Default fields from settings.
 	defaultFields: FormFields,
-	// Form type, can be billing, shipping, contact, additional-information, or calculator.
-	formType:
-		| 'billing'
-		| 'shipping'
-		| 'contact'
-		| 'additional-information'
-		| 'calculator',
+	// Form type, can be billing, shipping, contact, order, or calculator.
+	formType: FormType,
 	// Address country.
 	addressCountry = ''
-): KeyedFormField[] => {
-	const currentResults = useRef< KeyedFormField[] >( [] );
+): KeyedFormFields => {
+	const currentResults = useRef< KeyedFormFields >( [] );
 	const { parser, data } = useSchemaParser( formType );
 
 	const formFields = prepareFormFields(
