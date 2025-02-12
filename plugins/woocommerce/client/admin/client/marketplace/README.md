@@ -38,7 +38,7 @@ The Marketplace API handles interactions with WooCommerce.com and local product 
 
 API responses are cached locally for performance, with automatic cache invalidation on product updates and user activity.
 
-#### Discover page
+### Discover page
 
 The data for the Discover section is fetched from the `/wc/v3/marketplace/featured` endpoint. This behaves as a proxy to fetch and cache the content from the `woocommerce.com/wp-json/wccom-extensions` endpoint.
 
