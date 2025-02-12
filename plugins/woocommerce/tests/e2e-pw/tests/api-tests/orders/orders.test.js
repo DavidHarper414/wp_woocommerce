@@ -1849,7 +1849,7 @@ test.describe.serial( 'Orders API tests', () => {
 							{
 								date_created_gmt: '2021-09-24T15:50:19',
 								description: variationDescription,
-								sku: 'woo-vneck-tee-blue',
+								sku: `woo-vneck-tee-blue-${ RAND_NUM }`,
 								price: '15',
 								regular_price: '15',
 								sale_price: '',
@@ -2206,7 +2206,7 @@ test.describe.serial( 'Orders API tests', () => {
 				),
 				blueVneck:
 					testProductData.variableProducts.vneckVariations.find(
-						( p ) => p.sku === 'woo-vneck-tee-blue'
+						( p ) => p.sku === `woo-vneck-tee-blue-${ RAND_NUM }`
 					),
 				pennant: testProductData.externalProducts[ 0 ],
 			};
