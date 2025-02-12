@@ -142,10 +142,12 @@ export const setIsCustomerDataDirty = debounce(
 );
 
 /**
- * Sets whether it is syncing the stores or not.
+ * Sets whether it is syncing with the Interactivity API store. It's used to
+ * prevent emiting the `woocommerce-store-sync-required` event and causing an
+ * infinite loop.
  */
-let isSyncingStores = false;
-export const setSyncingStores = ( value: boolean ) => {
-	isSyncingStores = value;
+let isSyncingWithIAPIStore = false;
+export const setSyncingWithIAPIStore = ( value: boolean ) => {
+	isSyncingWithIAPIStore = value;
 };
-export const getSyncingStores = () => isSyncingStores;
+export const getSyncingWithIAPIStore = () => isSyncingWithIAPIStore;

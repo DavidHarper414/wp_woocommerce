@@ -29,7 +29,7 @@ import {
 	isAddingToCart,
 } from './persistence-layer';
 import { defaultCartState } from './default-state';
-import { getSyncingStores } from './utils';
+import { getSyncingWithIAPIStore } from './utils';
 import type { QuantityChanges } from './notify-quantity-changes';
 
 export const config = {
@@ -99,7 +99,7 @@ let previousCart: object | null = null;
 subscribe( () => {
 	const cartData = select( STORE_KEY ).getCartData();
 	if (
-		getSyncingStores() === false &&
+		getSyncingWithIAPIStore() === false &&
 		previousCart !== null &&
 		previousCart !== cartData
 	) {
