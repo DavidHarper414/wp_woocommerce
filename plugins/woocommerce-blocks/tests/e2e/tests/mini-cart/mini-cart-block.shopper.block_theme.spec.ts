@@ -56,7 +56,10 @@ test.describe( 'Shopper → Notices', () => {
 
 		await expect( page.getByText( 'Your cart' ) ).toBeVisible();
 		await expect( page.getByText( '(1 item)' ) ).toBeVisible();
+
 		await page.getByLabel( 'Close', { exact: true } ).click();
+		// Making sure the mini cart is closed before adding another item.
+		await expect( page.getByText( 'Your cart' ) ).toBeHidden();
 		await page
 			.getByLabel( `Add to cart: “${ SIMPLE_PHYSICAL_PRODUCT_NAME }”` )
 			.click();
