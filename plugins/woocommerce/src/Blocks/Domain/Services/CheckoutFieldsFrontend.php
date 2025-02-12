@@ -136,24 +136,6 @@ class CheckoutFieldsFrontend {
 	}
 
 	/**
-	 * Register required additional contact fields.
-	 *
-	 * @param array $fields Required fields.
-	 * @return array
-	 */
-	public function edit_account_form_required_fields( $fields ) {
-		$additional_fields = $this->checkout_fields_controller->get_fields_for_location( 'contact' );
-
-		foreach ( $additional_fields as $key => $field ) {
-			if ( ! empty( $field['required'] ) ) {
-				$fields[ CheckoutFields::get_group_key( 'other' ) . $key ] = $field['label'];
-			}
-		}
-
-		return $fields;
-	}
-
-	/**
 	 * Adds additional contact fields to the My Account edit account form.
 	 */
 	public function edit_account_form_fields() {
@@ -188,8 +170,12 @@ class CheckoutFieldsFrontend {
 	 */
 	public function save_account_form_fields( $user_id ) {
 		try {
-			$customer     = new WC_Customer( $user_id );
-			$field_values = $this->sanitize_additional_fields_for_location_group( $customer, 'contact', 'other' );
+			$customer               = new WC_Customer( $user_id );
+			$field_values           = $this->get_additional_fields_values_for_location_group( $customer, 'contact', 'other' );
+			$sanitized_field_values = [];
+			foreach ( $field_values as $field_key => $field_value ) {
+				$sanitized_field_values[ $field_key ] = $this->checkout_fields_controller->sanitize_field( $field_key, $field_value );
+			}
 
 			// Generate document object based on POSTed values.
 			$document_object = null;
@@ -198,7 +184,7 @@ class CheckoutFieldsFrontend {
 				$document_object = new DocumentObject(
 					[
 						'customer' => [
-							'additional_fields' => $field_values,
+							'additional_fields' => $sanitized_field_values,
 						],
 					]
 				);
@@ -206,20 +192,30 @@ class CheckoutFieldsFrontend {
 
 			// Validate individual fields agains the document object.
 			foreach ( $field_values as $field_key => $field_value ) {
-				$validation_result = $this->checkout_fields_controller->validate_field( $field_key, $field_value, $document_object, 'contact' );
+				$is_required = $this->checkout_fields_controller->is_required_field( $field_key, $document_object, 'contact' );
 
-				if ( is_wp_error( $validation_result ) && $validation_result->has_errors() ) {
-					// Take only the first error message as some validation rules will overlap e.g. required and format.
-					wc_add_notice( $validation_result->get_error_message(), 'error', array( 'id' => $field_key ) );
+				if ( empty( $field_value ) ) {
+					if ( $is_required ) {
+						wc_add_notice( $this->checkout_fields_controller->get_required_field_error_message( $field_key, 'contact' ), 'error', array( 'id' => $field_key ) );
+					}
+					// Only continue validation if we had a value to validate.
+					continue;
+				}
+
+				$sanitized_field_value = $sanitized_field_values[ $field_key ];
+				$valid_check           = $this->checkout_fields_controller->validate_field( $field_key, $sanitized_field_value, $document_object, 'contact' );
+
+				if ( is_wp_error( $valid_check ) && $valid_check->has_errors() ) {
+					wc_add_notice( $valid_check->get_error_message(), 'error', array( 'id' => $field_key ) );
 					continue;
 				}
 
 				// Persist individual additional fields to customer. This does not save the customer object.
-				$this->checkout_fields_controller->persist_field_for_customer( $field_key, $field_value, $customer, 'other' );
+				$this->checkout_fields_controller->persist_field_for_customer( $field_key, $sanitized_field_value, $customer, 'other' );
 			}
 
 			// Validate all fields for this location (this runs custom validation callbacks).
-			$location_validation = $this->checkout_fields_controller->validate_fields_for_location( $field_values, 'contact', 'other' );
+			$location_validation = $this->checkout_fields_controller->validate_fields_for_location( $sanitized_field_values, 'contact', 'other' );
 
 			if ( is_wp_error( $location_validation ) && $location_validation->has_errors() ) {
 				wc_add_notice( $location_validation->get_error_message(), 'error' );
@@ -289,7 +285,11 @@ class CheckoutFieldsFrontend {
 	 * @param WC_Customer $customer Customer object.
 	 */
 	public function save_address_fields( $user_id, $address_type, $address, $customer ) {
-		$field_values = $this->sanitize_additional_fields_for_location_group( $customer, 'address', $address_type );
+		$field_values           = $this->get_additional_fields_values_for_location_group( $customer, 'contact', 'other' );
+		$sanitized_field_values = [];
+		foreach ( $field_values as $field_key => $field_value ) {
+			$sanitized_field_values[ $field_key ] = $this->checkout_fields_controller->sanitize_field( $field_key, $field_value );
+		}
 
 		// Generate document object based on POSTed values.
 		$document_object = null;
@@ -298,7 +298,7 @@ class CheckoutFieldsFrontend {
 			$document_object = new DocumentObject(
 				[
 					'customer' => [
-						$address_type . '_address' => $field_values,
+						$address_type . '_address' => $sanitized_field_values,
 					],
 				]
 			);
@@ -306,18 +306,29 @@ class CheckoutFieldsFrontend {
 
 		// Validate individual fields agains the document object.
 		foreach ( $field_values as $field_key => $field_value ) {
-			$validation_result = $this->checkout_fields_controller->validate_field( $field_key, $field_value, $document_object, $address_type . '_address' );
+			$is_required = $this->checkout_fields_controller->is_required_field( $field_key, $document_object, $address_type . '_address' );
 
-			if ( is_wp_error( $validation_result ) && $validation_result->has_errors() ) {
-				wc_add_notice( $validation_result->get_error_message(), 'error', array( 'id' => $field_key ) );
+			if ( empty( $field_value ) ) {
+				if ( $is_required ) {
+					wc_add_notice( $this->checkout_fields_controller->get_required_field_error_message( $field_key, $address_type . '_address' ), 'error', array( 'id' => $field_key ) );
+				}
+				// Only continue validation if we had a value to validate.
 				continue;
 			}
 
-			$this->checkout_fields_controller->persist_field_for_customer( $field_key, $field_value, $customer, $address_type );
+			$sanitized_field_value = $sanitized_field_values[ $field_key ];
+			$valid_check           = $this->checkout_fields_controller->validate_field( $field_key, $sanitized_field_value, $document_object, $address_type . '_address' );
+
+			if ( is_wp_error( $valid_check ) && $valid_check->has_errors() ) {
+				wc_add_notice( $valid_check->get_error_message(), 'error', array( 'id' => $field_key ) );
+				continue;
+			}
+
+			$this->checkout_fields_controller->persist_field_for_customer( $field_key, $sanitized_field_value, $customer, $address_type );
 		}
 
 		// Validate all fields for this location.
-		$location_validation = $this->checkout_fields_controller->validate_fields_for_location( array_merge( $address, $field_values ), 'address', $address_type );
+		$location_validation = $this->checkout_fields_controller->validate_fields_for_location( array_merge( $address, $sanitized_field_values ), 'address', $address_type );
 
 		if ( is_wp_error( $location_validation ) && $location_validation->has_errors() ) {
 			wc_add_notice( $location_validation->get_error_message(), 'error' );
@@ -333,9 +344,9 @@ class CheckoutFieldsFrontend {
 	 * @param WC_Customer $customer Customer object.
 	 * @param string      $location Location to save fields for.
 	 * @param string      $group    Group to save fields for.
-	 * @return array Field values. Missing fields are set to null.
+	 * @return array Field values.
 	 */
-	protected function sanitize_additional_fields_for_location_group( WC_Customer $customer, $location, $group ) {
+	protected function get_additional_fields_values_for_location_group( WC_Customer $customer, $location, $group ) {
 		if ( ! in_array( $group, array( 'other', 'billing', 'shipping' ), true ) || ! in_array( $location, array( 'contact', 'address' ), true ) ) {
 			return;
 		}
@@ -347,18 +358,11 @@ class CheckoutFieldsFrontend {
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		foreach ( $additional_fields as $field_key => $field_data ) {
-			$post_key = CheckoutFields::get_group_key( $group ) . $field_key;
-
-			// If the field is not set or empty, set to null. This is so we can determine later if the field had a value before sanitization.
-			if ( ! isset( $_POST[ $post_key ] ) || '' === $_POST[ $post_key ] ) {
-				$values[ $field_key ] = null;
-				continue;
-			}
-
-			$values[ $field_key ] = $this->checkout_fields_controller->sanitize_field( $field_key, wc_clean( wp_unslash( $_POST[ $post_key ] ) ) );
+			$post_key                   = CheckoutFields::get_group_key( $group ) . $field_key;
+			$field_values[ $field_key ] = wc_clean( wp_unslash( $_POST[ $post_key ] ?? '' ) );
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
-		return $values;
+		return $field_values;
 	}
 }

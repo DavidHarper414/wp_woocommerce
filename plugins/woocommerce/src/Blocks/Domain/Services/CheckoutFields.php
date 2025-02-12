@@ -231,12 +231,15 @@ class CheckoutFields {
 	/**
 	 * Returns true if the field is required. Takes rules into consideration if a document object is provided.
 	 *
-	 * @param array               $field The field.
+	 * @param array|string        $field The field array or field key.
 	 * @param DocumentObject|null $document_object The document object.
 	 * @param string|null         $context Address context.
 	 * @return bool
 	 */
 	public function is_required_field( $field, $document_object = null, $context = null ) {
+		if ( is_string( $field ) ) {
+			$field = $this->additional_fields[ $field ] ?? [];
+		}
 		if ( $document_object && ! empty( $field['rules']['required'] ) ) {
 			$document_object->set_context( $context );
 			return true === Validation::validate_document_object( $document_object, $field['rules']['required'] );
@@ -804,6 +807,31 @@ class CheckoutFields {
 	}
 
 	/**
+	 * Get a required field error object based on context.
+	 *
+	 * @param string $field_key The key of the field.
+	 * @param string $context The context for the document object.
+	 * @return WP_Error
+	 */
+	public function get_required_field_error_message( $field_key, $context = null ) {
+		$field       = $this->additional_fields[ $field_key ] ?? null;
+		$field_label = $field['label'] ?? __( 'Field', 'woocommerce' );
+
+		/* translators: %s: is the field label */
+		$error_message = sprintf( __( '%s is required', 'woocommerce' ), $field_label );
+
+		if ( 'shipping_address' === $context ) {
+			/* translators: %s: is the field error message */
+			return sprintf( __( 'There was a problem with the provided shipping address: %s', 'woocommerce' ), $error_message );
+		} elseif ( 'billing_address' === $context ) {
+			/* translators: %s: is the field error message */
+			return sprintf( __( 'There was a problem with the provided billing address: %s', 'woocommerce' ), $error_message );
+		}
+
+		return $error_message;
+	}
+
+	/**
 	 * Validate an additional field against any custom validation rules.
 	 *
 	 * @since 8.6.0
@@ -820,33 +848,8 @@ class CheckoutFields {
 		try {
 			$field = $this->additional_fields[ $field_key ] ?? null;
 
+			// Only validate if we have a field.
 			if ( ! $field ) {
-				return $errors;
-			}
-
-			$is_required = $this->is_required_field( $field, $document_object, $document_object_context );
-
-			if ( is_null( $field_value ) && ! $is_required ) {
-				// Skip optional fields that are not set.
-				return $errors;
-			}
-
-			// Empty field handling.
-			if ( empty( $field_value ) && $is_required ) {
-				/* translators: %s: is the field label */
-				$error_message = sprintf( __( '%s is required', 'woocommerce' ), $field['label'] );
-				$error_code    = 'woocommerce_required_checkout_field';
-
-				if ( 'shipping_address' === $document_object_context ) {
-					/* translators: %s: is the field error message */
-					$errors->add( $error_code, sprintf( __( 'There was a problem with the provided shipping address: %s', 'woocommerce' ), $error_message ) );
-				} elseif ( 'billing_address' === $document_object_context ) {
-					/* translators: %s: is the field error message */
-					$errors->add( $error_code, sprintf( __( 'There was a problem with the provided billing address: %s', 'woocommerce' ), $error_message ) );
-				} else {
-					/* translators: %s: is the field error message */
-					$errors->add( $error_code, $error_message );
-				}
 				return $errors;
 			}
 
