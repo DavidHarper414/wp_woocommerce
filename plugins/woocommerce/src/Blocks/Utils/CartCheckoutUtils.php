@@ -291,7 +291,7 @@ class CartCheckoutUtils {
 		$country_states     = wc()->countries->get_states();
 		$all_countries      = self::deep_sort_with_accents( array_unique( array_merge( $billing_countries, $shipping_countries ) ) );
 		$country_locales    = array_map(
-			function( $locale ) {
+			function ( $locale ) {
 				foreach ( $locale as $field => $field_data ) {
 					if ( isset( $field_data['priority'] ) ) {
 						$locale[ $field ]['index'] = $field_data['priority'];
