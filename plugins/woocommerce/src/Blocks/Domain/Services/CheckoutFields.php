@@ -825,7 +825,7 @@ class CheckoutFields {
 			}
 
 			$is_required = $this->is_required_field( $field, $document_object, $document_object_context );
-			$has_value   = ! is_null( $field_value ) && 0 !== strlen( $field_value );
+			$has_value   = ! is_null( $field_value ) && '' !== $field_value;
 
 			// Empty field handling.
 			if ( ! $has_value ) {
