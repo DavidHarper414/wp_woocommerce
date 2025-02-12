@@ -16,6 +16,7 @@ config = {
 			name: 'reset',
 			testDir: `${ config.TESTS_ROOT_PATH }/fixtures`,
 			testMatch: 'reset.setup.js',
+			dependencies: [ 'site setup' ],
 		},
 		{
 			name: 'e2e-pressable',
