@@ -30,28 +30,6 @@ test.describe(
 	'Shopper Account Email Receiving',
 	{ tag: [ tags.PAYMENTS, tags.SERVICES ] },
 	() => {
-		test.beforeEach( async ( { page, user } ) => {
-			await page.goto(
-				`wp-admin/tools.php?page=wpml_plugin_log&s=${ encodeURIComponent(
-					user.email
-				) }`
-			);
-			// clear out the email logs before each test
-			while (
-				await page.locator( '#bulk-action-selector-top' ).isVisible()
-			) {
-				// In WP 6.3, label intercepts check action. Need to force.
-				await page
-					.getByLabel( 'Select All' )
-					.first()
-					.check( { force: true } );
-				await page
-					.locator( '#bulk-action-selector-top' )
-					.selectOption( 'delete' );
-				await page.locator( '#doaction' ).click();
-			}
-		} );
-
 		test( 'should receive an email when creating an account', async ( {
 			page,
 			user,
