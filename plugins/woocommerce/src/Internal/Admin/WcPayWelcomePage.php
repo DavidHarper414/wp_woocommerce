@@ -71,7 +71,7 @@ class WcPayWelcomePage {
 		// Adding try-catch because in non-production environments it may fail (for example, e2e tests).
 		try {
 			$in_treatment = Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' );
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			$in_treatment = false;
 		}
 		// Don't do anything if the feature is enabled.
