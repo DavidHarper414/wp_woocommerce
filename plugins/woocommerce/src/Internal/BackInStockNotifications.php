@@ -29,7 +29,7 @@ class BackInStockNotifications {
 		if ( ! self::is_enabled() ) { //TODO: should this only run in case is_enabled is true?
 			return;
 		}
-
+		//TODO: can this run only in some contexts? admin + front end, rest api if it's related to BIS, but it needs to react to changes in stock levels, so can it actually be reduced..?
 		self::$db_utils = wc_get_container()->get( DatabaseUtil::class );
 
 		include_once WC_ABSPATH . '/includes/bis/class-wc-bis-notifications.php';

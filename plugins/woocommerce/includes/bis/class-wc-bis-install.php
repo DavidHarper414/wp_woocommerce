@@ -20,37 +20,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_BIS_Install {
 
 	/**
-	 * Background update class.
-	 *
-	 * @var WC_BIS_Background_Updater
-	 */
-	private static $background_updater;
-
-	/**
-	 * Whether install() ran in this request.
-	 *
-	 * @var boolean
-	 */
-	private static $is_install_request;
-
-	/**
 	 * Hook in.
 	 */
 	public static function init() {
-
-		// Installation and DB updates handling.
-		add_action( 'init', array( __CLASS__, 'init_background_updater' ), 5 );
-
 		//TODO: Haven't ported the db upgrade when updating to 1.1.0, so perhaps add some info to folks on older BIS?
-
-		include_once WC_ABSPATH . 'includes/bis/class-wc-bis-background-updater.php';
 	}
 
 	/**
 	 * Init background updates.
 	 */
 	public static function init_background_updater() {
-		self::$background_updater = new WC_BIS_Background_Updater();
+		wc_deprecated_function( 'WC_BIS_Install::init_background_updater', '9.9.0' );
+		// All future db updates will be handled from within WC core.
 	}
 
 	/**
