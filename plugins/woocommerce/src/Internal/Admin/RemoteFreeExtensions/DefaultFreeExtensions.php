@@ -60,7 +60,9 @@ class DefaultFreeExtensions {
 				'title'   => __( 'Reach out to customers', 'woocommerce' ),
 				'plugins' => array(
 					self::get_plugin( 'mailpoet:alt' ),
-					self::get_plugin( 'klaviyo' ),
+					// IMPORTANT: Klaviyo needs to be above Mailchimp as per partnership agreement.
+					// https://ghidorahp2.wordpress.com/2025/01/21/change-requests-for-klaviyo
+					self::get_plugin( 'klaviyo:alt' ),
 					self::get_plugin( 'mailchimp-for-woocommerce' ),
 				),
 			),
@@ -230,6 +232,13 @@ class DefaultFreeExtensions {
 						'operation'   => 'range',
 					),
 				),
+				'is_built_by_wc' => false,
+			),
+			'klaviyo:alt'                   => array(
+				'name'           => __( 'Klaviyo', 'woocommerce' ),
+				'description'    => __( 'Grow and retain customers with intelligent, impactful email and SMS marketing automation and a consolidated view of customer interactions.', 'woocommerce' ),
+				'image_url'      => plugins_url( '/assets/images/onboarding/klaviyo.png', WC_PLUGIN_FILE ),
+				'manage_url'     => 'admin.php?page=klaviyo_settings',
 				'is_built_by_wc' => false,
 			),
 			'woocommerce-payments'          => array(
