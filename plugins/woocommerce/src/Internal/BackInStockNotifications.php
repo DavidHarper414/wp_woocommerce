@@ -42,7 +42,7 @@ class BackInStockNotifications {
 		}
 
 		if ( is_admin() ) {
-			require_once WC_ABSPATH . '/includes/bis/admin/class-wc-bis-admin-notices.php';
+			require_once WC_ABSPATH . '/includes/admin/class-wc-bis-admin-notices.php';
 		}
 	}
 

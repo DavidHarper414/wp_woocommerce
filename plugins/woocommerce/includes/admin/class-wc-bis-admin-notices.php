@@ -65,7 +65,7 @@ class WC_BIS_Admin_Notices {
 	public static function init() {
 
 		if ( ! class_exists( 'WC_BIS_Notices' ) ) {
-			require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-notices.php';
+			require_once WC_ABSPATH . 'includes/admin/class-wc-bis-notices.php';
 		}
 
 		// Avoid duplicates for some notice types that are meant to be unique.
