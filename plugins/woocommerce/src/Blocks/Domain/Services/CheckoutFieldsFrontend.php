@@ -187,43 +187,57 @@ class CheckoutFieldsFrontend {
 	 * @param integer $user_id User ID.
 	 */
 	public function save_account_form_fields( $user_id ) {
-		$customer          = new WC_Customer( $user_id );
-		$additional_fields = $this->sanitize_additional_fields_for_location_group( $customer, 'contact', 'other' );
+		try {
+			$customer     = new WC_Customer( $user_id );
+			$field_values = $this->sanitize_additional_fields_for_location_group( $customer, 'contact', 'other' );
 
-		// Generate document object based on POSTed values.
-		$document_object = null;
+			// Generate document object based on POSTed values.
+			$document_object = null;
 
-		if ( Features::is_enabled( 'experimental-blocks' ) ) {
-			$document_object = new DocumentObject(
-				[
-					'customer' => [
-						'additional_fields' => $additional_fields,
-					],
-				]
-			);
-		}
-
-		// Validate individual fields agains the document object.
-		foreach ( $additional_fields as $field_key => $field_value ) {
-			$validation_result = $this->checkout_fields_controller->validate_field( $field_key, $field_value, $document_object, 'contact' );
-
-			if ( is_wp_error( $validation_result ) && $validation_result->has_errors() ) {
-				wc_add_notice( $validation_result->get_error_message(), 'error', array( 'id' => $field_key ) );
-				continue;
+			if ( Features::is_enabled( 'experimental-blocks' ) ) {
+				$document_object = new DocumentObject(
+					[
+						'customer' => [
+							'additional_fields' => $field_values,
+						],
+					]
+				);
 			}
 
-			$this->checkout_fields_controller->persist_field_for_customer( $field_key, $field_value, $customer, 'other' );
+			// Validate individual fields agains the document object.
+			foreach ( $field_values as $field_key => $field_value ) {
+				$validation_result = $this->checkout_fields_controller->validate_field( $field_key, $field_value, $document_object, 'contact' );
+
+				if ( is_wp_error( $validation_result ) && $validation_result->has_errors() ) {
+					// Take only the first error message as some validation rules will overlap e.g. required and format.
+					wc_add_notice( $validation_result->get_error_message(), 'error', array( 'id' => $field_key ) );
+					continue;
+				}
+
+				// Persist individual additional fields to customer. This does not save the customer object.
+				$this->checkout_fields_controller->persist_field_for_customer( $field_key, $field_value, $customer, 'other' );
+			}
+
+			// Validate all fields for this location (this runs custom validation callbacks).
+			$location_validation = $this->checkout_fields_controller->validate_fields_for_location( $additional_fields, 'contact', 'other' );
+
+			if ( is_wp_error( $location_validation ) && $location_validation->has_errors() ) {
+				wc_add_notice( $location_validation->get_error_message(), 'error' );
+				return;
+			}
+
+			$customer->save();
+
+		} catch ( \Exception $e ) {
+			wc_add_notice(
+				sprintf(
+					/* translators: %s: Error message. */
+					__( 'An error occurred while saving account details: %s', 'woocommerce' ),
+					esc_html( $e->getMessage() )
+				),
+				'error'
+			);
 		}
-
-		// Validate all fields for this location (this runs custom validation callbacks).
-		$location_validation = $this->checkout_fields_controller->validate_fields_for_location( $additional_fields, 'contact', 'other' );
-
-		if ( is_wp_error( $location_validation ) && $location_validation->has_errors() ) {
-			wc_add_notice( $location_validation->get_error_message(), 'error' );
-			return;
-		}
-
-		$customer->save();
 	}
 
 	/**
@@ -329,10 +343,10 @@ class CheckoutFieldsFrontend {
 		$additional_fields = $this->checkout_fields_controller->get_fields_for_location( $location );
 
 		// Get all values from the POST request before validating.
-		$values = array();
+		$field_values = array();
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		foreach ( $additional_fields as $field_key => $field ) {
+		foreach ( $additional_fields as $field_key => $field_data ) {
 			$post_key = CheckoutFields::get_group_key( $group ) . $field_key;
 
 			if ( ! isset( $_POST[ $post_key ] ) ) {
