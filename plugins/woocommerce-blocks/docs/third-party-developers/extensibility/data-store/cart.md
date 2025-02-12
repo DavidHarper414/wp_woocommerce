@@ -97,7 +97,7 @@ This action is used to set the cart data in the store.
 #### _Example_ <!-- omit in toc -->
 
 ```js
-const { dispatch } = useDispatch( CART_STORE_KEY );
+const { dispatch } = useDispatch( cartStore );
 dispatch( setCartData( newCartData ) );
 ```
 
@@ -135,7 +135,7 @@ This action is used to set the error data in the store.
 #### _Example_ <!-- omit in toc -->
 
 ```js
-const { dispatch } = useDispatch( CART_STORE_KEY );
+const { dispatch } = useDispatch( cartStore );
 dispatch( setErrorData( newErrorData ) );
 ```
 
