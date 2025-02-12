@@ -169,11 +169,11 @@ WooCommerce comes with some sample data you can use to see how products look; im
 
 == Changelog ==
 
-= 9.6.1 2025-02-04 =
+= 9.6.0 2025-03-03 =
 
 **WooCommerce**
 
-* Update - Launching the new Woo logo and related brand updates. [#54802](https://github.com/woocommerce/woocommerce/pull/54802)
+* Fix - Return secondary color CSS variable to its original color [#55366](https://github.com/woocommerce/woocommerce/pull/55366)
 
 
 [See changelog for all versions](https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/changelog.txt).
