@@ -174,7 +174,6 @@ class BlockTemplatesController {
 		return $settings;
 	}
 
-
 	/**
 	 * Prevents shortcodes in templates having their HTML content broken by wpautop.
 	 *
