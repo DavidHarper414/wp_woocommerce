@@ -361,7 +361,11 @@ class WC_Form_Handler {
 				wc_add_notice( $e->getMessage(), 'error' );
 			} catch ( \Exception $e ) {
 				wc_add_notice(
-					__( 'An error occurred while saving account details: ', 'woocommerce' ) . $e->getMessage(),
+					sprintf(
+						/* translators: %s: Error message. */
+						__( 'An error occurred while saving account details: %s', 'woocommerce' ),
+						esc_html( $e->getMessage() )
+					),
 					'error'
 				);
 			}
