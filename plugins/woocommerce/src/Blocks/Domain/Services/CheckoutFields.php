@@ -1,8 +1,12 @@
 <?php
+declare( strict_types = 1);
 
 namespace Automattic\WooCommerce\Blocks\Domain\Services;
 
+use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
 use Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry;
+use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFieldsSchema;
+use Automattic\WooCommerce\Blocks\Domain\Services\Schema\DocumentObject;
 use WC_Customer;
 use WC_Data;
 use WC_Order;
@@ -78,14 +82,22 @@ class CheckoutFields {
 	const OTHER_FIELDS_PREFIX = '_wc_other/';
 
 	/**
+	 * Instance of the checkout fields schema.
+	 *
+	 * @var CheckoutFieldsSchema
+	 */
+	private $schema;
+
+	/**
 	 * Sets up core fields.
 	 *
-	 * @param AssetDataRegistry $asset_data_registry Instance of the asset data registry.
+	 * @param AssetDataRegistry    $asset_data_registry Instance of the asset data registry.
+	 * @param CheckoutFieldsSchema $schema Instance of the checkout fields schema.
 	 */
-	public function __construct( AssetDataRegistry $asset_data_registry ) {
+	public function __construct( AssetDataRegistry $asset_data_registry, CheckoutFieldsSchema $schema ) {
 		$this->asset_data_registry = $asset_data_registry;
-
-		$this->fields_locations = [
+		$this->schema              = $schema;
+		$this->fields_locations    = [
 			// omit email from shipping and billing fields.
 			'address' => array_merge( \array_diff_key( $this->get_core_fields_keys(), array( 'email' ) ) ),
 			'contact' => array( 'email' ),
@@ -194,23 +206,26 @@ class CheckoutFields {
 		// The above validate_options function ensures these options are valid. Type might not be supplied but then it defaults to text.
 		$field_data = wp_parse_args(
 			$options,
-			[
-				'id'                         => '',
-				'label'                      => '',
-				'optionalLabel'              => sprintf(
-					/* translators: %s Field label. */
-					__( '%s (optional)', 'woocommerce' ),
-					$options['label']
-				),
-				'location'                   => '',
-				'type'                       => 'text',
-				'hidden'                     => false,
-				'required'                   => false,
-				'attributes'                 => [],
-				'show_in_order_confirmation' => true,
-				'sanitize_callback'          => array( $this, 'default_sanitize_callback' ),
-				'validate_callback'          => array( $this, 'default_validate_callback' ),
-			]
+			array_merge(
+				[
+					'id'                         => '',
+					'label'                      => '',
+					'optionalLabel'              => sprintf(
+						/* translators: %s Field label. */
+						__( '%s (optional)', 'woocommerce' ),
+						$options['label']
+					),
+					'location'                   => '',
+					'type'                       => 'text',
+					'hidden'                     => false,
+					'required'                   => false,
+					'attributes'                 => [],
+					'show_in_order_confirmation' => true,
+					'sanitize_callback'          => array( $this, 'default_sanitize_callback' ),
+					'validate_callback'          => array( $this, 'default_validate_callback' ),
+				],
+				$this->schema->get_schema_properties()
+			)
 		);
 
 		$field_data['attributes'] = $this->register_field_attributes( $field_data['id'], $field_data['attributes'] );
@@ -229,6 +244,23 @@ class CheckoutFields {
 		// Insert new field into the correct location array.
 		$this->additional_fields[ $field_data['id'] ]        = $field_data;
 		$this->fields_locations[ $field_data['location'] ][] = $field_data['id'];
+	}
+
+	/**
+	 * Returns true if the field is required. Takes rules into consideration if a document object is provided.
+	 *
+	 * @param array               $field The field.
+	 * @param DocumentObject|null $document_object The document object.
+	 * @param string|null         $context Address context.
+	 * @return bool
+	 */
+	public function is_field_required( $field, $document_object = null, $context = null ) {
+		if ( $document_object && ! empty( $field['rules']['required'] ) ) {
+			$document_object->set_context( $context );
+			return $this->schema->validate_document_object_rules( $document_object, $field['rules']['required'] );
+		}
+
+		return true === $field['required'];
 	}
 
 	/**
@@ -337,6 +369,10 @@ class CheckoutFields {
 			// Don't return here unlike the other fields because this is not an issue that will prevent registration.
 		}
 
+		if ( ! $this->schema->validate_schema( $options ) ) {
+			return false;
+		}
+
 		return true;
 	}
 
@@ -404,12 +440,30 @@ class CheckoutFields {
 	private function process_checkbox_field( $field_data, $options ) {
 		$id = $options['id'];
 
-		// Checkbox fields are always optional. Log a warning if it's set explicitly as true.
-		$field_data['required'] = false;
+		if ( isset( $options['required'] ) && ! is_bool( $options['required'] ) ) {
+			$message = sprintf( 'The required property for field with id: "%s" must be a boolean, you passed %s. The field will not be registered.', $id, gettype( $options['required'] ) );
+			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '9.8.0' );
+			return false;
+		}
 
-		if ( isset( $options['required'] ) && true === $options['required'] ) {
-			$message = sprintf( 'Registering checkbox fields as required is not supported. "%s" will be registered as optional.', $id );
-			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
+		$field_data['required'] = $options['required'] ?? false;
+
+		if ( ( ! isset( $field_data['required'] ) || false === $field_data['required'] ) && ! empty( $options['error_message'] ) ) {
+			$message = sprintf( 'Passing an error message to a non-required checkbox "%s" will have no effect. The error message has been removed from the field.', $id );
+			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '9.8.0' );
+			unset( $field_data['error_message'] );
+		}
+
+		if ( isset( $options['error_message'] ) && ! is_string( $options['error_message'] ) ) {
+			$message = sprintf( 'The error_message property for field with id: "%s" must be a string, you passed %s. A default message will be shown.', $id, gettype( $options['error_message'] ) );
+			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '9.8.0' );
+			unset( $field_data['error_message'] );
+		}
+
+		// Get the error message property and set it to errorMessage for use in JS.
+		if ( isset( $field_data['error_message'] ) ) {
+			$field_data['errorMessage'] = $field_data['error_message'];
+			unset( $field_data['error_message'] );
 		}
 
 		return $field_data;
@@ -552,8 +606,8 @@ class CheckoutFields {
 					'Company (optional)',
 					'woocommerce'
 				),
-				'required'       => false,
-				'hidden'         => false,
+				'required'       => 'required' === CartCheckoutUtils::get_company_field_visibility(),
+				'hidden'         => 'hidden' === CartCheckoutUtils::get_company_field_visibility(),
 				'autocomplete'   => 'organization',
 				'autocapitalize' => 'sentences',
 				'index'          => 30,
@@ -576,8 +630,8 @@ class CheckoutFields {
 					'Apartment, suite, etc. (optional)',
 					'woocommerce'
 				),
-				'required'       => false,
-				'hidden'         => false,
+				'required'       => 'required' === CartCheckoutUtils::get_address_2_field_visibility(),
+				'hidden'         => 'hidden' === CartCheckoutUtils::get_address_2_field_visibility(),
 				'autocomplete'   => 'address-line2',
 				'autocapitalize' => 'sentences',
 				'index'          => 50,
@@ -624,8 +678,8 @@ class CheckoutFields {
 					'Phone (optional)',
 					'woocommerce'
 				),
-				'required'       => false,
-				'hidden'         => false,
+				'required'       => 'required' === CartCheckoutUtils::get_phone_field_visibility(),
+				'hidden'         => 'hidden' === CartCheckoutUtils::get_phone_field_visibility(),
 				'type'           => 'tel',
 				'autocomplete'   => 'tel',
 				'autocapitalize' => 'characters',
@@ -1122,7 +1176,7 @@ class CheckoutFields {
 
 		$value = $wc_object->get_meta( $meta_key, true );
 
-		if ( ! $value ) {
+		if ( ! $value && '0' !== $value ) {
 			/**
 			 * Allow providing a default value for additional fields if no value is already set.
 			 *

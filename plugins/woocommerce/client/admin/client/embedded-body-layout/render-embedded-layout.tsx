@@ -7,8 +7,6 @@ import {
 	WCUser,
 } from '@woocommerce/data';
 import debugFactory from 'debug';
-// @ts-expect-error @wordpress/element
-// eslint-disable-next-line @woocommerce/dependency-group
 import { createRoot } from '@wordpress/element';
 
 /**
@@ -27,6 +25,7 @@ import {
 	possiblyRenderOrderAttributionSlot,
 	registerOrderAttributionSlotFill,
 } from '../order-attribution-install-banner/order-editor/slot';
+import { registerSettingsEmailColorPaletteFill } from '../settings-email/settings-email-color-palette-slotfill';
 import { registerSettingsEmailImageUrlFill } from '../settings-email/settings-email-image-url-slotfill';
 import { registerSettingsEmailPreviewFill } from '../settings-email/settings-email-preview-slotfill';
 
@@ -47,11 +46,14 @@ const renderHydratedLayout = (
 	let HydratedEmbedLayout = withSettingsHydration(
 		settingsGroup,
 		window.wcSettings?.admin
-	)( EmbedLayout );
+	)( EmbedLayout as React.ComponentType< Record< string, unknown > > );
 
 	if ( hydrateUser ) {
-		HydratedEmbedLayout =
-			withCurrentUserHydration( hydrateUser )( HydratedEmbedLayout );
+		HydratedEmbedLayout = withCurrentUserHydration( hydrateUser )(
+			HydratedEmbedLayout as React.ComponentType<
+				Record< string, unknown >
+			>
+		);
 	}
 
 	createRoot( embeddedRoot ).render( <HydratedEmbedLayout /> );
@@ -117,7 +119,7 @@ const registerSlotFills = () => {
 		registerSiteVisibilitySlotFill();
 	}
 
-	if ( features?.blueprint === true ) {
+	if ( isFeatureEnabled( 'blueprint' ) ) {
 		registerBlueprintSlotfill();
 	}
 
@@ -125,6 +127,7 @@ const registerSlotFills = () => {
 	registerOrderAttributionSlotFill();
 
 	if ( isFeatureEnabled( 'email_improvements' ) ) {
+		registerSettingsEmailColorPaletteFill();
 		registerSettingsEmailImageUrlFill();
 		registerSettingsEmailPreviewFill();
 	}

@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { Gridicon } from '@automattic/components';
-import { Button, Tooltip } from '@wordpress/components';
+import { Button, Popover } from '@wordpress/components';
 import React, { useState, useMemo } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
@@ -10,23 +10,49 @@ import {
 	SuggestedPaymentExtension,
 	SuggestedPaymentExtensionCategory,
 } from '@woocommerce/data';
+import { useDebounce } from '@wordpress/compose';
 
 /**
  * Internal dependencies
  */
 import { getAdminSetting } from '~/utils/admin-settings';
 import { GridItemPlaceholder } from '~/settings-payments/components/grid-item-placeholder';
+import { OfficialBadge } from '../official-badge';
 
 const assetUrl = getAdminSetting( 'wcAdminAssetUrl' );
 
 interface OtherPaymentGatewaysProps {
+	/**
+	 * Array of suggested payment extensions.
+	 */
 	suggestions: SuggestedPaymentExtension[];
+	/**
+	 * Array of categories for the suggested payment extensions.
+	 */
 	suggestionCategories: SuggestedPaymentExtensionCategory[];
+	/**
+	 * The ID of the plugin currently being installed, or `null` if none.
+	 */
 	installingPlugin: string | null;
-	setupPlugin: ( id: string, slug: string ) => void;
+	/**
+	 * Callback to handle plugin setup. Accepts the plugin ID, slug, and onboarding URL (if available).
+	 */
+	setupPlugin: (
+		id: string,
+		slug: string,
+		onboardingUrl: string | null
+	) => void;
+	/**
+	 * Indicates whether the suggestions are still being fetched.
+	 */
 	isFetching: boolean;
 }
 
+/**
+ * A component that displays a collapsible list of suggested payment extensions grouped by categories.
+ * When collapsed, it shows a few icons representing the suggestions. When expanded, it displays detailed
+ * information about each suggestion and allows the user to install them.
+ */
 export const OtherPaymentGateways = ( {
 	suggestions,
 	suggestionCategories,
@@ -34,8 +60,23 @@ export const OtherPaymentGateways = ( {
 	setupPlugin,
 	isFetching,
 }: OtherPaymentGatewaysProps ) => {
-	const [ isExpanded, setIsExpanded ] = useState( false );
+	const urlParams = new URLSearchParams( window.location.search );
 
+	// Determine the initial expanded state based on URL params.
+	const initialExpanded = urlParams.get( 'other_pes_section' ) === 'expanded';
+	const [ isExpanded, setIsExpanded ] = useState( initialExpanded );
+	const [ categoryIdWithPopoverVisible, setCategoryIdWithPopoverVisible ] =
+		useState( '' );
+
+	const hidePopoverDebounced = useDebounce( () => {
+		setCategoryIdWithPopoverVisible( '' );
+	}, 350 );
+	const showPopover = ( categoryId: string ) => {
+		setCategoryIdWithPopoverVisible( categoryId );
+		hidePopoverDebounced.cancel();
+	};
+
+	// Group suggestions by category.
 	const suggestionsByCategory = useMemo(
 		() =>
 			suggestionCategories.map(
@@ -60,23 +101,32 @@ export const OtherPaymentGateways = ( {
 	const collapsedImages = useMemo( () => {
 		return isFetching ? (
 			<>
-				<div className="other-payment-gateways__header__title__image-placeholder" />
-				<div className="other-payment-gateways__header__title__image-placeholder" />
-				<div className="other-payment-gateways__header__title__image-placeholder" />
+				<div className="other-payment-gateways__header__title-image-placeholder" />
+				<div className="other-payment-gateways__header__title-image-placeholder" />
+				<div className="other-payment-gateways__header__title-image-placeholder" />
 			</>
 		) : (
-			suggestions.map( ( extension ) => (
-				<img
-					key={ extension.id }
-					src={ extension.icon }
-					alt={ extension.title }
-					width="24"
-					height="24"
-					className="other-payment-gateways__header__title__image"
-				/>
-			) )
+			// Go through the category hierarchy so we render the collapsed images in the same order as when expanded.
+			suggestionsByCategory.map(
+				( { suggestions: categorySuggestions } ) => {
+					if ( categorySuggestions.length === 0 ) {
+						return null;
+					}
+
+					return categorySuggestions.map( ( extension ) => (
+						<img
+							key={ extension.id }
+							src={ extension.icon }
+							alt={ extension.title + ' small logo' }
+							width="24"
+							height="24"
+							className="other-payment-gateways__header__title-image"
+						/>
+					) );
+				}
+			)
 		);
-	}, [ suggestions, isFetching ] );
+	}, [ suggestionsByCategory, isFetching ] );
 
 	// Memoize the expanded content to avoid re-rendering when expanded
 	const expandedContent = useMemo( () => {
@@ -94,22 +144,70 @@ export const OtherPaymentGateways = ( {
 					}
 
 					return (
-						<div key={ category.id }>
+						<div
+							className="other-payment-gateways__content__category-container"
+							key={ category.id }
+						>
 							<div className="other-payment-gateways__content__title">
 								<h3 className="other-payment-gateways__content__title__h3">
 									{ decodeEntities( category.title ) }
 								</h3>
-								<Tooltip
-									text={ decodeEntities(
-										category.description
-									) }
-									position="top right"
+								<span
+									className="other-payment-gateways__content__title__icon-container"
+									onClick={ () =>
+										setCategoryIdWithPopoverVisible(
+											category.id ===
+												categoryIdWithPopoverVisible
+												? ''
+												: category.id
+										)
+									}
+									onMouseEnter={ () =>
+										showPopover( category.id )
+									}
+									onMouseLeave={ hidePopoverDebounced }
+									onKeyDown={ ( event ) => {
+										if (
+											event.key === 'Enter' ||
+											event.key === ' '
+										) {
+											setCategoryIdWithPopoverVisible(
+												category.id ===
+													categoryIdWithPopoverVisible
+													? ''
+													: category.id
+											);
+										}
+									} }
+									tabIndex={ 0 }
+									role="button"
 								>
 									<Gridicon
 										icon="info-outline"
-										className="other-payment-gateways__content__title__tooltip"
+										className="other-payment-gateways__content__title__icon"
 									/>
-								</Tooltip>
+									{ category.id ===
+										categoryIdWithPopoverVisible && (
+										<Popover
+											className="other-payment-gateways__content__title-popover"
+											placement="top-start"
+											offset={ 4 }
+											variant="unstyled"
+											focusOnMount={ true }
+											noArrow={ true }
+											shift={ true }
+											onClose={ hidePopoverDebounced }
+										>
+											<div className="components-popover__content-container">
+												<p>
+													{ decodeEntities(
+														category.description
+													) }
+												</p>
+											</div>
+										</Popover>
+									) }
+								</span>
 							</div>
 
 							<div className="other-payment-gateways__content__grid">
@@ -119,14 +217,19 @@ export const OtherPaymentGateways = ( {
 										key={ extension.id }
 									>
 										<img
+											className="other-payment-gateways__content__grid-item-image"
 											src={ extension.icon }
-											alt={ decodeEntities(
-												extension.title
-											) }
+											alt={
+												decodeEntities(
+													extension.title
+												) + ' logo'
+											}
 										/>
 										<div className="other-payment-gateways__content__grid-item__content">
 											<span className="other-payment-gateways__content__grid-item__content__title">
 												{ extension.title }
+												{ /* All payment extension suggestions are official. */ }
+												<OfficialBadge variant="expanded" />
 											</span>
 											<span className="other-payment-gateways__content__grid-item__content__description">
 												{ decodeEntities(
@@ -135,12 +238,13 @@ export const OtherPaymentGateways = ( {
 											</span>
 											<div className="other-payment-gateways__content__grid-item__content__actions">
 												<Button
-													variant="primary"
+													variant="link"
 													onClick={ () =>
 														setupPlugin(
 															extension.id,
 															extension.plugin
-																.slug
+																.slug,
+															null // Suggested gateways won't have an onboarding URL.
 														)
 													}
 													isBusy={
@@ -151,10 +255,16 @@ export const OtherPaymentGateways = ( {
 														!! installingPlugin
 													}
 												>
-													{ __(
-														'Install',
-														'woocommerce'
-													) }
+													{ installingPlugin ===
+													extension.id
+														? __(
+																'Installing',
+																'woocommerce'
+														  )
+														: __(
+																'Install',
+																'woocommerce'
+														  ) }
 												</Button>
 											</div>
 										</div>
@@ -166,14 +276,41 @@ export const OtherPaymentGateways = ( {
 				}
 			)
 		);
-	}, [ suggestionsByCategory, installingPlugin, setupPlugin, isFetching ] );
+	}, [
+		suggestionsByCategory,
+		installingPlugin,
+		setupPlugin,
+		isFetching,
+		categoryIdWithPopoverVisible,
+	] );
 
+	const morePaymentOptionsLink = (
+		<Button
+			variant={ 'link' }
+			target="_blank"
+			href="https://woocommerce.com/product-category/woocommerce-extensions/payment-gateways/"
+			className="more-payment-options-link"
+		>
+			<img src={ assetUrl + '/icons/external-link.svg' } alt="" />
+			{ __( 'More payment options', 'woocommerce' ) }
+		</Button>
+	);
+
+	// If no suggestions are available, return only a link to the WooCommerce.com payment marketplace page.
 	if ( ! isFetching && suggestions.length === 0 ) {
-		return null; // Don't render the component if there are no suggestions
+		return (
+			<div className="more-payment-options">
+				{ morePaymentOptionsLink }
+			</div>
+		);
 	}
 
 	return (
-		<div className="other-payment-gateways">
+		<div
+			className={
+				'other-payment-gateways' + ( isExpanded ? ' is-expanded' : '' )
+			}
+		>
 			<div
 				className="other-payment-gateways__header"
 				onClick={ () => {
@@ -194,23 +331,16 @@ export const OtherPaymentGateways = ( {
 					</span>
 					{ ! isExpanded && <>{ collapsedImages }</> }
 				</div>
-				<Gridicon icon={ isExpanded ? 'chevron-up' : 'chevron-down' } />
+				<Gridicon
+					className="other-payment-gateways__header__arrow"
+					icon={ isExpanded ? 'chevron-up' : 'chevron-down' }
+				/>
 			</div>
 			{ isExpanded && (
 				<div className="other-payment-gateways__content">
 					{ expandedContent }
 					<div className="other-payment-gateways__content__external-icon">
-						<Button
-							variant={ 'link' }
-							target="_blank"
-							href="https://woocommerce.com/product-category/woocommerce-extensions/payment-gateways/"
-						>
-							<img
-								src={ assetUrl + '/icons/external-link.svg' }
-								alt=""
-							/>
-							{ __( 'More payment options', 'woocommerce' ) }
-						</Button>
+						{ morePaymentOptionsLink }
 					</div>
 				</div>
 			) }

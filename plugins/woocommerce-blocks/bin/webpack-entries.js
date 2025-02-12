@@ -26,6 +26,19 @@ const blocks = {
 		customDir: 'add-to-cart-with-options/quantity-selector',
 		isExperimental: true,
 	},
+	'add-to-cart-with-options-variation-selector': {
+		customDir: 'add-to-cart-with-options/variation-selector',
+		isExperimental: true,
+	},
+	'add-to-cart-with-options-grouped-product-selector': {
+		customDir: 'add-to-cart-with-options/grouped-product-selector',
+		isExperimental: true,
+	},
+	'add-to-cart-with-options-grouped-product-selector-item': {
+		customDir:
+			'add-to-cart-with-options/grouped-product-selector/product-item-template',
+		isExperimental: true,
+	},
 	'all-products': {
 		customDir: 'products/all-products',
 	},
@@ -34,6 +47,10 @@ const blocks = {
 	},
 	'attribute-filter': {},
 	breadcrumbs: {},
+	'blockified-product-details': {
+		isExperimental: true,
+		customDir: 'product-details',
+	},
 	'catalog-sorting': {},
 	'coming-soon': {},
 	'customer-account': {},
@@ -183,6 +200,24 @@ const blocks = {
 	},
 };
 
+/**
+ * Blocks that are generic and will likely be pushed up to Gutenberg or a public block registry.
+ */
+const genericBlocks = {
+	'accordion-group': {
+		customDir: 'accordion/accordion-group',
+	},
+	'accordion-header': {
+		customDir: 'accordion/inner-blocks/accordion-header',
+	},
+	'accordion-item': {
+		customDir: 'accordion/inner-blocks/accordion-item',
+	},
+	'accordion-panel': {
+		customDir: 'accordion/inner-blocks/accordion-panel',
+	},
+};
+
 // Intentional separation of cart and checkout entry points to allow for better code splitting.
 const cartAndCheckoutBlocks = {
 	cart: {},
@@ -231,14 +266,9 @@ const entries = {
 			'./assets/js/atomic/blocks/product-elements/product-details/index.tsx',
 		...getBlockEntries( '{index,block,frontend}.{t,j}s{,x}', {
 			...blocks,
+			...genericBlocks,
 			...cartAndCheckoutBlocks,
 		} ),
-
-		// Interactivity component styling
-		'wc-interactivity-checkbox-list':
-			'./packages/interactivity-components/checkbox-list/index.ts',
-		'wc-interactivity-dropdown':
-			'./packages/interactivity-components/dropdown/index.ts',
 
 		// Templates
 		'wc-blocks-classic-template-revert-button-style':
@@ -251,14 +281,9 @@ const entries = {
 		wcBlocksMiddleware: './assets/js/middleware/index.js',
 		wcBlocksSharedContext: './assets/js/shared/context/index.js',
 		wcBlocksSharedHocs: './assets/js/shared/hocs/index.js',
+		wcSchemaParser: './assets/js/utils/schema-parser/index.ts',
 		priceFormat: './packages/prices/index.js',
 		wcTypes: './assets/js/types/index.ts',
-
-		// interactivity components, exported as separate entries for now
-		'wc-interactivity-dropdown':
-			'./packages/interactivity-components/dropdown/index.ts',
-		'wc-interactivity-checkbox-list':
-			'./packages/interactivity-components/checkbox-list/index.ts',
 	},
 	main: {
 		// Shared blocks code
@@ -267,12 +292,16 @@ const entries = {
 		// Blocks
 		...getBlockEntries( 'index.{t,j}s{,x}', {
 			...blocks,
+			...genericBlocks,
 			...cartAndCheckoutBlocks,
 		} ),
 	},
 	frontend: {
 		reviews: './assets/js/blocks/reviews/frontend.ts',
-		...getBlockEntries( 'frontend.{t,j}s{,x}' ),
+		...getBlockEntries( 'frontend.{t,j}s{,x}', {
+			...blocks,
+			...genericBlocks,
+		} ),
 		'product-button-interactivity':
 			'./assets/js/atomic/blocks/product-elements/button/frontend.tsx',
 	},
@@ -311,4 +340,5 @@ const getEntryConfig = ( type = 'main', exclude = [] ) => {
 
 module.exports = {
 	getEntryConfig,
+	genericBlocks,
 };

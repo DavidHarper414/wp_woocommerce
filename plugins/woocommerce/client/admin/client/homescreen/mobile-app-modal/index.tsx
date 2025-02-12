@@ -26,6 +26,7 @@ import {
 import { EmailSentPage, MobileAppLoginStepperPage } from './pages';
 import './style.scss';
 import { SETUP_TASK_HELP_ITEMS_FILTER } from '../../activity-panel/panels/help';
+import { isNewBranding } from '~/utils/admin-settings';
 
 export const MobileAppModal = () => {
 	const [ guideIsOpen, setGuideIsOpen ] = useState( false );
@@ -41,6 +42,12 @@ export const MobileAppModal = () => {
 	const { invalidateResolutionForStoreSelector } = useDispatch(
 		ONBOARDING_STORE_NAME
 	);
+
+	if ( isNewBranding() ) {
+		import( './style-new.scss' );
+	} else {
+		import( './style-old.scss' );
+	}
 
 	useEffect( () => {
 		if ( searchParams.get( 'mobileAppModal' ) ) {
@@ -150,6 +157,7 @@ export const MobileAppModal = () => {
 			{ guideIsOpen && (
 				<Guide
 					onFinish={ onFinish }
+					contentLabel=""
 					className={ 'woocommerce__mobile-app-welcome-modal' }
 					pages={ [
 						{
@@ -179,7 +187,13 @@ export const MobileAppHelpMenuEntryLoader = () => {
 	const { state } = useJetpackPluginState();
 
 	const filterHelpMenuEntries = useCallback(
-		( helpMenuEntries ) => {
+		(
+			helpMenuEntries: Array< {
+				title: string;
+				link: string;
+				linkType?: string;
+			} >
+		) => {
 			if (
 				state === JetpackPluginStates.INITIALIZING ||
 				state === JetpackPluginStates.USER_CANNOT_INSTALL ||
@@ -219,6 +233,5 @@ export const MobileAppHelpMenuEntryLoader = () => {
 
 registerPlugin( 'woocommerce-mobile-app-modal', {
 	render: MobileAppHelpMenuEntryLoader,
-	// @ts-expect-error 'scope' does exist. @types/wordpress__plugins is outdated.
 	scope: 'woocommerce-admin',
 } );

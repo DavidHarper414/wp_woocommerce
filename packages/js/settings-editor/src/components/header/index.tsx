@@ -2,19 +2,28 @@
  * External dependencies
  */
 import { createElement } from '@wordpress/element';
+import clsx from 'clsx';
 import {
-	// @ts-expect-error missing types.
 	__experimentalHeading as Heading,
-	// @ts-expect-error missing types.
 	__experimentalHStack as HStack,
-	// @ts-expect-error missing types.
 	__experimentalVStack as VStack,
 } from '@wordpress/components';
 
-export const Header = ( { pageTitle = '' }: { pageTitle?: string } ) => {
+export const Header = ( {
+	pageTitle = '',
+	hasTabs = false,
+}: {
+	pageTitle?: string;
+	hasTabs?: boolean;
+} ) => {
 	return (
 		<VStack
-			className="woocommerce-settings-header edit-site-page-header"
+			className={ clsx(
+				'woocommerce-settings-header edit-site-page-header',
+				{
+					'woocommerce-settings-header--has-tabs': hasTabs,
+				}
+			) }
 			as="header"
 			spacing={ 0 }
 		>

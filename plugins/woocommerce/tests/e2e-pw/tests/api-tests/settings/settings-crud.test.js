@@ -1,4 +1,11 @@
-const { test, expect } = require( '../../../fixtures/api-tests-fixtures' );
+const {
+	test,
+	expect,
+	request: apiRequest,
+	tags,
+} = require( '../../../fixtures/api-tests-fixtures' );
+const { setOption } = require( '../../../utils/options' );
+
 const { BASE_URL } = process.env;
 const shouldSkip = ! BASE_URL.includes( 'localhost' );
 
@@ -7,6 +14,24 @@ const {
 	currencies,
 	stateOptions,
 } = require( '../../../data/settings' );
+
+const enableEmailImprovementsFeature = async () => {
+	await setOption(
+		apiRequest,
+		BASE_URL,
+		'woocommerce_feature_email_improvements_enabled',
+		'yes'
+	);
+};
+
+const disableEmailImprovementsFeature = async () => {
+	await setOption(
+		apiRequest,
+		BASE_URL,
+		'woocommerce_feature_email_improvements_enabled',
+		'no'
+	);
+};
 
 test.describe( 'Settings API tests: CRUD', () => {
 	test.describe( 'List all settings groups', () => {
@@ -417,7 +442,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						type: 'select',
 						default: '',
 						tip: 'Choose which countries you want to ship to, or choose to ship to all locations you sell to.',
-						value: '',
+						value: expect.any( String ),
 						options: expect.objectContaining( {
 							'': 'Ship to all countries you sell to',
 							all: 'Ship to all countries',
@@ -777,7 +802,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						description:
 							'This controls what unit you will define weights in.',
 						type: 'select',
-						default: 'kg',
+						default: 'lbs',
 						options: {
 							kg: 'kg',
 							g: 'g',
@@ -785,7 +810,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 							oz: 'oz',
 						},
 						tip: 'This controls what unit you will define weights in.',
-						value: 'kg',
+						value: 'lbs',
 					} ),
 				] )
 			);
@@ -797,7 +822,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						description:
 							'This controls what unit you will define lengths in.',
 						type: 'select',
-						default: 'cm',
+						default: 'in',
 						options: {
 							m: 'm',
 							cm: 'cm',
@@ -806,7 +831,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 							yd: 'yd',
 						},
 						tip: 'This controls what unit you will define lengths in.',
-						value: 'cm',
+						value: 'in',
 					} ),
 				] )
 			);
@@ -1021,7 +1046,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 	test.describe( 'List all Tax settings options', () => {
 		test(
 			'can retrieve all tax settings',
-			{ tag: [ '@skip-on-default-pressable', '@skip-on-default-wpcom' ] },
+			{ tag: [ tags.SKIP_ON_PRESSABLE, tags.SKIP_ON_WPCOM ] },
 			async ( { request } ) => {
 				// call API to retrieve all settings options
 				const response = await request.get(
@@ -1618,9 +1643,173 @@ test.describe( 'Settings API tests: CRUD', () => {
 		} );
 	} );
 
+	test.describe( 'List all Email settings options with Email Improvements feature enabled', () => {
+		test.beforeAll( enableEmailImprovementsFeature );
+		test.afterAll( disableEmailImprovementsFeature );
+		test( 'can retrieve all email settings with Email Improvements feature enabled', async ( {
+			request,
+		} ) => {
+			// call API to retrieve all settings options
+			const response = await request.get(
+				'./wp-json/wc/v3/settings/email'
+			);
+			const responseJSON = await response.json();
+			expect( response.status() ).toEqual( 200 );
+			expect( Array.isArray( responseJSON ) ).toBe( true );
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_email_from_name',
+						label: '"From" name',
+						description: expect.any( String ),
+						type: 'text',
+						default: expect.any( String ),
+						tip: expect.any( String ),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_email_from_address',
+						label: '"From" address',
+						description: '',
+						type: 'email',
+						default: expect.any( String ),
+						tip: '',
+						value: expect.any( String ),
+					} ),
+				] )
+			);
+			// woocommerce_email_header_image is custom slotfill and not included in the response
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_email_header_image_width',
+						label: 'Logo width (px)',
+						type: 'number',
+						default: 120,
+						value: 120,
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_email_header_alignment',
+						label: 'Header alignment',
+						description: '',
+						type: 'select',
+						default: 'left',
+						value: 'left',
+					} ),
+				] )
+			);
+			// woocommerce_email_font_family is custom slotfill and not included in the response
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_email_footer_text',
+						label: 'Footer text',
+						description:
+							'This text will appear in the footer of all of your WooCommerce emails. Available placeholders: {site_title} {site_url} {store_address} {store_email}',
+						type: 'textarea',
+						default: '{site_title}<br />{store_address}',
+						tip: 'This text will appear in the footer of all of your WooCommerce emails. Available placeholders: {site_title} {site_url} {store_address} {store_email}',
+						value: '{site_title} &mdash; Built with {WooCommerce}',
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_email_base_color',
+						label: 'Accent',
+						description:
+							'Customize the color of your buttons and links. Default <code>#000000</code>.',
+						type: 'color',
+						default: '#000000',
+						tip: 'Customize the color of your buttons and links. Default <code>#000000</code>.',
+						value: '#7f54b3',
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_email_background_color',
+						label: 'Email background',
+						description:
+							'Select a color for the background of your emails. Default <code>#ffffff</code>.',
+						type: 'color',
+						default: '#ffffff',
+						tip: 'Select a color for the background of your emails. Default <code>#ffffff</code>.',
+						value: '#f7f7f7',
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_email_body_background_color',
+						label: 'Content background',
+						description:
+							'Choose a background color for the content area of your emails. Default <code>#ffffff</code>.',
+						type: 'color',
+						default: '#ffffff',
+						tip: 'Choose a background color for the content area of your emails. Default <code>#ffffff</code>.',
+						value: '#ffffff',
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_email_text_color',
+						label: 'Heading & text',
+						description:
+							'Set the color of your headings and text. Default <code>#000000</code>.',
+						type: 'color',
+						default: '#000000',
+						tip: 'Set the color of your headings and text. Default <code>#000000</code>.',
+						value: '#3c3c3c',
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_email_footer_text_color',
+						label: 'Secondary text',
+						description:
+							'Choose a color for your secondary text, such as your footer content. Default <code>#787c82</code>.',
+						type: 'color',
+						default: '#787c82',
+						tip: 'Choose a color for your secondary text, such as your footer content. Default <code>#787c82</code>.',
+						value: '#3c3c3c',
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'woocommerce_merchant_email_notifications',
+						label: 'Enable email insights',
+						description:
+							'Receive email notifications with additional guidance to complete the basic store setup and helpful insights',
+						type: 'checkbox',
+						default: 'no',
+						value: 'no',
+					} ),
+				] )
+			);
+		} );
+	} );
+
 	test.describe(
 		'List all Advanced settings options',
-		{ tag: '@skip-on-default-wpcom' },
+		{ tag: tags.SKIP_ON_WPCOM },
 		() => {
 			test( 'can retrieve all advanced settings', async ( {
 				request,
@@ -1908,6 +2097,8 @@ test.describe( 'Settings API tests: CRUD', () => {
 	);
 
 	test.describe( 'List all Email New Order settings', () => {
+		test.beforeAll( enableEmailImprovementsFeature );
+		test.afterAll( disableEmailImprovementsFeature );
 		test( 'can retrieve all email new order settings', async ( {
 			request,
 		} ) => {
@@ -1953,10 +2144,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'subject',
 						label: 'Subject',
 						description:
-							'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+							'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -1967,10 +2158,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'heading',
 						label: 'Email heading',
 						description:
-							'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+							'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -1981,11 +2172,11 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'additional_content',
 						label: 'Additional content',
 						description:
-							'Text to appear below the main email content. Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+							'Text to appear below the main email content. Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
 						type: 'textarea',
-						default: 'Congratulations on the sale.',
-						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
-						value: 'Congratulations on the sale.',
+						default: 'Congratulations on the sale!',
+						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}</code>, <code>{site_address}</code>, <code>{site_url}</code>, <code>{store_email}</code>, <code>{order_date}</code>, <code>{order_number}</code>',
+						value: 'Congratulations on the sale!',
 					} ),
 				] )
 			);
@@ -2007,13 +2198,49 @@ test.describe( 'Settings API tests: CRUD', () => {
 					} ),
 				] )
 			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'cc',
+						label: 'Cc(s)',
+						description: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'bcc',
+						label: 'Bcc(s)',
+						description: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
 		} );
 	} );
 
 	test.describe( 'List all Email Failed Order settings', () => {
+		test.beforeAll( enableEmailImprovementsFeature );
+		test.afterAll( disableEmailImprovementsFeature );
 		test(
 			'can retrieve all email failed order settings',
-			{ tag: '@skip-on-default-pressable' },
+			{ tag: tags.SKIP_ON_PRESSABLE },
 			async ( { request } ) => {
 				// call API to retrieve all settings options
 				const response = await request.get(
@@ -2047,7 +2274,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 							tip: expect.stringContaining(
 								'Enter recipients (comma separated) for this email. Defaults to'
 							),
-							value: '',
+							value: expect.any( String ),
 						} ),
 					] )
 				);
@@ -2057,10 +2284,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 							id: 'subject',
 							label: 'Subject',
 							description:
-								'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+								'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 							type: 'text',
 							default: '',
-							tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 							value: '',
 						} ),
 					] )
@@ -2071,10 +2298,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 							id: 'heading',
 							label: 'Email heading',
 							description:
-								'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+								'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 							type: 'text',
 							default: '',
-							tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 							value: '',
 						} ),
 					] )
@@ -2085,12 +2312,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 							id: 'additional_content',
 							label: 'Additional content',
 							description:
-								'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+								'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 							type: 'textarea',
 							default:
-								'Hopefully they’ll be back. Read more about <a href="https://woocommerce.com/document/managing-orders/">troubleshooting failed payments</a>.',
-							tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
-							value: 'Hopefully they’ll be back. Read more about <a href="https://woocommerce.com/document/managing-orders/">troubleshooting failed payments</a>.',
+								'We hope they’ll be back soon! Read more about <a href="https://woocommerce.com/document/managing-orders/">troubleshooting failed payments</a>.',
+							tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							value: 'We hope they’ll be back soon! Read more about <a href="https://woocommerce.com/document/managing-orders/">troubleshooting failed payments</a>.',
 						} ),
 					] )
 				);
@@ -2113,11 +2340,47 @@ test.describe( 'Settings API tests: CRUD', () => {
 						} ),
 					] )
 				);
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'cc',
+							label: 'Cc(s)',
+							description: expect.stringContaining(
+								'Enter Cc recipients (comma-separated) for this email.'
+							),
+							type: 'text',
+							default: '',
+							tip: expect.stringContaining(
+								'Enter Cc recipients (comma-separated) for this email.'
+							),
+							value: expect.any( String ),
+						} ),
+					] )
+				);
+				expect( responseJSON ).toEqual(
+					expect.arrayContaining( [
+						expect.objectContaining( {
+							id: 'bcc',
+							label: 'Bcc(s)',
+							description: expect.stringContaining(
+								'Enter Bcc recipients (comma-separated) for this email.'
+							),
+							type: 'text',
+							default: '',
+							tip: expect.stringContaining(
+								'Enter Bcc recipients (comma-separated) for this email.'
+							),
+							value: expect.any( String ),
+						} ),
+					] )
+				);
 			}
 		);
 	} );
 
 	test.describe( 'List all Email Customer On Hold Order settings', () => {
+		test.beforeAll( enableEmailImprovementsFeature );
+		test.afterAll( disableEmailImprovementsFeature );
 		test( 'can retrieve all email customer on hold order settings', async ( {
 			request,
 		} ) => {
@@ -2146,10 +2409,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'subject',
 						label: 'Subject',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2160,10 +2423,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'heading',
 						label: 'Email heading',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2174,12 +2437,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'additional_content',
 						label: 'Additional content',
 						description:
-							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'textarea',
 						default:
-							'We look forward to fulfilling your order soon.',
-						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
-						value: 'We look forward to fulfilling your order soon.',
+							'Thanks again! If you need any help with your order, please contact us at {store_email}.',
+						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						value: 'Thanks again! If you need any help with your order, please contact us at {store_email}.',
 					} ),
 				] )
 			);
@@ -2201,10 +2464,46 @@ test.describe( 'Settings API tests: CRUD', () => {
 					} ),
 				] )
 			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'cc',
+						label: 'Cc(s)',
+						description: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'bcc',
+						label: 'Bcc(s)',
+						description: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
 		} );
 	} );
 
 	test.describe( 'List all Email Customer Processing Order settings', () => {
+		test.beforeAll( enableEmailImprovementsFeature );
+		test.afterAll( disableEmailImprovementsFeature );
 		test( 'can retrieve all email customer processing order settings', async ( {
 			request,
 		} ) => {
@@ -2233,10 +2532,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'subject',
 						label: 'Subject',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2247,10 +2546,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'heading',
 						label: 'Email heading',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2261,11 +2560,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'additional_content',
 						label: 'Additional content',
 						description:
-							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'textarea',
-						default: 'Thanks for using {site_url}!',
-						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
-						value: 'Thanks for using {site_url}!',
+						default:
+							'Thanks again! If you need any help with your order, please contact us at {store_email}.',
+						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						value: 'Thanks again! If you need any help with your order, please contact us at {store_email}.',
 					} ),
 				] )
 			);
@@ -2287,10 +2587,46 @@ test.describe( 'Settings API tests: CRUD', () => {
 					} ),
 				] )
 			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'cc',
+						label: 'Cc(s)',
+						description: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'bcc',
+						label: 'Bcc(s)',
+						description: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
 		} );
 	} );
 
 	test.describe( 'List all Email Customer Completed Order settings', () => {
+		test.beforeAll( enableEmailImprovementsFeature );
+		test.afterAll( disableEmailImprovementsFeature );
 		test( 'can retrieve all email customer completed order settings', async ( {
 			request,
 		} ) => {
@@ -2319,10 +2655,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'subject',
 						label: 'Subject',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2333,10 +2669,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'heading',
 						label: 'Email heading',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2347,11 +2683,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'additional_content',
 						label: 'Additional content',
 						description:
-							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'textarea',
-						default: 'Thanks for shopping with us.',
-						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
-						value: 'Thanks for shopping with us.',
+						default:
+							'Thanks again! If you need any help with your order, please contact us at {store_email}.',
+						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						value: 'Thanks again! If you need any help with your order, please contact us at {store_email}.',
 					} ),
 				] )
 			);
@@ -2373,10 +2710,46 @@ test.describe( 'Settings API tests: CRUD', () => {
 					} ),
 				] )
 			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'cc',
+						label: 'Cc(s)',
+						description: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'bcc',
+						label: 'Bcc(s)',
+						description: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
 		} );
 	} );
 
 	test.describe( 'List all Email Customer Refunded Order settings', () => {
+		test.beforeAll( enableEmailImprovementsFeature );
+		test.afterAll( disableEmailImprovementsFeature );
 		test( 'can retrieve all email customer refunded order settings', async ( {
 			request,
 		} ) => {
@@ -2405,10 +2778,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'subject_full',
 						label: 'Full refund subject',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2419,10 +2792,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'subject_partial',
 						label: 'Partial refund subject',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2433,10 +2806,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'heading_full',
 						label: 'Full refund email heading',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2447,10 +2820,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'heading_partial',
 						label: 'Partial refund email heading',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2462,11 +2835,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'additional_content',
 						label: 'Additional content',
 						description:
-							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'textarea',
-						default: 'We hope to see you again soon.',
-						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
-						value: 'We hope to see you again soon.',
+						default:
+							'If you need any help with your order, please contact us at {store_email}.',
+						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						value: 'If you need any help with your order, please contact us at {store_email}.',
 					} ),
 				] )
 			);
@@ -2489,10 +2863,46 @@ test.describe( 'Settings API tests: CRUD', () => {
 					} ),
 				] )
 			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'cc',
+						label: 'Cc(s)',
+						description: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'bcc',
+						label: 'Bcc(s)',
+						description: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
 		} );
 	} );
 
 	test.describe( 'List all Email Customer Invoice settings', () => {
+		test.beforeAll( enableEmailImprovementsFeature );
+		test.afterAll( disableEmailImprovementsFeature );
 		test( 'can retrieve all email customer invoice settings', async ( {
 			request,
 		} ) => {
@@ -2509,10 +2919,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'subject',
 						label: 'Subject',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2523,10 +2933,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'subject_paid',
 						label: 'Subject (paid)',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2537,10 +2947,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'heading_paid',
 						label: 'Email heading (paid)',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2552,11 +2962,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'additional_content',
 						label: 'Additional content',
 						description:
-							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'textarea',
-						default: 'Thanks for using {site_url}!',
-						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
-						value: 'Thanks for using {site_url}!',
+						default:
+							'Thanks again! If you need any help with your order, please contact us at {store_email}.',
+						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						value: 'Thanks again! If you need any help with your order, please contact us at {store_email}.',
 					} ),
 				] )
 			);
@@ -2578,10 +2989,46 @@ test.describe( 'Settings API tests: CRUD', () => {
 					} ),
 				] )
 			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'cc',
+						label: 'Cc(s)',
+						description: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'bcc',
+						label: 'Bcc(s)',
+						description: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
 		} );
 	} );
 
 	test.describe( 'List all Email Customer Note settings', () => {
+		test.beforeAll( enableEmailImprovementsFeature );
+		test.afterAll( disableEmailImprovementsFeature );
 		test( 'can retrieve all email customer note settings', async ( {
 			request,
 		} ) => {
@@ -2610,10 +3057,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'subject',
 						label: 'Subject',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2624,10 +3071,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'heading',
 						label: 'Email heading',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						value: '',
 					} ),
 				] )
@@ -2638,11 +3085,12 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'additional_content',
 						label: 'Additional content',
 						description:
-							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
 						type: 'textarea',
-						default: 'Thanks for reading.',
-						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
-						value: 'Thanks for reading.',
+						default:
+							'Thanks again! If you need any help with your order, please contact us at {store_email}.',
+						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}&lt;/code&gt;, &lt;code&gt;{order_date}&lt;/code&gt;, &lt;code&gt;{order_number}</code>',
+						value: 'Thanks again! If you need any help with your order, please contact us at {store_email}.',
 					} ),
 				] )
 			);
@@ -2664,10 +3112,46 @@ test.describe( 'Settings API tests: CRUD', () => {
 					} ),
 				] )
 			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'cc',
+						label: 'Cc(s)',
+						description: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'bcc',
+						label: 'Bcc(s)',
+						description: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
 		} );
 	} );
 
 	test.describe( 'List all Email Customer Reset Password settings', () => {
+		test.beforeAll( enableEmailImprovementsFeature );
+		test.afterAll( disableEmailImprovementsFeature );
 		test( 'can retrieve all email customer reset password settings', async ( {
 			request,
 		} ) => {
@@ -2696,10 +3180,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'subject',
 						label: 'Subject',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						value: '',
 					} ),
 				] )
@@ -2710,10 +3194,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'heading',
 						label: 'Email heading',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						value: '',
 					} ),
 				] )
@@ -2724,10 +3208,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'additional_content',
 						label: 'Additional content',
 						description:
-							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						type: 'textarea',
 						default: 'Thanks for reading.',
-						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						value: 'Thanks for reading.',
 					} ),
 				] )
@@ -2750,10 +3234,46 @@ test.describe( 'Settings API tests: CRUD', () => {
 					} ),
 				] )
 			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'cc',
+						label: 'Cc(s)',
+						description: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'bcc',
+						label: 'Bcc(s)',
+						description: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
 		} );
 	} );
 
 	test.describe( 'List all Email Customer New Account settings', () => {
+		test.beforeAll( enableEmailImprovementsFeature );
+		test.afterAll( disableEmailImprovementsFeature );
 		test( 'can retrieve all email customer new account settings', async ( {
 			request,
 		} ) => {
@@ -2782,10 +3302,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'subject',
 						label: 'Subject',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						value: '',
 					} ),
 				] )
@@ -2796,10 +3316,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'heading',
 						label: 'Email heading',
 						description:
-							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+							'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						type: 'text',
 						default: '',
-						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+						tip: 'Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						value: '',
 					} ),
 				] )
@@ -2810,10 +3330,10 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'additional_content',
 						label: 'Additional content',
 						description:
-							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+							'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						type: 'textarea',
 						default: 'We look forward to seeing you soon.',
-						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}</code>',
+						tip: 'Text to appear below the main email content. Available placeholders: <code>{site_title}&lt;/code&gt;, &lt;code&gt;{site_address}&lt;/code&gt;, &lt;code&gt;{site_url}&lt;/code&gt;, &lt;code&gt;{store_email}</code>',
 						value: 'We look forward to seeing you soon.',
 					} ),
 				] )
@@ -2833,6 +3353,40 @@ test.describe( 'Settings API tests: CRUD', () => {
 						},
 						tip: 'Choose which format of email to send.',
 						value: 'html',
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'cc',
+						label: 'Cc(s)',
+						description: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Cc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
+					} ),
+				] )
+			);
+			expect( responseJSON ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( {
+						id: 'bcc',
+						label: 'Bcc(s)',
+						description: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						type: 'text',
+						default: '',
+						tip: expect.stringContaining(
+							'Enter Bcc recipients (comma-separated) for this email.'
+						),
+						value: expect.any( String ),
 					} ),
 				] )
 			);

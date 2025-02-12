@@ -6,6 +6,7 @@ namespace Automattic\WooCommerce\Internal\Admin\Suggestions\Incentives;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\WCAdminHelper;
+use Automattic\WooCommerce\Enums\OrderInternalStatus;
 use WC_Abstract_Order;
 
 /**
@@ -257,6 +258,7 @@ class WooPayments extends Incentive {
 					'payment_method' => 'woocommerce_payments',
 					'return'         => 'ids',
 					'limit'          => 1,
+					'orderby'        => 'none',
 				)
 			)
 		) ) {
@@ -308,7 +310,7 @@ class WooPayments extends Incentive {
 		// Get the latest completed, processing, or refunded order.
 		$latest_order = wc_get_orders(
 			array(
-				'status'  => array( 'wc-completed', 'wc-processing', 'wc-refunded' ),
+				'status'  => array( OrderInternalStatus::COMPLETED, OrderInternalStatus::PROCESSING, OrderInternalStatus::REFUNDED ),
 				'limit'   => 1,
 				'orderby' => 'date',
 				'order'   => 'DESC',

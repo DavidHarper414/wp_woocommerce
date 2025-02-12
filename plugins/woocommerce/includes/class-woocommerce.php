@@ -42,7 +42,7 @@ final class WooCommerce {
 	 *
 	 * @var string
 	 */
-	public $version = '9.6.0';
+	public $version = '9.8.0';
 
 	/**
 	 * WooCommerce Schema version.
@@ -305,6 +305,7 @@ final class WooCommerce {
 		add_action( 'woocommerce_installed', array( $this, 'add_woocommerce_remote_variant' ) );
 		add_action( 'woocommerce_updated', array( $this, 'add_woocommerce_remote_variant' ) );
 		add_action( 'woocommerce_newly_installed', 'wc_set_hooked_blocks_version', 10 );
+		add_action( 'update_option_woocommerce_allow_tracking', array( $this, 'get_tracking_history' ), 10, 2 );
 
 		add_filter( 'robots_txt', array( $this, 'robots_txt' ) );
 		add_filter( 'wp_plugin_dependencies_slug', array( $this, 'convert_woocommerce_slug' ) );
@@ -338,12 +339,16 @@ final class WooCommerce {
 		$container->get( Automattic\WooCommerce\Internal\Orders\OrderAttributionController::class )->register();
 		$container->get( Automattic\WooCommerce\Internal\Orders\OrderAttributionBlocksController::class )->register();
 		$container->get( Automattic\WooCommerce\Internal\CostOfGoodsSold\CostOfGoodsSoldController::class )->register();
+		$container->get( Automattic\WooCommerce\Internal\Admin\Settings\PaymentsController::class )->register();
 		$container->get( Automattic\WooCommerce\Internal\Utilities\LegacyRestApiStub::class )->register();
+		Automattic\WooCommerce\Internal\Admin\WcPayWelcomePage::instance()->register();
 
 		// Classes inheriting from RestApiControllerBase.
 		$container->get( Automattic\WooCommerce\Internal\ReceiptRendering\ReceiptRenderingRestController::class )->register();
 		$container->get( Automattic\WooCommerce\Internal\Orders\OrderActionsRestController::class )->register();
+		$container->get( Automattic\WooCommerce\Internal\Orders\OrderStatusRestController::class )->register();
 		$container->get( Automattic\WooCommerce\Internal\Admin\Settings\PaymentsRestController::class )->register();
+		$container->get( Automattic\WooCommerce\Internal\Admin\EmailPreview\EmailPreviewRestController::class )->register();
 	}
 
 	/**
@@ -866,16 +871,21 @@ final class WooCommerce {
 	 *      - WP_LANG_DIR/plugins/woocommerce-LOCALE.mo
 	 */
 	public function load_plugin_textdomain() {
-		$locale = determine_locale();
-
 		/**
 		 * Filter to adjust the WooCommerce locale to use for translations.
 		 */
-		$locale = apply_filters( 'plugin_locale', $locale, 'woocommerce' ); // phpcs:ignore WooCommerce.Commenting.CommentHooks.MissingSinceComment
+		$locale                  = apply_filters( 'plugin_locale', determine_locale(), 'woocommerce' ); // phpcs:ignore WooCommerce.Commenting.CommentHooks.MissingSinceComment
+		$custom_translation_path = WP_LANG_DIR . '/woocommerce/woocommerce-' . $locale . '.mo';
+		$plugin_translation_path = WP_LANG_DIR . '/plugins/woocommerce-' . $locale . '.mo';
 
-		unload_textdomain( 'woocommerce', true );
-		load_textdomain( 'woocommerce', WP_LANG_DIR . '/woocommerce/woocommerce-' . $locale . '.mo' );
-		load_plugin_textdomain( 'woocommerce', false, plugin_basename( dirname( WC_PLUGIN_FILE ) ) . '/i18n/languages' );
+		// If a custom translation exists (by default it will not, as it is not a standard WordPress convention)
+		// we unload the existing translation, then essentially layer the custom translation on top of the canonical
+		// translation. Otherwise, we simply step back and let WP manage things.
+		if ( is_readable( $custom_translation_path ) ) {
+			unload_textdomain( 'woocommerce' );
+			load_textdomain( 'woocommerce', $custom_translation_path );
+			load_textdomain( 'woocommerce', $plugin_translation_path );
+		}
 	}
 
 	/**
@@ -1336,5 +1346,26 @@ final class WooCommerce {
 	public function register_remote_log_handler( $handlers ) {
 		$handlers[] = wc_get_container()->get( RemoteLogger::class );
 		return $handlers;
+	}
+
+	/**
+	 * Tracks the history WooCommerce Allow Tracking option.
+	 * - When the field was first set to allow tracking
+	 * - Last time the option was changed
+	 *
+	 * @param string $old_value The old value for the woocommerce_allow_tracking option.
+	 * @param string $value The current value for the woocommerce_allow_tracking option.
+	 * @since x.x.x
+	 *
+	 * @return void
+	 */
+	public function get_tracking_history( $old_value, $value ) {
+		// If woocommerce_allow_tracking_first_optin is not set. It means is the first time it gets set.
+		if ( ! get_option( 'woocommerce_allow_tracking_first_optin' ) && 'yes' === $value ) {
+			update_option( 'woocommerce_allow_tracking_first_optin', time() );
+		}
+
+		// Always update the last change.
+		update_option( 'woocommerce_allow_tracking_last_modified', time() );
 	}
 }
