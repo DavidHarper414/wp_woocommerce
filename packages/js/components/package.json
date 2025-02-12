@@ -262,7 +262,7 @@
 			]
 		},
 		"watch:build:project:esm": {
-			"command": "tsc --project tsconfig.json --watch",
+			"command": "tsc --project tsconfig.json --watch --noCheck",
 			"service": true
 		},
 		"dependencyOutputs": {
