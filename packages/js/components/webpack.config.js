@@ -14,7 +14,7 @@ module.exports = {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
-			'../../../../node_modules/.cache/webpack-components'
+			'../../../node_modules/.cache/webpack-components'
 		),
 	},
 	entry: {
