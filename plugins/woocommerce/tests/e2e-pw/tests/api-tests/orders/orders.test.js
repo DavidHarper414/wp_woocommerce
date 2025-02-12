@@ -3,6 +3,7 @@ const { order } = require( '../../../data' );
 const { faker } = require( '@faker-js/faker' );
 
 const RAND_STRING = faker.string.alphanumeric( 8 ).toLowerCase();
+const COUPON_CODE = `coupon-${ faker.string.alphanumeric( 4 ).toLowerCase() }`;
 
 /**
  * Billing properties to update.
@@ -2426,7 +2427,7 @@ test.describe.serial( 'Orders API tests', () => {
 
 			const coupon = await request.post( './wp-json/wc/v3/coupons', {
 				data: {
-					code: 'save5',
+					code: COUPON_CODE,
 					amount: '5',
 				},
 			} );
@@ -2443,7 +2444,7 @@ test.describe.serial( 'Orders API tests', () => {
 					],
 					coupon_lines: [
 						{
-							code: 'save5',
+							code: COUPON_CODE,
 						},
 					],
 					shipping_lines: [
