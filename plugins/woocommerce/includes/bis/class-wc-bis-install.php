@@ -23,6 +23,7 @@ class WC_BIS_Install {
 	 * Hook in.
 	 */
 	public static function init() {
+		wc_deprecated_function( 'WC_BIS_Install::init', '9.9.0' );
 		//TODO: Haven't ported the db upgrade when updating to 1.1.0, so perhaps add some info to folks on older BIS?
 	}
 
@@ -83,7 +84,7 @@ class WC_BIS_Install {
 		// self::update_version();
 
 //		if ( ! class_exists( 'WC_BIS_Admin_Notices' ) ) {
-//			require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
+//			require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
 //		}
 
 //		if ( is_null( self::$current_version ) ) {
@@ -319,5 +320,3 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 		return array();
 	}
 }
-
-WC_BIS_Install::init();

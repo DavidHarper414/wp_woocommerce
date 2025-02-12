@@ -145,7 +145,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<div class="notification-data__product-data">
 								<?php
 								if ( ! empty( $args['product_id'] ) && isset( $product ) && is_a( $product, 'WC_Product' ) ) {
-									include __DIR__ . '/html-product-data-admin.php';
+									include __DIR__ . '/html-bis-product-data-admin.php';
 								}
 								?>
 							</div>

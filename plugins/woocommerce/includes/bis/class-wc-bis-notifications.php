@@ -23,7 +23,7 @@ class WC_BIS_Notifications {
 	 *
 	 * @var string
 	 */
-	public $version = '2.0.6';
+	public $version;
 
 	/**
 	 * Sync Stock Controller.
@@ -117,6 +117,7 @@ class WC_BIS_Notifications {
 	 * @return string
 	 */
 	public function get_plugin_url() {
+		wc_deprecated_function( 'WC_BIS_Notifications::get_plugin_url', '9.9.0' );
 		return untrailingslashit( plugins_url( '/', __FILE__ ) );
 	}
 
@@ -126,6 +127,7 @@ class WC_BIS_Notifications {
 	 * @return string
 	 */
 	public function get_plugin_path() {
+		wc_deprecated_function( 'WC_BIS_Notifications::get_plugin_path', '9.9.0' );
 		return untrailingslashit( plugin_dir_path( __FILE__ ) );
 	}
 
@@ -135,6 +137,7 @@ class WC_BIS_Notifications {
 	 * @return string
 	 */
 	public function get_plugin_basename() {
+		wc_deprecated_function( 'WC_BIS_Notifications::get_plugin_basename', '9.9.0' );
 		return plugin_basename( __FILE__ );
 	}
 
@@ -146,7 +149,7 @@ class WC_BIS_Notifications {
 	 * @return string
 	 */
 	public function get_plugin_version( $base = false, $version = '' ) {
-		wc_deprecated_function( 'WC_BIS_Notifications::get_plugin_version', 9.8, 'Constants::get_constant( \'WC_VERSION\' )' );
+		wc_deprecated_function( 'WC_BIS_Notifications::get_plugin_version', 9.9, 'Constants::get_constant( \'WC_VERSION\' )' );
 
 		$version = $version ? $version : $this->version;
 
@@ -172,33 +175,7 @@ class WC_BIS_Notifications {
 	 */
 	public function initialize_plugin() {
 
-		$this->define_constants();
 		$this->maybe_create_store();
-
-		// WC version sanity check.
-		if ( ! function_exists( 'WC' ) || version_compare( WC()->version, $this->wc_min_version ) < 0 ) {
-			/* translators: %s: WC min version */
-			$notice = sprintf( __( 'WooCommerce Back In Stock Notifications requires at least WooCommerce <strong>%s</strong>.', 'woocommerce-back-in-stock-notifications' ), $this->wc_min_version );
-			require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
-			WC_BIS_Admin_Notices::add_notice( $notice, 'error' );
-
-			return false;
-		}
-
-		// PHP version check.
-		if ( ! function_exists( 'phpversion' ) || version_compare( phpversion(), '7.4.0', '<' ) ) {
-			/* translators: %1$s: Version %, %2$s: Update PHP doc URL */
-			$notice = sprintf(
-				__(
-					'WooCommerce Back In Stock Notifications requires at least PHP <strong>%1$s</strong>. Learn <a href="%2$s">how to update PHP</a>.',
-					'woocommerce-back-in-stock-notifications'
-				),
-				'7.4.0',
-				$this->get_resource_url( 'update-php' )
-			);
-			require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
-			WC_BIS_Admin_Notices::add_notice( $notice, 'error' );
-		}
 
 		$this->includes();
 
@@ -210,17 +187,16 @@ class WC_BIS_Notifications {
 		$this->product   = new WC_BIS_Product();
 		$this->emails    = new WC_BIS_Emails();
 
-		// Load translations hook.
-		add_action( 'init', array( $this, 'load_translation' ) );
 	}
 
 	/**
 	 * Constants.
 	 */
 	public function define_constants() {
+		wc_deprecated_function( 'WC_BIS_Notifications::define_constants', '9.9.0' );
 //		$this->maybe_define_constant( 'WC_BIS_VERSION', $this->version );
 //		$this->maybe_define_constant( 'WC_BIS_SUPPORT_URL', 'https://woocommerce.com/my-account/marketplace-ticket-form/' );
-//		$this->maybe_define_constant( 'WC_BIS_ABSPATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
+//		$this->maybe_define_constant( 'WC_ABSPATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 	}
 
 	/**
@@ -240,54 +216,50 @@ class WC_BIS_Notifications {
 	public function includes() {
 
 		// Functions.
-		require_once WC_BIS_ABSPATH . 'includes/wc-bis-functions.php';
+		require_once WC_ABSPATH . 'includes/bis/wc-bis-functions.php';
 
 		// Helpers.
-		require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-helpers.php';
+		require_once WC_ABSPATH . 'includes/bis/class-wc-bis-helpers.php';
 
 		// Install and DB.
-		require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-install.php';
-		require_once WC_BIS_ABSPATH . 'includes/db/class-wc-bis-db.php';
-		require_once WC_BIS_ABSPATH . 'includes/db/class-wc-bis-notifications-db.php';
-		require_once WC_BIS_ABSPATH . 'includes/db/class-wc-bis-activity-db.php';
+		require_once WC_ABSPATH . 'includes/bis/class-wc-bis-install.php';
+		require_once WC_ABSPATH . 'includes/bis/db/class-wc-bis-db.php';
+		require_once WC_ABSPATH . 'includes/bis/db/class-wc-bis-notifications-db.php';
+		require_once WC_ABSPATH . 'includes/bis/db/class-wc-bis-activity-db.php';
 
 		// Compatibility.
-		require_once WC_BIS_ABSPATH . 'includes/compatibility/class-wc-bis-compatibility.php';
+		require_once WC_ABSPATH . 'includes/bis/compatibility/class-wc-bis-compatibility.php';
 
 		// Models.
-		require_once WC_BIS_ABSPATH . 'includes/data-stores/class-wc-bis-notification-data.php';
-		require_once WC_BIS_ABSPATH . 'includes/data-stores/class-wc-bis-activity-data.php';
+		require_once WC_ABSPATH . 'includes/data-stores/class-wc-bis-notification-data.php';
+		require_once WC_ABSPATH . 'includes/data-stores/class-wc-bis-activity-data.php';
 
 		// Contollers.
-		require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-notices.php';
-		require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-product.php';
-		require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-sync.php';
-		require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-sync-tasks.php';
+		require_once WC_ABSPATH . 'includes/admin/class-wc-bis-notices.php';
+		require_once WC_ABSPATH . 'includes/bis/class-wc-bis-product.php';
+		require_once WC_ABSPATH . 'includes/bis/class-wc-bis-sync.php';
+		require_once WC_ABSPATH . 'includes/bis/class-wc-bis-sync-tasks.php';
 
 		// Templates.
-		require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-templates.php';
+		require_once WC_ABSPATH . 'includes/bis/class-wc-bis-templates.php';
 
 		// Front-end AJAX handlers.
-		// require_once  WC_BIS_ABSPATH . 'includes/class-wc-bis-ajax.php' ;
+		// require_once  WC_ABSPATH . 'includes/class-wc-bis-ajax.php' ;
 
 		// Account.
-		require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-account.php';
+		require_once WC_ABSPATH . 'includes/bis/class-wc-bis-account.php';
 
 		// Emails.
-		require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-emails.php';
+		require_once WC_ABSPATH . 'includes/bis/class-wc-bis-emails.php';
 
 		// REST API support.
-		require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-rest-api.php';
+		require_once WC_ABSPATH . 'includes/bis/class-wc-bis-rest-api.php';
 
 		// Admin includes.
 		if ( is_admin() ) {
 			$this->admin_includes();
 		}
 
-		// WP-CLI includes.
-		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			require_once WC_BIS_ABSPATH . 'includes/class-wc-bis-cli.php';
-		}
 	}
 
 	/**
@@ -296,26 +268,25 @@ class WC_BIS_Notifications {
 	public function admin_includes() {
 
 		// Admin notices handling.
-		require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
+		require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
 
 		// Admin functions and hooks.
-		require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin.php';
-		require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-dashboard-page.php';
-		require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-notifications-page.php';
-		require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-activity-page.php';
+		require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin.php';
+		require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-dashboard-page.php';
+		require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-notifications-page.php';
+		require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-activity-page.php';
 
 		// List Tables.
-		require_once WC_BIS_ABSPATH . 'includes/admin/list-tables/class-wc-bis-admin-list-table-notifications.php';
-		require_once WC_BIS_ABSPATH . 'includes/admin/list-tables/class-wc-bis-admin-list-table-activity.php';
+		require_once WC_ABSPATH . 'includes/admin/list-tables/class-wc-bis-admin-list-table-notifications.php';
+		require_once WC_ABSPATH . 'includes/admin/list-tables/class-wc-bis-admin-list-table-activity.php';
 	}
 
 	/**
 	 * Load textdomain.
 	 */
 	public function load_translation() {
-		load_plugin_textdomain( 'woocommerce-back-in-stock-notifications', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-		// Subscribe to automated translations.
-		add_filter( 'woocommerce_translations_updates_for_' . basename( __FILE__, '.php' ), '__return_true' );
+		wc_deprecated_function( 'WC_BIS_Notifications::load_translation', '9.9.0' );
+
 	}
 
 	/**

@@ -34,7 +34,7 @@ class WC_BIS_REST_API {
 	private function includes() {
 
 		// Routes Controllers.
-		require_once WC_BIS_ABSPATH . 'includes/rest-api/class-wc-bis-rest-api-back-in-stock-controller.php';
+		require_once WC_ABSPATH . 'includes/rest-api/Controllers/Version3/class-wc-bis-rest-api-back-in-stock-controller.php';
 	}
 
 	/**

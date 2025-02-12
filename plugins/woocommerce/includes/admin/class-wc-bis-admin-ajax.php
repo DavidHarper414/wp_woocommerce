@@ -112,7 +112,7 @@ class WC_BIS_Admin_Ajax {
 			if ( is_a( $product, 'WC_Product' ) ) {
 
 				ob_start();
-				include WC_BIS_ABSPATH . 'includes/admin/views/html-product-data-admin.php';
+				include WC_ABSPATH . 'includes/admin/views/html-bis-product-data-admin.php';
 				$html = ob_get_clean();
 
 				$response = array(

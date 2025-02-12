@@ -149,7 +149,7 @@ class WC_BIS_Notices {
 			if ( $has_overdue_deliveries ) {
 
 				if ( ! class_exists( 'WC_BIS_Admin_Notices' ) ) {
-					require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
+					require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
 				}
 
 				// Add maintenance notice.

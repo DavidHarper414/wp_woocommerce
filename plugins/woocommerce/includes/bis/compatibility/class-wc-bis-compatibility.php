@@ -51,12 +51,6 @@ class WC_BIS_Compatibility {
 		// Include core compatibility class.
 		self::core_includes();
 
-		// Declare HPOS compatibility.
-		add_action( 'before_woocommerce_init', array( __CLASS__, 'declare_hpos_compatibility' ) );
-
-		// Declare Blocks compatibility.
-		add_action( 'before_woocommerce_init', array( __CLASS__, 'declare_blocks_compatibility' ) );
-
 		// Load modules.
 		add_action( 'plugins_loaded', array( __CLASS__, 'module_includes' ), 100 );
 
@@ -70,35 +64,7 @@ class WC_BIS_Compatibility {
 	 * @return void
 	 */
 	public static function core_includes() {
-		require_once WC_BIS_ABSPATH . 'includes/compatibility/core/class-wc-bis-core-compatibility.php';
-	}
-
-	/**
-	 * Declare HPOS( Custom Order tables) compatibility.
-	 *
-	 * @since 1.4.1
-	 */
-	public static function declare_hpos_compatibility() {
-
-		if ( ! class_exists( 'Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
-			return;
-		}
-
-		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', WC_BIS()->get_plugin_basename(), true );
-	}
-
-	/**
-	 * Declare cart/checkout Blocks compatibility.
-	 *
-	 * @since 1.6.5
-	 */
-	public static function declare_blocks_compatibility() {
-
-		if ( ! class_exists( 'Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
-			return;
-		}
-
-		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', WC_BIS()->get_plugin_basename(), true );
+		require_once WC_ABSPATH . 'includes/bis/compatibility/core/class-wc-bis-core-compatibility.php';
 	}
 
 	/**
@@ -125,7 +91,7 @@ class WC_BIS_Compatibility {
 		}
 
 		// WC Pre-Orders support.
-		if ( class_exists( 'WC_Pre_Orders' ) && defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '3.6' ) >= 0 ) {
+		if ( class_exists( 'WC_Pre_Orders' ) && defined( 'WC_VERSION' ) ) {
 			$module_paths['wc_pre_orders'] = 'modules/class-wc-bis-pre-orders-compatibility.php';
 		}
 

@@ -87,7 +87,7 @@ class WC_BIS_REST_API_Back_In_Stock_Controller extends WC_REST_Controller {
 			}
 
 			if ( ! class_exists( 'WC_BIS_Admin' ) ) {
-				require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin.php';
+				require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin.php';
 			}
 
 			$updated = WC_BIS_Admin::handle_bulk_admin_deactivation( $params['productId'] );
@@ -144,7 +144,7 @@ class WC_BIS_REST_API_Back_In_Stock_Controller extends WC_REST_Controller {
 			}
 
 			if ( ! class_exists( 'WC_BIS_Admin_Notices' ) ) {
-				require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
+				require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
 			}
 
 			WC_BIS_Sync_Tasks::handle_instock_products( $params['productIds'], true );

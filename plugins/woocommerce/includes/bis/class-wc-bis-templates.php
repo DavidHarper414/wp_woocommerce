@@ -34,8 +34,8 @@ class WC_BIS_Templates {
 	public function __construct() {
 
 		// Template functions and hooks.
-		require_once WC_BIS_ABSPATH . 'includes/wc-bis-template-functions.php';
-		require_once WC_BIS_ABSPATH . 'includes/wc-bis-template-hooks.php';
+		require_once WC_ABSPATH . 'includes/bis/wc-bis-template-functions.php';
+		require_once WC_ABSPATH . 'includes/bis/wc-bis-template-hooks.php';
 
 		// Front end scripts and JS templates.
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );

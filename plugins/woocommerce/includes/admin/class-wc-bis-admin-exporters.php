@@ -44,7 +44,7 @@ class WC_BIS_Admin_Exporters {
 	 */
 	public function download_export_file() {
 		if ( isset( $_GET['action'], $_GET['nonce'] ) && wp_verify_nonce( wc_clean( $_GET['nonce'] ), 'notification-csv' ) && 'download_notification_csv' === wc_clean( $_GET['action'] ) ) {
-			include_once WC_BIS_ABSPATH . 'includes/admin/export/class-wc-bis-notification-csv-exporter.php';
+			include_once WC_ABSPATH . 'includes/admin/export/class-wc-bis-notification-csv-exporter.php';
 			$exporter = new WC_BIS_Notification_CSV_Exporter();
 
 			if ( ! empty( $_GET['filename'] ) ) {
@@ -65,7 +65,7 @@ class WC_BIS_Admin_Exporters {
 			wp_send_json_error( array( 'message' => __( 'Insufficient privileges to export notifications.', 'woocommerce-back-in-stock-notifications' ) ) );
 		}
 
-		include_once WC_BIS_ABSPATH . 'includes/admin/export/class-wc-bis-notification-csv-exporter.php';
+		include_once WC_ABSPATH . 'includes/admin/export/class-wc-bis-notification-csv-exporter.php';
 
 		$step     = isset( $_POST['step'] ) ? absint( $_POST['step'] ) : 1;
 		$exporter = new WC_BIS_Notification_CSV_Exporter();

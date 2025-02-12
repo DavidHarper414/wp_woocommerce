@@ -82,16 +82,16 @@ class WC_BIS_Admin {
 	protected static function includes() {
 
 		// Admin Menus.
-		require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-menus.php';
+		require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-menus.php';
 
 		// Export.
-		require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-exporters.php';
+		require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-exporters.php';
 
 		// Reports.
-		// require_once  WC_BIS_ABSPATH . 'includes/admin/reports/class-wc-bis-admin-reports.php' ;
+		// require_once  WC_ABSPATH . 'includes/admin/reports/class-wc-bis-admin-reports.php' ;
 
 		// Admin AJAX.
-		require_once WC_BIS_ABSPATH . 'includes/admin/class-wc-bis-admin-ajax.php';
+		require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-ajax.php';
 	}
 
 	/**
@@ -289,13 +289,13 @@ class WC_BIS_Admin {
 	 * @return void
 	 */
 	public static function render_system_status_items() {
-
+		//TODO: Adapt to core situation. Maybe keep the loopbacks test, but remove the rest.
 		$debug_data = array(
 			'db_version'           => get_option( 'wc_bis_db_version', null ),
 			'loopback_test_result' => WC_BIS_Notices::get_notice_option( 'loopback', 'last_result', '' ),
 		);
 
-		include WC_BIS_ABSPATH . 'includes/admin/status/views/html-admin-page-status-report.php';
+		include WC_ABSPATH . 'includes/admin/status/views/html-bis-admin-page-status-report.php';
 	}
 
 	/**

@@ -172,7 +172,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<?php
 								$product = $notification->get_product();
 								if ( is_a( $product, 'WC_Product' ) ) {
-									include __DIR__ . '/html-product-data-admin.php';
+									include __DIR__ . '/html-bis-product-data-admin.php';
 								} else {
 									?>
 									<small><?php esc_html_e( 'Product not found.', 'woocommerce-back-in-stock-notifications' ); ?></small>

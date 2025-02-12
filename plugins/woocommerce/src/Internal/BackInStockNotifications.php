@@ -33,17 +33,13 @@ class BackInStockNotifications {
 		self::$db_utils = wc_get_container()->get( DatabaseUtil::class );
 
 		include_once WC_ABSPATH . '/includes/bis/class-wc-bis-notifications.php';
-		include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
 
-		//...
+		WC_BIS()->initialize_plugin();
 
 		if ( wc_current_theme_is_fse_theme() ) {
 			// ...
 		}
 
-		if ( is_admin() ) {
-			require_once WC_ABSPATH . '/includes/admin/class-wc-bis-admin-notices.php';
-		}
 	}
 
 	/**
