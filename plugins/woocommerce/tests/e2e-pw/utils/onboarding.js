@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import apiClient from './api';
+import apiClient from './api-client';
 
 /**
  * Update the onboarding profile using a call to the wc-admin API.
