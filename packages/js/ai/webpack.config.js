@@ -2,6 +2,7 @@
  * External dependencies
  */
 const WebpackRTLPlugin = require( 'webpack-rtl-plugin' );
+const path = require( 'path' );
 
 /**
  * Internal dependencies
@@ -10,7 +11,7 @@ const {
 	webpackConfig,
 	plugin,
 } = require( '@woocommerce/internal-style-build' );
-const path = require("path");
+
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 

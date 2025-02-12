@@ -2,7 +2,11 @@
  * Internal dependencies
  */
 const { webpackConfig } = require( '@woocommerce/internal-style-build' );
-const path = require("path");
+
+/**
+ * External dependencies
+ */
+const path = require( 'path' );
 
 module.exports = {
 	mode: process.env.NODE_ENV || 'development',
