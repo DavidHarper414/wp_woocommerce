@@ -486,7 +486,7 @@ class WC_Admin_Post_Types {
 
 		if ( wc_get_container()->get( CostOfGoodsSoldController::class )->feature_is_enabled() && isset( $request_data['_cogs_value'] ) ) {
 			$cogs_value = $request_data['_cogs_value'];
-			$cogs_value = '' === $cogs_value ? null : (float) $cogs_value;
+			$cogs_value = '' === $cogs_value ? null : (float) wc_format_decimal( $cogs_value );
 			$product->set_cogs_value( $cogs_value );
 		}
 
@@ -1000,7 +1000,7 @@ class WC_Admin_Post_Types {
 		}
 
 		$cogs_value = wc_clean( wp_unslash( $request_data['_cogs_value'] ?? '' ) );
-		$product->set_cogs_value( '' === $cogs_value ? null : (float) $cogs_value );
+		$product->set_cogs_value( '' === $cogs_value ? null : (float) wc_format_decimal( $cogs_value ) );
 	}
 }
 

@@ -417,7 +417,7 @@ class WC_Meta_Box_Product_Data {
 
 		if ( wc_get_container()->get( CostOfGoodsSoldController::class )->feature_is_enabled() ) {
 			$cogs_value = wc_clean( wp_unslash( $_POST['_cogs_value'] ?? null ) );
-			$product->set_cogs_value( is_null( $cogs_value ) ? null : (float) $cogs_value );
+			$product->set_cogs_value( is_null( $cogs_value ) ? null : (float) wc_format_decimal( $cogs_value ) );
 		}
 
 		if ( is_wp_error( $errors ) ) {
