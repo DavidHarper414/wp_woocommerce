@@ -199,6 +199,7 @@ test.describe(
 				await page
 					.locator( '#size' )
 					.selectOption( attr.attributes[ 0 ].option );
+				await page.waitForTimeout( 300 );
 				await page
 					.getByRole( 'button', { name: 'Add to cart', exact: true } )
 					.click();
@@ -231,6 +232,7 @@ test.describe(
 		} ) => {
 			await page.goto( `product/${ slug }` );
 			await page.locator( '#size' ).selectOption( 'Large' );
+			await page.waitForTimeout( 300 );
 			await page
 				.getByRole( 'button', { name: 'Add to cart', exact: true } )
 				.click();
