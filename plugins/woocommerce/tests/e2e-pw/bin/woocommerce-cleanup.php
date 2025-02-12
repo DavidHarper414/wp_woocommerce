@@ -147,27 +147,24 @@ function wc_cleanup_analytics_table( $table_name ) {
  * Remove all email logs stored by WP Mail Logging.
  */
 function wc_cleanup_email_logs() {
-    global $wpdb;
+	global $wpdb;
 
-    // Identify the correct email log table.
-    $table_name = $wpdb->prefix . 'wpml_mails';
+	// Identify the correct email log table.
+	$table_name = $wpdb->prefix . 'wpml_mails';
 
-    // Check if the table exists before truncating.
-    $prepared_query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name );
-    $table_exists = $wpdb->get_var( $prepared_query );
+	// Check if the table exists before truncating.
+	$prepared_query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name );
+	$table_exists = $wpdb->get_var( $prepared_query );
 
-    if ( $table_exists === $table_name ) {
-        $wpdb->query( 'TRUNCATE TABLE ' . esc_sql( $table_name ) );
-    }
+	if ( $table_exists === $table_name ) {
+		$wpdb->query( 'TRUNCATE TABLE ' . esc_sql( $table_name ) );
+	}
 
-    // Ensure WP Mail Logging cache is cleared.
-    delete_transient( 'wpml_mail_log_cache' );
-    delete_option( 'wpml_mail_log_cache' );
-    wp_cache_flush();
+	// Ensure WP Mail Logging cache is cleared.
+	delete_transient( 'wpml_mail_log_cache' );
+	delete_option( 'wpml_mail_log_cache' );
+	wp_cache_flush();
 }
-
-
-
 
 /**
  * Reset the WooCommerce site.
