@@ -255,3 +255,9 @@
 		}
 	}
 }
+
+@include breakpoint( "<782px" ) {
+	.woocommerce-task-dashboard__container .woocommerce-task-marketplace-link {
+		padding: 0 $gap;
+	}
+}
