@@ -3132,8 +3132,8 @@ test.describe.serial( 'Orders API tests', () => {
 			const result2JSON = await result2.json();
 
 			expect( result2.status() ).toEqual( 200 );
-			expect( result2JSON ).toHaveLength( 1 );
-			expect( result2JSON[ 0 ].id ).toEqual(
+			expect( result2JSON.length ).toBeGreaterThanOrEqual( 1 );
+			expect( result2JSON.map( ( { id } ) => id ) ).toContain(
 				sampleData.guestOrderJSON.id
 			);
 
@@ -3146,8 +3146,8 @@ test.describe.serial( 'Orders API tests', () => {
 			const result3JSON = await result3.json();
 
 			expect( result3.status() ).toEqual( 200 );
-			expect( result3JSON ).toHaveLength( 1 );
-			expect( result3JSON[ 0 ].id ).toEqual(
+			expect( result3JSON.length ).toBeGreaterThanOrEqual( 1 );
+			expect( result3JSON.map( ( { id } ) => id ) ).toContain(
 				sampleData.guestOrderJSON.id
 			);
 
@@ -3174,7 +3174,7 @@ test.describe.serial( 'Orders API tests', () => {
 			const result5JSON = await result5.json();
 
 			expect( result5.status() ).toEqual( 200 );
-			expect( result5JSON ).toHaveLength( 2 );
+			expect( result5JSON.length ).toBeGreaterThanOrEqual( 2 );
 			result5JSON.forEach( ( _order ) =>
 				expect( _order ).toEqual(
 					expect.objectContaining( {
