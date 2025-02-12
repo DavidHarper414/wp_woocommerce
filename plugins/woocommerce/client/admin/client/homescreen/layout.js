@@ -73,10 +73,12 @@ export const Layout = ( {
 } ) => {
 	const userPrefs = useUserPreferences();
 
-	const { setupTaskListActive: isSetupTaskListActive } = useTaskListsState( {
-		setupTasklist: true,
-		extendedTaskList: false,
-	} );
+	// Use hook to get setup task list state so when the task list is completed or hidden, the homescreen layout is updated immediately
+	const { setupTaskListActive: isSetupTaskListActive, setupTaskListHidden } =
+		useTaskListsState( {
+			setupTasklist: true,
+			extendedTaskList: false,
+		} );
 
 	const isTaskScreen =
 		hasTaskList && Object.keys( query ).length > 0 && !! query.task;
@@ -107,7 +109,7 @@ export const Layout = ( {
 	const renderTaskList = () => {
 		return (
 			<Suspense fallback={ <TasksPlaceholder query={ query } /> }>
-				{ isTaskListVisible( 'setup' ) && isDashboardShown && (
+				{ ! setupTaskListHidden && isDashboardShown && (
 					<>
 						<ProgressTitle taskListId="setup" />
 					</>
