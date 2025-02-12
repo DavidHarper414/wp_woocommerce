@@ -83,7 +83,7 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 		}
 		try {
 			const downloadUrl = `https://github.com/woocommerce/woocommerce/releases/download/${ wcVersion }/woocommerce.zip`;
-			const response = await wcbtApi.fetch(
+			const installResponse = await wcbtApi.fetch(
 				'/wp-json/wc-admin-test-helper/live-branches/install/v1',
 				{
 					method: 'POST',
@@ -95,9 +95,9 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 				}
 			);
 
-			if ( ! response.ok() ) {
+			if ( ! installResponse.ok() ) {
 				throw new Error(
-					`Failed to install WC ${ wcVersion }: ${ response.status() } ${ await response.text() }`
+					`Failed to install WC ${ wcVersion }: ${ installResponse.status() } ${ await installResponse.text() }`
 				);
 			}
 
