@@ -35,29 +35,6 @@ test.describe(
 				} );
 		} );
 
-		test.beforeEach( async ( { page } ) => {
-			await page.goto(
-				`wp-admin/tools.php?page=wpml_plugin_log&s=${ encodeURIComponent(
-					customerBilling.email
-				) }`
-			);
-			// clear out the email logs before each test
-			while (
-				await page.locator( '#bulk-action-selector-top' ).isVisible()
-			) {
-				// In WP 6.3, label intercepts check action. Need to force.
-				await page.getByLabel( 'Select All' ).first().check();
-
-				await page
-					.locator( '#bulk-action-selector-top' )
-					.selectOption( 'delete' );
-				await page.locator( '#doaction' ).click();
-				await expect(
-					page.getByText( /successfully deleted/i )
-				).toBeVisible();
-			}
-		} );
-
 		test.afterAll( async ( { baseURL } ) => {
 			const api = new wcApi( {
 				url: baseURL,
