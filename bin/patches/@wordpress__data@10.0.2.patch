@@ -229,7 +229,7 @@ index 3a44c74e8bb021444a3072331b546d1b16f4d58e..41bb4f3a712c9c20dafb03ed3750960f
   * @return {StateValue|undefined} isResolving value.
   */
 -export function getResolutionState(state: State, selectorName: string, args: unknown[] | null): StateValue | undefined;
-+export declare function getResolutionState<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined): StateValue | undefined;
++export declare function getResolutionState<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined): StateValue | undefined | null;
  /**
   * Returns an `isResolving`-like value for a given selector name and arguments set.
   * Its value is either `undefined` if the selector has never been resolved or has been
@@ -238,7 +238,7 @@ index 3a44c74e8bb021444a3072331b546d1b16f4d58e..41bb4f3a712c9c20dafb03ed3750960f
   * @return {boolean | undefined} isResolving value.
   */
 -export function getIsResolving(state: State, selectorName: string, args: unknown[] | null): boolean | undefined;
-+export declare function getIsResolving<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined): boolean | undefined;
++export declare function getIsResolving<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined): boolean | undefined | null;
  /**
   * Returns true if resolution has already been triggered for a given
   * selector name, and arguments set.
@@ -247,7 +247,7 @@ index 3a44c74e8bb021444a3072331b546d1b16f4d58e..41bb4f3a712c9c20dafb03ed3750960f
   * @return {boolean} Whether resolution has been triggered.
   */
 -export function hasStartedResolution(state: State, selectorName: string, args: unknown[] | null): boolean;
-+export declare function hasStartedResolution<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined): boolean;
++export declare function hasStartedResolution<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined | null): boolean;
  /**
   * Returns true if resolution has completed for a given selector
   * name, and arguments set.
@@ -256,7 +256,7 @@ index 3a44c74e8bb021444a3072331b546d1b16f4d58e..41bb4f3a712c9c20dafb03ed3750960f
   * @return {boolean} Whether resolution has completed.
   */
 -export function hasFinishedResolution(state: State, selectorName: string, args: unknown[] | null): boolean;
-+export declare function hasFinishedResolution<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined): boolean;
++export declare function hasFinishedResolution<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined | null): boolean;
  /**
   * Returns true if resolution has failed for a given selector
   * name, and arguments set.
@@ -265,7 +265,7 @@ index 3a44c74e8bb021444a3072331b546d1b16f4d58e..41bb4f3a712c9c20dafb03ed3750960f
   * @return {boolean} Has resolution failed
   */
 -export function hasResolutionFailed(state: State, selectorName: string, args: unknown[] | null): boolean;
-+export declare function hasResolutionFailed<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined): boolean;
++export declare function hasResolutionFailed<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined | null): boolean;
  /**
   * Returns the resolution error for a given selector name, and arguments set.
   * Note it may be of an Error type, but may also be null, undefined, or anything else
@@ -274,7 +274,7 @@ index 3a44c74e8bb021444a3072331b546d1b16f4d58e..41bb4f3a712c9c20dafb03ed3750960f
   * @return {Error|unknown} Last resolution error
   */
 -export function getResolutionError(state: State, selectorName: string, args: unknown[] | null): Error | unknown;
-+export declare function getResolutionError<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined): Error | unknown | null;
++export declare function getResolutionError<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined | null): Error | unknown | null;
  /**
   * Returns true if resolution has been triggered but has not yet completed for
   * a given selector name, and arguments set.
@@ -283,7 +283,7 @@ index 3a44c74e8bb021444a3072331b546d1b16f4d58e..41bb4f3a712c9c20dafb03ed3750960f
   * @return {boolean} Whether resolution is in progress.
   */
 -export function isResolving(state: State, selectorName: string, args: unknown[] | null): boolean;
-+export declare function isResolving<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined): boolean;
++export declare function isResolving<Selectors extends Record<string, (...args: any[]) => any>>(state: Record<keyof Selectors, State>, selectorName: keyof Selectors, args: SelectorParameters<Selectors[typeof selectorName]> | undefined | null): boolean;
  /**
   * Returns the list of the cached resolvers.
   *
@@ -338,7 +338,7 @@ index 0000000000000000000000000000000000000000..e3f66862d228533eff66a17b1644156a
 + *                                                       also supported.
 + *
 + * @example
-+ * ```js
++ * ```ts
 + * import { resolveSelect } from '@wordpress/data';
 + * import { store as myCustomStore } from 'my-custom-store';
 + *
