@@ -1,6 +1,14 @@
-const { test: baseTest, expect, tags } = require( '../../fixtures/fixtures' );
-const { admin, customer } = require( '../../test-data/data' );
-const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
+/**
+ * Internal dependencies
+ */
+import { admin, customer } from '../../test-data/data';
+
+/**
+ * External dependencies
+ */
+import { expect, tags, test as baseTest } from '../../fixtures/fixtures';
+import { ADMIN_STATE_PATH } from '../../playwright.config';
+
 const emailContent = '#wp-mail-logging-modal-content-body-content';
 const emailContentHtml = '#wp-mail-logging-modal-format-html';
 
