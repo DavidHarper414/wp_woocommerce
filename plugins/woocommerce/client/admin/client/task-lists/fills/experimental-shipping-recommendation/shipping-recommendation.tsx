@@ -4,8 +4,12 @@
 import { __ } from '@wordpress/i18n';
 import { difference } from 'lodash';
 import { useEffect, useState } from '@wordpress/element';
-import { Stepper } from '@woocommerce/components';
+import { Stepper, Link } from '@woocommerce/components';
 import { Card, CardBody, Button } from '@wordpress/components';
+import interpolateComponents from '@automattic/interpolate-components';
+import { getAdminLink } from '@woocommerce/settings';
+import { Text } from '@woocommerce/experimental';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -140,6 +144,34 @@ export const ShippingRecommendation: React.FC<
 					/>
 				</CardBody>
 			</Card>
+			<Text
+				as="div"
+				className="woocommerce-task-dashboard__container woocommerce-task-marketplace-link"
+			>
+				{ interpolateComponents( {
+					mixedString: __(
+						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more shipping, delivery, and fulfillment solutions.',
+						'woocommerce'
+					),
+					components: {
+						sbLink: (
+							<Link
+								onClick={ () => {
+									recordEvent(
+										'tasklist_shipping_recommendation_visit_marketplace_click'
+									);
+									window.location.href = getAdminLink(
+										'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping-delivery-and-fulfillment'
+									);
+									return false;
+								} }
+								href=""
+								type="wc-admin"
+							/>
+						),
+					},
+				} ) }
+			</Text>
 		</div>
 	);
 };

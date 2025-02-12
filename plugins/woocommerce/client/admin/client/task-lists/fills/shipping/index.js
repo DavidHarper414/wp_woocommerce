@@ -10,6 +10,7 @@ import { filter } from 'lodash';
 import interpolateComponents from '@automattic/interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Link, Stepper, Plugins } from '@woocommerce/components';
+import { Text } from '@woocommerce/experimental';
 import { getAdminLink } from '@woocommerce/settings';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import {
@@ -652,6 +653,34 @@ export class Shipping extends Component {
 						/>
 					</CardBody>
 				</Card>
+				<Text
+					as="div"
+					className="woocommerce-task-dashboard__container woocommerce-task-marketplace-link"
+				>
+					{ interpolateComponents( {
+						mixedString: __(
+							'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more shipping, delivery, and fulfillment solutions.',
+							'woocommerce'
+						),
+						components: {
+							sbLink: (
+								<Link
+									onClick={ () => {
+										recordEvent(
+											'tasklist_shipping_visit_marketplace_click'
+										);
+										window.location.href = getAdminLink(
+											'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping-delivery-and-fulfillment'
+										);
+										return false;
+									} }
+									href=""
+									type="wc-admin"
+								/>
+							),
+						},
+					} ) }
+				</Text>
 			</div>
 		);
 	}
