@@ -31,23 +31,21 @@ export const getCartData =
 			apiFetch.setCartHash( response?.headers );
 		}
 
-		response
-			.json()
-			.then( function ( cartData: CartResponse ) {
-				const { receiveCartWithoutSyncingWithIAPIStore, receiveError } =
-					dispatch;
+		try {
+			const cartData: CartResponse = await response.json();
+			const { receiveCartWithoutSyncingWithIAPIStore, receiveError } =
+				dispatch;
 
-				if ( ! cartData ) {
-					receiveError( CART_API_ERROR );
-					return;
-				}
-
-				receiveCartWithoutSyncingWithIAPIStore( cartData );
-			} )
-			.catch( () => {
-				const { receiveError } = dispatch;
+			if ( ! cartData ) {
 				receiveError( CART_API_ERROR );
-			} );
+				return;
+			}
+
+			receiveCartWithoutSyncingWithIAPIStore( cartData );
+		} catch ( error ) {
+			const { receiveError } = dispatch;
+			receiveError( CART_API_ERROR );
+		}
 	};
 
 /**
