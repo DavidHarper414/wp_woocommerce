@@ -115,8 +115,8 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		remove_filter( 'woocommerce_customer_data_store', $mock_data_store );
 
 		$this->assertCount( 1, $mocked_messages );
-		$this->assertEquals( __( 'Unable to save customer additional fields: ', 'woocommerce' ) . $hash, $mocked_messages[0]['message'] );
-		$this->assertEquals( 'notice', $mocked_messages[0]['type'] );
+		$this->assertEquals( sprintf( __( 'An error occurred while saving account details: %s', 'woocommerce' ), $hash ), $mocked_messages[0]['message'] ); // phpcs:ignore WordPress.WP.I18n.MissingTranslatorsComment
+		$this->assertEquals( 'error', $mocked_messages[0]['type'] );
 	}
 
 	/**
@@ -139,7 +139,7 @@ class CheckoutFieldsFrontendTest extends TestCase {
 			),
 		);
 
-		$_POST['mynamespace/generic_validation_error'] = 'value';
+		$_POST['_wc_other/mynamespace/generic_validation_error'] = 'value';
 		global $mocked_messages;
 		$mocked_messages = [];
 
@@ -152,8 +152,8 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$value = $this->controller->get_field_from_object( 'mynamespace/generic_validation_error', new WC_Customer( 1 ) );
 		$this->assertEquals( '', $value );
 
-		$_POST['mynamespace/generic_validation_error'] = '';
-		$mocked_messages                               = [];
+		$_POST['_wc_other/mynamespace/generic_validation_error'] = '';
+		$mocked_messages = [];
 
 		$this->sut->save_account_form_fields( 1 );
 
@@ -183,7 +183,7 @@ class CheckoutFieldsFrontendTest extends TestCase {
 			throw new Exception( 'Location validation error message' );
 		};
 
-		$_POST['mynamespace/location_validation_error'] = 'value';
+		$_POST['_wc_other/mynamespace/location_validation_error'] = 'value';
 		global $mocked_messages;
 		$mocked_messages = [];
 
@@ -216,7 +216,7 @@ class CheckoutFieldsFrontendTest extends TestCase {
 			),
 		);
 
-		$_POST['mynamespace/required_field'] = '';
+		$_POST['_wc_other/mynamespace/required_field'] = '';
 		global $mocked_messages;
 		$mocked_messages = [];
 
@@ -229,9 +229,9 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$value = $this->controller->get_field_from_object( 'mynamespace/required_field', new WC_Customer( 1 ) );
 		$this->assertEquals( '', $value );
 
-		$mocked_messages                     = [];
-		$hash                                = uniqid();
-		$_POST['mynamespace/required_field'] = $hash;
+		$mocked_messages = [];
+		$hash            = uniqid();
+		$_POST['_wc_other/mynamespace/required_field'] = $hash;
 		$this->sut->save_account_form_fields( 1 );
 
 		$this->assertCount( 0, $mocked_messages );
@@ -259,7 +259,7 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		global $mocked_messages;
 		$mocked_messages = [];
 
-		$_POST['mynamespace/optional_field'] = '';
+		$_POST['_wc_other/mynamespace/optional_field'] = '';
 		$this->sut->save_account_form_fields( 1 );
 
 		$this->assertCount( 0, $mocked_messages );
@@ -267,8 +267,8 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$value = $this->controller->get_field_from_object( 'mynamespace/optional_field', new WC_Customer( 1 ) );
 		$this->assertEquals( '', $value );
 
-		$hash                                = uniqid();
-		$_POST['mynamespace/optional_field'] = $hash;
+		$hash = uniqid();
+		$_POST['_wc_other/mynamespace/optional_field'] = $hash;
 		$this->sut->save_account_form_fields( 1 );
 
 		$this->assertCount( 0, $mocked_messages );
