@@ -835,6 +835,7 @@ class WC_AJAX {
 		$variation_object = wc_get_product_object( ProductType::VARIATION );
 		$variation_object->set_parent_id( $product_id );
 		$variation_object->set_attributes( array_fill_keys( array_map( 'sanitize_title', array_keys( $product_object->get_variation_attributes() ) ), '' ) );
+		$variation_object->save();
 		self::render_variation_html( $product_object, $variation_object, $loop, self::base_cost_or_null( $product_object ) );
 		wp_die();
 	}
@@ -3688,7 +3689,7 @@ class WC_AJAX {
 	 * @param float|null $base_cost Default cost for variations, null if the Cost of Goods Sold feature is disabled.
 	 */
 	private static function render_variation_html( WC_Product $product_object, WC_Product $variation_object, $loop, ?float $base_cost ) {
-		$variation_id   = $variation_object->save();
+		$variation_id   = $variation_object->get_id();
 		$variation      = get_post( $variation_id );
 		$variation_data = array_merge( get_post_custom( $variation_id ), wc_get_product_variation_attributes( $variation_id ) ); // kept for BW compatibility.
 		include __DIR__ . '/admin/meta-boxes/views/html-variation-admin.php';
