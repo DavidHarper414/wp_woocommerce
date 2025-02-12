@@ -1,5 +1,8 @@
 const { test, expect } = require( '../../../fixtures/api-tests-fixtures' );
 const { order } = require( '../../../data' );
+const { faker } = require( '@faker-js/faker' );
+
+const RAND_STRING = faker.number.int( { min: 1000, max: 9999 } );
 
 /**
  * Billing properties to update.
@@ -45,6 +48,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						name: 'Clothing',
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const clothingJSON = await clothing.json();
@@ -56,6 +60,7 @@ test.describe.serial( 'Orders API tests', () => {
 						name: 'Accessories',
 						parent: clothingJSON.id,
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const accessoriesJSON = await accessories.json();
@@ -67,6 +72,7 @@ test.describe.serial( 'Orders API tests', () => {
 						name: 'Hoodies',
 						parent: clothingJSON.id,
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const hoodiesJSON = await hoodies.json();
@@ -78,6 +84,7 @@ test.describe.serial( 'Orders API tests', () => {
 						name: 'Tshirts',
 						parent: clothingJSON.id,
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const tshirtsJSON = await tshirts.json();
@@ -88,6 +95,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						name: 'Decor',
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const decorJSON = await decor.json();
@@ -98,6 +106,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						name: 'Music',
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const musicJSON = await music.json();
@@ -119,6 +128,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						name: 'Color',
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const colorJSON = await color.json();
@@ -129,6 +139,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						name: 'Size',
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const sizeJSON = await size.json();
@@ -145,6 +156,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						create: colorNamesObjectArray,
 					},
+					failOnStatusCode: true,
 				}
 			);
 
@@ -162,6 +174,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						create: sizeNamesObjectArray,
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const sizesJSON = await sizes.json();
@@ -179,6 +192,7 @@ test.describe.serial( 'Orders API tests', () => {
 				data: {
 					name: 'Cool',
 				},
+				failOnStatusCode: true,
 			} );
 			const coolJSON = await cool.json();
 
@@ -194,6 +208,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						name: 'Freight',
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const freightJSON = await freight.json();
@@ -219,6 +234,7 @@ test.describe.serial( 'Orders API tests', () => {
 						data: {
 							name: 'Reduced Rate',
 						},
+						failOnStatusCode: true,
 					}
 				);
 				reducedRateJSON = await reducedRate.json();
@@ -1258,6 +1274,7 @@ test.describe.serial( 'Orders API tests', () => {
 							},
 						],
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const simpleProductsJSON = await simpleProducts.json();
@@ -1342,6 +1359,7 @@ test.describe.serial( 'Orders API tests', () => {
 							},
 						],
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const externalProductsJSON = await externalProducts.json();
@@ -1438,6 +1456,7 @@ test.describe.serial( 'Orders API tests', () => {
 							},
 						],
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const groupedProductsJSON = await groupedProducts.json();
@@ -1533,6 +1552,7 @@ test.describe.serial( 'Orders API tests', () => {
 					menu_order: 0,
 					stock_status: 'instock',
 				},
+				failOnStatusCode: true,
 			} );
 			const hoodieJSON = await hoodie.json();
 
@@ -1735,6 +1755,7 @@ test.describe.serial( 'Orders API tests', () => {
 							},
 						],
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const hoodieVariationsJSON = await hoodieVariations.json();
@@ -1817,6 +1838,7 @@ test.describe.serial( 'Orders API tests', () => {
 					menu_order: 0,
 					stock_status: 'instock',
 				},
+				failOnStatusCode: true,
 			} );
 			const vneckJSON = await vneck.json();
 
@@ -1950,6 +1972,7 @@ test.describe.serial( 'Orders API tests', () => {
 							},
 						],
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const vneckVariationsJSON = await vneckVariations.json();
@@ -1968,6 +1991,7 @@ test.describe.serial( 'Orders API tests', () => {
 					name: 'Parent Product oxo',
 					date_created_gmt: '2021-09-27T15:50:19',
 				},
+				failOnStatusCode: true,
 			} );
 			const parentJSON = await parent.json();
 
@@ -1977,6 +2001,7 @@ test.describe.serial( 'Orders API tests', () => {
 					parent_id: parentJSON.id,
 					date_created_gmt: '2021-09-28T15:50:19',
 				},
+				failOnStatusCode: true,
 			} );
 			const childJSON = await child.json();
 
@@ -2007,6 +2032,7 @@ test.describe.serial( 'Orders API tests', () => {
 						reviewer: 'John Doe',
 						reviewer_email: 'john.doe@example.com',
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const review1JSON = await review1.json();
@@ -2019,6 +2045,7 @@ test.describe.serial( 'Orders API tests', () => {
 				`./wp-json/wc/v3/products/reviews/${ review1JSON.id }`,
 				{
 					data: {},
+					failOnStatusCode: true,
 				}
 			);
 
@@ -2032,6 +2059,7 @@ test.describe.serial( 'Orders API tests', () => {
 						reviewer: 'Shannon Smith',
 						reviewer_email: 'shannon.smith@example.com',
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const review2JSON = await review2.json();
@@ -2041,6 +2069,7 @@ test.describe.serial( 'Orders API tests', () => {
 				`./wp-json/wc/v3/products/reviews/${ review2JSON.id }`,
 				{
 					data: {},
+					failOnStatusCode: true,
 				}
 			);
 
@@ -2062,6 +2091,7 @@ test.describe.serial( 'Orders API tests', () => {
 				`./wp-json/wc/v3/products/reviews/${ review3JSON.id }`,
 				{
 					data: {},
+					failOnStatusCode: true,
 				}
 			);
 
@@ -2098,6 +2128,7 @@ test.describe.serial( 'Orders API tests', () => {
 						},
 					],
 				},
+				failOnStatusCode: true,
 			} );
 			const orderJSON = await order1.json();
 
@@ -2511,6 +2542,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						force: true,
 					},
+					failOnStatusCode: true,
 				} );
 			}
 
@@ -2521,6 +2553,7 @@ test.describe.serial( 'Orders API tests', () => {
 						data: {
 							force: true,
 						},
+						failOnStatusCode: true,
 					}
 				);
 			}
@@ -2531,6 +2564,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						force: true,
 					},
+					failOnStatusCode: true,
 				}
 			);
 
@@ -2540,6 +2574,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						force: true,
 					},
+					failOnStatusCode: true,
 				}
 			);
 
@@ -2550,6 +2585,7 @@ test.describe.serial( 'Orders API tests', () => {
 						data: {
 							force: true,
 						},
+						failOnStatusCode: true,
 					}
 				);
 			}
@@ -2561,6 +2597,7 @@ test.describe.serial( 'Orders API tests', () => {
 						data: {
 							force: true,
 						},
+						failOnStatusCode: true,
 					}
 				);
 			}
@@ -2572,6 +2609,7 @@ test.describe.serial( 'Orders API tests', () => {
 						data: {
 							force: true,
 						},
+						failOnStatusCode: true,
 					}
 				);
 			}
@@ -2583,6 +2621,7 @@ test.describe.serial( 'Orders API tests', () => {
 						data: {
 							force: true,
 						},
+						failOnStatusCode: true,
 					}
 				);
 			}
@@ -2600,6 +2639,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						force: true,
 					},
+					failOnStatusCode: true,
 				} );
 			}
 
@@ -2610,6 +2650,7 @@ test.describe.serial( 'Orders API tests', () => {
 						data: {
 							force: true,
 						},
+						failOnStatusCode: true,
 					}
 				);
 			}
