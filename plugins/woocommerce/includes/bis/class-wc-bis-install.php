@@ -191,6 +191,7 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	public static function auto_update_enabled() {
 		wc_deprecated_function( 'WC_BIS_Install::auto_update_enabled', '9.9.0' );
 		// Migrated to WC core's install routine.
+		return false;
 	}
 
 	/**
@@ -225,6 +226,7 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	public static function is_update_pending() {
 		wc_deprecated_function( 'WC_BIS_Install::is_update_pending', '9.9.0' );
 		// Migrated to WC core's install routine.
+		return false;
 	}
 
 	/**
@@ -235,6 +237,7 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	public static function is_update_incomplete() {
 		wc_deprecated_function( 'WC_BIS_Install::is_update_incomplete', '9.9.0' );
 		// Migrated to WC core's install routine.
+		return false;
 	}
 
 
@@ -246,6 +249,7 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	public static function is_update_queued() {
 		wc_deprecated_function( 'WC_BIS_Install::is_update_queued', '9.9.0' );
 		// Migrated to WC core's install routine.
+		return false;
 	}
 
 	/**
@@ -256,6 +260,7 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	public static function is_update_process_running() {
 		wc_deprecated_function( 'WC_BIS_Install::is_update_process_running', '9.9.0' );
 		// Migrated to WC core's install routine.
+		return false;
 	}
 
 	/**
@@ -266,6 +271,7 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	public static function is_update_background_process_running() {
 		wc_deprecated_function( 'WC_BIS_Install::is_update_background_process_running', '9.9.0' );
 		// Migrated to WC core's install routine.
+		return false;
 	}
 
 	/**
@@ -276,6 +282,7 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	public static function is_update_cli_process_running() {
 		wc_deprecated_function( 'WC_BIS_Install::is_update_cli_process_running', '9.9.0' );
 		// Migrated to WC core's install routine.
+		return false;
 	}
 
 	/**
@@ -296,6 +303,7 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	public static function get_db_update_callbacks() {
 		wc_deprecated_function( 'WC_BIS_Install::get_db_update_callbacks', '9.9.0' );
 		// Migrated to WC core's install routine.
+		return array();
 	}
 
 	/**
@@ -308,6 +316,7 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
 	public static function plugin_row_meta( $links, $file ) {
 		wc_deprecated_function( 'WC_BIS_Install::plugin_row_meta', '9.9.0' );
 		// Migrated to WC core's install routine.
+		return array();
 	}
 }
 
