@@ -155,13 +155,13 @@ function wc_cleanup_email_logs() {
 	// Check if the table exists before truncating.
 	$table_exists = $wpdb->get_var(
 		$wpdb->prepare(
-			"SHOW TABLES LIKE %s",
+			`SHOW TABLES LIKE %s`,
 			$table_name
 		)
 	);
 
 	if ( $table_exists ) {
-		$wpdb->query( "TRUNCATE TABLE {$table_name}" ); // Completely clear logs
+		$wpdb->query( "TRUNCATE TABLE {$table_name}" );
 	}
 
 	// Ensure WP Mail Logging cache is cleared
@@ -362,7 +362,7 @@ function wc_cleanup_reset_site() {
 	update_option( 'woocommerce_ship_to_countries', '' );
 
 	// Remove email logs from WP Mail Logging.
-    wc_cleanup_email_logs();
+	wc_cleanup_email_logs();
 
 	// Clear store address fields.
 	update_option( 'woocommerce_store_address', '' );
