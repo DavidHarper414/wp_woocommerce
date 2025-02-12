@@ -26,7 +26,7 @@ export const Form = ( {
 	const { data, fields, form, updateField } = useSettingsForm( settings );
 	const formRef = useRef( null );
 
-	const gatherFormInputs = () => {
+	const getFormData = (): Record< string, string > => {
 		if ( ! formRef.current ) {
 			return {};
 		}
@@ -37,23 +37,16 @@ export const Form = ( {
 
 		const data = {};
 		formElements.forEach( ( input ) => {
-			let value;
-			if (
-				( input as HTMLInputElement ).type === 'checkbox' ||
-				( input as HTMLInputElement ).type === 'radio'
-			) {
-				value = ( input as HTMLInputElement ).checked ? 'yes' : 'no';
-			} else {
-				value = ( input as HTMLInputElement ).value;
-			}
-
 			// Avoid generic Gutenberg input ids. This will require upstream fixes.
 			if ( input.id.startsWith( 'inspector-' ) ) {
 				return;
 			}
+
+			const value = ( input as HTMLInputElement ).value;
 			// Need to type data as Record<string, string> to allow string indexing
 			( data as Record< string, string > )[
-				input.id || ( input as HTMLInputElement ).name
+				( input as HTMLInputElement ).name ||
+					( input as HTMLInputElement ).id
 			] = value;
 		} );
 
@@ -62,20 +55,10 @@ export const Form = ( {
 
 	const handleSubmit = ( event: React.FormEvent< HTMLFormElement > ) => {
 		event.preventDefault();
-		const formData = new FormData();
-		const formInputs = gatherFormInputs();
-		for ( const [ key, value ] of Object.entries( formInputs ) ) {
-			formData.append( key, String( value ) );
-		}
+		const formData = getFormData();
+		formData.save = 'Save changes';
 
-		formData.append( 'save', 'Save changes' );
-		formData.append( 'tab', settingsPage.slug );
-		formData.append( 'section', activeSection );
-
-		for ( const [ key, value ] of formData.entries() ) {
-			// eslint-disable-next-line no-console
-			console.log( `${ key }: ${ value }` );
-		}
+		console.log( formData );
 	};
 
 	return (
