@@ -27,8 +27,8 @@ jest.mock( '@woocommerce/admin-layout', () => {
 	};
 } );
 
-describe( 'WooCommerceServicesItem', () => {
-	it( 'should render WCS item with CTA = "Get started" when WCS is not installed', () => {
+describe( 'WooCommerceShippingItem', () => {
+	it( 'should render WC Shipping item with CTA = "Get started" when WC Shipping is not installed', () => {
 		render( <WooCommerceShippingItem isPluginInstalled={ false } /> );
 
 		expect(
@@ -40,7 +40,7 @@ describe( 'WooCommerceServicesItem', () => {
 		).toBeInTheDocument();
 	} );
 
-	it( 'should render WCS item with CTA = "Activate" when WCS is installed', () => {
+	it( 'should render WC Shipping item with CTA = "Activate" when WC Shipping is installed', () => {
 		render( <WooCommerceShippingItem isPluginInstalled={ true } /> );
 
 		expect(

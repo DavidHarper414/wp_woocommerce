@@ -37,17 +37,18 @@ describe( 'ShippingRecommendations', () => {
 		} );
 	} );
 
-	it( 'should not render when WCS&T is already installed', () => {
+	it( 'should render when WCS&T is installed', () => {
 		useSelect.mockImplementation( ( fn ) =>
 			fn( () => ( {
 				getActivePlugins: () => [ 'woocommerce-services' ],
+				isJetpackConnected: () => false,
 			} ) )
 		);
 		render( <ShippingRecommendations /> );
 
 		expect(
 			screen.queryByText( 'WooCommerce Shipping' )
-		).not.toBeInTheDocument();
+		).toBeInTheDocument();
 	} );
 
 	it( 'should not render when the WooCommerce Shipping plugin is active', () => {

@@ -48,10 +48,7 @@ const ShippingRecommendations: React.FC = () => {
 		};
 	}, [] );
 
-	if (
-		activePlugins.includes( 'woocommerce-shipping' ) ||
-		activePlugins.includes( 'woocommerce-services' )
-	) {
+	if ( activePlugins.includes( 'woocommerce-shipping' ) ) {
 		return <ShippingTour showShippingRecommendationsStep={ false } />;
 	}
 
