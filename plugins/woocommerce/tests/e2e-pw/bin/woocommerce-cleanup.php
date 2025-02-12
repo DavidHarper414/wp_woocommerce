@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WooCommerce Cleanup
  * Description: Resets WooCommerce site to testing start state.
- * Version: 1.6
+ * Version: 1.5
  * Author: Solaris Team
  * Requires at least: 6.6
  * Requires PHP: 7.4
