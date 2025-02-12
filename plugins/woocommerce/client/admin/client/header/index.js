@@ -141,7 +141,8 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 		isWCAdmin() && getPath() === '/analytics/overview';
 
 	const isReactifyPaymentsSettingsScreen = Boolean(
-		! isLoadingExperiment && experimentAssignment?.variationName === 'treatment' &&
+		! isLoadingExperiment &&
+			experimentAssignment?.variationName === 'treatment' &&
 			window.wcAdminFeatures?.[ 'reactify-classic-payments-settings' ] &&
 			query?.page === 'wc-settings' &&
 			query?.tab === 'checkout'
