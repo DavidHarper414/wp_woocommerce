@@ -10,11 +10,19 @@ const {
 	webpackConfig,
 	plugin,
 } = require( '@woocommerce/internal-style-build' );
+const path = require("path");
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
 	mode: process.env.NODE_ENV || 'development',
+	cache: {
+		type: 'filesystem',
+		cacheDirectory: path.resolve(
+			__dirname,
+			'../../../../node_modules/.cache/webpack-ai'
+		),
+	},
 	entry: {
 		'build-style': __dirname + '/src/style.scss',
 	},
