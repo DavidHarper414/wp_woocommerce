@@ -1,0 +1,4 @@
+Significance: minor
+Type: update
+
+Remove logic which hides template selector for the Shop page
