@@ -2536,87 +2536,66 @@ test.describe.serial( 'Orders API tests', () => {
 					hierarchicalProducts.parentJSON.id,
 					hierarchicalProducts.childJSON.id,
 				] );
+			const orderIds = orders.map( ( { id } ) => id );
+			const categoryIds = Object.values( categories ).map(
+				( { id } ) => id
+			);
+			const tagIds = Object.values( productTags ).map( ( { id } ) => id );
+			const shippingClassIds = Object.values( shippingClasses ).map(
+				( { id } ) => id
+			);
+			const taxClassSlugs = Object.values( taxClasses ).map(
+				( { slug } ) => slug
+			);
 
-			for ( const _order of orders ) {
-				await request.delete( `./wp-json/wc/v3/orders/${ _order.id }`, {
-					data: {
-						force: true,
-					},
-					failOnStatusCode: true,
-				} );
-			}
+			await request.post( './wp-json/wc/v3/orders/batch', {
+				data: {
+					delete: orderIds,
+				},
+				failOnStatusCode: true,
+			} );
 
-			for ( const productId of productIds ) {
-				await request.delete(
-					`./wp-json/wc/v3/products/${ productId }`,
-					{
-						data: {
-							force: true,
-						},
-						failOnStatusCode: true,
-					}
-				);
-			}
+			await request.post( `./wp-json/wc/v3/products/batch`, {
+				data: {
+					delete: productIds,
+				},
+				failOnStatusCode: true,
+			} );
 
-			await request.delete(
-				`./wp-json/wc/v3/products/attributes/${ attributes.colorJSON.id }`,
+			await request.post( `./wp-json/wc/v3/products/attributes/batch`, {
+				data: {
+					delete: [ attributes.colorJSON.id, attributes.sizeJSON.id ],
+				},
+				failOnStatusCode: true,
+			} );
+
+			await request.post( `./wp-json/wc/v3/products/categories/batch`, {
+				data: {
+					delete: categoryIds,
+				},
+				failOnStatusCode: true,
+			} );
+
+			await request.post( `./wp-json/wc/v3/products/tags/batch`, {
+				data: {
+					delete: tagIds,
+				},
+				failOnStatusCode: true,
+			} );
+
+			await request.post(
+				`./wp-json/wc/v3/products/shipping_classes/batch`,
 				{
 					data: {
-						force: true,
+						delete: shippingClassIds,
 					},
 					failOnStatusCode: true,
 				}
 			);
 
-			await request.delete(
-				`./wp-json/wc/v3/products/attributes/${ attributes.sizeJSON.id }`,
-				{
-					data: {
-						force: true,
-					},
-					failOnStatusCode: true,
-				}
-			);
-
-			for ( const category of Object.values( categories ) ) {
+			for ( const slug of taxClassSlugs ) {
 				await request.delete(
-					`./wp-json/wc/v3/products/categories/${ category.id }`,
-					{
-						data: {
-							force: true,
-						},
-						failOnStatusCode: true,
-					}
-				);
-			}
-
-			for ( const tag of Object.values( productTags ) ) {
-				await request.delete(
-					`./wp-json/wc/v3/products/tags/${ tag.id }`,
-					{
-						data: {
-							force: true,
-						},
-						failOnStatusCode: true,
-					}
-				);
-			}
-
-			for ( const shippingClass of Object.values( shippingClasses ) ) {
-				await request.delete(
-					`./wp-json/wc/v3/products/shipping_classes/${ shippingClass.id }`,
-					{
-						data: {
-							force: true,
-						},
-						failOnStatusCode: true,
-					}
-				);
-			}
-
-			for ( const taxClass of Object.values( taxClasses ) ) {
-				await request.delete(
-					`./wp-json/wc/v3/taxes/classes/${ taxClass.slug }`,
+					`./wp-json/wc/v3/taxes/classes/${ slug }`,
 					{
 						data: {
 							force: true,
@@ -2632,28 +2611,25 @@ test.describe.serial( 'Orders API tests', () => {
 				_sampleData.testProductData
 			);
 
-			for ( const _order of _sampleData.orders.concat( [
-				_sampleData.guestOrderJSON,
-			] ) ) {
-				await request.delete( `./wp-json/wc/v3/orders/${ _order.id }`, {
-					data: {
-						force: true,
-					},
-					failOnStatusCode: true,
-				} );
-			}
+			const orderIds = _sampleData.orders
+				.concat( [ _sampleData.guestOrderJSON ] )
+				.map( ( { id } ) => id );
+			await request.post( './wp-json/wc/v3/orders/batch', {
+				data: {
+					delete: orderIds,
+				},
+				failOnStatusCode: true,
+			} );
 
-			for ( const customer of Object.values( _sampleData.customers ) ) {
-				await request.delete(
-					`./wp-json/wc/v3/customers/${ customer.id }`,
-					{
-						data: {
-							force: true,
-						},
-						failOnStatusCode: true,
-					}
-				);
-			}
+			const customerIds = Object.values( _sampleData.customers ).map(
+				( { id } ) => id
+			);
+			await request.post( `./wp-json/wc/v3/customers/batch`, {
+				data: {
+					delete: customerIds,
+				},
+				failOnStatusCode: true,
+			} );
 		};
 
 		await deleteSampleData( sampleData );
