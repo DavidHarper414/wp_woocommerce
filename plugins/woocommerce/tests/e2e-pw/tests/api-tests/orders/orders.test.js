@@ -343,7 +343,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-								sku: 'Woo-tshirt-logo',
 								price: '18',
 								regular_price: '18',
 								sale_price: '',
@@ -416,7 +415,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple, virtual product.</p>\n',
-								sku: 'woo-single',
+
 								price: '2',
 								regular_price: '3',
 								sale_price: '2',
@@ -487,7 +486,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple, virtual product.</p>\n',
-								sku: 'woo-album',
+
 								price: '15',
 								regular_price: '15',
 								sale_price: '',
@@ -563,7 +562,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-								sku: 'woo-polo',
+
 								price: '20',
 								regular_price: '20',
 								sale_price: '',
@@ -636,7 +635,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-								sku: 'woo-long-sleeve-tee',
+
 								price: '25',
 								regular_price: '25',
 								sale_price: '',
@@ -709,7 +708,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-								sku: 'woo-hoodie-with-zipper',
+
 								price: '45',
 								regular_price: '45',
 								sale_price: '',
@@ -774,7 +773,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-								sku: 'woo-hoodie-with-pocket',
+
 								price: '35',
 								regular_price: '45',
 								sale_price: '35',
@@ -851,7 +850,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-								sku: 'woo-sunglasses',
+
 								price: '90',
 								regular_price: '90',
 								sale_price: '',
@@ -920,7 +919,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-								sku: 'woo-cap',
+
 								price: '16',
 								regular_price: '18',
 								sale_price: '16',
@@ -993,7 +992,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-								sku: 'woo-belt',
+
 								price: '55',
 								regular_price: '65',
 								sale_price: '55',
@@ -1058,7 +1057,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-								sku: 'woo-beanie',
+
 								price: '18',
 								regular_price: '20',
 								sale_price: '18',
@@ -1135,7 +1134,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-								sku: 'woo-tshirt',
+
 								price: '18',
 								regular_price: '18',
 								sale_price: '',
@@ -1208,7 +1207,7 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-								sku: 'woo-hoodie-with-logo',
+
 								price: '45',
 								regular_price: '45',
 								sale_price: '',
@@ -1300,7 +1299,7 @@ test.describe.serial( 'Orders API tests', () => {
 									'Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n',
 								short_description:
 									'<p>This is an external product.</p>\n',
-								sku: 'wp-pennant',
+
 								price: '11.05',
 								regular_price: '11.05',
 								sale_price: '',
@@ -1396,7 +1395,7 @@ test.describe.serial( 'Orders API tests', () => {
 									'Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n',
 								short_description:
 									'<p>This is a grouped product.</p>\n',
-								sku: 'logo-collection',
+
 								price: '18',
 								regular_price: '',
 								sale_price: '',
@@ -1482,7 +1481,7 @@ test.describe.serial( 'Orders API tests', () => {
 					catalog_visibility: 'visible',
 					description,
 					short_description: '<p>This is a variable product.</p>\n',
-					sku: 'woo-hoodie',
+
 					price: '42',
 					regular_price: '',
 					sale_price: '',
@@ -1571,7 +1570,7 @@ test.describe.serial( 'Orders API tests', () => {
 							{
 								date_created_gmt: '2021-09-19T15:50:20',
 								description: variationDescription,
-								sku: 'woo-hoodie-blue-logo',
+
 								price: '45',
 								regular_price: '45',
 								sale_price: '',
@@ -1617,7 +1616,7 @@ test.describe.serial( 'Orders API tests', () => {
 							{
 								date_created_gmt: '2021-09-20T15:50:20',
 								description: variationDescription,
-								sku: 'woo-hoodie-blue',
+
 								price: '45',
 								regular_price: '45',
 								sale_price: '',
@@ -1663,7 +1662,7 @@ test.describe.serial( 'Orders API tests', () => {
 							{
 								date_created_gmt: '2021-09-21T15:50:20',
 								description: variationDescription,
-								sku: 'woo-hoodie-green',
+
 								price: '45',
 								regular_price: '45',
 								sale_price: '',
@@ -1709,7 +1708,7 @@ test.describe.serial( 'Orders API tests', () => {
 							{
 								date_created_gmt: '2021-09-22T15:50:19',
 								description: variationDescription,
-								sku: 'woo-hoodie-red',
+
 								price: '42',
 								regular_price: '45',
 								sale_price: '42',
@@ -1769,7 +1768,7 @@ test.describe.serial( 'Orders API tests', () => {
 					catalog_visibility: 'visible',
 					description,
 					short_description: '<p>This is a variable product.</p>\n',
-					sku: 'woo-vneck-tee',
+
 					price: '15',
 					regular_price: '',
 					sale_price: '',
@@ -1890,7 +1889,7 @@ test.describe.serial( 'Orders API tests', () => {
 							{
 								date_created_gmt: '2021-09-25T15:50:19',
 								description: variationDescription,
-								sku: 'woo-vneck-tee-green',
+
 								price: '20',
 								regular_price: '20',
 								sale_price: '',
@@ -1931,7 +1930,7 @@ test.describe.serial( 'Orders API tests', () => {
 							{
 								date_created_gmt: '2021-09-26T15:50:19',
 								description: variationDescription,
-								sku: 'woo-vneck-tee-red',
+
 								price: '20',
 								regular_price: '20',
 								sale_price: '',
