@@ -24,7 +24,6 @@ const test = baseTest.extend( {
 			role: 'Customer',
 		};
 		await use( user );
-		console.log( `Deleting user ${ user.id }` );
 		await api.delete( `customers/${ user.id }`, { force: true } );
 	},
 } );
@@ -190,28 +189,6 @@ test.describe(
 	'Shopper Password Reset Email Receiving',
 	{ tag: [ tags.PAYMENTS, tags.SERVICES ] },
 	() => {
-		test.beforeEach( async ( { page } ) => {
-			await page.goto(
-				`wp-admin/tools.php?page=wpml_plugin_log&s=${ encodeURIComponent(
-					customer.email
-				) }`
-			);
-			// clear out the email logs before each test
-			while (
-				await page.locator( '#bulk-action-selector-top' ).isVisible()
-			) {
-				// In WP 6.3, label intercepts check action. Need to force.
-				await page
-					.getByLabel( 'Select All' )
-					.first()
-					.check( { force: true } );
-				await page
-					.locator( '#bulk-action-selector-top' )
-					.selectOption( 'delete' );
-				await page.locator( '#doaction' ).click();
-			}
-		} );
-
 		test.use( { cookies: [], origins: [] } );
 
 		test( 'should receive an email when initiating a password reset', async ( {
