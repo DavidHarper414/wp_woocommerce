@@ -149,16 +149,18 @@ export const applyExtensionCartUpdate =
  *
  * @throws Will throw an error if there is an API problem.
  */
-export const syncCartWithIAPIStore =
-	( {
-		quantityChanges: {
-			cartItemsPendingQuantity,
-			cartItemsPendingDelete,
-			productsPendingAdd,
-		},
-	}: {
-		quantityChanges: QuantityChanges;
-	} ) =>
+export const receiveCartWithoutSyncingWithIAPIStore =
+	(
+		{
+			quantityChanges: {
+				cartItemsPendingQuantity,
+				cartItemsPendingDelete,
+				productsPendingAdd,
+			},
+		}: {
+			quantityChanges: QuantityChanges;
+		} = { quantityChanges: {} }
+	) =>
 	async ( { select, dispatch }: CartThunkArgs ) => {
 		try {
 			const { response } = await apiFetchWithHeaders< {

@@ -34,14 +34,15 @@ export const getCartData =
 		response
 			.json()
 			.then( function ( cartData: CartResponse ) {
-				const { receiveCart, receiveError } = dispatch;
+				const { receiveCartWithoutSyncingWithIAPIStore, receiveError } =
+					dispatch;
 
 				if ( ! cartData ) {
 					receiveError( CART_API_ERROR );
 					return;
 				}
 
-				receiveCart( cartData, { sync: false } );
+				receiveCartWithoutSyncingWithIAPIStore( cartData );
 			} )
 			.catch( () => {
 				const { receiveError } = dispatch;

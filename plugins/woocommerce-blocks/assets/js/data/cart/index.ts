@@ -96,7 +96,9 @@ window.addEventListener(
 		const { type, quantityChanges } = customEvent.detail;
 		if ( type === 'from_iAPI' ) {
 			// Todo: investigate how to avoid infinite loops without causing racing conditions.
-			wpDispatch( store ).syncCartWithIAPIStore( { quantityChanges } );
+			wpDispatch( store ).receiveCartWithoutSyncingWithIAPIStore( {
+				quantityChanges,
+			} );
 		}
 	}
 );
