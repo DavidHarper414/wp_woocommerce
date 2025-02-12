@@ -145,7 +145,8 @@ export const applyExtensionCartUpdate =
 	};
 
 /**
- * Syncs the cart with the iAPI store.
+ * The same `receiveCart` thunk, but without syncing with the Interactivity
+ * store after modifying the cart.
  *
  * @throws Will throw an error if there is an API problem.
  */
