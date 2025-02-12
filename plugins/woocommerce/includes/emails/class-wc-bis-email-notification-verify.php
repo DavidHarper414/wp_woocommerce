@@ -33,7 +33,6 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Verify', false ) ) :
 
 			$this->template_html  = 'emails/back-in-stock-notification-verify.php';
 			$this->template_plain = 'emails/plain/back-in-stock-notification-verify.php';
-			$this->template_base  = WC_BIS()->get_plugin_path() . '/templates/';
 
 			$this->setup_placeholders();
 
@@ -159,9 +158,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Verify', false ) ) :
 			// Get the template.
 			return wc_get_template_html(
 				$this->template_html,
-				$template_args,
-				false,
-				WC_BIS()->get_plugin_path() . '/templates/'
+				$template_args
 			);
 		}
 
@@ -180,9 +177,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Verify', false ) ) :
 					'intro_content'      => $this->get_into_content(),
 					'additional_content' => $this->get_additional_content(),
 					'email'              => $this,
-				),
-				false,
-				WC_BIS()->get_plugin_path() . '/templates/'
+				)
 			);
 		}
 

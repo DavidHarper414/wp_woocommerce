@@ -103,17 +103,17 @@ class WC_BIS_Emails {
 	 * @return array
 	 */
 	public function email_classes( $emails ) {
-		$emails['WC_BIS_Email_Notification_Received'] = include 'emails/class-wc-bis-email-notification-received.php';
+		$emails['WC_BIS_Email_Notification_Received'] = include WC_ABSPATH . 'includes/emails/class-wc-bis-email-notification-received.php';
 		if ( is_a( $emails['WC_BIS_Email_Notification_Received'], 'WC_Email' ) ) {
 			$emails['WC_BIS_Email_Notification_Received']->setup_hooks();
 		}
 
-		$emails['WC_BIS_Email_Notification_Confirm'] = include 'emails/class-wc-bis-email-notification-confirm.php';
+		$emails['WC_BIS_Email_Notification_Confirm'] = include WC_ABSPATH . 'includes/emails/class-wc-bis-email-notification-confirm.php';
 		if ( is_a( $emails['WC_BIS_Email_Notification_Confirm'], 'WC_Email' ) ) {
 			$emails['WC_BIS_Email_Notification_Confirm']->setup_hooks();
 		}
 
-		$emails['WC_BIS_Email_Notification_Verify'] = include 'emails/class-wc-bis-email-notification-verify.php';
+		$emails['WC_BIS_Email_Notification_Verify'] = include WC_ABSPATH . 'includes/emails/class-wc-bis-email-notification-verify.php';
 		if ( is_a( $emails['WC_BIS_Email_Notification_Verify'], 'WC_Email' ) ) {
 			$emails['WC_BIS_Email_Notification_Verify']->setup_hooks();
 		}
@@ -167,9 +167,7 @@ class WC_BIS_Emails {
 		// Render notification part.
 		wc_get_template(
 			'emails/html-back-in-stock-notification-received.php',
-			(array) apply_filters( 'woocommerce_bis_email_received_template_args', $template_args, $notification, $email ),
-			false,
-			WC_BIS()->get_plugin_path() . '/templates/'
+			(array) apply_filters( 'woocommerce_bis_email_received_template_args', $template_args, $notification, $email )
 		);
 	}
 
@@ -219,9 +217,7 @@ class WC_BIS_Emails {
 		// Render notification part.
 		wc_get_template(
 			'emails/html-back-in-stock-notification-confirm.php',
-			(array) apply_filters( 'woocommerce_bis_email_confirm_template_args', $template_args, $notification, $email ),
-			false,
-			WC_BIS()->get_plugin_path() . '/templates/'
+			(array) apply_filters( 'woocommerce_bis_email_confirm_template_args', $template_args, $notification, $email )
 		);
 	}
 
@@ -275,9 +271,7 @@ class WC_BIS_Emails {
 		// Render notification part.
 		wc_get_template(
 			'emails/html-back-in-stock-notification-verify.php',
-			(array) apply_filters( 'woocommerce_bis_email_verify_template_args', $template_args, $notification, $email ),
-			false,
-			WC_BIS()->get_plugin_path() . '/templates/'
+			(array) apply_filters( 'woocommerce_bis_email_verify_template_args', $template_args, $notification, $email )
 		);
 	}
 

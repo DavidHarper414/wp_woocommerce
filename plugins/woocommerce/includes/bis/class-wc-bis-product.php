@@ -356,9 +356,7 @@ class WC_BIS_Product {
 					'header_signed_up_text'            => $header_signed_up_text,
 					'header_signed_up_link_attributes' => $link_attributes,
 					'has_already_signed_up'            => $has_already_signed_up,
-				),
-				false,
-				WC_BIS()->get_plugin_path() . '/templates/'
+				)
 			);
 
 			// Exit.
@@ -410,9 +408,7 @@ class WC_BIS_Product {
 				'show_count'   => $show_count,
 				'count_text'   => $count_text,
 				'opt_in_text'  => $opt_in_text,
-			),
-			false,
-			WC_BIS()->get_plugin_path() . '/templates/'
+			)
 		);
 	}
 
@@ -620,9 +616,7 @@ class WC_BIS_Product {
 					'signup_prompt_html'            => $signup_prompt_html,
 					'signup_prompt_link_attributes' => $link_attributes,
 					'has_already_signed_up'         => $has_already_signed_up,
-				),
-				false,
-				WC_BIS()->get_plugin_path() . '/templates/'
+				)
 			);
 
 		} else {
@@ -639,9 +633,7 @@ class WC_BIS_Product {
 					'signup_prompt_html'            => $signup_prompt_html,
 					'signup_prompt_link_attributes' => $link_attributes,
 					'has_already_signed_up'         => $has_already_signed_up,
-				),
-				false,
-				WC_BIS()->get_plugin_path() . '/templates/'
+				)
 			);
 		}
 	}

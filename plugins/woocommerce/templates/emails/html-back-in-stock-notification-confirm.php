@@ -1,6 +1,6 @@
 <?php
 /**
- * Sugn-up confirmation email content.
+ * Sign-up confirmation email content.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/emails/html-back-in-stock-notification-confirm.php.
  *

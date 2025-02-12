@@ -233,9 +233,7 @@ class WC_BIS_Account {
 
 		wc_get_template(
 			'myaccount/back-in-stock.php',
-			$template_args,
-			false,
-			WC_BIS()->get_plugin_path() . '/templates/'
+			$template_args
 		);
 	}
 
