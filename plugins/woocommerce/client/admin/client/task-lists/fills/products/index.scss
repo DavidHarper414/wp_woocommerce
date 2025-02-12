@@ -69,3 +69,8 @@
 	}
 }
 
+@include breakpoint( "<600px" ) {
+	.woocommerce-task-products .woocommerce-products-marketplace-link {
+		padding: 0 $gap;
+	}
+}
