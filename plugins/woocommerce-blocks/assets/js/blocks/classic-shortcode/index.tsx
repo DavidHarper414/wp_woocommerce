@@ -218,9 +218,7 @@ const Edit = ( { clientId, attributes }: BlockEditProps< Attributes > ) => {
 				</div>
 				<div className="wp-block-woocommerce-classic-shortcode__placeholder-copy">
 					<div className="wp-block-woocommerce-classic-shortcode__placeholder-copy__icon-container">
-						<h1>
-							{ __( 'WooCommerce', 'woocommerce' ) }
-						</h1>
+						<h1>{ __( 'WooCommerce', 'woocommerce' ) }</h1>
 						<span>{ placeholderTitle }</span>
 					</div>
 					<p>{ placeholderDescription }</p>

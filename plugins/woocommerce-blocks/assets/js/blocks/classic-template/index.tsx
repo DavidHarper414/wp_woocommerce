@@ -247,9 +247,7 @@ const Edit = ( {
 				</div>
 				<div className="wp-block-woocommerce-classic-template__placeholder-copy">
 					<div className="wp-block-woocommerce-classic-template__placeholder-copy__icon-container">
-						<h1>
-							{ __( 'WooCommerce', 'woocommerce' ) }
-						</h1>
+						<h1>{ __( 'WooCommerce', 'woocommerce' ) }</h1>
 						<span>
 							{ __(
 								'Classic Template Placeholder',
