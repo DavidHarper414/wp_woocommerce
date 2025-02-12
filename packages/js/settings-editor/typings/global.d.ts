@@ -104,6 +104,8 @@ declare global {
 			[ key: string ]: SettingsSection;
 		};
 		is_modern: boolean;
+		start: CustomSettingsField | null;
+		end: CustomSettingsField | null;
 	}
 
 	interface SettingsPages {
@@ -111,7 +113,7 @@ declare global {
 	}
 
 	interface SettingsData {
-		start?: CustomSettingsField;
+		start: CustomSettingsField | null;
 		pages: SettingsPages;
 	}
 }
