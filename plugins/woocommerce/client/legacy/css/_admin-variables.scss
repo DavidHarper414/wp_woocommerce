@@ -1,0 +1,10 @@
+// Override secondary colors based on the primary color only in the admin.
+// See: https://github.com/woocommerce/woocommerce/issues/55165.
+$secondary:     desaturate(lighten($primary, 40%), 21%) !default; // Secondary buttons in the admin.
+$secondarytext: desaturate(lighten($primary, 40%), 21%) !default; // Text on secondary color bg in the admin.
+
+// export vars as CSS vars
+:root {
+	--wc-secondary: #{$secondary};
+	--wc-secondary-text: #{$secondarytext};
+}
