@@ -2585,6 +2585,15 @@ if ( ! function_exists( 'woocommerce_checkout_payment' ) ) {
 	 * Output the Payment Methods on the checkout.
 	 */
 	function woocommerce_checkout_payment() {
+		if ( ! WC()->cart ) {
+			wc_doing_it_wrong(
+				__FUNCTION__,
+				__( 'Cart is not available. This may indicate that the function is being called before woocommerce_init or in an admin context.', 'woocommerce' ),
+				'9.8.0'
+			);
+			return;
+		}
+
 		if ( WC()->cart->needs_payment() ) {
 			$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
 			WC()->payment_gateways()->set_current_gateway( $available_gateways );
@@ -4137,6 +4146,15 @@ function wc_get_cart_undo_url( $cart_item_key ) {
  * @since 3.5.0
  */
 function woocommerce_output_all_notices() {
+	if ( ! function_exists( 'wc_print_notices' ) ) {
+		wc_doing_it_wrong(
+			__FUNCTION__,
+			'Function should only be used during frontend requests.',
+			'9.8.0'
+		);
+		return;
+	}
+
 	echo '<div class="woocommerce-notices-wrapper">';
 	wc_print_notices();
 	echo '</div>';
