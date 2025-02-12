@@ -1289,8 +1289,8 @@ jQuery( function ( $ ) {
 					}
 					break;
 				case 'variable_unset_cogs_value':
-					if(
-						! window.confirm(
+					if (
+						! window.confirm (
 							woocommerce_admin_meta_boxes_variations.i18n_variation_cost_remove_warning
 							)
 					) {
@@ -1332,8 +1332,8 @@ jQuery( function ( $ ) {
 					break;
 			}
 
-			if( cancel ) {
-				document.getElementById( 'field_to_edit' ).selectedIndex = 0;
+			if ( cancel ) {
+				$( '#field_to_edit' ).val( 'bulk_actions' );
 			} else {
 				if ( 'delete_all' === do_variation_action && data.allowed ) {
 					$( '#variable_product_options' )
@@ -1346,7 +1346,7 @@ jQuery( function ( $ ) {
 
 				wc_meta_boxes_product_variations_ajax.block();
 
-				$.ajax({
+				$.ajax( {
 					url: woocommerce_admin_meta_boxes_variations.ajax_url,
 					data: {
 						action: 'woocommerce_bulk_edit_variations',
@@ -1364,8 +1364,8 @@ jQuery( function ( $ ) {
 							changes
 						);
 					},
-					complete: function() {
-						document.getElementById( 'field_to_edit' ).selectedIndex = 0;
+					complete: function () {
+						$( '#field_to_edit' ).val( 'bulk_actions' );
 					}
 				});
 			}
