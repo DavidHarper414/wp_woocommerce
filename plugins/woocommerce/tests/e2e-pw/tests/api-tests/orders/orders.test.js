@@ -2084,6 +2084,7 @@ test.describe.serial( 'Orders API tests', () => {
 						reviewer: 'Tim Frugalman',
 						reviewer_email: 'timmyfrufru@example.com',
 					},
+					failOnStatusCode: true,
 				}
 			);
 			const review3JSON = await review3.json();
@@ -2275,6 +2276,7 @@ test.describe.serial( 'Orders API tests', () => {
 					},
 					shipping: johnAddress,
 				},
+				failOnStatusCode: true,
 			} );
 
 			expect( john.status() ).toEqual( 201 );
@@ -2295,6 +2297,7 @@ test.describe.serial( 'Orders API tests', () => {
 					},
 					shipping: tinaAddress,
 				},
+				failOnStatusCode: true,
 			} );
 
 			expect( tina.status() ).toEqual( 201 );
@@ -2329,6 +2332,7 @@ test.describe.serial( 'Orders API tests', () => {
 							},
 						],
 					},
+					failOnStatusCode: true,
 				} );
 				const orderJSON = await order2.json();
 
@@ -2355,6 +2359,7 @@ test.describe.serial( 'Orders API tests', () => {
 						},
 					],
 				},
+				failOnStatusCode: true,
 			} );
 			const order2JSON = await order2.json();
 
@@ -2378,6 +2383,7 @@ test.describe.serial( 'Orders API tests', () => {
 						},
 					],
 				},
+				failOnStatusCode: true,
 			} );
 			const order3JSON = await order3.json();
 
@@ -2400,6 +2406,7 @@ test.describe.serial( 'Orders API tests', () => {
 						},
 					],
 				},
+				failOnStatusCode: true,
 			} );
 			const guestOrderJSON = await guestOrder.json();
 
@@ -2410,6 +2417,7 @@ test.describe.serial( 'Orders API tests', () => {
 					data: {
 						value: 'yes',
 					},
+					failOnStatusCode: true,
 				}
 			);
 
@@ -2423,6 +2431,7 @@ test.describe.serial( 'Orders API tests', () => {
 					rate: '5.5',
 					shipping: true,
 				},
+				failOnStatusCode: true,
 			} );
 
 			const coupon = await request.post( './wp-json/wc/v3/coupons', {
@@ -2430,6 +2439,7 @@ test.describe.serial( 'Orders API tests', () => {
 					code: COUPON_CODE,
 					amount: '5',
 				},
+				failOnStatusCode: true,
 			} );
 			const couponJSON = await coupon.json();
 
@@ -2460,6 +2470,7 @@ test.describe.serial( 'Orders API tests', () => {
 						},
 					],
 				},
+				failOnStatusCode: true,
 			} );
 			const order4JSON = await order4.json();
 
@@ -2485,6 +2496,7 @@ test.describe.serial( 'Orders API tests', () => {
 							},
 						],
 					},
+					failOnStatusCode: true,
 				}
 			);
 			orders.push( order4JSON );
