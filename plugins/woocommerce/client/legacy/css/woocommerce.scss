@@ -1611,7 +1611,8 @@ p.demo_store,
 
 		.price_slider_wrapper .ui-widget-content {
 			border-radius: 1em;
-			background-color: darken($primary, 30%);
+			// We use the old WooCommerce color as the base on purpose. See https://github.com/woocommerce/woocommerce/issues/55165.
+			background-color: darken(#7F54B3, 30%);
 			border: 0;
 		}
 
@@ -2119,15 +2120,17 @@ p.demo_store,
 	}
 
 	#payment {
-		background: desaturate(rgba($primary, 0.14), 21%);
+		// We use the old WooCommerce color as the base on purpose. See https://github.com/woocommerce/woocommerce/issues/55165.
+		background: desaturate(rgba(#7F54B3, 0.14), 21%);
 		border-radius: 5px;
 
 		ul.payment_methods {
 			@include clearfix();
 			text-align: left;
 			padding: 1em;
+			// We use the old WooCommerce color as the base on purpose. See https://github.com/woocommerce/woocommerce/issues/55165.
 			border-bottom: 1px solid
-				darken(desaturate(rgba($primary, 0.14), 21%), 10%);
+				darken(desaturate(rgba(#7F54B3, 0.14), 21%), 10%);
 			margin: 0;
 			list-style: none outside;
 
