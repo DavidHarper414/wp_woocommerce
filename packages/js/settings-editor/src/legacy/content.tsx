@@ -28,6 +28,7 @@ export const LegacyContent = ( {
 			settings={ section.settings }
 			settingsData={ settingsData }
 			settingsPage={ settingsPage }
+			activeSection={ activeSection }
 		/>
 	);
 };

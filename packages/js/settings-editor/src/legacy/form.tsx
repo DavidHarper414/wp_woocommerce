@@ -16,10 +16,12 @@ export const Form = ( {
 	settings,
 	settingsData,
 	settingsPage,
+	activeSection,
 }: {
 	settings: SettingsField[];
 	settingsData: SettingsData;
 	settingsPage: SettingsPage;
+	activeSection: string;
 } ) => {
 	const { data, fields, form, updateField } = useSettingsForm( settings );
 	const formRef = useRef( null );
@@ -67,10 +69,11 @@ export const Form = ( {
 		}
 
 		formData.append( 'save', 'Save changes' );
-		formData.append( 'tab', 'tab' );
-		formData.append( 'section', 'section' );
+		formData.append( 'tab', settingsPage.slug );
+		formData.append( 'section', activeSection );
 
 		for ( const [ key, value ] of formData.entries() ) {
+			// eslint-disable-next-line no-console
 			console.log( `${ key }: ${ value }` );
 		}
 	};
