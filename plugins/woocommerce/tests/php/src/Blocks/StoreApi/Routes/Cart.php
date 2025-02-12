@@ -684,4 +684,69 @@ class Cart extends ControllerTestCase {
 			)
 		);
 	}
+
+	/**
+	 * Test adding a variable product to cart with attribute_* attributes.
+	 */
+	public function test_add_variable_product_to_cart_with_attribute_data() {
+		wc_empty_cart();
+
+		$fixtures = new FixtureData();
+
+		$variable_product = $fixtures->get_variable_product(
+			array(
+				'name'          => 'Test Variable Product',
+				'stock_status'  => ProductStockStatus::IN_STOCK,
+				'regular_price' => 10,
+				'weight'        => 10,
+			),
+			array(
+				$fixtures->get_product_attribute( 'Size', array( 'Small 🤏', 'Medium' ) ),
+				$fixtures->get_product_attribute( 'Autograph choice ✏️', array( 'Yes 👍', 'No 👎' ) ),
+			)
+		);
+
+		$variable_product->save();
+
+		$request = new \WP_REST_Request( 'POST', '/wc/store/v1/cart/add-item' );
+		$request->set_header( 'Nonce', wp_create_nonce( 'wc_store_api' ) );
+
+		$request->set_body_params(
+			array(
+				'id'        => $variable_product->get_id(),
+				'quantity'  => 1,
+				'variation' => array(
+					array(
+						'attribute' => 'size',
+						'value'     => 'Small 🤏',
+					),
+					array(
+						'attribute' => 'attribute_autograph-choice-%e2%9c%8f%ef%b8%8f',
+						'value'     => 'Yes 👍',
+					),
+				),
+			)
+		);
+
+		$this->assertAPIResponse(
+			$request,
+			201,
+			array(
+				'items' => array(
+					array(
+						'variation' => array(
+							array(
+								'attribute' => 'Size',
+								'value'     => 'Small 🤏',
+							),
+							array(
+								'attribute' => 'Autograph choice ✏️',
+								'value'     => 'Yes 👍',
+							),
+						),
+					),
+				),
+			)
+		);
+	}
 }
