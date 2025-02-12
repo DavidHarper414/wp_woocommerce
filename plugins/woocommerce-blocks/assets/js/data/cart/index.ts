@@ -66,36 +66,8 @@ window.addEventListener( 'load', () => {
 // Pushes changes whenever the store is updated.
 subscribe( pushChanges, store );
 
-// Todo: remove
-function diffObjects(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	obj1: Record< string, any > | null,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	obj2: Record< string, any > | null,
-	path: string[] = []
-) {
-	if ( ! obj1 || ! obj2 ) return;
-	const allKeys = new Set( [
-		...Object.keys( obj1 ),
-		...Object.keys( obj2 ),
-	] );
-
-	for ( const key of allKeys ) {
-		const val1 = obj1[ key ];
-		const val2 = obj2[ key ];
-		const currentPath = [ ...path, key ];
-
-		if ( val1 === val2 ) continue; // Values are identical, nothing to log
-
-		if ( typeof val1 === 'object' && typeof val2 === 'object' ) {
-			diffObjects( val1, val2, currentPath ); // Recurse for nested objects
-		}
-	}
-}
-
-let previousCart: object | null = null;
-
 // Emmits event to sync iAPI store.
+let previousCart: object | null = null;
 subscribe( () => {
 	const cartData = select( STORE_KEY ).getCartData();
 	if (
@@ -103,9 +75,6 @@ subscribe( () => {
 		previousCart !== null &&
 		previousCart !== cartData
 	) {
-		// Todo: check why there are multiple updates of the cart on page load.
-		diffObjects( previousCart, cartData );
-
 		window.dispatchEvent(
 			// Question: What are the usual names for WooCommerce events?
 			new CustomEvent( 'woocommerce-store-sync-required', {
