@@ -15,7 +15,7 @@ import {
 import { getSetting } from '@woocommerce/settings';
 import { Text, useSlot } from '@woocommerce/experimental';
 import { getScreenFromPath, isWCAdmin, getPath } from '@woocommerce/navigation';
-import { loadExperimentAssignment } from '@woocommerce/explat';
+import { useExperiment } from '@woocommerce/explat';
 
 /**
  * Internal dependencies
@@ -54,10 +54,6 @@ export const getPageTitle = ( sections ) => {
 	return pageTitle;
 };
 
-const assignment = await loadExperimentAssignment(
-	'woocommerce_payment_settings_2025_v1'
-);
-
 export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const headerElement = useRef( null );
 	const activeSetupList = useActiveSetupTasklist();
@@ -73,6 +69,10 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const hasPageTitleFills = Boolean( pageTitleSlot?.fills?.length );
 	const headerItemSlot = useSlot( WC_HEADER_SLOT_NAME );
 	const headerItemSlotFills = headerItemSlot?.fills;
+
+	const [ isLoadingExperiment, experimentAssignment ] = useExperiment(
+		'woocommerce_payment_settings_2025_v1'
+	);
 
 	const updateBodyMargin = () => {
 		clearTimeout( debounceTimer );
@@ -141,7 +141,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 		isWCAdmin() && getPath() === '/analytics/overview';
 
 	const isReactifyPaymentsSettingsScreen = Boolean(
-		assignment.variationName === 'treatment' &&
+		! isLoadingExperiment && experimentAssignment?.variationName === 'treatment' &&
 			window.wcAdminFeatures?.[ 'reactify-classic-payments-settings' ] &&
 			query?.page === 'wc-settings' &&
 			query?.tab === 'checkout'

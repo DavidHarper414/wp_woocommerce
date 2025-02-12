@@ -15,6 +15,12 @@ jest.mock( '@woocommerce/settings', () => ( {
 	},
 } ) );
 
+jest.mock( '@woocommerce/explat', () => ( {
+	useExperiment: jest
+		.fn()
+		.mockReturnValue( [ false, { variationName: 'control' } ] ),
+} ) );
+
 jest.mock( '@woocommerce/tracks', () => ( {
 	...jest.requireActual( '@woocommerce/tracks' ),
 	recordEvent: jest.fn(),
