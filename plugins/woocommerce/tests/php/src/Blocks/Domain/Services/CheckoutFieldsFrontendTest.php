@@ -193,7 +193,7 @@ class CheckoutFieldsFrontendTest extends TestCase {
 
 		$this->assertCount( 1, $mocked_messages );
 		$this->assertStringContainsString( 'Location validation error message', $mocked_messages[0]['message'] );
-		$this->assertEquals( 'notice', $mocked_messages[0]['type'] );
+		$this->assertEquals( 'error', $mocked_messages[0]['type'] );
 		$value = $this->controller->get_field_from_object( 'mynamespace/required_field', new WC_Customer( 1 ) );
 		$this->assertEquals( '', $value );
 
@@ -223,7 +223,7 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$this->sut->save_account_form_fields( 1 );
 
 		$this->assertCount( 1, $mocked_messages );
-		$this->assertEquals( 'The field mynamespace/required_field is required.', $mocked_messages[0]['message'] );
+		$this->assertEquals( 'Required field is required', $mocked_messages[0]['message'] );
 		$this->assertEquals( 'error', $mocked_messages[0]['type'] );
 
 		$value = $this->controller->get_field_from_object( 'mynamespace/required_field', new WC_Customer( 1 ) );
