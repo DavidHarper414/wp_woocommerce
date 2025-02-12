@@ -5,13 +5,11 @@ const test = baseTest.extend( {
 	storageState: ADMIN_STATE_PATH,
 
 	page: async ( { page, wcAdminApi }, use ) => {
-		await wcAdminApi.post( 'onboarding/profile', {
-			skipped: true,
-		} );
-
 		const initialTaskListState = await wcAdminApi.get(
 			'options?options=woocommerce_task_list_hidden'
 		);
+
+		console.log( 'Page fixture' );
 
 		// Ensure task list is visible.
 		await wcAdminApi.put( 'options', {
@@ -24,6 +22,26 @@ const test = baseTest.extend( {
 
 		// Reset the task list to its initial state.
 		await wcAdminApi.put( 'options', initialTaskListState.data );
+	},
+
+	nonSupportedWooPaymentsCountryPage: async ( { page, api }, use ) => {
+		// Ensure store's base country location is a WooPayments non-supported country (e.g. AF).
+		// Otherwise, the WooPayments task page logic or WooPayments redirects will kick in.
+		const initialDefaultCountry = await api.get(
+			'settings/general/woocommerce_default_country'
+		);
+		await api.put( 'settings/general/woocommerce_default_country', {
+			value: 'AF',
+		} );
+
+		console.log( 'nonSupportedWooPaymentsCountry fixture' );
+
+		await use( page );
+
+		// Reset the default country to its initial state.
+		await api.put( 'settings/general/woocommerce_default_country', {
+			value: initialDefaultCountry.data.value,
+		} );
 	},
 } );
 
@@ -60,12 +78,21 @@ test(
 test(
 	'Can visit the payment setup task from from the task list',
 	{ tag: [ tags.NOT_E2E ] },
-	async ( { page } ) => {
-		await page.goto( 'wp-admin/admin.php?page=wc-admin' );
-		await page.getByRole( 'button', { name: 'Get paid' } ).click();
+	/**
+	 * @param {{ nonSupportedWooPaymentsCountryPage: import('@playwright/test').Page }} page
+	 */
+	async ( { nonSupportedWooPaymentsCountryPage } ) => {
+		await nonSupportedWooPaymentsCountryPage.goto(
+			'wp-admin/admin.php?page=wc-admin'
+		);
+		await nonSupportedWooPaymentsCountryPage
+			.getByRole( 'button', { name: 'Get paid' } )
+			.click();
 
 		await expect(
-			page.locator( '.woocommerce-layout__header-wrapper > h1' )
+			nonSupportedWooPaymentsCountryPage.locator(
+				'.woocommerce-layout__header-wrapper > h1'
+			)
 		).toHaveText( 'Get paid' );
 	}
 );
