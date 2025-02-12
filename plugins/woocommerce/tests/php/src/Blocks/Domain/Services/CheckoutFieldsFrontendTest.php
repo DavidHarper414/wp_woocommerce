@@ -289,10 +289,10 @@ class CheckoutFieldsFrontendTest extends TestCase {
 				'label'             => 'Optional field with validation',
 				'location'          => 'contact',
 				'required'          => false,
-				'sanitize_callback' => function () {
+				'sanitize_callback' => function ( $field_value ) {
 					return sanitize_email( $field_value );
 				},
-				'validate_callback' => function () {
+				'validate_callback' => function ( $field_value ) {
 					if ( ! is_email( $field_value ) ) {
 						return new WP_Error(
 							'email_validation_error',
