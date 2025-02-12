@@ -3,11 +3,7 @@ const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
 
 const test = baseTest.extend( {
 	storageState: ADMIN_STATE_PATH,
-	page: async ( { api, page, wpApi, wcAdminApi }, use ) => {
-		await wcAdminApi.post( 'onboarding/profile', {
-			skipped: true,
-		} );
-
+	page: async ( { api, page, wpApi }, use ) => {
 		// Ensure store's base country location is a WooPayments non-supported country (AF).
 		// Otherwise, the WooPayments task page logic or WooPayments redirects will kick in.
 		const initialDefaultCountry = await api.get(
