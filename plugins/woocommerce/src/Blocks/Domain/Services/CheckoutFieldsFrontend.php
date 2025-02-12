@@ -219,7 +219,7 @@ class CheckoutFieldsFrontend {
 			}
 
 			// Validate all fields for this location (this runs custom validation callbacks).
-			$location_validation = $this->checkout_fields_controller->validate_fields_for_location( $additional_fields, 'contact', 'other' );
+			$location_validation = $this->checkout_fields_controller->validate_fields_for_location( $field_values, 'contact', 'other' );
 
 			if ( is_wp_error( $location_validation ) && $location_validation->has_errors() ) {
 				wc_add_notice( $location_validation->get_error_message(), 'error' );
@@ -289,7 +289,7 @@ class CheckoutFieldsFrontend {
 	 * @param WC_Customer $customer Customer object.
 	 */
 	public function save_address_fields( $user_id, $address_type, $address, $customer ) {
-		$additional_fields = $this->sanitize_additional_fields_for_location_group( $customer, 'address', $address_type );
+		$field_values = $this->sanitize_additional_fields_for_location_group( $customer, 'address', $address_type );
 
 		// Generate document object based on POSTed values.
 		$document_object = null;
@@ -298,14 +298,14 @@ class CheckoutFieldsFrontend {
 			$document_object = new DocumentObject(
 				[
 					'customer' => [
-						$address_type . '_address' => $additional_fields,
+						$address_type . '_address' => $field_values,
 					],
 				]
 			);
 		}
 
 		// Validate individual fields agains the document object.
-		foreach ( $additional_fields as $field_key => $field_value ) {
+		foreach ( $field_values as $field_key => $field_value ) {
 			$validation_result = $this->checkout_fields_controller->validate_field( $field_key, $field_value, $document_object, $address_type . '_address' );
 
 			if ( is_wp_error( $validation_result ) && $validation_result->has_errors() ) {
@@ -317,7 +317,7 @@ class CheckoutFieldsFrontend {
 		}
 
 		// Validate all fields for this location.
-		$location_validation = $this->checkout_fields_controller->validate_fields_for_location( array_merge( $address, $additional_fields ), 'address', $address_type );
+		$location_validation = $this->checkout_fields_controller->validate_fields_for_location( array_merge( $address, $field_values ), 'address', $address_type );
 
 		if ( is_wp_error( $location_validation ) && $location_validation->has_errors() ) {
 			wc_add_notice( $location_validation->get_error_message(), 'error' );
