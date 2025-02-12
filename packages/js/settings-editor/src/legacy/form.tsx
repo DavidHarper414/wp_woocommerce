@@ -58,7 +58,14 @@ export const Form = ( {
 		const formData = getFormData();
 		formData.save = 'Save changes';
 
-		console.log( formData );
+		// eslint-disable-next-line no-console
+		console.log(
+			'tab: ',
+			settingsPage.slug,
+			'section: ',
+			activeSection,
+			formData
+		);
 	};
 
 	return (
