@@ -824,10 +824,16 @@ class CheckoutFields {
 				return $errors;
 			}
 
-			// Validate required fields.
 			$is_required = $this->is_required_field( $field, $document_object, $document_object_context );
+			$has_value   = ! is_null( $field_value ) && 0 !== strlen( $field_value );
 
-			if ( ( '' === $field_value || is_null( $field_value ) ) && $is_required ) {
+			// Empty field handling.
+			if ( ! $has_value ) {
+				// Validate optional fields only if they have a value.
+				if ( ! $is_required ) {
+					return $errors;
+				}
+
 				/* translators: %s: is the field label */
 				$error_message = sprintf( __( '%s is required', 'woocommerce' ), $field['label'] );
 				$error_code    = 'woocommerce_required_checkout_field';
@@ -876,6 +882,7 @@ class CheckoutFields {
 			}
 
 			wc_do_deprecated_action( '__experimental_woocommerce_blocks_validate_additional_field', array( $errors, $field_key, $field_value ), '8.7.0', 'woocommerce_validate_additional_field', 'This action has been graduated, use woocommerce_validate_additional_field instead.' );
+
 			/**
 			 * Pass an error object to allow validation of an additional field.
 			 *
