@@ -8,7 +8,6 @@ import {
 	withCurrentUserHydration,
 	withSettingsHydration,
 } from '@woocommerce/data';
-import { loadExperimentAssignment } from '@woocommerce/explat';
 import debugFactory from 'debug';
 
 /**
@@ -42,10 +41,6 @@ const settingsGroup = 'wc_admin';
 const hydrateUser = getAdminSetting( 'currentUserData' );
 
 deriveWpAdminBackgroundColours();
-
-const assignment = await loadExperimentAssignment(
-	'woocommerce_payment_settings_2025_v1'
-);
 
 if ( appRoot ) {
 	let HydratedPageLayout = withSettingsHydration(
@@ -100,8 +95,7 @@ if (
 // the feature flag is enabled.
 if (
 	window.wcAdminFeatures &&
-	window.wcAdminFeatures[ 'reactify-classic-payments-settings' ] === true &&
-	assignment.variationName === 'treatment'
+	window.wcAdminFeatures[ 'reactify-classic-payments-settings' ] === true
 ) {
 	( function () {
 		const paymentsMainRoot = document.getElementById(
