@@ -2631,6 +2631,14 @@ test.describe.serial( 'Orders API tests', () => {
 				},
 				failOnStatusCode: true,
 			} );
+
+			const couponIds = [ _sampleData.couponJSON.id ];
+			await request.post( `./wp-json/wc/v3/coupons/batch`, {
+				data: {
+					delete: couponIds,
+				},
+				failOnStatusCode: true,
+			} );
 		};
 
 		await deleteSampleData( sampleData );
