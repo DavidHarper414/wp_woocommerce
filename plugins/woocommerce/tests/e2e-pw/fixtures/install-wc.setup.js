@@ -3,14 +3,7 @@
  */
 import { test as setup } from './fixtures';
 
-setup( 'Install WC using WC Beta Tester', async ( { wcbtApi } ) => {
-	setup.skip(
-		! process.env.INSTALL_WC,
-		'Skipping installing WC using WC Beta Tester; INSTALL_WC not found.'
-	);
-	console.log( 'INSTALL_WC is enabled. Running installation script...' );
-
-	// Deactivate WC
+async function deactivateWooCommerce( wcbtApi ) {
 	try {
 		await wcbtApi.fetch(
 			'/wp-json/wc-admin-test-helper/live-branches/deactivate/v1',
@@ -20,37 +13,74 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi } ) => {
 	} catch ( err ) {
 		console.error( 'Error deactivating WooCommerce:', err );
 	}
+}
+
+setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
+	setup.skip(
+		! process.env.INSTALL_WC,
+		'Skipping installing WC using WC Beta Tester; INSTALL_WC not found.'
+	);
+	console.log( 'INSTALL_WC is enabled. Running installation script...' );
+
+	// Check if WooCommerce is activated and its version
+	const response = await wpApi.get( './wp-json/wp/v2/plugins', {
+		data: { status: 'active' },
+	} );
+	const plugins = await response.json();
+	const activatedWcVersion = plugins.find(
+		( plugin ) => plugin.name === 'WooCommerce'
+	)?.version;
+
+	if ( activatedWcVersion ) {
+		console.log(
+			`WooCommerce is activated. Version: ${ activatedWcVersion }`
+		);
+	} else {
+		console.log( 'WooCommerce is not activated.' );
+	}
 
 	const wcVersion = process.env.WC_VERSION || 'latest';
 	let resolvedVersion = '';
 
 	// Install WC
 	if ( wcVersion === 'latest' ) {
-		try {
-			const latestResponse = await wcbtApi.fetch(
-				'/wp-json/wc-admin-test-helper/live-branches/install/latest/v1',
-				{
-					method: 'POST',
-					data: { include_pre_releases: true },
-				}
+		const latestResponse = await wcbtApi.fetch(
+			'/wp-json/wc-admin-test-helper/live-branches/install/latest/v1',
+			{
+				method: 'POST',
+				data: { include_pre_releases: true },
+			}
+		);
+
+		if ( ! latestResponse.ok() ) {
+			throw new Error(
+				`Failed to install latest WC: ${ latestResponse.status() } ${ await latestResponse.text() }`
 			);
+		}
 
-			if ( ! latestResponse.ok() ) {
-				throw new Error(
-					`Failed to install latest WC: ${ latestResponse.status() } ${ await latestResponse.text() }`
-				);
-			}
+		resolvedVersion = ( await latestResponse.json() )?.version || '';
 
-			resolvedVersion = ( await latestResponse.json() )?.version || '';
-			if ( ! resolvedVersion ) {
-				console.error( 'Error: latestResponse.version is undefined.' );
-			} else {
-				console.log( `Latest version installed: ${ resolvedVersion }` );
-			}
-		} catch ( err ) {
-			console.error( 'Error installing latest WC:', err );
+		setup.skip(
+			resolvedVersion === activatedWcVersion,
+			'Skip installing WC: The latest version is already installed and activated.'
+		);
+
+		if ( ! resolvedVersion ) {
+			console.error( 'Error: latestResponse.version is undefined.' );
+		} else {
+			console.log( `Latest version installed: ${ resolvedVersion }` );
+		}
+		if ( activatedWcVersion ) {
+			await deactivateWooCommerce( wcbtApi );
 		}
 	} else {
+		setup.skip(
+			wcVersion === activatedWcVersion,
+			'Skip installing WC: Specified version is already installed and activated.'
+		);
+		if ( activatedWcVersion ) {
+			await deactivateWooCommerce( wcbtApi );
+		}
 		try {
 			const downloadUrl = `https://github.com/woocommerce/woocommerce/releases/download/${ wcVersion }/woocommerce.zip`;
 			const response = await wcbtApi.fetch(
