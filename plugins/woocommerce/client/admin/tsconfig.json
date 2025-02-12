@@ -23,5 +23,5 @@
 		"typeRoots": [ "./client/typings", "./node_modules/@types" ]
 	},
 	"include": [ "./client/**/*" ],
-	"exclude": [ "**/test/**", "**/*.test.*" ]
+	"exclude": [ "**/test/*" ]
 }

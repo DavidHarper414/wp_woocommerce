@@ -15,7 +15,6 @@
 		"./storybook/build",
 		"./storybook/webpack.config.js",
 		"./storybook/preview.js",
-		"./bin",
-		"**/test/**"
+		"./bin"
 	]
 }
