@@ -1,4 +1,4 @@
 Significance: minor
-Type: update
+Type: fix
 
-Implemented validation rules for additional checkout fields (behind feature flag).
+Fixed bug preventing additional fields from being persisted to customer on account details edit. Implemented validation rules for additional checkout fields (behind feature flag).
