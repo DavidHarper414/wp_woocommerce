@@ -61,7 +61,7 @@ class DefaultFreeExtensions {
 				'plugins' => array(
 					self::get_plugin( 'mailpoet:alt' ),
 					// IMPORTANT: Klaviyo needs to be above Mailchimp as per partnership agreement.
-					// https://ghidorahp2.wordpress.com/2025/01/21/change-requests-for-klaviyo
+					// P2 for context: pdibGW-3XM-p2
 					self::get_plugin( 'klaviyo:alt' ),
 					self::get_plugin( 'mailchimp-for-woocommerce' ),
 				),
