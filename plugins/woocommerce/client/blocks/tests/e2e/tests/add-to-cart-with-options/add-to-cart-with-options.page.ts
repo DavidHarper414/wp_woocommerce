@@ -59,8 +59,12 @@ class AddToCartWithOptionsPage {
 
 	async insertParagraphInTemplatePart( content: string ) {
 		const parentBlock = await this.editor.getBlockByName( this.BLOCK_SLUG );
+
+		await parentBlock.click(); // Ensures the block is visible and selected.
+
 		const parentClientId =
 			( await parentBlock.getAttribute( 'data-block' ) ) ?? '';
+
 		await this.editor.insertBlock(
 			{
 				name: 'core/paragraph',
