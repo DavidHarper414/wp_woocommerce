@@ -35,7 +35,7 @@ import { apiFetchWithHeaders } from '../shared-controls';
 import {
 	getIsCustomerDataDirty,
 	setIsCustomerDataDirty,
-	setSyncingWithIAPIStore,
+	setTriggerStoreSyncEvent,
 } from './utils';
 
 interface CartThunkArgs {
@@ -46,16 +46,41 @@ interface CartThunkArgs {
 /**
  * A thunk used in updating the store with the cart items retrieved from a request. This also notifies the shopper
  * of any unexpected quantity changes occurred.
+ *
+ * @param {CartResponse}    response                      The response from the API request.
+ * @param {Object}          options                       Additional options for the thunk.
+ * @param {boolean}         options.dontSyncWithIAPIStore Whether to avoid syncing with the Interactivity API store.
+ * @param {QuantityChanges} options.quantityChanges       The quantity changes data included in the sync event.
  */
 export const receiveCart =
-	( response: Partial< CartResponse > ) =>
+	(
+		response: Partial< CartResponse >,
+		options: {
+			dontSyncWithIAPIStore: boolean;
+			quantityChanges: QuantityChanges;
+		}
+	) =>
 	( { dispatch, select }: CartThunkArgs ) => {
 		const cartResponse = camelCaseKeys( response ) as unknown as Cart;
 		const oldCart = select.getCartData();
 		const oldCartErrors = [ ...oldCart.errors, ...select.getCartErrors() ];
+		const dontSync = options?.dontSyncWithIAPIStore === true;
 
-		// Set data from the response.
+		if ( dontSync ) setTriggerStoreSyncEvent( false );
 		dispatch.setCartData( cartResponse );
+		if ( dontSync ) setTriggerStoreSyncEvent( true );
+
+		// When it is synchronizing with the iAPI Store, the values of
+		// `notifyQuantityChanges` are received through the event.
+		const cartItemsPendingQuantity = dontSync
+			? options.quantityChanges.cartItemsPendingQuantity
+			: select.getItemsPendingQuantityUpdate();
+		const cartItemsPendingDelete = dontSync
+			? options.quantityChanges.cartItemsPendingDelete
+			: select.getItemsPendingDelete();
+		const productsPendingAdd = dontSync
+			? options.quantityChanges.productsPendingAdd
+			: select.getProductsPendingAdd();
 
 		// Get the new cart data before showing updates.
 		const newCart = select.getCartData();
@@ -63,9 +88,9 @@ export const receiveCart =
 		notifyQuantityChanges( {
 			oldCart,
 			newCart,
-			cartItemsPendingQuantity: select.getItemsPendingQuantityUpdate(),
-			cartItemsPendingDelete: select.getItemsPendingDelete(),
-			productsPendingAdd: select.getProductsPendingAdd(),
+			cartItemsPendingQuantity,
+			cartItemsPendingDelete,
+			productsPendingAdd,
 		} );
 
 		updateCartErrorNotices( newCart.errors, oldCartErrors );
@@ -145,24 +170,15 @@ export const applyExtensionCartUpdate =
 	};
 
 /**
- * The same `receiveCart` thunk, but without syncing with the Interactivity
- * store after modifying the cart.
+ * Fetch the cart but avoid triggering the event that syncs with the
+ * Interactivity API store to avoid infinite loops.
  *
+ * @param {QuantityChanges} quantityChanges The quantity changes data included in the sync event.
  * @throws Will throw an error if there is an API problem.
  */
-export const receiveCartWithoutSyncingWithIAPIStore =
-	(
-		{
-			quantityChanges: {
-				cartItemsPendingQuantity,
-				cartItemsPendingDelete,
-				productsPendingAdd,
-			},
-		}: {
-			quantityChanges: QuantityChanges;
-		} = { quantityChanges: {} }
-	) =>
-	async ( { select, dispatch }: CartThunkArgs ) => {
+export const syncCartwithIAPIStore =
+	( quantityChanges: QuantityChanges ) =>
+	async ( { dispatch }: CartThunkArgs ) => {
 		try {
 			const { response } = await apiFetchWithHeaders< {
 				response: CartResponse;
@@ -172,31 +188,10 @@ export const receiveCartWithoutSyncingWithIAPIStore =
 				cache: 'no-store',
 			} );
 
-			const cartResponse = camelCaseKeys( response ) as unknown as Cart;
-			const oldCart = select.getCartData();
-			const oldCartErrors = [
-				...oldCart.errors,
-				...select.getCartErrors(),
-			];
-
-			// Set data from the response.
-			setSyncingWithIAPIStore( true );
-			dispatch.setCartData( cartResponse );
-			setSyncingWithIAPIStore( false );
-
-			// Get the new cart data before showing updates.
-			const newCart = select.getCartData();
-
-			notifyQuantityChanges( {
-				oldCart,
-				newCart,
-				cartItemsPendingQuantity,
-				cartItemsPendingDelete,
-				productsPendingAdd,
+			dispatch.receiveCart( response, {
+				dontSyncWithIAPIStore: true,
+				quantityChanges,
 			} );
-
-			updateCartErrorNotices( newCart.errors, oldCartErrors );
-			dispatch.setErrorData( null );
 		} catch ( error ) {
 			dispatch.receiveError( isApiErrorResponse( error ) ? error : null );
 			return Promise.reject( error );

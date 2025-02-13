@@ -29,7 +29,7 @@ import {
 	isAddingToCart,
 } from './persistence-layer';
 import { defaultCartState } from './default-state';
-import { getSyncingWithIAPIStore } from './utils';
+import { getTriggerStoreSyncEvent } from './utils';
 import type { QuantityChanges } from './notify-quantity-changes';
 
 export const config = {
@@ -71,7 +71,7 @@ let previousCart: object | null = null;
 subscribe( () => {
 	const cartData = select( STORE_KEY ).getCartData();
 	if (
-		getSyncingWithIAPIStore() === false &&
+		getTriggerStoreSyncEvent() === true &&
 		previousCart !== null &&
 		previousCart !== cartData
 	) {
@@ -95,10 +95,7 @@ window.addEventListener(
 		} >;
 		const { type, quantityChanges } = customEvent.detail;
 		if ( type === 'from_iAPI' ) {
-			// Todo: investigate how to avoid infinite loops without causing racing conditions.
-			wpDispatch( store ).receiveCartWithoutSyncingWithIAPIStore( {
-				quantityChanges,
-			} );
+			wpDispatch( store ).syncCartwithIAPIStore( quantityChanges );
 		}
 	}
 );

@@ -33,15 +33,14 @@ export const getCartData =
 
 		try {
 			const cartData: CartResponse = await response.json();
-			const { receiveCartWithoutSyncingWithIAPIStore, receiveError } =
-				dispatch;
+			const { receiveCart, receiveError } = dispatch;
 
 			if ( ! cartData ) {
 				receiveError( CART_API_ERROR );
 				return;
 			}
 
-			receiveCartWithoutSyncingWithIAPIStore( cartData );
+			receiveCart( cartData, { dontSyncWithIAPIStore: true } );
 		} catch ( error ) {
 			const { receiveError } = dispatch;
 			receiveError( CART_API_ERROR );
