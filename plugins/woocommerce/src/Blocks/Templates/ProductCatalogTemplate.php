@@ -65,6 +65,7 @@ class ProductCatalogTemplate extends AbstractTemplate {
 
 	/**
 	 * Modify the shop page template to include the Product Catalog template.
+	 * This is so that the Product Catalog template is used on the shop page in the template selector.
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_Post          $post     The post object.
