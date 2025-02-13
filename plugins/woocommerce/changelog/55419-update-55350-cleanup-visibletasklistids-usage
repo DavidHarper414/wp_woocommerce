@@ -1,0 +1,4 @@
+Significance: patch
+Type: enhancement
+
+Remove use of `wcSettings.admin.visibleTaskListIds` var.
