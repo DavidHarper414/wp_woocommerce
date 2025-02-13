@@ -74,8 +74,6 @@ export const Form = ( {
 		formData._wpnonce = settingsData._wpnonce;
 		formData._w_http_referer = '/wp-admin/' + getNewPath( query );
 
-		console.log( formData );
-
 		const form = new FormData();
 		for ( const [ key, value ] of Object.entries( formData ) ) {
 			form.append( key, value );

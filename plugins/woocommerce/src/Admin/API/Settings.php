@@ -79,24 +79,18 @@ class Settings extends \WC_REST_Data_Controller {
 		// Get all registered WooCommerce settings pages
 		$settings_pages = WC_Admin_Settings::get_settings_pages();
 
-        // Tab defaults to general and section defaults to empty.
-        // See https://github.com/woocommerce/woocommerce/blob/6fda640b1932f123c880a834dcd244a2d6b0eacf/plugins/woocommerce/includes/admin/class-wc-admin-menus.php#L182-L183
-        $tab = isset( $params['tab'] ) ? $params['tab'] : 'general';
-        $section = isset( $params['section'] ) ? $params['section'] : '';
-
         try {
-            // Loop through each settings page and save its settings
-            foreach ( $settings_pages as $settings_page ) {
-                if ( $settings_page->get_id() === $tab ) {
-                    if ( method_exists( $settings_page, 'save' ) ) {
-                        // Modify the globals so appropriate values are set.
-                        $current_tab = $tab;
-                        $current_section = $section;
-                        $settings_page->save();
-                    }
-                }
+            // Get current tab/section.
+            $current_tab     = empty( $_GET['tab'] ) ? 'general' : sanitize_title( wp_unslash( $_GET['tab'] ) ); // WPCS: input var okay, CSRF ok.
+            $current_section = empty( $_REQUEST['section'] ) ? '' : sanitize_title( wp_unslash( $_REQUEST['section'] ) ); // WPCS: input var okay, CSRF ok.
+
+            // Save settings if data has been posted.
+            if ( '' !== $current_section && apply_filters( "woocommerce_save_settings_{$current_tab}_{$current_section}", ! empty( $_POST['save'] ) ) ) { // WPCS: input var okay, CSRF ok.
+                WC_Admin_Settings::save();
+            } elseif ( '' === $current_section && apply_filters( "woocommerce_save_settings_{$current_tab}", ! empty( $_POST['save'] ) ) ) { // WPCS: input var okay, CSRF ok.
+                WC_Admin_Settings::save();
             }
-            
+
             return new \WP_REST_Response( array( 'status' => 'success' ) );
         } catch ( \Exception $e ) {
             return new \WP_Error(
