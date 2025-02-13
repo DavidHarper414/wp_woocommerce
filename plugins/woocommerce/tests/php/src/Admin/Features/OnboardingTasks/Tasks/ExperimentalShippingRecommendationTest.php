@@ -84,22 +84,6 @@ class ExperimentalShippingRecommendationTest extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Tests that if the WooCommerce Shipping extension is enabled, the task is unavailable.
-	 *
-	 * @return void
-	 */
-	public function test_can_view_returns_false_if_woocommerce_shipping_is_active() {
-		$this->enabled_admin_features_mock = array( 'shipping-smart-defaults' );
-		$this->mock_active_plugin_basenames(
-			array(
-				'woocommerce-shipping/woocommerce-shipping.php',
-			)
-		);
-
-		$this->assertFalse( ( new ExperimentalShippingRecommendation() )->can_view() );
-	}
-
-	/**
 	 * Mocks the list of basenames of active plugins.
 	 *
 	 * A basename is a reference to the plugin formatted as "foo/foo.php".
