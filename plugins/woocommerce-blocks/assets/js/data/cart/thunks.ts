@@ -65,6 +65,7 @@ export const receiveCart =
 		const oldCart = select.getCartData();
 		const oldCartErrors = [ ...oldCart.errors, ...select.getCartErrors() ];
 		const dontSync = options?.dontSyncWithIAPIStore === true;
+		const quantityChanges = options?.quantityChanges;
 
 		if ( dontSync ) setTriggerStoreSyncEvent( false );
 		dispatch.setCartData( cartResponse );
@@ -72,15 +73,15 @@ export const receiveCart =
 
 		// When it is synchronizing with the iAPI Store, the values of
 		// `notifyQuantityChanges` are received through the event.
-		const cartItemsPendingQuantity = dontSync
-			? options.quantityChanges.cartItemsPendingQuantity
-			: select.getItemsPendingQuantityUpdate();
-		const cartItemsPendingDelete = dontSync
-			? options.quantityChanges.cartItemsPendingDelete
-			: select.getItemsPendingDelete();
-		const productsPendingAdd = dontSync
-			? options.quantityChanges.productsPendingAdd
-			: select.getProductsPendingAdd();
+		const cartItemsPendingQuantity =
+			quantityChanges?.cartItemsPendingQuantity ||
+			select.getItemsPendingQuantityUpdate();
+		const cartItemsPendingDelete =
+			quantityChanges?.cartItemsPendingDelete ||
+			select.getItemsPendingDelete();
+		const productsPendingAdd =
+			quantityChanges?.productsPendingAdd ||
+			select.getProductsPendingAdd();
 
 		// Get the new cart data before showing updates.
 		const newCart = select.getCartData();
