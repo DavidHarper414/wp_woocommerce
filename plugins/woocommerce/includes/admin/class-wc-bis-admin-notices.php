@@ -53,7 +53,6 @@ class WC_BIS_Admin_Notices {
 	 * @var array
 	 */
 	private static $maintenance_notice_types = array(
-		'update'   => 'update_notice',
 		'welcome'  => 'welcome_notice',
 		'loopback' => 'loopback_notice',
 		'queue'    => 'queue_notice',
@@ -333,111 +332,6 @@ class WC_BIS_Admin_Notices {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Add 'update' maintenance notice.
-	 */
-	public static function update_notice() {
-
-		if ( ! class_exists( 'WC_BIS_Install' ) ) {
-			return;
-		}
-
-		if ( WC_BIS_Install::is_update_pending() ) {
-
-			$status = '';
-
-			// Show notice to indicate that an update is in progress.
-			if ( WC_BIS_Install::is_update_process_running() || WC_BIS_Install::is_update_queued() ) {
-
-				$prompt = '';
-
-				// Check if the update process is running.
-				if ( false === WC_BIS_Install::is_update_process_running() ) {
-					$prompt = self::get_force_update_prompt();
-				}
-				/* translators: Update promt */
-				$status = sprintf( __( '<strong>WooCommerce Back In Stock Notifications</strong> is updating your database.%s', 'woocommerce-back-in-stock-notifications' ), $prompt );
-
-				// Show a prompt to update.
-			} elseif ( false === WC_BIS_Install::auto_update_enabled() && false === WC_BIS_Install::is_update_incomplete() ) {
-
-				$status = __( '<strong>WooCommerce Back In Stock Notifications</strong> has been updated! To keep things running smoothly, your database needs to be updated, as well.', 'woocommerce-back-in-stock-notifications' );
-				/* translators: updating resource URL */
-				$status .= '<br/>' . sprintf( __( 'Before you proceed, please take a few minutes to <a href="%s" target="_blank">learn more</a> about best practices when updating.', 'woocommerce-back-in-stock-notifications' ), WC_BIS()->get_resource_url( 'updating' ) );
-				$status .= self::get_trigger_update_prompt();
-
-			} elseif ( WC_BIS_Install::is_update_incomplete() ) {
-
-				/* translators: Update promt */
-				$status = sprintf( __( '<strong>WooCommerce Back In Stock Notifications</strong> has not finished updating your database.%s', 'woocommerce-back-in-stock-notifications' ), self::get_failed_update_prompt() );
-			}
-
-			if ( $status ) {
-				self::add_notice( $status, 'info' );
-			}
-
-			// Show persistent notice to indicate that the update process is complete.
-		} else {
-
-			$notice = __( '<strong>WooCommerce Back In Stock Notifications</strong> has finished updating your database. Thank you for updating to the latest version!', 'woocommerce-back-in-stock-notifications' );
-			self::add_notice(
-				$notice,
-				array(
-					'type'          => 'info',
-					'dismiss_class' => 'update',
-				)
-			);
-		}
-	}
-
-	/**
-	 * Returns a "trigger update" notice component.
-	 *
-	 * @return string
-	 */
-	private static function get_trigger_update_prompt() {
-		$update_url    = esc_url( wp_nonce_url( add_query_arg( 'trigger_wc_bis_db_update', true, admin_url() ), 'wc_bis_trigger_db_update_nonce', '_wc_bis_admin_nonce' ) );
-		$update_prompt = '<p><a href="' . $update_url . '" class="wc-bis-update-now button">' . __( 'Update database', 'woocommerce-back-in-stock-notifications' ) . '</a></p>';
-		return $update_prompt;
-	}
-
-	/**
-	 * Returns a "force update" notice component.
-	 *
-	 * @return string
-	 */
-	private static function get_force_update_prompt() {
-
-		$fallback_prompt = '';
-		$update_runtime  = get_option( 'wc_bis_update_init', 0 );
-
-		// Wait for at least 30 seconds.
-		if ( gmdate( 'U' ) - $update_runtime > 30 ) {
-			// Perhaps the upgrade process failed to start?
-			$fallback_url  = esc_url( wp_nonce_url( add_query_arg( 'force_wc_bis_db_update', true, admin_url() ), 'wc_bis_force_db_update_nonce', '_wc_bis_admin_nonce' ) );
-			$fallback_link = '<a href="' . $fallback_url . '">' . __( 'run it manually', 'woocommerce-back-in-stock-notifications' ) . '</a>';
-			/* translators: %s: Fallback link */
-			$fallback_prompt = sprintf( __( ' The process seems to be taking a little longer than usual. Let\'s try to %s.', 'woocommerce-back-in-stock-notifications' ), $fallback_link );
-		}
-
-		return $fallback_prompt;
-	}
-
-	/**
-	 * Returns a "failed update" notice component.
-	 *
-	 * @return string
-	 */
-	private static function get_failed_update_prompt() {
-
-		$support_url  = esc_url( WC_BIS_SUPPORT_URL );
-		$support_link = '<a href="' . $support_url . '">' . __( 'get in touch with us', 'woocommerce-back-in-stock-notifications' ) . '</a>';
-		/* translators: %s: support link */
-		$support_prompt = sprintf( __( ' If this message persists, please restore your database from a backup, or %s.', 'woocommerce-back-in-stock-notifications' ), $support_link );
-
-		return $support_prompt;
 	}
 
 	/**
