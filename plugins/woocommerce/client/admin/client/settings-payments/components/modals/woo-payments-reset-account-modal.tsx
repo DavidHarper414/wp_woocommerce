@@ -48,24 +48,6 @@ export const WooPaymentsResetAccountModal = ( {
 		window.location.href = getWooPaymentsResetAccountLink();
 	};
 
-	const modalText = isTestMode
-		? sprintf(
-				/* translators: %s: plugin name */
-				__(
-					'When you reset your test account, all payment data — including your %s account details, test transactions, and payouts history — will be lost. Your order history will remain. This action cannot be undone, but you can create a new test account at any time.',
-					'woocommerce'
-				),
-				'WooPayments'
-		  )
-		: sprintf(
-				/* translators: %s: plugin name */
-				__(
-					'When you reset your account, all payment data — including your %s account details, test transactions, and payouts history — will be lost. Your order history will remain. This action cannot be undone, but you can create a new test account at any time.',
-					'woocommerce'
-				),
-				'WooPayments'
-		  );
-
 	return (
 		<>
 			{ isOpen && (
@@ -78,24 +60,25 @@ export const WooPaymentsResetAccountModal = ( {
 					<div className="woocommerce-woopayments-modal__content">
 						<div className="woocommerce-woopayments-modal__content__item">
 							<div>
-								<span>{ isTestMode
-    ? sprintf(
-        /* translators: %s: plugin name */
-        __(
-            'When you reset your test account, all payment data — including your %s account details, test transactions, and payouts history — will be lost. Your order history will remain. This action cannot be undone, but you can create a new test account at any time.',
-            'woocommerce'
-        ),
-        'WooPayments'
-    )
-    : sprintf(
-        /* translators: %s: plugin name */
-        __(
-            'When you reset your account, all payment data — including your %s account details, test transactions, and payouts history — will be lost. Your order history will remain. This action cannot be undone, but you can create a new test account at any time.',
-            'woocommerce'
-        ),
-        'WooPayments'
-    ) 
-}</span>
+								<span>
+									{ isTestMode
+										? sprintf(
+												/* translators: %s: plugin name */
+												__(
+													'When you reset your test account, all payment data — including your %s account details, test transactions, and payouts history — will be lost. Your order history will remain. This action cannot be undone, but you can create a new test account at any time.',
+													'woocommerce'
+												),
+												'WooPayments'
+										  )
+										: sprintf(
+												/* translators: %s: plugin name */
+												__(
+													'When you reset your account, all payment data — including your %s account details, test transactions, and payouts history — will be lost. Your order history will remain. This action cannot be undone, but you can create a new test account at any time.',
+													'woocommerce'
+												),
+												'WooPayments'
+										  ) }
+								</span>
 							</div>
 						</div>
 						<div className="woocommerce-woopayments-modal__content__item">
