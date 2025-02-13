@@ -104,9 +104,7 @@ const ShippingRecommendations: React.FC = () => {
 	const [ pluginsBeingSetup, setupPlugin ] = useInstallPlugin();
 
 	const activePlugins = useSelect(
-		( select ) =>
-			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-			select( pluginsStore ).getActivePlugins(),
+		( select ) => select( pluginsStore ).getActivePlugins(),
 		[]
 	);
 

@@ -21,9 +21,7 @@ const WooCommerceServicesItem: React.FC< {
 	const { createSuccessNotice } = useDispatch( 'core/notices' );
 
 	const isSiteConnectedToJetpack = useSelect(
-		( select ) =>
-			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-			select( pluginsStore ).isJetpackConnected(),
+		( select ) => select( pluginsStore ).isJetpackConnected(),
 		[]
 	);
 
