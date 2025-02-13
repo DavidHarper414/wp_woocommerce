@@ -55,7 +55,7 @@ export const createCrudDataStore = <
 	TControls,
 	TReducer
 > ) => {
-	const crudActions = createDispatchActions( {
+	const crudActions = createDispatchActions< TResourceName, TResourceType >( {
 		resourceName,
 		namespace,
 	} );
@@ -92,7 +92,7 @@ export const createCrudDataStore = <
 
 	const store = createReduxStore<
 		unknown,
-		TActions,
+		TActions & typeof crudActions,
 		TSelectors & typeof crudSelectors
 	>( storeName, {
 		reducer: crudReducer,

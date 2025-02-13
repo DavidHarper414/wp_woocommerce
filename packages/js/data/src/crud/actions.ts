@@ -11,8 +11,8 @@ import CRUD_ACTIONS from './crud-actions';
 import TYPES from './action-types';
 import { IdType, IdQuery, Item, ItemQuery, CrudActionOptions } from './types';
 
-type ResolverOptions = {
-	resourceName: string;
+type ResolverOptions< TResourceName extends string > = {
+	resourceName: TResourceName;
 	namespace: string;
 };
 
@@ -174,19 +174,42 @@ export function updateItemSuccess(
 	};
 }
 
-export const createDispatchActions = ( {
+type CrudActions< TResourceName extends string, TResourceType > = {
+	[ K in `create${ TResourceName }` ]: (
+		query: Partial< ItemQuery >,
+		options?: CrudActionOptions
+	) => Generator< void, TResourceType, unknown >;
+} & {
+	[ K in `delete${ TResourceName }` ]: (
+		idQuery: IdQuery,
+		force?: boolean
+	) => Generator< void, TResourceType, unknown >;
+} & {
+	[ K in `update${ TResourceName }` ]: (
+		idQuery: IdQuery,
+		query: Partial< ItemQuery >
+	) => Generator< void, TResourceType, unknown >;
+};
+
+export const createDispatchActions = <
+	TResourceName extends string,
+	TResourceType
+>( {
 	namespace,
 	resourceName,
-}: ResolverOptions ) => {
+}: ResolverOptions< TResourceName > ): CrudActions<
+	TResourceName,
+	TResourceType
+> => {
 	const createItem = function* (
 		query: Partial< ItemQuery >,
-		options: CrudActionOptions
+		options?: CrudActionOptions
 	) {
 		yield createItemRequest( query );
 		const urlParameters = getUrlParameters( namespace, query );
 
 		try {
-			const item: Item = yield apiFetch( {
+			const item: TResourceType = yield apiFetch( {
 				path: getRestPath(
 					namespace,
 					cleanQuery( query, namespace ),
@@ -210,7 +233,7 @@ export const createDispatchActions = ( {
 		yield deleteItemRequest( key, force );
 
 		try {
-			const item: Item = yield apiFetch( {
+			const item: TResourceType = yield apiFetch( {
 				path: getRestPath(
 					`${ namespace }/${ id }`,
 					{ force },
@@ -236,7 +259,7 @@ export const createDispatchActions = ( {
 		yield updateItemRequest( key, query );
 
 		try {
-			const item: Item = yield apiFetch( {
+			const item: TResourceType = yield apiFetch( {
 				path: getRestPath(
 					`${ namespace }/${ id }`,
 					{},

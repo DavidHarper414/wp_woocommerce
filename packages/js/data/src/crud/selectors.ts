@@ -21,7 +21,7 @@ import CRUD_ACTIONS from './crud-actions';
 
 type CrudSelectors<
 	TResourceName extends string = string,
-	TResourceTypePlural extends string = string,
+	TResourceNamePlural extends string = string,
 	TResourceType = unknown
 > = {
 	[ K in `get${ TResourceName }` ]: (
@@ -34,13 +34,13 @@ type CrudSelectors<
 		idQuery: IdQuery
 	) => Error | undefined;
 } & {
-	[ K in `get${ TResourceTypePlural }TotalCount` ]: (
+	[ K in `get${ TResourceNamePlural }TotalCount` ]: (
 		state: ResourceState,
 		query: ItemQuery,
 		defaultValue?: number
 	) => number | undefined;
 } & {
-	[ K in `get${ TResourceTypePlural }Error` ]: (
+	[ K in `get${ TResourceNamePlural }Error` ]: (
 		state: ResourceState,
 		query?: ItemQuery
 	) => Error | undefined;
@@ -56,7 +56,7 @@ type CrudSelectors<
 		namespace: string
 	) => Error | undefined;
 } & {
-	[ K in `get${ TResourceTypePlural }` ]: (
+	[ K in `get${ TResourceNamePlural }` ]: (
 		state: ResourceState,
 		idQuery: IdQuery
 	) => TResourceType[] | undefined;
@@ -213,7 +213,7 @@ const EMPTY_OBJECT = {};
 
 export const createSelectors = <
 	TResourceName extends string,
-	TResourceTypePlural extends string,
+	TResourceNamePlural extends string,
 	TResourceType
 >( {
 	resourceName,
@@ -221,9 +221,9 @@ export const createSelectors = <
 	namespace,
 }: {
 	resourceName: TResourceName;
-	pluralResourceName: TResourceTypePlural;
+	pluralResourceName: TResourceNamePlural;
 	namespace: string;
-} ): CrudSelectors< TResourceName, TResourceTypePlural, TResourceType > => {
+} ): CrudSelectors< TResourceName, TResourceNamePlural, TResourceType > => {
 	const hasFinishedRequest = (
 		state: ResourceState,
 		action: string,
@@ -282,5 +282,5 @@ export const createSelectors = <
 		),
 		hasFinishedRequest,
 		isRequesting,
-	};
+	} as CrudSelectors< TResourceName, TResourceNamePlural, TResourceType >;
 };
