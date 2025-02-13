@@ -56,8 +56,8 @@ class Packages {
 	 * @var array Key is the package name/directory, value is the main package class which handles init.
 	 */
 	protected static $merged_packages = array(
-		'woocommerce-brands' => '\\Automattic\\WooCommerce\\Internal\\Brands',
-		'woocommerce-bis-notifications' => '\\Automattic\\WooCommerce\\Internal\\BackInStockNotifications',
+		'woocommerce-brands'                      => '\\Automattic\\WooCommerce\\Internal\\Brands',
+		'woocommerce-back-in-stock-notifications' => '\\Automattic\\WooCommerce\\Internal\\BackInStockNotifications',
 	);
 
 

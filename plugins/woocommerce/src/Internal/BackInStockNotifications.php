@@ -19,6 +19,8 @@ class BackInStockNotifications {
 
 	private static $db_utils;
 
+	private static $is_activation_request = false;
+
 	/**
 	 * Class initialization
 	 *
@@ -26,7 +28,8 @@ class BackInStockNotifications {
 	 */
 	final public static function init() {
 
-		if ( ! self::is_enabled() ) { //TODO: should this only run in case is_enabled is true?
+		// If this is an activation request for BIS, included code can't be loaded, as it will end up with a fatal error.
+		if ( ! self::is_enabled() || self::$is_activation_request ) { 
 			return;
 		}
 		//TODO: can this run only in some contexts? admin + front end, rest api if it's related to BIS, but it needs to react to changes in stock levels, so can it actually be reduced..?
@@ -35,10 +38,6 @@ class BackInStockNotifications {
 		include_once WC_ABSPATH . '/includes/bis/class-wc-bis-notifications.php';
 
 		WC_BIS()->initialize_plugin();
-
-		if ( wc_current_theme_is_fse_theme() ) {
-			// ...
-		}
 
 	}
 
@@ -75,9 +74,39 @@ class BackInStockNotifications {
 		}
 
 		if ( function_exists( 'wc_bis_get_notifications' ) ) {
-			//TODO: check if this works.
+			//TODO: check if this is needed & works.
 			remove_action( 'plugins_loaded', array( \WC_BIS_Notifications::instance(), 'initialize_plugin' ), 9 );
 		}
+
+		// Set flag for activation request to prevent fatal errors.
+		$bis_plugin_name = 'woocommerce-back-in-stock-notifications/woocommerce-back-in-stock-notifications.php';
+
+		// Check for CLI activation via WP-CLI
+		if ( defined('WP_CLI') && WP_CLI ) {
+			global $argv;
+			if ( is_array( $argv ) && in_array( 'plugin', $argv ) && in_array( 'activate', $argv ) && in_array( $bis_plugin_name, $argv ) ) {
+				self::$is_activation_request = true;
+				return;
+			}
+		}
+
+		// Check for AJAX activation
+		if ( wp_doing_ajax() && isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'activate-plugin' ) {
+			if ( isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] === $bis_plugin_name ) {
+				self::$is_activation_request = true;
+				return;
+			}
+		}
+
+		// Check for regular activation request (e.g., from plugins page)
+		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'activate' ) {
+			if ( isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] === $bis_plugin_name ) {
+				self::$is_activation_request = true;
+				return;
+			}
+		}
+
+		// TODO: check if this also covers activation via woocommerce.com.
 
 	}
 
