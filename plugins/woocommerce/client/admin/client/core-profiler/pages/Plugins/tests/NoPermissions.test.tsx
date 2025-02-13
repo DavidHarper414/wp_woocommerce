@@ -37,7 +37,7 @@ describe( 'NoPermissions', () => {
 			],
 			currentUser: {
 				capabilities: {},
-			} as unknown as WCUser,
+			} as WCUser,
 		},
 		sendEvent: mockSendEvent,
 		navigationProgress: 50,

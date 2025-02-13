@@ -135,7 +135,7 @@ export const useUserPreferences = () => {
 			isRequesting:
 				hasStartedResolution( 'getCurrentUser', [] ) &&
 				! hasFinishedResolution( 'getCurrentUser', [] ),
-			user: getCurrentUser() as unknown as WCUser,
+			user: getCurrentUser() as WCUser,
 			getCurrentUser,
 			getEntity,
 			getEntityRecord,
@@ -183,7 +183,7 @@ export const useUserPreferences = () => {
 			};
 		}
 		// Get most recent user before update.
-		const currentUser = userData.getCurrentUser() as unknown as WCUser;
+		const currentUser = userData.getCurrentUser() as WCUser;
 		return updateUserPrefs(
 			receiveCurrentUser,
 			currentUser,
