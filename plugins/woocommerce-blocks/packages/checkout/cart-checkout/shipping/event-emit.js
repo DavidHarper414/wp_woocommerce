@@ -1,7 +1,11 @@
 /**
  * Internal dependencies
  */
-import { emitterCallback, reducer, emitEvent } from '../../../event-emit';
+import {
+	emitterCallback,
+	reducer,
+	emitEvent,
+} from '../../../../assets/js/base/context/event-emit';
 
 const EMIT_TYPES = {
 	SHIPPING_RATES_SUCCESS: 'shipping_rates_success',

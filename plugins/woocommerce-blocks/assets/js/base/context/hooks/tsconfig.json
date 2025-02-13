@@ -4,6 +4,7 @@
 	"include": [
 		".",
 		"../../../../../packages/checkout/index.js",
+		"../../../../../packages/checkout/*",
 		"../../../../../packages/prices/index.js",
 		"../providers/cart-checkout/checkout-events/index.tsx",
 		"../providers/cart-checkout/payment-events/index.tsx",

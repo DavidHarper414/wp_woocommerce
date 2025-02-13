@@ -9,9 +9,11 @@ import { usePositionRelativeToViewport } from '@woocommerce/base-hooks';
 import { getSetting } from '@woocommerce/settings';
 import { useSelect } from '@wordpress/data';
 import { CART_STORE_KEY, checkoutStore } from '@woocommerce/block-data';
-import { applyCheckoutFilter } from '@woocommerce/blocks-checkout';
+import {
+	applyCheckoutFilter,
+	useCartEventsContext,
+} from '@woocommerce/blocks-checkout';
 import { isErrorResponse } from '@woocommerce/base-context';
-import { useCartEventsContext } from '@woocommerce/base-context/providers';
 
 /**
  * Internal dependencies

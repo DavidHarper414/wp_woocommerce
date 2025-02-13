@@ -9,12 +9,12 @@ import { CURRENT_USER_IS_ADMIN } from '@woocommerce/settings';
 import BlockErrorBoundary from '@woocommerce/base-components/block-error-boundary';
 import { translateJQueryEventToNative } from '@woocommerce/base-utils';
 import withScrollToTop from '@woocommerce/base-hocs/with-scroll-to-top';
+import { noticeContexts } from '@woocommerce/base-context';
 import {
+	SlotFillProvider,
 	CartEventsProvider,
 	CartProvider,
-	noticeContexts,
-} from '@woocommerce/base-context';
-import { SlotFillProvider } from '@woocommerce/blocks-checkout';
+} from '@woocommerce/blocks-checkout';
 import { StoreNoticesContainer } from '@woocommerce/blocks-components';
 
 /**

@@ -28,8 +28,8 @@ import {
 	reducer as emitReducer,
 	emitEvent,
 } from './event-emit';
-import { useStoreCart } from '../../../hooks/cart/use-store-cart';
-import { useShippingData } from '../../../hooks/shipping/use-shipping-data';
+import { useStoreCart } from '../../../../assets/js/base/context/hooks/cart/use-store-cart';
+import { useShippingData } from '../../../../assets/js/base/context/hooks/shipping/use-shipping-data';
 
 const { NONE, INVALID_ADDRESS, UNKNOWN } = ERROR_TYPES;
 const ShippingDataContext = createContext( DEFAULT_SHIPPING_CONTEXT_DATA );

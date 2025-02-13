@@ -39,7 +39,7 @@ import {
 import { preparePaymentData, processCheckoutResponseHeaders } from './utils';
 import { useCheckoutEventsContext } from './checkout-events';
 import { useShippingDataContext } from './shipping';
-import { useStoreCart } from '../../hooks/cart/use-store-cart';
+import { useStoreCart } from '../../../assets/js/base/context/hooks/cart/use-store-cart';
 
 /**
  * CheckoutProcessor component.

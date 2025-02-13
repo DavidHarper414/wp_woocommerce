@@ -3,6 +3,7 @@ export * from './utils';
 export * from './slot';
 export * from './filter-registry';
 export * from './blocks-registry';
+export * from './cart-checkout';
 
 // It is very important to export this directly from the build module to avoid introducing side-effects
 // from importing the index of the @wordpress/components package.

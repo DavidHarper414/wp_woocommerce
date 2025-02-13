@@ -12,7 +12,7 @@ import {
 	emitEventWithAbort,
 	emitterCallback,
 	ActionType,
-} from '../../../event-emit';
+} from '../../../../assets/js/base/context/event-emit';
 
 const EMIT_TYPES = {
 	PAYMENT_SETUP: 'payment_setup',

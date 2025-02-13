@@ -26,13 +26,16 @@ import type { WPNotice } from '@wordpress/notices/build-types/store/selectors';
  * Internal dependencies
  */
 import { useEventEmitters, reducer as emitReducer } from './event-emit';
-import { emitterCallback, noticeContexts } from '../../../event-emit';
-import { useStoreEvents } from '../../../hooks/use-store-events';
+import {
+	emitterCallback,
+	noticeContexts,
+} from '../../../../assets/js/base/context/event-emit';
+import { useStoreEvents } from '../../../../assets/js/base/context/hooks/use-store-events';
 import {
 	getExpressPaymentMethods,
 	getPaymentMethods,
-} from '../../../../../blocks-registry/payment-methods/registry';
-import { useEditorContext } from '../../editor-context';
+} from '../../../../assets/js/blocks-registry/payment-methods/registry';
+import { useEditorContext } from '../../../../assets/js/base/context/providers/editor-context';
 
 type CheckoutEventsContextType = {
 	// Submits the checkout and begins processing.

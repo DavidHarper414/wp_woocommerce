@@ -21,7 +21,7 @@ import deprecated from '@wordpress/deprecated';
  * Internal dependencies
  */
 import { useEventEmitters, reducer as emitReducer } from './event-emit';
-import { emitterCallback } from '../../../event-emit';
+import { emitterCallback } from '../../../../assets/js/base/context/event-emit';
 
 type PaymentEventsContextType = {
 	// Event registration callback for registering observers for the payment processing event.

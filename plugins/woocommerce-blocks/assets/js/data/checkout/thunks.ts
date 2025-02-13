@@ -27,7 +27,7 @@ import {
 	EVENTS,
 	emitEvent,
 	emitEventWithAbort,
-} from '../../base/context/providers/cart-checkout/checkout-events/event-emit';
+} from '../../../../packages/checkout/cart-checkout/checkout-events/event-emit';
 import type {
 	emitValidateEventType,
 	emitAfterProcessingEventsType,

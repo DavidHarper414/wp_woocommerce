@@ -12,7 +12,7 @@ import {
 	emitEvent,
 	emitEventWithAbort,
 	ActionType,
-} from '../../../event-emit';
+} from '../../../../assets/js/base/context/event-emit';
 
 // These events are emitted when the Checkout status is BEFORE_PROCESSING and AFTER_PROCESSING
 // to enable third parties to hook into the checkout process

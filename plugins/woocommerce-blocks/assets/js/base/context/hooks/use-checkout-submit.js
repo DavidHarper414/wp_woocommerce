@@ -7,7 +7,7 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { useCheckoutEventsContext } from '../providers';
+import { useCheckoutEventsContext } from '../../../../../packages/checkout';
 import { usePaymentMethods } from './payment-methods/use-payment-methods';
 
 /**

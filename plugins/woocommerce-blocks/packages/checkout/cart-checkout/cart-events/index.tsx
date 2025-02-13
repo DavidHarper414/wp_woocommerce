@@ -19,7 +19,7 @@ import {
 	emitEventWithAbort,
 	EVENTS,
 } from './event-emit';
-import type { emitterCallback } from '../../../event-emit';
+import type { emitterCallback } from '../../../../assets/js/base/context/event-emit';
 
 type CartEventsContextType = {
 	// Used to register a callback that will fire when the cart has been processed and has an error.
