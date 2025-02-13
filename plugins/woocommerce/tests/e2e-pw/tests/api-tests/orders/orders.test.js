@@ -2513,7 +2513,7 @@ test.describe.serial( 'Orders API tests', () => {
 		};
 
 		sampleData = await createSampleData();
-	}, 100000 );
+	} );
 
 	test.afterAll( async ( { request } ) => {
 		const productsTestSetupDeleteSampleData = async ( _sampleData ) => {
@@ -2645,7 +2645,7 @@ test.describe.serial( 'Orders API tests', () => {
 		};
 
 		await deleteSampleData( sampleData );
-	}, 10000 );
+	} );
 
 	test( 'can create an order', async ( { request } ) => {
 		const response = await request.post( './wp-json/wc/v3/orders', {
