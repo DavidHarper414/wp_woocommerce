@@ -242,8 +242,8 @@ class Checkout extends AbstractCartRoute {
 
 		foreach ( $validate_contexts as $context => $context_data ) {
 			$fields           = $this->additional_fields_controller->get_fields_for_location( $context_data['location'] );
-			$values           = $request->get_param( $context_data['param'] ) ?? [];
-			$sanitized_values = $sanitized_request->get_param( $context_data['param'] ) ?? [];
+			$values           = (array) $request->get_param( $context_data['param'] ) ?? [];
+			$sanitized_values = (array) $sanitized_request->get_param( $context_data['param'] ) ?? [];
 			$errors           = new \WP_Error();
 
 			foreach ( $fields as $field_key => $field ) {
