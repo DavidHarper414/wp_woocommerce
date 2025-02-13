@@ -240,7 +240,7 @@ const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 			>
 				{ interpolateComponents( {
 					mixedString: __(
-						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your products with additional marketing solutions.',
+						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your store with additional marketing solutions.',
 						'woocommerce'
 					),
 					components: {
