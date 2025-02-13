@@ -262,14 +262,16 @@ class Checkout extends AbstractCartRoute {
 				$sanitized_field_value = $sanitized_field_values[ $field_key ] ?? '';
 
 				if ( $is_required && empty( $field_value ) ) {
-					$errors->add(
-						'woocommerce_required_checkout_field',
-						$this->additional_fields_controller->get_required_field_error_message( $field_key, $context ),
-						array(
-							'location' => $context_data['location'],
-							'key'      => $field_key,
-						)
-					);
+					/* translators: %s: is the field label */
+					$error_message = sprintf( __( '%s is required', 'woocommerce' ), $field['label'] );
+					if ( 'shipping_address' === $context ) {
+						/* translators: %s: is the field error message */
+						$error_message = sprintf( __( 'There was a problem with the provided shipping address: %s', 'woocommerce' ), $error_message );
+					} elseif ( 'billing_address' === $context ) {
+						/* translators: %s: is the field error message */
+						$error_message = sprintf( __( 'There was a problem with the provided billing address: %s', 'woocommerce' ), $error_message );
+					}
+					$errors->add( 'woocommerce_required_checkout_field', $error_message );
 					break;
 				}
 

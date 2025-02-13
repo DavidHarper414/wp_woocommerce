@@ -807,31 +807,6 @@ class CheckoutFields {
 	}
 
 	/**
-	 * Get a required field error object based on context.
-	 *
-	 * @param string $field_key The key of the field.
-	 * @param string $context The context for the document object.
-	 * @return WP_Error
-	 */
-	public function get_required_field_error_message( $field_key, $context = null ) {
-		$field       = $this->additional_fields[ $field_key ] ?? null;
-		$field_label = $field['label'] ?? __( 'Field', 'woocommerce' );
-
-		/* translators: %s: is the field label */
-		$error_message = sprintf( __( '%s is required', 'woocommerce' ), $field_label );
-
-		if ( 'shipping_address' === $context ) {
-			/* translators: %s: is the field error message */
-			return sprintf( __( 'There was a problem with the provided shipping address: %s', 'woocommerce' ), $error_message );
-		} elseif ( 'billing_address' === $context ) {
-			/* translators: %s: is the field error message */
-			return sprintf( __( 'There was a problem with the provided billing address: %s', 'woocommerce' ), $error_message );
-		}
-
-		return $error_message;
-	}
-
-	/**
 	 * Validate an additional field against any custom validation rules.
 	 *
 	 * @since 8.6.0
@@ -857,8 +832,9 @@ class CheckoutFields {
 			$validate_result = $this->is_valid_field( $field, $document_object, $context );
 
 			if ( is_wp_error( $validate_result ) ) {
+				/* translators: %s: is the field label */
+				$error_message = sprintf( __( 'Please provide a valid %s', 'woocommerce' ), $field['label'] );
 				$error_code    = 'woocommerce_invalid_checkout_field';
-				$error_message = $this->get_required_field_error_message( $field_key, $context );
 				$errors->add( $error_code, $error_message );
 				return $errors;
 			}
@@ -1079,7 +1055,7 @@ class CheckoutFields {
 			return new WP_Error(
 				'woocommerce_required_checkout_field',
 				\sprintf(
-				// translators: %s is field key.
+					// translators: %s is field key.
 					__( 'The field %s is required.', 'woocommerce' ),
 					$key
 				)

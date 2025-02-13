@@ -174,7 +174,9 @@ class CheckoutFieldsFrontend {
 			$result   = $this->update_additional_fields_for_customer( $customer, 'contact', 'other' );
 
 			if ( is_wp_error( $result ) ) {
-				wc_add_notice( $result->get_error_message(), 'error' );
+				foreach ( $result->get_error_messages() as $error_message ) {
+					wc_add_notice( $error_message, 'error' );
+				}
 			}
 
 			$customer->save();
@@ -243,7 +245,9 @@ class CheckoutFieldsFrontend {
 			$result = $this->update_additional_fields_for_customer( $customer, 'address', $address_type );
 
 			if ( is_wp_error( $result ) ) {
-				wc_add_notice( $result->get_error_message(), 'error' );
+				foreach ( $result->get_error_messages() as $error_message ) {
+					wc_add_notice( $error_message, 'error' );
+				}
 			}
 		} catch ( \Exception $e ) {
 			wc_add_notice(
@@ -305,7 +309,11 @@ class CheckoutFieldsFrontend {
 
 			if ( empty( $field_value ) ) {
 				if ( $is_required ) {
-					$errors->add( 'required_field', $this->checkout_fields_controller->get_required_field_error_message( $field_key, $document_object_context ) );
+					$errors->add(
+						'required_field',
+						/* translators: %s: is the field label */
+						sprintf( __( '%s is required', 'woocommerce' ), '<strong>' . $field_data['label'] . '</strong>' )
+					);
 				}
 				continue;
 			}
@@ -314,7 +322,8 @@ class CheckoutFieldsFrontend {
 			$valid_check           = $this->checkout_fields_controller->validate_field( $field_key, $sanitized_field_value, $document_object, $document_object_context );
 
 			if ( is_wp_error( $valid_check ) && $valid_check->has_errors() ) {
-				$errors->merge_from( $valid_check );
+				// Get one error message from the WP_Error object per field to avoid overlapping error messages.
+				$errors->add( $valid_check->get_error_code(), $valid_check->get_error_message() );
 				continue;
 			}
 
