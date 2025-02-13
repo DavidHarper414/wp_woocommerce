@@ -541,13 +541,16 @@ add_action( 'woocommerce_scheduled_sales', 'wc_scheduled_sales' );
  * @return array
  */
 function wc_get_attachment_image_attributes( $attr ) {
+
 	/*
 	 * If the user can manage woocommerce, allow them to
-	 * see the image content.
+	 * see the image content, but only if server permissions allow direct access.
 	 */
-	if ( current_user_can( 'manage_woocommerce' ) ) {
+	if ( current_user_can( 'manage_woocommerce' )
+		&& wc_uploads_is_direct_access_allowed() ) {
 		return $attr;
 	}
+
 
 	/*
 	 * If the user does not have the right capabilities,
@@ -567,6 +570,34 @@ add_filter( 'wp_get_attachment_image_attributes', 'wc_get_attachment_image_attri
 
 
 /**
+ * Check if direct access is allowed to WooCommerce uploads directory.
+ * This is particularly focused on access via URL.
+ *
+ * @since 9.8.0
+ * @return bool True if direct access is allowed, false if denied.
+ */
+function wc_uploads_is_direct_access_allowed() {
+	$upload_dir = wp_get_upload_dir();
+	$path = $upload_dir['basedir'] . '/woocommerce_uploads/.htaccess';
+
+	$transient_key = 'wc_htaccess_direct_access_' . md5( $path );
+	$cached_htaccess = get_transient( $transient_key );
+	if ( false !== $cached_htaccess ) {
+		return strstr( $cached_htaccess, 'deny from all' ) ? false : true;
+	}
+
+	// If no cache, check file
+	if ( file_exists( $path ) ) {
+		$htaccess = file_get_contents( $path );
+		// Cache for 12 hours since .htaccess rarely changes
+		set_transient( $transient_key, $htaccess, 12 * HOUR_IN_SECONDS );
+		return strstr( $htaccess, 'deny from all' ) ? false : true;
+	}
+
+	return true;
+}
+
+/**
  * Prepare attachment for JavaScript.
  *
  * @param array $response JS version of a attachment post object.
@@ -575,9 +606,10 @@ add_filter( 'wp_get_attachment_image_attributes', 'wc_get_attachment_image_attri
 function wc_prepare_attachment_for_js( $response ) {
 	/*
 	 * If the user can manage woocommerce, allow them to
-	 * see the image content.
+	 * see the image content, but only if server permissions allow direct access.
 	 */
-	if ( current_user_can( 'manage_woocommerce' ) ) {
+	if ( current_user_can( 'manage_woocommerce' )
+		&& wc_uploads_is_direct_access_allowed() ) {
 		return $response;
 	}
 
