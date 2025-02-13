@@ -1,11 +1,7 @@
 /**
  * External dependencies
  */
-import {
-	getContext,
-	store,
-	navigate as navigateFn,
-} from '@wordpress/interactivity';
+import { getContext, store } from '@wordpress/interactivity';
 import { getSetting } from '@woocommerce/settings';
 
 const isBlockTheme = getSetting< boolean >( 'isBlockTheme' );
@@ -37,7 +33,7 @@ function isParamsEqual(
 	return true;
 }
 
-function navigate( href: string, options = {} ) {
+async function navigate( href: string, options = {} ) {
 	/**
 	 * We may need to reset the current page when changing filters.
 	 * This is because the current page may not exist for this set
@@ -64,7 +60,9 @@ function navigate( href: string, options = {} ) {
 	if ( needsRefresh || ( ! isBlockTheme && isProductArchive ) ) {
 		return ( window.location.href = href );
 	}
-	return navigateFn( href, options );
+
+	const { actions } = await import( '@wordpress/interactivity-router' );
+	return actions.navigate( href, options );
 }
 
 export type ActiveFilter = {
