@@ -34,14 +34,8 @@ if ( ! $tab_exists ) {
 	exit;
 }
 
-try {
-	$in_treatment = Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' );
-} catch ( \Exception $e ) {
-	$in_treatment = false;
-}
-
 $hide_nav = Features::is_enabled( 'reactify-classic-payments-settings' ) &&
-	$in_treatment &&
+	Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' ) &&
 	( 'checkout' === $current_tab && 'offline' === $current_section );
 ?>
 
