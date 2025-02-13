@@ -55,7 +55,7 @@ jest.mock( '@wordpress/data', () => ( {
 			hasFinishedResolution: () => true,
 			getOption: ( key: string ) => {
 				return {
-					wc_connect_options: {
+					wcshipping_options: {
 						tos_accepted: true,
 					},
 					woocommerce_setup_jetpack_opted_in: 1,

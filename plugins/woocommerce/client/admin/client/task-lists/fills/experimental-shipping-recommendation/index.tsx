@@ -38,7 +38,7 @@ const ShippingRecommendationWrapper = compose(
 					'woocommerce_setup_jetpack_opted_in',
 				] ) ||
 				! hasFinishedResolution( 'getOption', [
-					'wc_connect_options',
+					'wcshipping_options',
 				] ) ||
 				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				! select( PLUGINS_STORE_NAME ).hasFinishedResolution(

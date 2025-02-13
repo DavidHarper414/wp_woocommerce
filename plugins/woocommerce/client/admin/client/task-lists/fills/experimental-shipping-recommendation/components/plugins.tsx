@@ -14,11 +14,11 @@ import { useEffect } from '@wordpress/element';
 import { createNoticesFromResponse } from '~/lib/notices';
 import { TermsOfService } from '~/task-lists/components/terms-of-service';
 
-const isWcConnectOptions = (
-	wcConnectOptions: unknown
-): wcConnectOptions is {
+const isWcShippingOptions = (
+	wcShippingOptions: unknown
+): wcShippingOptions is {
 	[ key: string ]: unknown;
-} => typeof wcConnectOptions === 'object' && wcConnectOptions !== null;
+} => typeof wcShippingOptions === 'object' && wcShippingOptions !== null;
 
 type Props = {
 	nextStep: () => void;
@@ -34,7 +34,7 @@ export const Plugins: React.FC< Props > = ( {
 		const { getOption, hasFinishedResolution } =
 			select( OPTIONS_STORE_NAME );
 		// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-		const wcConnectOptions = getOption( 'wc_connect_options' );
+		const wcShippingOptions = getOption( 'wcshipping_options' );
 
 		return {
 			isResolving:
@@ -44,11 +44,11 @@ export const Plugins: React.FC< Props > = ( {
 				] ) ||
 				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				! hasFinishedResolution( 'getOption', [
-					'wc_connect_options',
+					'wcshipping_options',
 				] ),
 			tosAccepted:
-				( isWcConnectOptions( wcConnectOptions ) &&
-					wcConnectOptions?.tos_accepted ) ||
+				( isWcShippingOptions( wcShippingOptions ) &&
+					wcShippingOptions?.tos_accepted ) ||
 				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				getOption( 'woocommerce_setup_jetpack_opted_in' ) === '1',
 		};
