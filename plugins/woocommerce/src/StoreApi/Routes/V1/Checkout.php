@@ -185,6 +185,11 @@ class Checkout extends AbstractCartRoute {
 	 * @return true|\WP_Error
 	 */
 	public function validate_callback( $request ) {
+		/**
+		 * The request is cloned to avoid modifying the original request object when sanitizing params.
+		 * Un-sanitized params are used to see if required fields had values, wheras sanitized params are used to
+		 * validate field values.
+		 */
 		$sanitized_request = clone $request;
 		$sanitized_request->sanitize_params();
 
@@ -274,7 +279,7 @@ class Checkout extends AbstractCartRoute {
 						}
 						$errors->add( 'woocommerce_required_checkout_field', $error_message );
 					}
-					break;
+					continue;
 				}
 
 				$valid_check = $this->additional_fields_controller->validate_field( $field_key, $sanitized_field_value, $document_object, $context );
@@ -290,7 +295,7 @@ class Checkout extends AbstractCartRoute {
 						);
 					}
 					$errors->merge_from( $valid_check );
-					break;
+					continue;
 				}
 			}
 
