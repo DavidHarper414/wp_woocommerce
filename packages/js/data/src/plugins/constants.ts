@@ -44,6 +44,7 @@ export const pluginNames = {
 		'WooCommerce Shipping & Tax',
 		'woocommerce'
 	),
+	'woocommerce-shipping': __( 'WooCommerce Shipping', 'woocommerce' ),
 	'woocommerce-shipstation-integration': __(
 		'WooCommerce ShipStation Gateway',
 		'woocommerce'
