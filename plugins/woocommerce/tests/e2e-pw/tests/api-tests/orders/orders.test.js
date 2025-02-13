@@ -39,7 +39,7 @@ const updatedCustomerShipping = {
 };
 
 test.describe.serial( 'Orders API tests', () => {
-	let orderId, sampleData, reducedRatePreexists;
+	let orderId, sampleData;
 
 	test.beforeAll( async ( { request } ) => {
 		const createSampleCategories = async () => {
@@ -214,29 +214,6 @@ test.describe.serial( 'Orders API tests', () => {
 			return {
 				freightJSON,
 			};
-		};
-
-		const createSampleTaxClasses = async () => {
-			//check to see if Reduced Rate tax class exists - if not, create it
-			const response_getReducedRate = await request.get(
-				'./wp-json/wc/v3/taxes/classes/reduced-rate'
-			);
-			reducedRatePreexists = response_getReducedRate.ok();
-
-			//if tax class does not exist then create it
-			if ( ! reducedRatePreexists ) {
-				const reducedRate = await request.post(
-					'./wp-json/wc/v3/taxes/classes',
-					{
-						data: {
-							name: 'Reduced rate',
-						},
-						failOnStatusCode: true,
-					}
-				);
-				const reducedRateJSON = await reducedRate.json();
-				return { reducedRateJSON };
-			}
 		};
 
 		const createSampleSimpleProducts = async (
@@ -860,7 +837,7 @@ test.describe.serial( 'Orders API tests', () => {
 								external_url: '',
 								button_text: '',
 								tax_status: 'taxable',
-								tax_class: 'reduced-rate',
+								tax_class: '',
 								manage_stock: false,
 								stock_quantity: null,
 								backorders: 'no',
@@ -2138,8 +2115,6 @@ test.describe.serial( 'Orders API tests', () => {
 
 			const shippingClasses = await createSampleShippingClasses();
 
-			await createSampleTaxClasses();
-
 			const simpleProducts = await createSampleSimpleProducts(
 				categories,
 				attributes,
@@ -2592,19 +2567,6 @@ test.describe.serial( 'Orders API tests', () => {
 					failOnStatusCode: true,
 				}
 			);
-
-			// Delete Reduced rate tax class if it didn't exist.
-			if ( ! reducedRatePreexists ) {
-				await request.delete(
-					'./wp-json/wc/v3/taxes/classes/reduced-rate',
-					{
-						data: {
-							force: true,
-						},
-						failOnStatusCode: true,
-					}
-				);
-			}
 		};
 
 		const deleteSampleData = async ( _sampleData ) => {
