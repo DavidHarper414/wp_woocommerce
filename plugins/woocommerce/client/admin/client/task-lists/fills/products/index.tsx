@@ -177,7 +177,7 @@ export const Products = () => {
 				<Text className="woocommerce-products-marketplace-link">
 					{ interpolateComponents( {
 						mixedString: __(
-							'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your products with additional options such as Subscriptions, Gift Cards, and more.',
+							'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your store with additional options such as Subscriptions, Gift Cards, and more.',
 							'woocommerce'
 						),
 						components: {

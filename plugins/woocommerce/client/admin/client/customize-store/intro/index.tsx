@@ -9,6 +9,7 @@ import interpolateComponents from '@automattic/interpolate-components';
 import { getNewPath } from '@woocommerce/navigation';
 import { Sender } from 'xstate';
 import { Notice } from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -128,6 +129,23 @@ const ThemeCards = ( {
 			</div>
 
 			<div className="woocommerce-customize-store-browse-themes">
+				<Text
+					variant="title.small"
+					as="h2"
+					className="woocommerce-browse-themes-card__title"
+				>
+					{ __(
+						'Visit the Official WooCommerce Theme Marketplace',
+						'woocommerce'
+					) }
+				</Text>
+
+				<Text variant="body.small" as="p">
+					{ __(
+						'Browse more than 100 free and paid themes tailored to different industries—30-day money-back guarantee. If you change your mind within 30 days of your purchase, we’ll give you a full refund — hassle-free.',
+						'woocommerce'
+					) }
+				</Text>
 				<button
 					onClick={ () =>
 						sendEvent( {
