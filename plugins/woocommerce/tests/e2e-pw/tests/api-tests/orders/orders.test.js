@@ -117,28 +117,31 @@ test.describe.serial( 'Orders API tests', () => {
 		};
 
 		const createSampleAttributes = async () => {
-			const color = await request.post(
-				'./wp-json/wc/v3/products/attributes',
+			// Create attributes
+			const color = {
+				name: `Color ${ RAND_STRING }`,
+			};
+			const size = {
+				name: `Size ${ RAND_STRING }`,
+			};
+			const attributes = await request.post(
+				'./wp-json/wc/v3/products/attributes/batch',
 				{
 					data: {
-						name: `Color ${ RAND_STRING }`,
+						create: [ color, size ],
 					},
 					failOnStatusCode: true,
 				}
 			);
-			const colorJSON = await color.json();
-
-			const size = await request.post(
-				'./wp-json/wc/v3/products/attributes',
-				{
-					data: {
-						name: `Size ${ RAND_STRING }`,
-					},
-					failOnStatusCode: true,
-				}
+			const attributesJSON = await attributes.json();
+			const colorJSON = attributesJSON.create.find(
+				( { name } ) => name === color.name
 			);
-			const sizeJSON = await size.json();
+			const sizeJSON = attributesJSON.create.find(
+				( { name } ) => name === size.name
+			);
 
+			// Create attribute terms
 			const colorNames = [ 'Blue', 'Gray', 'Green', 'Red', 'Yellow' ];
 
 			const colorNamesObjectArray = colorNames.map( ( name ) => ( {
