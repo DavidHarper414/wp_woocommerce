@@ -20,7 +20,7 @@ The Marketplace API handles interactions with WooCommerce.com and local product 
    - `/wc/v3/marketplace/featured`: Gets curated extensions and themes for the Discover page.
      (Source: `class-wc-helper-admin.php` → `class-wc-admin-addons.php`)
    - `/wp-json/wccom-extensions/1.0/search`: Searches WooCommerce.com products.
-     (Source: `fetchJsonWithCache()` in `./utils/functions.tsx`)
+     (Source: `fetchSearchResults()` in `./utils/functions.tsx`)
    - `wp-json/wccom-extensions/1.0/categories`: Returns a list of categories.
      (Source: `fetchCategories()` in `./utils/functions.tsx`)
 
