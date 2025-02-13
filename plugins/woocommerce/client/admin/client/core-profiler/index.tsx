@@ -624,7 +624,7 @@ const getPlugins = fromPromise( async () => {
 	dispatch( onboardingStore ).invalidateResolutionForStoreSelector(
 		'getFreeExtensions'
 	);
-	const extensionsBundles: ExtensionList[] = await resolveSelect(
+	const extensionsBundles = await resolveSelect(
 		onboardingStore
 	).getFreeExtensions();
 	return (
