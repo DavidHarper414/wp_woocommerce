@@ -54,13 +54,17 @@ export const Form = ( {
 		return formData;
 	};
 
-	const handleSubmit = ( event: React.FormEvent< HTMLFormElement > ) => {
+	const handleSubmit = async (
+		event: React.FormEvent< HTMLFormElement >
+	) => {
 		event.preventDefault();
 
 		const query: Record< string, string > = {
 			page: 'wc-settings',
-			tab: settingsPage.slug,
 		};
+		if ( settingsPage.slug !== 'general' ) {
+			query.tab = settingsPage.slug;
+		}
 		if ( activeSection !== 'default' ) {
 			query.section = activeSection;
 		}
@@ -70,14 +74,26 @@ export const Form = ( {
 		formData._wpnonce = settingsData._wpnonce;
 		formData._w_http_referer = '/wp-admin/' + getNewPath( query );
 
-		// eslint-disable-next-line no-console
-		console.log(
-			'tab: ',
-			settingsPage.slug,
-			'section: ',
-			activeSection,
-			formData
+		const form = new FormData();
+		for ( const [ key, value ] of Object.entries( formData ) ) {
+			form.append( key, value );
+		}
+
+		const response = await fetch(
+			`/?rest_route=/wc-admin/settings&${ new URLSearchParams(
+				query
+			).toString() }`,
+			{
+				method: 'POST',
+				body: form,
+				credentials: 'same-origin', // Include cookies for nonce validation
+				headers: {
+					'X-WP-Nonce': settingsData._wpnonce,
+				},
+			}
 		);
+
+		console.log( response );
 	};
 
 	return (
