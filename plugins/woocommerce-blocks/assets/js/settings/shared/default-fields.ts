@@ -50,7 +50,7 @@ export interface Field {
 	// Additional attributes added when registering a field. String in key is required for data attributes.
 	attributes?: Record< keyof CustomFieldAttributes, string >;
 	// The rules for the field.
-	rules?: {
+	rules: {
 		required?: JSONSchemaType< DocumentObject< 'global' > > | []; // Empty array because server returns an empty array when no rules are set.
 		validation?: JSONSchemaType< DocumentObject< 'global' > > | [];
 		hidden?: JSONSchemaType< DocumentObject< 'global' > > | [];

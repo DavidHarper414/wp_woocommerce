@@ -15,25 +15,21 @@ import {
 	usePrevious,
 } from '@woocommerce/base-hooks';
 import type { JSONSchemaType, ErrorObject } from 'ajv';
-import { __, sprintf, getLocaleData } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useRef } from '@wordpress/element';
 import fastDeepEqual from 'fast-deep-equal/es6';
-import { isPostcode } from '@woocommerce/blocks-checkout';
+import { isPostcode, getFieldLabel } from '@woocommerce/blocks-checkout';
 import { isEmail } from '@wordpress/url';
 import { nonNullable } from '@woocommerce/types';
+
+/**
+ * Internal dependencies
+ */
+import { hasSchemaRules } from './utils';
 
 type FormErrors = Partial< {
 	[ key in keyof FormFields ]: string;
 } >;
-
-const getFieldLabelCasing = ( fieldLabel: string ): string => {
-	const localeData = getLocaleData();
-	const shouldKeepOriginalCase = [ 'de', 'de_AT', 'de_CH' ].includes(
-		localeData?.[ '' ]?.lang ?? 'en'
-	);
-
-	return shouldKeepOriginalCase ? fieldLabel : fieldLabel.toLowerCase();
-};
 
 /**
  * Get the key of the field from the instance path.
@@ -63,7 +59,7 @@ const getErrorsMap = (
 			return acc;
 		}
 
-		const fieldLabel = getFieldLabelCasing( formField.label );
+		const fieldLabel = getFieldLabel( formField.label );
 		const defaultMessage = sprintf(
 			// translators: %s is the label of the field.
 			__( '%s is invalid', 'woocommerce' ),
@@ -144,10 +140,9 @@ export const useFormValidation = (
 		>
 	>( ( acc, field ) => {
 		if (
-			! field.hidden &&
-			typeof field.rules?.validation === 'object' &&
-			! Array.isArray( field.rules.validation ) &&
-			( field.required || field.key in values )
+			hasSchemaRules( field, 'validation' ) && // Schema validation only run for fields with validation rules.
+			! field.hidden && // And visible
+			( field.required || field.key in values ) // And is required or has a optional with a value (or both).
 		) {
 			acc[ field.key ] = field.rules.validation;
 		}

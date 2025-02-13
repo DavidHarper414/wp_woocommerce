@@ -15,6 +15,7 @@ import fastDeepEqual from 'fast-deep-equal/es6';
  * Internal dependencies
  */
 import prepareFormFields from './prepare-form-fields';
+import { hasSchemaRules } from './utils';
 
 /**
  * Combines address fields, including fields from the locale, and sorts them by index.
@@ -41,12 +42,7 @@ export const useFormFields = (
 	const updatedFields = formFields.map( ( field ) => {
 		const defaultConfig = defaultFields[ field.key ] || {};
 		if ( defaultConfig.rules && parser ) {
-			if (
-				defaultConfig.rules.required &&
-				typeof defaultConfig.rules.required === 'object' &&
-				! Array.isArray( defaultConfig.rules.required ) &&
-				Object.keys( defaultConfig.rules.required ).length > 0
-			) {
+			if ( hasSchemaRules( defaultConfig, 'required' ) ) {
 				let schema = {};
 				if (
 					Object.keys( defaultConfig.rules.required ).some(
@@ -74,12 +70,7 @@ export const useFormFields = (
 					}
 				}
 			}
-			if (
-				defaultConfig.rules.hidden &&
-				typeof defaultConfig.rules.hidden === 'object' &&
-				! Array.isArray( defaultConfig.rules.hidden ) &&
-				Object.keys( defaultConfig.rules.hidden ).length > 0
-			) {
+			if ( hasSchemaRules( defaultConfig, 'hidden' ) ) {
 				const schema = {
 					type: 'object',
 					properties: defaultConfig.rules.hidden,

@@ -4,9 +4,9 @@
 import { ValidatedTextInput } from '@woocommerce/blocks-components';
 import { useState, Fragment, useCallback, useEffect } from '@wordpress/element';
 import { usePrevious } from '@woocommerce/base-hooks';
-import { __, sprintf, getLocaleData } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@ariakit/react';
-
+import { getFieldLabel } from '@woocommerce/blocks-checkout';
 /**
  * Internal dependencies
  */
@@ -27,10 +27,7 @@ const AddressLine2Field = ( {
 		() => Boolean( value ) || isFieldRequired
 	);
 
-	const localeData = getLocaleData();
-	const shouldKeepOriginalCase = [ 'de', 'de_AT', 'de_CH' ].includes(
-		localeData?.[ '' ]?.lang ?? 'en'
-	);
+	const fieldLabel = getFieldLabel( field.label );
 	// Re-render if the isFieldVisible prop changes.
 	useEffect( () => {
 		if ( previousIsFieldRequired !== isFieldRequired ) {
@@ -71,9 +68,7 @@ const AddressLine2Field = ( {
 						{ sprintf(
 							// translators: %s: address 2 field label.
 							__( '+ Add %s', 'woocommerce' ),
-							shouldKeepOriginalCase
-								? field.label
-								: field.label.toLowerCase()
+							fieldLabel
 						) }
 					</Button>
 					<input

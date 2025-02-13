@@ -1,23 +1,26 @@
 /**
  * External dependencies
  */
+import { DocumentObject } from '@woocommerce/base-hooks';
 import {
 	AddressForm,
 	AddressFormValues,
+	Field,
 	KeyedFormFields,
 } from '@woocommerce/settings';
-import { objectHasProp } from '@woocommerce/types';
+import { isObject, objectHasProp } from '@woocommerce/types';
+import { JSONSchemaType } from 'ajv';
 
 export interface FieldProps {
 	id: string;
 	errorId: string;
 	label: string;
-	autoCapitalize?: string;
-	autoComplete?: string;
-	errorMessage?: string;
-	required?: boolean;
-	placeholder?: string;
-	className?: string;
+	autoCapitalize: string;
+	autoComplete: string;
+	errorMessage: string;
+	required: boolean;
+	placeholder: string;
+	className: string;
 }
 
 export const createFieldProps = (
@@ -72,4 +75,19 @@ export const getFieldData = < T extends keyof AddressForm >(
 		field: { ...addressField, key }, // TS won't infer the key type correctly.
 		value: addressValue,
 	};
+};
+
+export const hasSchemaRules = (
+	field: Field,
+	key: keyof Field[ 'rules' ]
+): field is Field & {
+	rules: {
+		[ k in typeof key ]: JSONSchemaType< DocumentObject< 'global' > >;
+	};
+} => {
+	return (
+		isObject( field.rules ) &&
+		isObject( field.rules[ key ] ) &&
+		Object.keys( field.rules[ key ] ).length > 0
+	);
 };
