@@ -37,8 +37,8 @@ const productFilterActiveStore = store( 'woocommerce/product-filter-active', {
 	},
 	actions: {
 		removeFilter: () => {
-			const { props } = getElement();
-			let filterItem = props[ 'data-filter-item' ];
+			const { attributes } = getElement();
+			let filterItem = attributes[ 'data-filter-item' ];
 
 			if ( typeof filterItem === 'string' )
 				filterItem = JSON.parse( filterItem );
