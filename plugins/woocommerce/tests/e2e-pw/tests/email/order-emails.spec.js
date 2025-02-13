@@ -1,3 +1,4 @@
+/* eslint-disable playwright/expect-expect */
 /**
  * External dependencies
  */
@@ -9,33 +10,7 @@ import { faker } from '@faker-js/faker';
 import { ADMIN_STATE_PATH } from '../../playwright.config';
 import { expect, test as baseTest } from '../../fixtures/fixtures';
 import { admin } from '../../test-data/data';
-
-async function expectEmail( page, receiverEmailAddress, subject ) {
-	await page.goto(
-		`wp-admin/tools.php?page=wpml_plugin_log&search[place]=receiver&search[term]=${ encodeURIComponent(
-			receiverEmailAddress
-		) }&orderby=timestamp&order=desc`
-	);
-
-	const row = page
-		.getByRole( 'row' )
-		.filter( {
-			has: page.getByRole( 'cell', {
-				name: receiverEmailAddress,
-				exact: true,
-			} ),
-		} )
-		.filter( {
-			has: page.getByRole( 'cell', {
-				name: subject,
-				exact: true,
-			} ),
-		} );
-
-	await expect( row ).toBeVisible();
-
-	return row;
-}
+import { expectEmail, expectEmailContent } from '../../utils/email';
 
 const test = baseTest.extend( {
 	storageState: ADMIN_STATE_PATH,
@@ -86,7 +61,6 @@ const test = baseTest.extend( {
 		content: 'Thanks for reading',
 	},
 ].forEach( ( { role, status, subject, content } ) => {
-	// eslint-disable-next-line playwright/expect-expect
 	test( `${ role } receives email for ${ status } order`, async ( {
 		page,
 		api,
@@ -122,31 +96,16 @@ const test = baseTest.extend( {
 		await test.step( 'check the email content', async () => {
 			await emailRow.getByRole( 'button', { name: 'View log' } ).click();
 
-			const modalContent = page.locator(
-				'#wp-mail-logging-modal-content-body-content'
-			);
-
-			await expect(
-				modalContent.getByText(
-					`Receiver ${
-						role === 'customer' ? order.billing.email : admin.email
-					}`
-				)
-			).toBeVisible();
-			await expect( modalContent.getByText( subject ) ).toBeVisible();
-
-			const emailContentFrame = modalContent
-				.locator( 'iframe' )
-				.contentFrame();
-
-			await expect( emailContentFrame.locator( 'body' ) ).toContainText(
+			await expectEmailContent(
+				page,
+				role === 'customer' ? order.billing.email : admin.email,
+				subject,
 				content
 			);
 		} );
 	} );
 } );
 
-// eslint-disable-next-line playwright/expect-expect
 test( 'Merchant can resend order details to customer', async ( {
 	order,
 	page,
