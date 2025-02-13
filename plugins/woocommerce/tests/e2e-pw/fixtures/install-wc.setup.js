@@ -62,27 +62,28 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 
 		resolvedVersion = ( await latestResponse.json() )?.version || '';
 
-		setup.skip(
-			resolvedVersion === activatedWcVersion,
-			'Skip installing WC: The latest version is already installed and activated.'
-		);
+		if ( resolvedVersion === activatedWcVersion ) {
+			console.log(
+				'Skip installing WC: The latest version is already installed and activated.'
+			);
+			return;
+		}
+		await deactivateWooCommerce( wcbtApi );
 
 		if ( ! resolvedVersion ) {
 			console.error( 'Error: latestResponse.version is undefined.' );
 		} else {
 			console.log( `Latest version installed: ${ resolvedVersion }` );
 		}
-		if ( activatedWcVersion ) {
-			await deactivateWooCommerce( wcbtApi );
-		}
 	} else {
-		setup.skip(
-			wcVersion === activatedWcVersion,
-			'Skip installing WC: Specified version is already installed and activated.'
-		);
-		if ( activatedWcVersion ) {
-			await deactivateWooCommerce( wcbtApi );
+		if ( wcVersion === activatedWcVersion ) {
+			console.log(
+				'Skip installing WC: The specified version is already installed and activated.'
+			);
+			return;
 		}
+		await deactivateWooCommerce( wcbtApi );
+
 		try {
 			const downloadUrl = `https://github.com/woocommerce/woocommerce/releases/download/${ wcVersion }/woocommerce.zip`;
 			const installResponse = await wcbtApi.fetch(
