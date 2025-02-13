@@ -29,6 +29,7 @@ createCrudDataStore( {
 
 export const EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME = STORE_NAME;
 
+// This is necessary for the correct typing of resolveSelect until the migration to register(storeDescriptor) is complete.
 declare module '@wordpress/data' {
 	function resolveSelect(
 		key: typeof STORE_NAME
