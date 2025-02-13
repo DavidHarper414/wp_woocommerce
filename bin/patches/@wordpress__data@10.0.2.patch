@@ -221,7 +221,7 @@ index 79f7bca6dbf5329568720413a51e8ecd009a1fcd..1e1fc7742a2a305536c2402b85763199
  //# sourceMappingURL=actions.d.ts.map
 \ No newline at end of file
 diff --git a/build-types/redux-store/metadata/selectors.d.ts b/build-types/redux-store/metadata/selectors.d.ts
-index 3a44c74e8bb021444a3072331b546d1b16f4d58e..41bb4f3a712c9c20dafb03ed3750960f3cd1f1e5 100644
+index 3a44c74e8bb021444a3072331b546d1b16f4d58e..63ada9260ead278a0d1ae9295939b1a9d7b2c7c7 100644
 --- a/build-types/redux-store/metadata/selectors.d.ts
 +++ b/build-types/redux-store/metadata/selectors.d.ts
 @@ -14,7 +14,7 @@
@@ -320,7 +320,7 @@ index 3a44c74e8bb021444a3072331b546d1b16f4d58e..41bb4f3a712c9c20dafb03ed3750960f
 \ No newline at end of file
 diff --git a/build-types/resolve-select.d.ts b/build-types/resolve-select.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..e3f66862d228533eff66a17b1644156a3d965ded
+index 0000000000000000000000000000000000000000..dc0d1c27debdb895007c52061e7944ff51c62adc
 --- /dev/null
 +++ b/build-types/resolve-select.d.ts
 @@ -0,0 +1,32 @@
@@ -358,7 +358,7 @@ index 0000000000000000000000000000000000000000..e3f66862d228533eff66a17b1644156a
 +};
 \ No newline at end of file
 diff --git a/build-types/types.d.ts b/build-types/types.d.ts
-index 70261db904a6038c3ac61377d2bd9115e0c9f10c..4d21d6e6868d83fc1022c83852e50fe8c62d6f08 100644
+index 70261db904a6038c3ac61377d2bd9115e0c9f10c..3a371e91ef70e26e7692ea2032a7f9ff79e3a0a8 100644
 --- a/build-types/types.d.ts
 +++ b/build-types/types.d.ts
 @@ -2,6 +2,13 @@
@@ -384,7 +384,7 @@ index 70261db904a6038c3ac61377d2bd9115e0c9f10c..4d21d6e6868d83fc1022c83852e50fe8
  } : never;
  /**
   * Removes the first argument from a function.
-@@ -121,15 +130,38 @@ export interface DataEmitter {
+@@ -121,15 +130,48 @@ export interface DataEmitter {
      isPaused: boolean;
  }
  export type ConfigOf<S> = S extends StoreDescriptor<infer C> ? C : never;
@@ -393,8 +393,19 @@ index 70261db904a6038c3ac61377d2bd9115e0c9f10c..4d21d6e6868d83fc1022c83852e50fe8
 +export type ActionCreatorsOf<Config extends AnyConfig> = Config extends ReduxStoreConfig<any, infer ActionCreators, any> ? PromisifiedActionCreators<ActionCreators & TypedMetadataActions<Config>> : never;export type PromisifiedActionCreators<ActionCreators extends MapOf<ActionCreator>> = {
      [Action in keyof ActionCreators]: PromisifyActionCreator<ActionCreators[Action]>;
  };
- export type PromisifyActionCreator<Action extends ActionCreator> = (...args: Parameters<Action>) => Promise<ReturnType<Action> extends (..._args: any[]) => any ? ThunkReturnType<Action> : ReturnType<Action>>;
+-export type PromisifyActionCreator<Action extends ActionCreator> = (...args: Parameters<Action>) => Promise<ReturnType<Action> extends (..._args: any[]) => any ? ThunkReturnType<Action> : ReturnType<Action>>;
++export type PromisifyActionCreator<Action extends ActionCreator> = (...args: Parameters<Action>) => 
++    Promise<
++        ReturnType<Action> extends (..._args: any[]) => any
++        ? ThunkReturnType<Action>
++        : ReturnType<Action> extends Generator
++        ? GeneratorReturnType<ReturnType<Action>>
++        : ReturnType<Action>
++>;
  export type ThunkReturnType<Action extends ActionCreator> = Awaited<ReturnType<ReturnType<Action>>>;
++
++type GeneratorReturnType<T> = T extends Generator<any, infer R, any> ? R : never;
++
  type SelectorsOf<Config extends AnyConfig> = Config extends ReduxStoreConfig<any, any, infer Selectors> ? {
 -    [name in keyof Selectors]: Function;
 +    [name in keyof Selectors]: Selectors[name] extends (...args: any[]) => any ? (...args: Parameters<Selectors[name]>) => ReturnType<Selectors[name]> : (...args: any[]) => any;
