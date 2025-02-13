@@ -15,6 +15,14 @@ async function deactivateWooCommerce( wcbtApi ) {
 	}
 }
 
+async function getActivatedWooCommerceVersion( wpApi ) {
+	const response = await wpApi.get( './wp-json/wp/v2/plugins', {
+		data: { status: 'active' },
+	} );
+	const plugins = await response.json();
+	return plugins.find( ( plugin ) => plugin.name === 'WooCommerce' )?.version;
+}
+
 setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 	setup.skip(
 		! process.env.INSTALL_WC,
@@ -23,13 +31,7 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 	console.log( 'INSTALL_WC is enabled. Running installation script...' );
 
 	// Check if WooCommerce is activated and its version
-	const response = await wpApi.get( './wp-json/wp/v2/plugins', {
-		data: { status: 'active' },
-	} );
-	const plugins = await response.json();
-	const activatedWcVersion = plugins.find(
-		( plugin ) => plugin.name === 'WooCommerce'
-	)?.version;
+	const activatedWcVersion = await getActivatedWooCommerceVersion( wpApi );
 
 	if ( activatedWcVersion ) {
 		console.log(
@@ -140,5 +142,16 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 		);
 	}
 
-	console.log( 'Installing with WC Beta Tester is finished.' );
+	// Check if WooCommerce is activated and its version
+	const finalActivatedWcVersion = await getActivatedWooCommerceVersion(
+		wpApi
+	);
+
+	if ( finalActivatedWcVersion === resolvedVersion ) {
+		console.log( 'Installing with WC Beta Tester is finished.' );
+	} else {
+		console.error(
+			`Expected WC version ${ resolvedVersion } is not installed. Instead: ${ finalActivatedWcVersion }`
+		);
+	}
 } );
