@@ -16,4 +16,8 @@
 		"typings/**/*",
 		"src/**/*",
 	],
+	"exclude": [
+		"**/test/**",
+		"**/stories/**",
+	]
 }

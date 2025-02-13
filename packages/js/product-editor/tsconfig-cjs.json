@@ -12,5 +12,9 @@
 	"include": [
 		"typings/**/*",
 		"src/**/*",
+	],
+	"exclude": [
+		"**/test/**",
+		"**/stories/**",
 	]
 }
