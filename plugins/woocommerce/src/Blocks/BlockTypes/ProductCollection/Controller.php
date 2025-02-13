@@ -40,6 +40,13 @@ class Controller extends AbstractBlock {
 	protected $renderer;
 
 	/**
+	 * Whether the store notices block has been added to the hooked blocks.
+	 *
+	 * @var bool
+	 */
+	private static $store_notices_added = false;
+
+	/**
 	 * Initialize this block type.
 	 *
 	 * - Register hooks and filters.
@@ -98,12 +105,19 @@ class Controller extends AbstractBlock {
 		$anchor_block_to_check = wc_is_block_hook_post_content_supported() ? 'woocommerce/product-collection' : 'core/post-content';
 
 		if ( $anchor_block_to_check === $anchor_block && 'before' === $position ) {
-			if ( $context instanceof \WP_Block_Template && ! str_contains( $context->content, 'woocommerce/store-notices' ) ) {
-				$hooked_blocks[] = 'woocommerce/store-notices';
-			}
+			if ( ! self::$store_notices_added ) {
+				// Cache the store notices block addition to prevent recursive rendering
+				// in full-site editing mode where both template and post content conditions
+				// may evaluate to true simultaneously.
+				if ( $context instanceof \WP_Block_Template && ! str_contains( $context->content, 'woocommerce/store-notices' ) ) {
+					$hooked_blocks[]           = 'woocommerce/store-notices';
+					self::$store_notices_added = true;
+				}
 
-			if ( $context instanceof \WP_Post && ! str_contains( $context->post_content, 'woocommerce/store-notices' ) ) {
-				$hooked_blocks[] = 'woocommerce/store-notices';
+				if ( $context instanceof \WP_Post && ! str_contains( $context->post_content, 'woocommerce/store-notices' ) ) {
+					$hooked_blocks[]           = 'woocommerce/store-notices';
+					self::$store_notices_added = true;
+				}
 			}
 		}
 
