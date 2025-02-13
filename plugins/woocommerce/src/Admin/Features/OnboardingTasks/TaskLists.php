@@ -465,8 +465,17 @@ class TaskLists {
 	 * @return array
 	 */
 	public static function task_list_preloaded_settings( $settings ) {
-		$settings['visibleTaskListIds'] = array_keys( self::get_visible() );
-
+		$settings['visibleTaskListIds'] = self::all_hidden() ? [] : array_keys(self::get_visible());
 		return $settings;
+	}
+
+	/**
+	 * Check if all task lists are hidden.
+	 *
+	 * @return bool
+	 */
+	public static function all_hidden() {
+		$hidden_lists = get_option( TaskList::HIDDEN_OPTION, array() );
+		return count( $hidden_lists ) === count( self::$lists );
 	}
 }
