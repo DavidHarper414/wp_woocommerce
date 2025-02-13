@@ -9,18 +9,34 @@ import {
 	WCPayBenefits,
 	WCPayBannerImageCut,
 } from '@woocommerce/onboarding';
-import { useDispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
+import React from 'react';
 
 /**
  * Internal dependencies
  */
-
 import { Action } from '../Action';
 import { connectWcpay } from './utils';
 import './suggestion.scss';
-import { getAdminSetting } from '~/utils/admin-settings';
+import { WOOPAY_ELIGIBILITY_STORE_NAME } from '~/settings-payments/woopay-eligibility-store';
+import type { WooPayEligibilityState } from '~/settings-payments/woopay-eligibility-store/types';
 
-export const Suggestion = ( { paymentGateway, onSetupCallback = null } ) => {
+interface PaymentGateway {
+	id: string;
+	needsSetup: boolean;
+	installed: boolean;
+	enabled: boolean;
+}
+
+interface SuggestionProps {
+	paymentGateway: PaymentGateway;
+	onSetupCallback?: ( () => void ) | null;
+}
+
+export const Suggestion: React.FC< SuggestionProps > = ( {
+	paymentGateway,
+	onSetupCallback = null,
+} ) => {
 	const {
 		id,
 		needsSetup,
@@ -28,7 +44,13 @@ export const Suggestion = ( { paymentGateway, onSetupCallback = null } ) => {
 		enabled: isEnabled,
 		installed: isInstalled,
 	} = paymentGateway;
-	const isWooPayEligible = getAdminSetting( 'isWooPayEligible' );
+
+	const isWooPayEligible = useSelect( ( select ) => {
+		const store = select( WOOPAY_ELIGIBILITY_STORE_NAME ) as {
+			getIsEligible: () => WooPayEligibilityState[ 'isEligible' ];
+		};
+		return store.getIsEligible();
+	}, [] );
 
 	const { createNotice } = useDispatch( 'core/notices' );
 	// When WCPay is installed and onSetupCallback is null
@@ -64,10 +86,12 @@ export const Suggestion = ( { paymentGateway, onSetupCallback = null } ) => {
 						/>
 					}
 					bannerImage={ <WCPayBannerImageCut /> }
-					isWooPayEligible={ isWooPayEligible }
+					isWooPayEligible={ isWooPayEligible ?? false }
 				/>
-				<WCPayBenefits isWooPayEligible={ isWooPayEligible } />
-				<WCPayBannerFooter isWooPayEligible={ isWooPayEligible } />
+				<WCPayBenefits isWooPayEligible={ isWooPayEligible ?? false } />
+				<WCPayBannerFooter
+					isWooPayEligible={ isWooPayEligible ?? false }
+				/>
 			</WCPayBanner>
 		</div>
 	);
