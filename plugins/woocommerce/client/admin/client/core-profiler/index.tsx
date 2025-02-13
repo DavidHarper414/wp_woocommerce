@@ -42,6 +42,7 @@ import { CountryStateOption } from '@woocommerce/onboarding';
 import { getAdminLink } from '@woocommerce/settings';
 import CurrencyFactory, { CountryInfo } from '@woocommerce/currency';
 import { recordEvent } from '@woocommerce/tracks';
+import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
@@ -436,46 +437,13 @@ const updateBusinessLocation = ( countryAndState: string ) => {
 };
 
 const updateStoreCurrency = async ( countryAndState: string ) => {
-	const { general: settings = {} } = await resolveSelect(
-		settingsStore
-	).getSettings( 'general' );
-
-	const countryCode = getCountryCode( countryAndState ) as string;
-	const { currencySymbols = {}, localeInfo = {} } = getAdminSetting(
-		'onboarding',
-		{}
-	);
-	const currencySettings = CurrencyFactory().getDataForCountry(
-		countryCode,
-		localeInfo,
-		currencySymbols
-	) as {
-		code: string;
-		symbolPosition: string;
-		thousandSeparator: string;
-		decimalSeparator: string;
-		precision: string;
-	};
-
-	if ( Object.keys( currencySettings ).length === 0 ) {
-		return;
-	}
-
-	return dispatch( settingsStore ).updateAndPersistSettingsForGroup(
-		'general',
-		{
-			general: {
-				...settings,
-				woocommerce_currency: currencySettings.code,
-				woocommerce_currency_pos: currencySettings.symbolPosition,
-				woocommerce_price_thousand_sep:
-					currencySettings.thousandSeparator,
-				woocommerce_price_decimal_sep:
-					currencySettings.decimalSeparator,
-				woocommerce_price_num_decimals: currencySettings.precision,
-			},
-		}
-	);
+	return await apiFetch( {
+		path: 'wc-admin/onboarding/profile/update-store-currency',
+		method: 'POST',
+		data: {
+			country_code: getCountryCode( countryAndState ),
+		},
+	} );
 };
 
 const updateStoreMeasurements = async ( countryAndState: string ) => {

@@ -14,6 +14,9 @@ defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile as Profile;
 use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProducts;
 use Automattic\Jetpack\Connection\Manager as Jetpack_Connection_Manager;
+use WP_Error;
+use WP_REST_Request;
+use WP_REST_Response;
 
 /**
  * Onboarding Profile controller.
@@ -117,6 +120,26 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 						),
 					),
 				),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/update-store-currency',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( $this, 'update_store_currency' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+					'args'                => array(
+						'country_code' => array(
+							'description' => __( 'Country code.', 'woocommerce' ),
+							'type'        => 'string',
+							'required'    => true,
+						),
+					),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
 	}
@@ -307,6 +330,40 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	public function get_profile_progress( $request ) {
 		$onboarding_progress = (array) get_option( Profile::PROGRESS_OPTION, array() );
 		return rest_ensure_response( $onboarding_progress );
+	}
+
+
+	/**
+	 * Update onboarding profile data.
+	 *
+	 * @param  WP_REST_Request $request Request data.
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function update_store_currency( WP_REST_Request $request ) {
+		$country_code = $request->get_param( 'country_code' );
+		$locale_info  = include WC()->plugin_path() . '/i18n/locale-info.php';
+
+		if ( empty( $country_code ) || ! isset( $locale_info[ $country_code ] ) ) {
+			return new WP_Error(
+				'woocommerce_rest_invalid_country_code',
+				__( 'Invalid country code.', 'woocommerce' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$country_info = $locale_info[ $country_code ];
+
+		$currency_settings = array(
+			'woocommerce_currency'           => $country_info['currency_code'],
+			'woocommerce_currency_pos'       => $country_info['currency_pos'],
+			'woocommerce_price_thousand_sep' => $country_info['thousand_sep'],
+			'woocommerce_price_decimal_sep'  => $country_info['decimal_sep'],
+			'woocommerce_price_num_decimals' => $country_info['num_decimals'],
+		);
+
+		array_walk( $currency_settings, 'update_option' );
+
+		return new WP_REST_Response( array(), 204 );
 	}
 
 	/**
