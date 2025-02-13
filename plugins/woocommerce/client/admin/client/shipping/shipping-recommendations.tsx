@@ -6,11 +6,14 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, Children } from '@wordpress/element';
 import { Text } from '@woocommerce/experimental';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
-import ExternalIcon from 'gridicons/dist/external';
+import interpolateComponents from '@automattic/interpolate-components';
+import { Link } from '@woocommerce/components';
+import { getAdminLink } from '@woocommerce/settings';
+import { recordEvent } from '@woocommerce/tracks';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore VisuallyHidden is present, it's just not typed
 // eslint-disable-next-line @woocommerce/dependency-group
-import { CardFooter, Button, VisuallyHidden } from '@wordpress/components';
+import { CardFooter } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -84,18 +87,31 @@ export const ShippingRecommendationsList = ( {
 			) ) }
 		</ul>
 		<CardFooter>
-			<Button
-				className="woocommerce-recommended-shipping-extensions__more_options_cta"
-				href="https://woocommerce.com/product-category/woocommerce-extensions/shipping-methods/?utm_source=shipping_recommendations"
-				target="_blank"
-				isTertiary
-			>
-				{ __( 'See more options', 'woocommerce' ) }
-				<VisuallyHidden>
-					{ __( '(opens in a new tab)', 'woocommerce' ) }
-				</VisuallyHidden>
-				<ExternalIcon size={ 18 } />
-			</Button>
+			<Text>
+				{ interpolateComponents( {
+					mixedString: __(
+						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more shipping, delivery, and fulfillment solutions.',
+						'woocommerce'
+					),
+					components: {
+						sbLink: (
+							<Link
+								onClick={ () => {
+									recordEvent(
+										'settings_shipping_recommendation_visit_marketplace_click'
+									);
+									window.location.href = getAdminLink(
+										'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping-delivery-and-fulfillment'
+									);
+									return false;
+								} }
+								href=""
+								type="wc-admin"
+							/>
+						),
+					},
+				} ) }
+			</Text>
 		</CardFooter>
 	</DismissableList>
 );
