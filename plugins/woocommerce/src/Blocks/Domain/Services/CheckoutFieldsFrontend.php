@@ -335,33 +335,4 @@ class CheckoutFieldsFrontend {
 
 		return $errors->has_errors() ? $errors : true;
 	}
-
-	/**
-	 * Helper to sanitize and return additional fields for a given location.
-	 *
-	 * Used for edit account and edit address forms.
-	 *
-	 * @param string $location Location to save fields for.
-	 * @param string $group    Group to save fields for.
-	 * @return array Field values.
-	 */
-	protected function get_additional_fields_values_for_location_group( $location, $group ) {
-		if ( ! in_array( $group, array( 'other', 'billing', 'shipping' ), true ) || ! in_array( $location, array( 'contact', 'address' ), true ) ) {
-			return;
-		}
-
-		$additional_fields = $this->checkout_fields_controller->get_fields_for_location( $location );
-
-		// Get all values from the POST request before validating.
-		$field_values = array();
-
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		foreach ( $additional_fields as $field_key => $field_data ) {
-			$post_key                   = CheckoutFields::get_group_key( $group ) . $field_key;
-			$field_values[ $field_key ] = wc_clean( wp_unslash( $_POST[ $post_key ] ?? '' ) );
-		}
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
-
-		return $field_values;
-	}
 }
