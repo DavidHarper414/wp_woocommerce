@@ -263,10 +263,11 @@ class Checkout extends AbstractCartRoute {
 					continue;
 				}
 
-				$field_value           = $field_values[ $field_key ] ?? '';
+				// Clean the field value to trim whitespace.
+				$field_value           = wc_clean( wp_unslash( $field_values[ $field_key ] ?? '' ) );
 				$sanitized_field_value = $sanitized_field_values[ $field_key ] ?? '';
 
-				if ( empty( trim( $field_value ) ) ) {
+				if ( empty( $field_value ) ) {
 					if ( $is_required ) {
 						/* translators: %s: is the field label */
 						$error_message = sprintf( __( '%s is required', 'woocommerce' ), $field['label'] );
