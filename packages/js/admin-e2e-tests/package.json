@@ -99,7 +99,7 @@
 			]
 		},
 		"watch:build:project:typescript": {
-			"command": "tsc --project tsconfig.json --watch --noCheck",
+			"command": "tsc --project tsconfig.json --watch",
 			"service": true
 		},
 		"dependencyOutputs": {

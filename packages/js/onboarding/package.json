@@ -166,7 +166,7 @@
 			]
 		},
 		"watch:build:project:cjs": {
-			"command": "tsc --project tsconfig-cjs.json --watch",
+			"command": "tsc --project tsconfig-cjs.json --watch --noCheck",
 			"service": true
 		},
 		"build:project:esm": {
@@ -186,7 +186,7 @@
 			]
 		},
 		"watch:build:project:esm": {
-			"command": "tsc --project tsconfig.json --watch --noCheck",
+			"command": "tsc --project tsconfig.json --watch",
 			"service": true
 		},
 		"dependencyOutputs": {
