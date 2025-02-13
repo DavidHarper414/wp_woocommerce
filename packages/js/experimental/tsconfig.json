@@ -10,7 +10,6 @@
 		"typeRoots": [ "./typings", "./node_modules/@types" ],
 		"types": [ "jest" ]
 	},
-	"exclude": [],
 	"include": [
 		"typings/**/*",
 		"src/**/*"
