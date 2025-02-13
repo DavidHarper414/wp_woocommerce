@@ -24,6 +24,7 @@ class ProductCatalogTemplate extends AbstractTemplate {
 	 */
 	public function init() {
 		add_action( 'template_redirect', array( $this, 'render_block_template' ) );
+		add_filter( 'rest_prepare_page', array( $this, 'modify_shop_page_template' ), 10, 3 );
 	}
 
 	/**
@@ -60,5 +61,20 @@ class ProductCatalogTemplate extends AbstractTemplate {
 
 			add_filter( 'woocommerce_has_block_template', '__return_true', 10, 0 );
 		}
+	}
+
+	/**
+	 * Modify the shop page template to include the Product Catalog template.
+	 *
+	 * @param WP_REST_Response $response The response object.
+	 * @param WP_Post          $post     The post object.
+	 * @param WP_REST_Request  $request  The request object.
+	 * @return WP_REST_Response
+	 */
+	public function modify_shop_page_template( $response, $post, $request ) {
+		if ( wc_get_page_id( 'shop' ) === $post->ID ) {
+			$response->data['template'] = 'archive-product';
+		}
+		return $response;
 	}
 }
