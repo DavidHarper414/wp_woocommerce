@@ -9,8 +9,10 @@ on:
         paths-ignore:
             - 'docs/**'
             - 'packages/php/**'
+            - '!packages/php/blueprint/**'
             - 'tools/**'
             - '**/changelog/**'
+            - 'changelog.txt'
             - '**/tests/**'
             - '**/*.md'
             - '.husky/**'
