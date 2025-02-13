@@ -2,14 +2,11 @@
  * External dependencies
  */
 import { getContext, store } from '@wordpress/interactivity';
-import { getSetting } from '@woocommerce/settings';
 
-const isBlockTheme = getSetting< boolean >( 'isBlockTheme' );
-const isProductArchive = getSetting< boolean >( 'isProductArchive' );
-const needsRefresh = getSetting< boolean >(
-	'needsRefreshForInteractivityAPI',
-	false
-);
+const getSetting = window.wc.wcSettings.getSetting;
+const isBlockTheme = getSetting( 'isBlockTheme' );
+const isProductArchive = getSetting( 'isProductArchive' );
+const needsRefresh = getSetting( 'needsRefreshForInteractivityAPI', false );
 
 function isParamsEqual(
 	obj1: Record< string, string >,

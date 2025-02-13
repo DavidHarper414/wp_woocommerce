@@ -1,13 +1,9 @@
 /**
- * External dependencies
- */
-import { isString, objectHasProp } from '@woocommerce/types';
-
-/**
  * Internal dependencies
  */
 import { getColorsFromBlockSupports } from '.';
-import { type BlockAttributes } from '../types';
+import type { BlockAttributes } from '../types';
+import { isString, objectHasProp } from './objects';
 
 function presetToCssVariable( preset: string ) {
 	if ( ! preset.includes( ':' ) || ! preset.includes( '|' ) ) {
