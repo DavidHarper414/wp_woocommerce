@@ -43,74 +43,68 @@ test.describe.serial( 'Orders API tests', () => {
 
 	test.beforeAll( async ( { request } ) => {
 		const createSampleCategories = async () => {
-			const clothing = await request.post(
-				'./wp-json/wc/v3/products/categories',
+			// Create main categories
+			const clothing = {
+				name: `Clothing ${ RAND_STRING }`,
+			};
+			const decor = {
+				name: `Decor ${ RAND_STRING }`,
+			};
+			const music = {
+				name: `Music ${ RAND_STRING }`,
+			};
+			const categories = await request.post(
+				'./wp-json/wc/v3/products/categories/batch',
 				{
 					data: {
-						name: `Clothing ${ RAND_STRING }`,
+						create: [ clothing, decor, music ],
 					},
 					failOnStatusCode: true,
 				}
 			);
-			const clothingJSON = await clothing.json();
+			const categoriesJSON = await categories.json();
+			const clothingJSON = categoriesJSON.create.find(
+				( { name } ) => name === clothing.name
+			);
+			const decorJSON = categoriesJSON.create.find(
+				( { name } ) => name === decor.name
+			);
+			const musicJSON = categoriesJSON.create.find(
+				( { name } ) => name === music.name
+			);
 
-			const accessories = await request.post(
-				'./wp-json/wc/v3/products/categories',
+			// Create sub-categories
+			const accessories = {
+				name: `Accessories ${ RAND_STRING }`,
+				parent: clothingJSON.id,
+			};
+			const hoodies = {
+				name: `Hoodies ${ RAND_STRING }`,
+				parent: clothingJSON.id,
+			};
+			const tshirts = {
+				name: `Tshirts ${ RAND_STRING }`,
+				parent: clothingJSON.id,
+			};
+			const subCategories = await request.post(
+				'./wp-json/wc/v3/products/categories/batch',
 				{
 					data: {
-						name: `Accessories ${ RAND_STRING }`,
-						parent: clothingJSON.id,
+						create: [ accessories, hoodies, tshirts ],
 					},
 					failOnStatusCode: true,
 				}
 			);
-			const accessoriesJSON = await accessories.json();
-
-			const hoodies = await request.post(
-				'./wp-json/wc/v3/products/categories',
-				{
-					data: {
-						name: `Hoodies ${ RAND_STRING }`,
-						parent: clothingJSON.id,
-					},
-					failOnStatusCode: true,
-				}
+			const subCategoriesJSON = await subCategories.json();
+			const accessoriesJSON = subCategoriesJSON.create.find(
+				( { name } ) => name === accessories.name
 			);
-			const hoodiesJSON = await hoodies.json();
-
-			const tshirts = await request.post(
-				'./wp-json/wc/v3/products/categories',
-				{
-					data: {
-						name: `Tshirts ${ RAND_STRING }`,
-						parent: clothingJSON.id,
-					},
-					failOnStatusCode: true,
-				}
+			const hoodiesJSON = subCategoriesJSON.create.find(
+				( { name } ) => name === hoodies.name
 			);
-			const tshirtsJSON = await tshirts.json();
-
-			const decor = await request.post(
-				'./wp-json/wc/v3/products/categories',
-				{
-					data: {
-						name: `Decor ${ RAND_STRING }`,
-					},
-					failOnStatusCode: true,
-				}
+			const tshirtsJSON = subCategoriesJSON.create.find(
+				( { name } ) => name === tshirts.name
 			);
-			const decorJSON = await decor.json();
-
-			const music = await request.post(
-				'./wp-json/wc/v3/products/categories',
-				{
-					data: {
-						name: `Music ${ RAND_STRING }`,
-					},
-					failOnStatusCode: true,
-				}
-			);
-			const musicJSON = await music.json();
 
 			return {
 				clothingJSON,
