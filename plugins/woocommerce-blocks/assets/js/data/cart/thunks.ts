@@ -47,41 +47,16 @@ interface CartThunkArgs {
  * A thunk used in updating the store with the cart items retrieved from a request. This also notifies the shopper
  * of any unexpected quantity changes occurred.
  *
- * @param {CartResponse}    response                      The response from the API request.
- * @param {Object}          options                       Additional options for the thunk.
- * @param {boolean}         options.dontSyncWithIAPIStore Whether to avoid syncing with the Interactivity API store.
- * @param {QuantityChanges} options.quantityChanges       The quantity changes data included in the sync event.
+ * @param {CartResponse} response The response from the API request.
  */
 export const receiveCart =
-	(
-		response: Partial< CartResponse >,
-		options: {
-			dontSyncWithIAPIStore: boolean;
-			quantityChanges: QuantityChanges;
-		}
-	) =>
+	( response: Partial< CartResponse > ) =>
 	( { dispatch, select }: CartThunkArgs ) => {
 		const cartResponse = camelCaseKeys( response ) as unknown as Cart;
 		const oldCart = select.getCartData();
 		const oldCartErrors = [ ...oldCart.errors, ...select.getCartErrors() ];
-		const dontSync = options?.dontSyncWithIAPIStore === true;
-		const quantityChanges = options?.quantityChanges;
 
-		if ( dontSync ) setTriggerStoreSyncEvent( false );
 		dispatch.setCartData( cartResponse );
-		if ( dontSync ) setTriggerStoreSyncEvent( true );
-
-		// When it is synchronizing with the iAPI Store, the values of
-		// `notifyQuantityChanges` are received through the event.
-		const cartItemsPendingQuantity =
-			quantityChanges?.cartItemsPendingQuantity ||
-			select.getItemsPendingQuantityUpdate();
-		const cartItemsPendingDelete =
-			quantityChanges?.cartItemsPendingDelete ||
-			select.getItemsPendingDelete();
-		const productsPendingAdd =
-			quantityChanges?.productsPendingAdd ||
-			select.getProductsPendingAdd();
 
 		// Get the new cart data before showing updates.
 		const newCart = select.getCartData();
@@ -89,9 +64,9 @@ export const receiveCart =
 		notifyQuantityChanges( {
 			oldCart,
 			newCart,
-			cartItemsPendingQuantity,
-			cartItemsPendingDelete,
-			productsPendingAdd,
+			cartItemsPendingQuantity: select.getItemsPendingQuantityUpdate(),
+			cartItemsPendingDelete: select.getItemsPendingDelete(),
+			productsPendingAdd: select.getProductsPendingAdd(),
 		} );
 
 		updateCartErrorNotices( newCart.errors, oldCartErrors );
@@ -178,8 +153,12 @@ export const applyExtensionCartUpdate =
  * @throws Will throw an error if there is an API problem.
  */
 export const syncCartwithIAPIStore =
-	( quantityChanges: QuantityChanges ) =>
-	async ( { dispatch }: CartThunkArgs ) => {
+	( {
+		cartItemsPendingQuantity,
+		cartItemsPendingDelete,
+		productsPendingAdd,
+	}: QuantityChanges ) =>
+	async ( { dispatch, select }: CartThunkArgs ) => {
 		try {
 			const { response } = await apiFetchWithHeaders< {
 				response: CartResponse;
@@ -189,10 +168,31 @@ export const syncCartwithIAPIStore =
 				cache: 'no-store',
 			} );
 
-			dispatch.receiveCart( response, {
-				dontSyncWithIAPIStore: true,
-				quantityChanges,
+			const cartResponse = camelCaseKeys( response ) as unknown as Cart;
+			const oldCart = select.getCartData();
+			const oldCartErrors = [
+				...oldCart.errors,
+				...select.getCartErrors(),
+			];
+
+			// Set data from the response.
+			setTriggerStoreSyncEvent( false );
+			dispatch.setCartData( cartResponse );
+			setTriggerStoreSyncEvent( true );
+
+			// Get the new cart data before showing updates.
+			const newCart = select.getCartData();
+
+			notifyQuantityChanges( {
+				oldCart,
+				newCart,
+				cartItemsPendingQuantity,
+				cartItemsPendingDelete,
+				productsPendingAdd,
 			} );
+
+			updateCartErrorNotices( newCart.errors, oldCartErrors );
+			dispatch.setErrorData( null );
 		} catch ( error ) {
 			dispatch.receiveError( isApiErrorResponse( error ) ? error : null );
 			return Promise.reject( error );
