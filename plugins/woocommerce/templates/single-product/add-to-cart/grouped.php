@@ -64,13 +64,12 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 								woocommerce_template_loop_add_to_cart();
 							} elseif ( $grouped_product_child->is_sold_individually() ) {
 								echo '<input type="checkbox" name="' . esc_attr( 'quantity[' . $grouped_product_child->get_id() . ']' ) . '" value="1" class="wc-grouped-product-add-to-cart-checkbox" id="' . esc_attr( 'quantity-' . $grouped_product_child->get_id() ) . '" />';
-								echo '<label for="' . esc_attr( 'quantity-' . $grouped_product_child->get_id() ) . '" class="screen-reader-text">' . 
+								echo '<label for="' . esc_attr( 'quantity-' . $grouped_product_child->get_id() ) . '" class="screen-reader-text">' .
 									sprintf(
-										esc_html__( 'Buy one of %1$s for %2$s%3$s', 'woocommerce' ),
+										__( 'Buy one of %1$s for %2$s', 'woocommerce' ),
 										$grouped_product_child->get_name(),
-										get_woocommerce_currency_symbol(),
-										$grouped_product_child->get_price()
-									) . 
+										wp_strip_all_tags( $grouped_product_child->get_price_html() )
+									) .
 								'</label>';
 							} else {
 								do_action( 'woocommerce_before_add_to_cart_quantity' );
