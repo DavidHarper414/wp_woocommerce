@@ -5,7 +5,7 @@ import {
 	getContext,
 	store,
 	navigate as navigateFn,
-} from '@woocommerce/interactivity';
+} from '@wordpress/interactivity';
 import { getSetting } from '@woocommerce/settings';
 
 const isBlockTheme = getSetting< boolean >( 'isBlockTheme' );

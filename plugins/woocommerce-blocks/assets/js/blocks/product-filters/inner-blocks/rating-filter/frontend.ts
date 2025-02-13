@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { getContext, store, getElement } from '@woocommerce/interactivity';
+import { getContext, store, getElement } from '@wordpress/interactivity';
 
 /**
  * Internal dependencies
