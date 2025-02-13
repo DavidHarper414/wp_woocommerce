@@ -142,7 +142,6 @@ export { UserPreferences } from './user/types';
 /**
  * Internal dependencies
  */
-import type { REVIEWS_STORE_NAME } from './reviews';
 import type { SETTINGS_STORE_NAME } from './settings';
 import type { PLUGINS_STORE_NAME } from './plugins';
 import type { ONBOARDING_STORE_NAME } from './onboarding';
