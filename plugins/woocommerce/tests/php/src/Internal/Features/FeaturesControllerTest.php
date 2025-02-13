@@ -39,33 +39,9 @@ class FeaturesControllerTest extends \WC_Unit_Test_Case {
 
 		add_action(
 			'woocommerce_register_feature_definitions',
-			function ( $features_controller ) {
-				$features = array(
-					'mature1'       => array(
-						'name'            => 'Mature feature 1',
-						'description'     => 'The mature feature number 1',
-						'is_experimental' => false,
-					),
-					'mature2'       => array(
-						'name'            => 'Mature feature 2',
-						'description'     => 'The mature feature number 2',
-						'is_experimental' => false,
-					),
-					'experimental1' => array(
-						'name'            => 'Experimental feature 1',
-						'description'     => 'The experimental feature number 1',
-						'is_experimental' => true,
-					),
-					'experimental2' => array(
-						'name'            => 'Experimental feature 2',
-						'description'     => 'The experimental feature number 2',
-						'is_experimental' => true,
-					),
-				);
-
-				$this->reset_features_list( $features_controller, $features );
-			},
-			11
+			array( $this, 'register_dummy_features' ),
+			11,
+			1
 		);
 
 		$this->sut = new FeaturesController();
@@ -77,6 +53,38 @@ class FeaturesControllerTest extends \WC_Unit_Test_Case {
 		delete_option( 'woocommerce_feature_experimental2_enabled' );
 
 		remove_all_filters( FeaturesController::FEATURE_ENABLED_CHANGED_ACTION );
+	}
+
+	/**
+	 * Register dummy features for unit tests.
+	 *
+	 * @param FeaturesController $features_controller The instance of FeaturesController to register the features in.
+	 */
+	public function register_dummy_features( $features_controller ) {
+		$features = array(
+			'mature1'       => array(
+				'name'            => 'Mature feature 1',
+				'description'     => 'The mature feature number 1',
+				'is_experimental' => false,
+			),
+			'mature2'       => array(
+				'name'            => 'Mature feature 2',
+				'description'     => 'The mature feature number 2',
+				'is_experimental' => false,
+			),
+			'experimental1' => array(
+				'name'            => 'Experimental feature 1',
+				'description'     => 'The experimental feature number 1',
+				'is_experimental' => true,
+			),
+			'experimental2' => array(
+				'name'            => 'Experimental feature 2',
+				'description'     => 'The experimental feature number 2',
+				'is_experimental' => true,
+			),
+		);
+
+		$this->reset_features_list( $features_controller, $features );
 	}
 
 	/**
@@ -150,7 +158,14 @@ class FeaturesControllerTest extends \WC_Unit_Test_Case {
 	 * Runs after each test.
 	 */
 	public function tearDown(): void {
-		remove_all_actions( 'woocommerce_register_feature_definitions' );
+		remove_action(
+			'woocommerce_register_feature_definitions',
+			array( $this, 'register_dummy_features' ),
+			11,
+			1
+		);
+		$this->reset_container_replacements();
+		$this->reset_container_resolutions();
 
 		parent::tearDown();
 	}
