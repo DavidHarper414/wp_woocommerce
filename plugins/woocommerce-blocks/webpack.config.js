@@ -42,7 +42,7 @@ const sharedConfig = {
 
 const CartAndCheckoutFrontendConfig = {
 	...sharedConfig,
-	cache: {
+	cache: ( process.env.CI && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
@@ -55,7 +55,7 @@ const CartAndCheckoutFrontendConfig = {
 // Core config for shared libraries.
 const CoreConfig = {
 	...sharedConfig,
-	cache: {
+	cache: ( process.env.CI && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
@@ -68,7 +68,7 @@ const CoreConfig = {
 // Main Blocks config for registering Blocks and for the Editor.
 const MainConfig = {
 	...sharedConfig,
-	cache: {
+	cache: ( process.env.CI && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
@@ -83,7 +83,7 @@ const MainConfig = {
 // Frontend config for scripts used in the store itself.
 const FrontendConfig = {
 	...sharedConfig,
-	cache: {
+	cache: ( process.env.CI && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
@@ -98,7 +98,7 @@ const FrontendConfig = {
  */
 const ExtensionsConfig = {
 	...sharedConfig,
-	cache: {
+	cache: ( process.env.CI && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
@@ -113,7 +113,7 @@ const ExtensionsConfig = {
  */
 const PaymentsConfig = {
 	...sharedConfig,
-	cache: {
+	cache: ( process.env.CI && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
@@ -128,7 +128,7 @@ const PaymentsConfig = {
  */
 const StylingConfig = {
 	...sharedConfig,
-	cache: {
+	cache: ( process.env.CI && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
@@ -143,7 +143,7 @@ const StylingConfig = {
  */
 const InteractivityConfig = {
 	...sharedConfig,
-	cache: {
+	cache: ( process.env.CI && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
@@ -158,7 +158,7 @@ const InteractivityConfig = {
  */
 const SiteEditorConfig = {
 	...sharedConfig,
-	cache: {
+	cache: ( process.env.CI && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,

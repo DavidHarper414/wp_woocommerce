@@ -10,7 +10,7 @@ const path = require( 'path' );
 
 module.exports = {
 	mode: process.env.NODE_ENV || 'development',
-	cache: {
+	cache: ( process.env.CI && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
