@@ -12,11 +12,7 @@ import {
 import { SyntheticEvent, useCallback } from 'react';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { pluginsStore } from '@woocommerce/data';
-import type {
-	InstallPluginsResponse,
-	PluginSelectors,
-	PluginActions,
-} from '@woocommerce/data';
+import type { InstallPluginsResponse } from '@woocommerce/data';
 
 type ButtonProps = React.ComponentProps< typeof Button >;
 
@@ -102,6 +98,7 @@ export const Plugins = ( {
 
 			installAndActivatePlugins( pluginSlugs )
 				.then( ( response ) => {
+					// @ts-expect-error TODO react-18-upgrade: useDispatch does not return the correct type for installAndActivatePlugins.
 					handleSuccess( response.data.activated, response );
 				} )
 				.catch( ( response ) => {
