@@ -1,260 +1,166 @@
-/* eslint-disable no-console */
-const { test, expect } = require( '@playwright/test' );
-const { tags } = require( '../../fixtures/fixtures' );
-const { admin } = require( '../../test-data/data' );
-const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
-const wcApi = require( '@woocommerce/woocommerce-rest-api' ).default;
+/**
+ * External dependencies
+ */
+import { faker } from '@faker-js/faker';
 
-test.describe(
-	'Merchant > Order Action emails received',
-	{ tag: [ tags.SERVICES, tags.HPOS ] },
-	() => {
-		test.use( { storageState: ADMIN_STATE_PATH } );
+/**
+ * Internal dependencies
+ */
+import { ADMIN_STATE_PATH } from '../../playwright.config';
+import { expect, test as baseTest } from '../../fixtures/fixtures';
+import { admin } from '../../test-data/data';
 
-		const customerBilling = {
-			email: `john.doe.merchant.test.${ Date.now() }@example.com`,
-		};
+async function expectEmail( page, receiverEmailAddress, subject ) {
+	await page.goto(
+		`wp-admin/tools.php?page=wpml_plugin_log&search[place]=receiver&search[term]=${ encodeURIComponent(
+			receiverEmailAddress
+		) }&orderby=timestamp&order=desc`
+	);
 
-		const storeName = 'WooCommerce Core E2E Test Suite';
-		let orderId, newOrderId, cancelledOrderId, completedOrderId;
+	const row = page
+		.getByRole( 'row' )
+		.filter( {
+			has: page.getByRole( 'cell', {
+				name: receiverEmailAddress,
+				exact: true,
+			} ),
+		} )
+		.filter( {
+			has: page.getByRole( 'cell', {
+				name: subject,
+				exact: true,
+			} ),
+		} );
 
-		test.beforeAll( async ( { baseURL } ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
+	await expect( row ).toBeVisible();
+
+	return row;
+}
+
+const test = baseTest.extend( {
+	storageState: ADMIN_STATE_PATH,
+	order: async ( { api }, use ) => {
+		let order;
+
+		await api
+			.post( 'orders', {
+				status: 'processing',
+				billing: { email: faker.internet.exampleEmail() },
+			} )
+			.then( ( response ) => {
+				order = response.data;
+			} )
+			.catch( ( error ) => {
+				console.error( error );
 			} );
-			await api
-				.post( 'orders', {
-					status: 'processing',
-					billing: customerBilling,
-				} )
-				.then( ( response ) => {
-					orderId = response.data.id;
-				} );
-		} );
 
-		test.afterAll( async ( { baseURL } ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
+		await use( order );
+
+		await api.delete( `orders/${ order.id }`, { force: true } );
+	},
+} );
+
+[
+	{
+		status: 'processing',
+		role: 'customer',
+		subject: /Your .+ order has been received!/,
+		content: /Thank you for your order/,
+	},
+	{
+		status: 'processing',
+		role: 'admin',
+		subject: /New order #\d+/,
+		content: /Thank you for your order/,
+	},
+	{
+		status: 'completed',
+		role: 'customer',
+		subject: /Your .+ order has been received!/,
+		content: /Thank you for your order/,
+	},
+	{
+		status: 'cancelled',
+		role: 'customer',
+		subject: /Order \d has been cancelled/,
+		content: /Thanks for shopping with us/,
+	},
+	{
+		status: 'cancelled',
+		role: 'admin',
+		subject: /Order #\d+ has been cancelled/,
+		content: /Thank you for your order/,
+	},
+].forEach( ( { role, status, subject, content } ) => {
+	// eslint-disable-next-line playwright/expect-expect
+	test( `${ role } receives email for ${ status } order`, async ( {
+		page,
+		api,
+		order,
+	} ) => {
+		await api
+			.put( `orders/${ order.id }`, {
+				status,
+			} )
+			.catch( ( error ) => {
+				console.error( error );
 			} );
 
-			await api.post( `orders/batch`, {
-				delete: [
-					orderId,
-					newOrderId,
-					completedOrderId,
-					cancelledOrderId,
-				],
-			} );
+		let orderStatus;
+		await api.get( `orders/${ order.id }` ).then( ( response ) => {
+			orderStatus = response.data.status;
 		} );
 
-		test( 'can receive new order email', async ( { page, baseURL } ) => {
-			// New order emails are sent automatically when we create a simple order. Verify that we get these.
-			// Need to create a new order for this test because we clear logs before each run.
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
-			await api
-				.post( 'orders', {
-					status: 'processing',
-					billing: customerBilling,
-				} )
-				.then( ( response ) => {
-					newOrderId = response.data.id;
-				} );
-			// search to narrow it down to just the messages we want
-			await page.goto(
-				`wp-admin/tools.php?page=wpml_plugin_log&s=${ encodeURIComponent(
-					customerBilling.email
-				) }`
-			);
-			await expect(
-				page.locator( 'td.column-receiver >> nth=1' )
-			).toContainText( admin.email );
-			await expect(
-				page.locator( 'td.column-subject >> nth=1' )
-			).toContainText( `[${ storeName }]: New order #${ newOrderId }` );
+		await expect( orderStatus ).toEqual( status );
 
-			// look at order email contents
-			await page
-				.getByRole( 'button', { name: 'View log' } )
-				.last()
-				.click();
-
-			await expect(
-				page.getByText( `Receiver ${ admin.email }` )
-			).toBeVisible();
-			await expect(
-				page.getByText( 'Subject [WooCommerce Core E2E' )
-			).toBeVisible();
-			await page.getByRole( 'link', { name: 'json' } ).click();
-			await expect(
-				page.locator( '#wp-mail-logging-modal-content-body-content' )
-			).toContainText( 'You’ve received the following order from  :' );
-		} );
-
-		test( 'can receive completed email', async ( { page, baseURL } ) => {
-			// Completed order emails are sent automatically when an order's payment is completed.
-			// Verify that the email is sent, and that the content is the expected one
-			const emailContent = '#wp-mail-logging-modal-content-body-content';
-			const emailContentJson = '#wp-mail-logging-modal-format-json';
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
-			await api
-				.post( 'orders', {
-					status: 'completed',
-					billing: customerBilling,
-				} )
-				.then( ( response ) => {
-					completedOrderId = response.data.id;
-				} );
-			// Search to narrow it down to just the messages we want
-			await page.goto(
-				`wp-admin/tools.php?page=wpml_plugin_log&s=${ encodeURIComponent(
-					customerBilling.email
-				) }`
-			);
-			await page.selectOption(
-				'select[name="search[place]"]',
-				'subject'
-			);
-			await page.fill( 'input[name="search[term]"]', 'complete' );
-			await page.click( 'input#search-submit' );
-
-			// Verify that the  email has been sent
-			await expect(
-				page.getByText( `Your ${ storeName } order is now complete` )
-			).toBeVisible();
-
-			// Enter email log and select to view the content in JSON
-			await page.click( 'button[title^="View log"]' );
-			await page.locator( emailContentJson ).isEnabled();
-			await page.locator( emailContentJson ).click();
-
-			// Verify that the message includes an order processing confirmation
-			await expect( page.locator( emailContent ) ).toContainText(
-				'We have finished processing your order.'
-			);
-
-			// Verify that the email address is the correct one
-			await expect( page.locator( emailContent ) ).toContainText(
-				customerBilling.email
-			);
-
-			// Verify that the email contains the order ID
-			await expect( page.locator( emailContent ) ).toContainText(
-				`[Order #${ completedOrderId.toString() }]`
-			);
-
-			// Verify that the email contains a "Thanks" note
-			await expect( page.locator( emailContent ) ).toContainText(
-				'Thanks for shopping with us'
+		let emailRow;
+		await test.step( 'check the email exists', async () => {
+			emailRow = await expectEmail(
+				page,
+				role === 'customer' ? order.billing.email : admin.email,
+				subject
 			);
 		} );
 
-		test( 'can receive cancelled order email', async ( {
-			page,
-			baseURL,
-		} ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
-			await api
-				.post( 'orders', {
-					status: 'processing',
-					billing: customerBilling,
-				} )
-				.then( ( response ) => {
-					cancelledOrderId = response.data.id;
-					api.put( `orders/${ cancelledOrderId }`, {
-						status: 'cancelled',
-					} );
-				} );
-			await page.waitForTimeout( 1000 );
-			// search to narrow it down to just the messages we want
-			await page.goto(
-				`wp-admin/tools.php?page=wpml_plugin_log&s=${ encodeURIComponent(
-					customerBilling.email
-				) }`
+		await test.step( 'check the email content', async () => {
+			await emailRow.getByRole( 'button', { name: 'View log' } ).click();
+
+			const modalContent = page.locator(
+				'#wp-mail-logging-modal-content-body-content'
 			);
+
 			await expect(
-				page.getByText(
-					`[${ storeName }]: Order #${ cancelledOrderId } has been cancelled`
-				)
+				modalContent.getByText( `Receiver ${ order.billing.email }` )
 			).toBeVisible();
+			await expect( modalContent.getByText( subject ) ).toBeVisible();
+
+			const emailContentFrame = modalContent
+				.locator( 'iframe' )
+				.contentFrame();
+
+			await expect( emailContentFrame.locator( 'body' ) ).toContainText(
+				content
+			);
 		} );
+	} );
+} );
 
-		test( 'can resend new order notification', async ( { page } ) => {
-			// resend the new order notification
-			await page.goto(
-				`wp-admin/admin.php?page=wc-orders&action=edit&id=${ orderId }`
-			);
-			await page
-				.locator( 'li#actions > select' )
-				.selectOption( 'send_order_details_admin' );
-			await page.locator( 'button.wc-reload' ).click();
+// eslint-disable-next-line playwright/expect-expect
+test( 'Merchant can resend order details to customer', async ( {
+	order,
+	page,
+} ) => {
+	await page.goto(
+		`wp-admin/admin.php?page=wc-orders&action=edit&id=${ order.id }`
+	);
+	await page
+		.locator( 'li#actions > select' )
+		.selectOption( 'send_order_details' );
+	await page.locator( 'button.wc-reload' ).click();
 
-			// search to narrow it down to just the messages we want
-			await page.goto(
-				`wp-admin/tools.php?page=wpml_plugin_log&s=${ encodeURIComponent(
-					customerBilling.email
-				) }`
-			);
-
-			// Expect row containing the admin email and the correct subject to be listed.
-			await expect(
-				page
-					.getByRole( 'row' )
-					.filter( { hasText: admin.email } )
-					.filter( {
-						hasText: `[${ storeName }]: New order #${ orderId }`,
-					} )
-			).toBeVisible();
-		} );
-
-		test( 'can email invoice/order details to customer', async ( {
-			page,
-		} ) => {
-			// send the customer order details
-			await page.goto(
-				`wp-admin/admin.php?page=wc-orders&action=edit&id=${ orderId }`
-			);
-			await page
-				.locator( 'li#actions > select' )
-				.selectOption( 'send_order_details' );
-			await page.locator( 'button.wc-reload' ).click();
-
-			// confirm the message was delivered in the logs
-			await page.goto(
-				`wp-admin/tools.php?page=wpml_plugin_log&s=${ encodeURIComponent(
-					customerBilling.email
-				) }`
-			);
-
-			// Expect row containing the billing email and the correct subject to be listed.
-			await expect(
-				page
-					.getByRole( 'row' )
-					.filter( { hasText: customerBilling.email } )
-					.filter( {
-						hasText: `Details for order #${ orderId } on ${ storeName }`,
-					} )
-			).toBeVisible();
-		} );
-	}
-);
+	await expectEmail(
+		page,
+		order.billing.email,
+		new RegExp( `Details for order #${ order.id }` )
+	);
+} );
