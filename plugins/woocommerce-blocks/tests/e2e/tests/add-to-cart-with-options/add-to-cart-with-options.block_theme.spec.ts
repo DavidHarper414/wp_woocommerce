@@ -20,6 +20,7 @@ const test = base.extend< { pageObject: AddToCartWithOptionsPage } >( {
 	},
 } );
 
+// Re-run tests.
 test.describe( 'Add to Cart with Options Block', () => {
 	test( 'allows modifying the template parts', async ( {
 		page,
