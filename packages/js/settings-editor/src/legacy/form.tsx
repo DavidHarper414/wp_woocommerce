@@ -97,11 +97,7 @@ export const Form = ( {
 				/>
 			</div>
 			<div className="woocommerce-settings-content-footer">
-				<Button
-					variant="primary"
-					type="submit"
-					className="woocommerce-save-button"
-				>
+				<Button variant="primary" type="submit">
 					{ __( 'Save', 'woocommerce' ) }
 				</Button>
 			</div>
