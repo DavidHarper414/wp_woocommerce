@@ -8,7 +8,6 @@
 
 use Automattic\Jetpack\Constants;
 use Automattic\WooCommerce\Admin\Features\Features;
-use WooCommerce\Admin\Experimental_Abtest;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -58,7 +57,7 @@ if ( ! class_exists( 'WC_Admin_Settings', false ) ) :
 
 				// Adding try-catch because in non-production environments it may fail (for example, e2e tests).
 				try {
-					$in_treatment = Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' );
+					$in_treatment = WooCommerce\Admin\Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' );
 				} catch ( \Exception $e ) {
 					$in_treatment = false;
 				}
