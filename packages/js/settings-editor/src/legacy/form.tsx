@@ -25,30 +25,25 @@ export const Form = ( {
 	activeSection: string;
 } ) => {
 	const { data, fields, form, updateField } = useSettingsForm( settings );
-	const formRef = useRef( null );
+	const formRef = useRef< HTMLFormElement >( null );
 
-	const getFormData = (): Record< string, string > => {
+	const getFormData = () => {
 		if ( ! formRef.current ) {
 			return {};
 		}
-
-		const formElements = (
-			formRef.current as HTMLFormElement
-		 ).querySelectorAll( 'input, select, textarea' );
+		const formElements = formRef.current.querySelectorAll<
+			HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+		>( 'input, select, textarea' );
 
 		const formData: Record< string, string > = {};
+
 		formElements.forEach( ( input ) => {
 			// Avoid generic Gutenberg input ids. This will require upstream fixes.
 			if ( input.id.startsWith( 'inspector-' ) ) {
 				return;
 			}
 
-			const value = ( input as HTMLInputElement ).value;
-			// Need to type data as Record<string, string> to allow string indexing
-			( formData as Record< string, string > )[
-				( input as HTMLInputElement ).name ||
-					( input as HTMLInputElement ).id
-			] = value;
+			formData[ input.name || input.id ] = input.value;
 		} );
 
 		return formData;
