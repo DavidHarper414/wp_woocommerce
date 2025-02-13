@@ -392,7 +392,7 @@ class PaymentExtensionSuggestionsTest extends WC_Unit_Test_Case {
 			'RO' => 7,
 			'SM' => 2,
 			'SK' => 6,
-			'ES' => 11, // Including Square (in-person).
+			'ES' => 11,
 			'SE' => 7,
 			'CH' => 7,
 			'AG' => 4,
