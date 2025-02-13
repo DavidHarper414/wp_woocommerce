@@ -169,7 +169,6 @@ import type { EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME } from './product-varia
 import type { EXPERIMENTAL_TAX_CLASSES_STORE_NAME } from './tax-classes';
 
 export type WCDataStoreName =
-	| typeof REVIEWS_STORE_NAME
 	| typeof SETTINGS_STORE_NAME
 	| typeof PLUGINS_STORE_NAME
 	| typeof ONBOARDING_STORE_NAME
