@@ -157,6 +157,7 @@ export const MobileAppModal = () => {
 			{ guideIsOpen && (
 				<Guide
 					onFinish={ onFinish }
+					contentLabel=""
 					className={ 'woocommerce__mobile-app-welcome-modal' }
 					pages={ [
 						{
@@ -179,21 +180,16 @@ export const MOBILE_APP_MODAL_HELP_ENTRY_FILTER_CALLBACK =
 
 /**
  * This component exists to add the mobile app entry to the help panel.
- * If the user has no pathway to achieve the required Jetpack connection,
- * then we don't want to show the help panel entry.
  */
 export const MobileAppHelpMenuEntryLoader = () => {
-	const { state } = useJetpackPluginState();
-
-	const filterHelpMenuEntries = useCallback(
-		( helpMenuEntries ) => {
-			if (
-				state === JetpackPluginStates.INITIALIZING ||
-				state === JetpackPluginStates.USER_CANNOT_INSTALL ||
-				state === JetpackPluginStates.NOT_OWNER_OF_CONNECTION
-			) {
-				return helpMenuEntries;
-			}
+	const addMobileAppHelpEntry = useCallback(
+		(
+			helpMenuEntries: Array< {
+				title: string;
+				link: string;
+				linkType?: string;
+			} >
+		) => {
 			return [
 				...helpMenuEntries,
 				{
@@ -205,7 +201,7 @@ export const MobileAppHelpMenuEntryLoader = () => {
 				},
 			];
 		},
-		[ state ]
+		[]
 	);
 
 	useEffect( () => {
@@ -216,10 +212,10 @@ export const MobileAppHelpMenuEntryLoader = () => {
 		addFilter(
 			SETUP_TASK_HELP_ITEMS_FILTER,
 			MOBILE_APP_MODAL_HELP_ENTRY_FILTER_CALLBACK,
-			filterHelpMenuEntries,
+			addMobileAppHelpEntry,
 			10
 		);
-	}, [ filterHelpMenuEntries ] );
+	}, [ addMobileAppHelpEntry ] );
 
 	return null;
 };
