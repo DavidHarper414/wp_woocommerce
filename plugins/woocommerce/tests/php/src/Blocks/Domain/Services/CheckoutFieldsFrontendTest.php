@@ -223,7 +223,7 @@ class CheckoutFieldsFrontendTest extends TestCase {
 		$this->sut->save_account_form_fields( 1 );
 
 		$this->assertCount( 1, $mocked_messages );
-		$this->assertEquals( 'Required field is required', $mocked_messages[0]['message'] );
+		$this->assertEquals( '<strong>Required field</strong> is required', $mocked_messages[0]['message'] );
 		$this->assertEquals( 'error', $mocked_messages[0]['type'] );
 
 		$value = $this->controller->get_field_from_object( 'mynamespace/required_field', new WC_Customer( 1 ) );
