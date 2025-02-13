@@ -241,19 +241,25 @@ class Checkout extends AbstractCartRoute {
 		$is_partial      = in_array( $request->get_method(), [ 'PUT', 'PATCH' ], true );
 
 		foreach ( $validate_contexts as $context => $context_data ) {
-			$fields           = $this->additional_fields_controller->get_fields_for_location( $context_data['location'] );
-			$values           = (array) $request->get_param( $context_data['param'] ) ?? [];
-			$sanitized_values = (array) $sanitized_request->get_param( $context_data['param'] ) ?? [];
-			$errors           = new \WP_Error();
+			$errors            = new \WP_Error();
+			$additional_fields = $this->additional_fields_controller->get_fields_for_location( $context_data['location'] );
 
-			foreach ( $fields as $field_key => $field ) {
-				// Skip optional fields that are not set  when the request is partial.
-				if ( ! isset( $values[ $field_key ] ) && $is_partial ) {
+			// These values are used to see if required fields have values.
+			$field_values = (array) $request->get_param( $context_data['param'] ) ?? [];
+
+			// These values are used to validate custom rules and generate the document object.
+			$sanitized_field_values = (array) $sanitized_request->get_param( $context_data['param'] ) ?? [];
+
+			foreach ( $additional_fields as $field_key => $field ) {
+				$is_required = $this->additional_fields_controller->is_required_field( $field, $document_object, $context );
+
+				// Skip optional fields that are not set when the request is partial.
+				if ( ! isset( $field_values[ $field_key ] ) && ( $is_partial || ! $is_required ) ) {
 					continue;
 				}
 
-				$field_value = $values[ $field_key ] ?? '';
-				$is_required = $this->additional_fields_controller->is_required_field( $field, $document_object, $context );
+				$field_value           = $field_values[ $field_key ] ?? '';
+				$sanitized_field_value = $sanitized_field_values[ $field_key ] ?? '';
 
 				if ( $is_required && empty( $field_value ) ) {
 					$errors->add(
@@ -267,13 +273,7 @@ class Checkout extends AbstractCartRoute {
 					break;
 				}
 
-				// Only continue validation if we have a value to validate.
-				if ( empty( $field_value ) ) {
-					continue;
-				}
-
-				$sanitized_field_value = $sanitized_values[ $field_key ] ?? '';
-				$valid_check           = $this->additional_fields_controller->validate_field( $field_key, $sanitized_field_value, $document_object, $context );
+				$valid_check = $this->additional_fields_controller->validate_field( $field_key, $sanitized_field_value, $document_object, $context );
 
 				if ( is_wp_error( $valid_check ) && $valid_check->has_errors() ) {
 					foreach ( $valid_check->get_error_codes() as $code ) {
@@ -290,7 +290,8 @@ class Checkout extends AbstractCartRoute {
 				}
 			}
 
-			$valid_location_check = $this->additional_fields_controller->validate_fields_for_location( $values, $context_data['location'], $context_data['group'] );
+			// Validate all fields for this location (this runs custom validation callbacks).
+			$valid_location_check = $this->additional_fields_controller->validate_fields_for_location( $sanitized_field_values, $context_data['location'], $context_data['group'] );
 
 			if ( is_wp_error( $valid_location_check ) && $valid_location_check->has_errors() ) {
 				foreach ( $valid_location_check->get_error_codes() as $code ) {
