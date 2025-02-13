@@ -7,7 +7,6 @@ declare( strict_types = 1);
 
 namespace Automattic\WooCommerce\Internal;
 
-use Automattic\WooCommerce\Packages;
 use Automattic\WooCommerce\Internal\Utilities\DatabaseUtil;
 
 defined( 'ABSPATH' ) || exit;
@@ -116,6 +115,18 @@ class BackInStockNotifications {
 		}
 	}
 
+	public static function get_bis_db_schema() : string {
+		if ( ! self::is_enabled() ) {
+			return '';
+		}
+
+		if ( ! class_exists( 'WC_BIS_Install' ) ) {
+			include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
+		}
+
+		return \WC_BIS_Install::get_schema();
+	}
+
 	/**
 	 * Check if BIS tables exist.
 	 *
@@ -124,7 +135,12 @@ class BackInStockNotifications {
 	 * @return bool
 	 */
 	public static function check_bis_tables_exist(): bool {
-		$missing_tables = self::$db_utils->get_missing_tables( WC_BIS_Install::get_schema() );
+
+		if ( ! class_exists( 'WC_BIS_Install' ) ) {
+			include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
+		}
+
+		$missing_tables = self::$db_utils->get_missing_tables( \WC_BIS_Install::get_schema() );
 
 		if ( 0 === count( $missing_tables ) ) {
 			return true;
@@ -141,10 +157,14 @@ class BackInStockNotifications {
 	 * @return mixed
 	 */
 	public static function create_database_tables() {
-		self::$db_utils->dbdelta( WC_BIS_Install::get_schema() );
+		if ( ! class_exists( 'WC_BIS_Install' ) ) {
+			include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
+		}
+
+		self::$db_utils->dbdelta( \WC_BIS_Install::get_schema() );
 		$success = self::check_bis_tables_exist();
 		if ( ! $success ) {
-			$missing_tables = self::$db_utils->get_missing_tables( WC_BIS_Install::get_schema() );
+			$missing_tables = self::$db_utils->get_missing_tables( \WC_BIS_Install::get_schema() );
 			$missing_tables = implode( ', ', $missing_tables );
 			$logger = wc_get_container()->get( LegacyProxy::class )->call_function( 'wc_get_logger' );
 			$logger->error( "Back In Stock Notifications tables are missing in the database and couldn't be created. The missing tables are: $missing_tables" );
@@ -168,19 +188,19 @@ class BackInStockNotifications {
 		}
 
 		// Schedule jobs.
-		WC_BIS_Install::create_events();
+		\WC_BIS_Install::create_events();
 
 		// Activate notices.
 
 		// Welcome notice on activation.
-		WC_BIS_Admin_Notices::add_maintenance_notice( 'welcome' );
+		\WC_BIS_Admin_Notices::add_maintenance_notice( 'welcome' );
 
 		// Run a loopback test after activation. Will only run once if successful.
-		WC_BIS_Admin_Notices::add_maintenance_notice( 'loopback' );
+		\WC_BIS_Admin_Notices::add_maintenance_notice( 'loopback' );
 
 		// Run an AS test after activation. Will only run once if successful.
 		if ( method_exists( WC(), 'queue' ) ) {
-			WC_BIS_Admin_Notices::add_maintenance_notice( 'queue' );
+			\WC_BIS_Admin_Notices::add_maintenance_notice( 'queue' );
 		}
 
 		// Flush rules to include our new endpoint.
