@@ -80,9 +80,8 @@ export const Layout = ( {
 			extendedTaskList: false,
 		} );
 
-	const isTaskScreen =
-		hasTaskList && Object.keys( query ).length > 0 && !! query.task;
-	const isDashboardShown = ! isTaskScreen; // ?&task=<x> query param is used to show tasks instead of the homescreen
+	const isTaskScreen = Object.keys( query ).length > 0 && !! query.task; // ?&task=<x> query param is used to show tasks instead of the homescreen
+	const isDashboardShown = ! isTaskScreen;
 	const twoColumns = hasTwoColumnLayout(
 		userPrefs.homepage_layout,
 		defaultHomescreenLayout,
