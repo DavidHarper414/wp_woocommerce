@@ -122,6 +122,8 @@ final class ProductFilterStatus extends AbstractBlock {
 			return '';
 		}
 
+		wp_enqueue_script_module( $this->get_full_block_name() );
+
 		$stock_status_data       = $this->get_stock_status_counts( $block );
 		$stock_statuses          = wc_get_product_stock_status_options();
 		$filter_params           = $block->context['filterParams'] ?? array();
