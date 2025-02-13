@@ -19,10 +19,64 @@ import { IdQuery, IdType, Item, ItemQuery } from './types';
 import { ResourceState } from './reducer';
 import CRUD_ACTIONS from './crud-actions';
 
-type SelectorOptions = {
-	resourceName: string;
-	pluralResourceName: string;
-	namespace: string;
+type CrudSelectors<
+	TResourceName extends string = string,
+	TResourceTypePlural extends string = string,
+	TResourceType = unknown
+> = {
+	[ K in `get${ TResourceName }` ]: (
+		state: ResourceState,
+		idQuery: IdQuery
+	) => TResourceType | undefined;
+} & {
+	[ K in `get${ TResourceName }Error` ]: (
+		state: ResourceState,
+		idQuery: IdQuery
+	) => Error | undefined;
+} & {
+	[ K in `get${ TResourceTypePlural }TotalCount` ]: (
+		state: ResourceState,
+		query: ItemQuery,
+		defaultValue?: number
+	) => number | undefined;
+} & {
+	[ K in `get${ TResourceTypePlural }Error` ]: (
+		state: ResourceState,
+		query?: ItemQuery
+	) => Error | undefined;
+} & {
+	[ K in `get${ TResourceName }CreateError` ]: (
+		state: ResourceState,
+		query: ItemQuery
+	) => Error | undefined;
+} & {
+	[ K in `get${ TResourceName }DeleteError` ]: (
+		state: ResourceState,
+		idQuery: IdQuery,
+		namespace: string
+	) => Error | undefined;
+} & {
+	[ K in `get${ TResourceTypePlural }` ]: (
+		state: ResourceState,
+		idQuery: IdQuery
+	) => TResourceType[] | undefined;
+} & {
+	[ K in `get${ TResourceName }UpdateError` ]: (
+		state: ResourceState,
+		idQuery: IdQuery,
+		urlParameters: IdType[]
+	) => Error | undefined;
+} & {
+	hasFinishedRequest: (
+		state: ResourceState,
+		action: string,
+		args?: any[]
+	) => boolean;
+	isRequesting: (
+		state: ResourceState,
+		action: string,
+		args?: any[]
+	) => boolean;
 };
 
 export const getItemCreateError = (
@@ -157,11 +211,19 @@ export const getItemUpdateError = (
 
 const EMPTY_OBJECT = {};
 
-export const createSelectors = ( {
+export const createSelectors = <
+	TResourceName extends string,
+	TResourceTypePlural extends string,
+	TResourceType
+>( {
 	resourceName,
 	pluralResourceName,
 	namespace,
-}: SelectorOptions ) => {
+}: {
+	resourceName: TResourceName;
+	pluralResourceName: TResourceTypePlural;
+	namespace: string;
+} ): CrudSelectors< TResourceName, TResourceTypePlural, TResourceType > => {
 	const hasFinishedRequest = (
 		state: ResourceState,
 		action: string,

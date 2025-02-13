@@ -12,7 +12,6 @@ export { NOTES_STORE_NAME } from './notes';
 export { REPORTS_STORE_NAME } from './reports';
 export { COUNTRIES_STORE_NAME } from './countries';
 export { NAVIGATION_STORE_NAME } from './navigation';
-export { OPTIONS_STORE_NAME } from './options';
 export { ITEMS_STORE_NAME } from './items';
 export { PAYMENT_GATEWAYS_STORE_NAME } from './payment-gateways';
 export { PAYMENT_SETTINGS_STORE_NAME } from './payment-settings';
@@ -49,6 +48,11 @@ export { ShippingMethod } from './shipping-methods/types';
 
 // Export stores
 export { store as onboardingStore } from './onboarding';
+export { store as productVariationsStore } from './product-variations';
+export { store as productAttributeTermsStore } from './product-attribute-terms';
+export { store as productsStore } from './products';
+export { store as optionsStore } from './options';
+export { store as productTagsStore } from './product-tags';
 
 // Export hooks
 export { withSettingsHydration } from './settings/with-settings-hydration';
@@ -144,7 +148,6 @@ import type { REVIEWS_STORE_NAME } from './reviews';
 import type { SETTINGS_STORE_NAME } from './settings';
 import type { PLUGINS_STORE_NAME } from './plugins';
 import type { USER_STORE_NAME } from './user';
-import type { OPTIONS_STORE_NAME } from './options';
 import type { NAVIGATION_STORE_NAME } from './navigation';
 import type { NOTES_STORE_NAME } from './notes';
 import type { REPORTS_STORE_NAME } from './reports';
@@ -153,16 +156,13 @@ import type { COUNTRIES_STORE_NAME } from './countries';
 import type { PAYMENT_GATEWAYS_STORE_NAME } from './payment-gateways';
 import type { PAYMENT_SETTINGS_STORE_NAME } from './payment-settings';
 import type { SHIPPING_METHODS_STORE_NAME } from './shipping-methods';
-import type { PRODUCTS_STORE_NAME } from './products';
 import type { ORDERS_STORE_NAME } from './orders';
 import type { EXPERIMENTAL_PRODUCT_ATTRIBUTES_STORE_NAME } from './product-attributes';
 import type { EXPERIMENTAL_PRODUCT_SHIPPING_CLASSES_STORE_NAME } from './product-shipping-classes';
 import type { EXPERIMENTAL_SHIPPING_ZONES_STORE_NAME } from './shipping-zones';
-import type { EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME } from './product-tags';
 import type { EXPERIMENTAL_PRODUCT_CATEGORIES_STORE_NAME } from './product-categories';
 import type { EXPERIMENTAL_PRODUCT_FORM_STORE_NAME } from './product-form';
 import type { EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME } from './product-attribute-terms';
-import type { EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME } from './product-variations';
 import type { EXPERIMENTAL_TAX_CLASSES_STORE_NAME } from './tax-classes';
 
 export type WCDataStoreName =

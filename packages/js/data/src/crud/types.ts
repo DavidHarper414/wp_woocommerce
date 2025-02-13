@@ -20,6 +20,9 @@ export type IdQuery =
 	| {
 			id: IdType;
 			[ key: string ]: IdType;
+	  }
+	| {
+			[ key: string ]: any;
 	  };
 
 export type Item = {

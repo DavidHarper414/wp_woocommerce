@@ -4,6 +4,7 @@
 import { useState } from '@wordpress/element';
 import { resolveSelect } from '@wordpress/data';
 import { escapeHTML } from '@woocommerce/components';
+import { store as coreStore } from '@wordpress/core-data';
 /**
  * Internal dependencies
  */
@@ -26,19 +27,16 @@ async function getTaxonomiesMissingParents(
 		}
 	} );
 	if ( missingParentIds.length > 0 ) {
-		return (
-			resolveSelect( 'core' )
-				.getEntityRecords( 'taxonomy', taxonomyName, {
-					include: missingParentIds,
-				} )
-				// @ts-expect-error TODO react-18-upgrade: getEntityRecords type is not correctly typed yet
-				.then( ( parentTaxonomies: Taxonomy[] ) => {
-					return getTaxonomiesMissingParents(
-						[ ...parentTaxonomies, ...taxonomies ],
-						taxonomyName
-					);
-				} )
-		);
+		return resolveSelect( coreStore )
+			.getEntityRecords( 'taxonomy', taxonomyName, {
+				include: missingParentIds,
+			} )
+			.then( ( parentTaxonomies ) => {
+				return getTaxonomiesMissingParents(
+					[ ...( parentTaxonomies as Taxonomy[] ), ...taxonomies ],
+					taxonomyName
+				);
+			} );
 	}
 	return taxonomies;
 }
@@ -61,15 +59,14 @@ const useTaxonomySearch = (
 		setIsSearching( true );
 		let taxonomies: Taxonomy[] = [];
 		try {
-			// @ts-expect-error TODO react-18-upgrade: getEntityRecords type is not correctly typed yet
-			taxonomies = await resolveSelect( 'core' ).getEntityRecords(
+			taxonomies = ( await resolveSelect( coreStore ).getEntityRecords(
 				'taxonomy',
 				taxonomyName,
 				{
 					per_page: PAGINATION_SIZE,
 					search: escapeHTML( search ),
 				}
-			);
+			) ) as Taxonomy[];
 			if ( options?.fetchParents ) {
 				taxonomies = await getTaxonomiesMissingParents(
 					taxonomies,

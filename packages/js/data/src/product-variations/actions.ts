@@ -54,7 +54,9 @@ export const generateProductVariations = function* (
 		default_attributes?: ProductDefaultAttribute[];
 		meta_data?: Product[ 'meta_data' ];
 	},
-	data: GenerateRequest,
+	data: GenerateRequest & {
+		meta_data?: Product[ 'meta_data' ];
+	},
 	saveAttributes = true
 ) {
 	const urlParameters = getUrlParameters(

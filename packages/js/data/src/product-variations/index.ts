@@ -12,10 +12,15 @@ import * as actions from './actions';
 import * as selectors from './selectors';
 import { reducer } from './reducer';
 import { ResourceState } from '../crud/reducer';
-import { PromiseifySelectors } from '../types/promiseify-selectors';
-import { ProductVariationSelectors } from './types';
+import { ProductVariation } from './types';
 
-createCrudDataStore( {
+export const store = createCrudDataStore<
+	ProductVariation,
+	'ProductVariation',
+	'ProductVariations',
+	typeof actions,
+	typeof selectors
+>( {
 	storeName: STORE_NAME,
 	resourceName: 'ProductVariation',
 	pluralResourceName: 'ProductVariations',
@@ -26,11 +31,3 @@ createCrudDataStore( {
 		selectors,
 	},
 } );
-
-export const EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME = STORE_NAME;
-
-declare module '@wordpress/data' {
-	function resolveSelect(
-		key: typeof STORE_NAME
-	): PromiseifySelectors< ProductVariationSelectors >;
-}
