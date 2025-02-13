@@ -1,4 +1,4 @@
 Significance: patch
 Type: enhancement
 
-Remove use of `wcSettings.admin.visibleTaskListIds` var.
+Do not call `get_visible` function is all lists are already hidden.
