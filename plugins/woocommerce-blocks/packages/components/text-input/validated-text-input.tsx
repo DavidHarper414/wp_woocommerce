@@ -298,7 +298,7 @@ const ValidatedTextInput = forwardRef<
 					}
 				} }
 				onBlur={ () => validateInput( false ) }
-				ariaDescribedBy={ ariaDescribedBy }
+				aria-describedby={ ariaDescribedBy }
 				value={ value }
 				title="" // This prevents the same error being shown on hover.
 				label={ label }

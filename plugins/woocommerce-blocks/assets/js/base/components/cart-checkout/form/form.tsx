@@ -378,7 +378,13 @@ const Form = <
 									'-'
 								)
 							) }
-							value={ field.key }
+							value={
+								field.key in values
+									? ( values[
+											field.key as keyof T
+									  ] as string )
+									: ''
+							}
 							onChange={ ( newValue: string ) => {
 								onChange( {
 									...values,
