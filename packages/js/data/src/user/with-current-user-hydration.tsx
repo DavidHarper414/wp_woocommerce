@@ -8,7 +8,7 @@ import { createElement } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { STORE_NAME } from './constants';
+import { store } from './';
 import { WCUser } from './types';
 
 /**
@@ -30,13 +30,12 @@ export const withCurrentUserHydration = ( currentUser: WCUser ) =>
 				}
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
-				const { isResolving, hasFinishedResolution } =
-					select( STORE_NAME );
+				const { isResolving, hasFinishedResolution } = select( store );
 				return (
-					! isResolving( 'getCurrentUser' ) &&
-					! hasFinishedResolution( 'getCurrentUser' )
+					! isResolving( 'getCurrentUser', [] ) &&
+					! hasFinishedResolution( 'getCurrentUser', [] )
 				);
-			} );
+			}, [] );
 
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore

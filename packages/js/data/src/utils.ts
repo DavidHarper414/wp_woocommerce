@@ -109,7 +109,7 @@ export function* request< Query extends BaseQueryParams, DataType >(
  * @throws {Error} If the user does not have the required capability.
  */
 export function* checkUserCapability( capability: string ) {
-	const currentUser: WCUser< 'capabilities' > = yield select(
+	const currentUser: WCUser = yield select(
 		USER_STORE_NAME,
 		'getCurrentUser'
 	);
