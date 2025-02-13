@@ -29,19 +29,6 @@ export function getCountryCode( countryState = '' ) {
 	return countryState.split( ':' )[ 0 ];
 }
 
-export function getCurrencyRegion( countryState: string ) {
-	let region = getCountryCode( countryState );
-	const euCountries = without(
-		getAdminSetting( 'onboarding', { euCountries: [] } ).euCountries,
-		'GB'
-	);
-	if ( region !== null && euCountries.includes( region ) ) {
-		region = 'EU';
-	}
-
-	return region;
-}
-
 /**
  * Get the value of a price from a string, removing any non-numeric characters.
  *

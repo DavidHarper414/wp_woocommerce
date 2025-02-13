@@ -228,7 +228,6 @@ class OnboardingSetupWizard {
 		$profile['wccom_connected'] = empty( $wccom_auth['access_token'] ) ? false : true;
 
 		$settings['onboarding']['currencySymbols'] = get_woocommerce_currency_symbols();
-		$settings['onboarding']['euCountries']     = WC()->countries->get_european_union_countries();
 		$settings['onboarding']['localeInfo']      = include WC()->plugin_path() . '/i18n/locale-info.php';
 		$settings['onboarding']['profile']         = $profile;
 
