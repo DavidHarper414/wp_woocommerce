@@ -55,7 +55,14 @@ if ( ! class_exists( 'WC_Admin_Settings', false ) ) :
 				$settings[] = include __DIR__ . '/settings/class-wc-settings-products.php';
 				$settings[] = include __DIR__ . '/settings/class-wc-settings-tax.php';
 				$settings[] = include __DIR__ . '/settings/class-wc-settings-shipping.php';
-				if ( Features::is_enabled( 'reactify-classic-payments-settings' ) && Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' ) ) {
+
+				// Adding try-catch because in non-production environments it may fail (for example, e2e tests).
+				try {
+					$in_treatment = Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' );
+				} catch ( \Exception $e ) {
+					$in_treatment = false;
+				}
+				if ( Features::is_enabled( 'reactify-classic-payments-settings' ) && $in_treatment ) {
 					$settings[] = include __DIR__ . '/settings/class-wc-settings-payment-gateways-react.php';
 				} else {
 					$settings[] = include __DIR__ . '/settings/class-wc-settings-payment-gateways.php';
