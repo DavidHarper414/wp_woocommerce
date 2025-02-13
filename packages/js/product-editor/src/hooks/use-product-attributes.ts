@@ -81,7 +81,7 @@ export function useProductAttributes( {
 					attribute_id: attributeId,
 				} )
 				.then(
-					( attributeTerms: ProductAttributeTerm[] ) => {
+					( attributeTerms ) => {
 						return attributeTerms;
 					},
 					( error: string ) => {
@@ -179,6 +179,7 @@ export function useProductAttributes( {
 		).then( ( termData ) => {
 			setAttributes( [
 				...globalAttributes.map( ( attr, index ) =>
+					// @ts-expect-error TODO react-18-upgrade: getProductAttributeTerms type is not correctly typed and was surfaced by https://github.com/woocommerce/woocommerce/pull/54146
 					enhanceAttribute( attr, termData[ index ] )
 				),
 				...localAttributes,
