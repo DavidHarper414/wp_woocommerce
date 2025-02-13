@@ -385,7 +385,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple, virtual product.</p>\n',
-
 								price: '2',
 								regular_price: '3',
 								sale_price: '2',
@@ -456,7 +455,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple, virtual product.</p>\n',
-
 								price: '15',
 								regular_price: '15',
 								sale_price: '',
@@ -532,7 +530,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-
 								price: '20',
 								regular_price: '20',
 								sale_price: '',
@@ -605,7 +602,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-
 								price: '25',
 								regular_price: '25',
 								sale_price: '',
@@ -678,7 +674,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-
 								price: '45',
 								regular_price: '45',
 								sale_price: '',
@@ -743,7 +738,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-
 								price: '35',
 								regular_price: '45',
 								sale_price: '35',
@@ -820,7 +814,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-
 								price: '90',
 								regular_price: '90',
 								sale_price: '',
@@ -889,7 +882,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-
 								price: '16',
 								regular_price: '18',
 								sale_price: '16',
@@ -962,7 +954,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-
 								price: '55',
 								regular_price: '65',
 								sale_price: '55',
@@ -1027,7 +1018,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-
 								price: '18',
 								regular_price: '20',
 								sale_price: '18',
@@ -1104,7 +1094,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-
 								price: '18',
 								regular_price: '18',
 								sale_price: '',
@@ -1177,7 +1166,6 @@ test.describe.serial( 'Orders API tests', () => {
 								description,
 								short_description:
 									'<p>This is a simple product.</p>\n',
-
 								price: '45',
 								regular_price: '45',
 								sale_price: '',
@@ -1269,7 +1257,6 @@ test.describe.serial( 'Orders API tests', () => {
 									'Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n',
 								short_description:
 									'<p>This is an external product.</p>\n',
-
 								price: '11.05',
 								regular_price: '11.05',
 								sale_price: '',
@@ -1365,7 +1352,6 @@ test.describe.serial( 'Orders API tests', () => {
 									'Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n',
 								short_description:
 									'<p>This is a grouped product.</p>\n',
-
 								price: '18',
 								regular_price: '',
 								sale_price: '',
@@ -1451,7 +1437,6 @@ test.describe.serial( 'Orders API tests', () => {
 					catalog_visibility: 'visible',
 					description,
 					short_description: '<p>This is a variable product.</p>\n',
-
 					price: '42',
 					regular_price: '',
 					sale_price: '',
@@ -1738,7 +1723,6 @@ test.describe.serial( 'Orders API tests', () => {
 					catalog_visibility: 'visible',
 					description,
 					short_description: '<p>This is a variable product.</p>\n',
-
 					price: '15',
 					regular_price: '',
 					sale_price: '',
