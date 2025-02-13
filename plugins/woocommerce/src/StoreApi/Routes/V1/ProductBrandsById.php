@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Automattic\WooCommerce\StoreApi\Routes\V1;
 
 use Automattic\WooCommerce\StoreApi\Exceptions\RouteException;
@@ -50,7 +52,7 @@ class ProductBrandsById extends AbstractRoute {
 				'identifier' => array(
 					'description' => __( 'Unique identifier for the resource.', 'woocommerce' ),
 					'type'        => 'string',
-				)
+				),
 			),
 			[
 				'methods'             => \WP_REST_Server::READABLE,
@@ -85,13 +87,11 @@ class ProductBrandsById extends AbstractRoute {
 
 		if ( ! $object ) {
 			if ( isset( $request['identifier'] ) && is_numeric( $request['identifier'] ) ) {
-				throw new RouteException( 'woocommerce_rest_brand_invalid_id', __( 'Invalid brand ID.', 'woocommerce' ), 404 );
+				throw new RouteException( 'woocommerce_rest_brand_invalid_id', esc_html__( 'Invalid brand ID.', 'woocommerce' ), 404 );
 			} else {
-				throw new RouteException( 'woocommerce_rest_brand_invalid_slug', __( 'Invalid brand slug.', 'woocommerce' ), 404 );
+				throw new RouteException( 'woocommerce_rest_brand_invalid_slug', esc_html__( 'Invalid brand slug.', 'woocommerce' ), 404 );
 			}
 		}
-
-
 
 		$data = $this->prepare_item_for_response( $object, $request );
 		return rest_ensure_response( $data );
