@@ -2,10 +2,6 @@
  * Internal dependencies
  */
 import { admin, customer } from '../../test-data/data';
-
-/**
- * External dependencies
- */
 import { expect, tags, test as baseTest } from '../../fixtures/fixtures';
 import { ADMIN_STATE_PATH } from '../../playwright.config';
 
