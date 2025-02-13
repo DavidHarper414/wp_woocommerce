@@ -10,6 +10,7 @@ import {
 	WCPayBannerFooter,
 } from '@woocommerce/onboarding';
 import { recordEvent } from '@woocommerce/tracks';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -17,6 +18,8 @@ import { recordEvent } from '@woocommerce/tracks';
 import './payment-recommendations.scss';
 import { getAdminSetting } from '~/utils/admin-settings';
 import { usePaymentsBanner } from './use-payments-banner';
+import { WOOPAY_ELIGIBILITY_STORE_NAME } from '~/settings-payments/woopay-eligibility-store';
+import type { WooPayEligibilityState } from '~/settings-payments/woopay-eligibility-store/types';
 
 const recordTrack = () => {
 	recordEvent( 'settings_payments_banner_connect_click' );
@@ -27,7 +30,13 @@ const WCPaySettingBanner = () => {
 		'admin.php?wcpay-connect=1&_wpnonce=' +
 			getAdminSetting( 'wcpay_welcome_page_connect_nonce' )
 	);
-	const isWooPayEligible = getAdminSetting( 'isWooPayEligible' );
+
+	const isWooPayEligible = useSelect( ( select ) => {
+		const store = select( WOOPAY_ELIGIBILITY_STORE_NAME ) as {
+			getIsEligible: () => WooPayEligibilityState[ 'isEligible' ];
+		};
+		return store.getIsEligible();
+	}, [] );
 
 	return (
 		<WCPayBanner>
@@ -42,9 +51,9 @@ const WCPaySettingBanner = () => {
 						{ __( 'Get started', 'woocommerce' ) }
 					</Button>
 				}
-				isWooPayEligible={ isWooPayEligible }
+				isWooPayEligible={ isWooPayEligible ?? false }
 			/>
-			<WCPayBannerFooter isWooPayEligible={ isWooPayEligible } />
+			<WCPayBannerFooter isWooPayEligible={ isWooPayEligible ?? false } />
 		</WCPayBanner>
 	);
 };

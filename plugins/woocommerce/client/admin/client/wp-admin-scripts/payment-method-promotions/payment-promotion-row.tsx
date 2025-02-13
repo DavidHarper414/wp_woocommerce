@@ -18,7 +18,8 @@ import { WooPaymentsMethodsLogos } from '@woocommerce/onboarding';
  * Internal dependencies
  */
 import './payment-promotion-row.scss';
-import { getAdminSetting } from '~/utils/admin-settings';
+import { WOOPAY_ELIGIBILITY_STORE_NAME } from '~/settings-payments/woopay-eligibility-store';
+import type { WooPayEligibilityState } from '~/settings-payments/woopay-eligibility-store/types';
 
 function sanitizeHTML( html: string ) {
 	return {
@@ -76,6 +77,13 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 		};
 	}, [] );
 
+	const isWooPayEligible = useSelect( ( select ) => {
+		const store = select( WOOPAY_ELIGIBILITY_STORE_NAME ) as {
+			getIsEligible: () => WooPayEligibilityState[ 'isEligible' ];
+		};
+		return store.getIsEligible();
+	}, [] );
+
 	useEffect( () => {
 		if (
 			gatewayIsActive &&
@@ -120,8 +128,6 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 		return null;
 	}
 
-	const isWooPayEligible = getAdminSetting( 'isWooPayEligible', false );
-
 	return (
 		<>
 			{ columns.map( ( column ) => {
@@ -143,7 +149,7 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 										<WooPaymentsMethodsLogos
 											maxElements={ 5 }
 											isWooPayEligible={
-												isWooPayEligible
+												isWooPayEligible ?? false
 											}
 										/>
 									</div>
