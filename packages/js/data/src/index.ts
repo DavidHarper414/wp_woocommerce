@@ -142,6 +142,7 @@ export { UserPreferences } from './user/types';
 /**
  * Internal dependencies
  */
+import type { REVIEWS_STORE_NAME } from './reviews';
 import type { SETTINGS_STORE_NAME } from './settings';
 import type { PLUGINS_STORE_NAME } from './plugins';
 import type { ONBOARDING_STORE_NAME } from './onboarding';
@@ -168,6 +169,7 @@ import type { EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME } from './product-varia
 import type { EXPERIMENTAL_TAX_CLASSES_STORE_NAME } from './tax-classes';
 
 export type WCDataStoreName =
+	| typeof REVIEWS_STORE_NAME
 	| typeof SETTINGS_STORE_NAME
 	| typeof PLUGINS_STORE_NAME
 	| typeof ONBOARDING_STORE_NAME
@@ -217,7 +219,9 @@ import { ProductFormSelectors } from './product-form/selectors';
 
 // As we add types to all the package selectors we can fill out these unknown types with real ones. See one
 // of the already typed selectors for an example of how you can do this.
-export type WCSelectorType< T > = T extends typeof SETTINGS_STORE_NAME
+export type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
+	? WPDataSelectors
+	: T extends typeof SETTINGS_STORE_NAME
 	? WPDataSelectors
 	: T extends typeof PLUGINS_STORE_NAME
 	? PluginSelectors
