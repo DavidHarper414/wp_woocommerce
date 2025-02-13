@@ -153,9 +153,13 @@ function wc_cleanup_email_logs() {
 	$table_name = $wpdb->prefix . 'wpml_mails';
 
 	// Check if the table exists before truncating.
-	$prepared_query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name );
-	$table_exists = $wpdb->get_var( $prepared_query );
+	$table_exists = $wpdb->get_var(
+		$wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name )
+	);
 
+	if ( $table_exists === $table_name ) {
+		$wpdb->query( 'TRUNCATE TABLE ' . esc_sql( $table_name ) );
+	}
 	if ( $table_exists === $table_name ) {
 		$wpdb->query( 'TRUNCATE TABLE ' . esc_sql( $table_name ) );
 	}
