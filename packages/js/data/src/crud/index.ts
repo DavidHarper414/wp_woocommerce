@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
-import { Reducer, Action } from 'redux';
 
 /**
  * Internal dependencies
@@ -15,32 +14,32 @@ import { createReducer } from './reducer';
 
 interface CrudStoreParams<
 	TResourceName,
-	TResourceTypePlural,
-	Actions,
-	Selectors,
-	Resolvers,
-	Controls,
+	TResourceNamePlural,
+	TActions,
+	TSelectors,
+	TResolvers,
+	TControls,
 	TReducer
 > {
 	storeName: string;
 	resourceName: TResourceName;
 	namespace: string;
-	pluralResourceName: TResourceTypePlural;
+	pluralResourceName: TResourceNamePlural;
 	storeConfig?: {
 		reducer?: TReducer;
-		actions?: Actions;
-		selectors?: Selectors;
-		resolvers?: Resolvers;
-		controls?: Controls;
+		actions?: TActions;
+		selectors?: TSelectors;
+		resolvers?: TResolvers;
+		controls?: TControls;
 	};
 }
 
 export const createCrudDataStore = <
 	TResourceType,
 	TResourceName extends string,
-	TResourceTypePlural extends string,
-	Actions,
-	Selectors
+	TResourceNamePlural extends string,
+	TActions,
+	TSelectors
 >( {
 	storeName,
 	resourceName,
@@ -49,11 +48,11 @@ export const createCrudDataStore = <
 	storeConfig,
 }: CrudStoreParams<
 	TResourceName,
-	TResourceTypePlural,
-	Actions,
-	Selectors,
-	Resolvers,
-	Controls,
+	TResourceNamePlural,
+	TActions,
+	TSelectors,
+	TResolvers,
+	TControls,
 	TReducer
 > ) => {
 	const crudActions = createDispatchActions( {
@@ -93,8 +92,8 @@ export const createCrudDataStore = <
 
 	const store = createReduxStore<
 		unknown,
-		Actions,
-		Selectors & typeof crudSelectors
+		TActions,
+		TSelectors & typeof crudSelectors
 	>( storeName, {
 		reducer: crudReducer,
 		actions: { ...crudActions, ...actions },
