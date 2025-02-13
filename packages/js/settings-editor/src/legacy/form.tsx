@@ -74,6 +74,8 @@ export const Form = ( {
 		formData._wpnonce = settingsData._wpnonce;
 		formData._w_http_referer = '/wp-admin/' + getNewPath( query );
 
+		console.log( formData );
+
 		const form = new FormData();
 		for ( const [ key, value ] of Object.entries( formData ) ) {
 			form.append( key, value );
@@ -113,11 +115,7 @@ export const Form = ( {
 				/>
 			</div>
 			<div className="woocommerce-settings-content-footer">
-				<Button
-					variant="primary"
-					type="submit"
-					className="woocommerce-save-button"
-				>
+				<Button variant="primary" type="submit">
 					{ __( 'Save', 'woocommerce' ) }
 				</Button>
 			</div>
