@@ -233,15 +233,15 @@ class CheckoutFields {
 	 *
 	 * @param array|string        $field The field array or field key.
 	 * @param DocumentObject|null $document_object The document object.
-	 * @param string|null         $document_object_context The context for the document object.
+	 * @param string|null         $context The context for the document object.
 	 * @return bool
 	 */
-	public function is_required_field( $field, $document_object = null, $document_object_context = null ) {
+	public function is_required_field( $field, $document_object = null, $context = null ) {
 		if ( is_string( $field ) ) {
 			$field = $this->additional_fields[ $field ] ?? [];
 		}
 		if ( $document_object && ! empty( $field['rules']['required'] ) ) {
-			$document_object->set_context( $document_object_context );
+			$document_object->set_context( $context );
 			return true === Validation::validate_document_object( $document_object, $field['rules']['required'] );
 		}
 		return true === $field['required'];
@@ -252,13 +252,13 @@ class CheckoutFields {
 	 *
 	 * @param array               $field The field.
 	 * @param DocumentObject|null $document_object The document object.
-	 * @param string|null         $document_object_context The context for the document object.
+	 * @param string|null         $context The context for the document object.
 	 * @return bool|\WP_Error True if the field is valid, a WP_Error otherwise.
 	 */
-	public function is_valid_field( $field, $document_object = null, $document_object_context = null ) {
+	public function is_valid_field( $field, $document_object = null, $context = null ) {
 		if ( $document_object && ! empty( $field['rules']['validation'] ) ) {
-			$document_object->set_context( $document_object_context );
-			$field_schema = Validation::get_field_schema_with_context( $field['id'], $field['rules']['validation'], $document_object_context );
+			$document_object->set_context( $context );
+			$field_schema = Validation::get_field_schema_with_context( $field['id'], $field['rules']['validation'], $context );
 			return Validation::validate_document_object( $document_object, $field_schema );
 		}
 		return true;
@@ -810,20 +810,20 @@ class CheckoutFields {
 	 * Get a required field error object based on context.
 	 *
 	 * @param string $field_key The key of the field.
-	 * @param string $document_object_context The context for the document object.
+	 * @param string $context The context for the document object.
 	 * @return WP_Error
 	 */
-	public function get_required_field_error_message( $field_key, $document_object_context = null ) {
+	public function get_required_field_error_message( $field_key, $context = null ) {
 		$field       = $this->additional_fields[ $field_key ] ?? null;
 		$field_label = $field['label'] ?? __( 'Field', 'woocommerce' );
 
 		/* translators: %s: is the field label */
 		$error_message = sprintf( __( '%s is required', 'woocommerce' ), $field_label );
 
-		if ( 'shipping_address' === $document_object_context ) {
+		if ( 'shipping_address' === $context ) {
 			/* translators: %s: is the field error message */
 			return sprintf( __( 'There was a problem with the provided shipping address: %s', 'woocommerce' ), $error_message );
-		} elseif ( 'billing_address' === $document_object_context ) {
+		} elseif ( 'billing_address' === $context ) {
 			/* translators: %s: is the field error message */
 			return sprintf( __( 'There was a problem with the provided billing address: %s', 'woocommerce' ), $error_message );
 		}
@@ -839,10 +839,10 @@ class CheckoutFields {
 	 * @param string $field_key    The key of the field.
 	 * @param mixed  $field_value  The value of the field.
 	 * @param array  $document_object The document object.
-	 * @param string $document_object_context The context for the document object.
+	 * @param string $context The context for the document object.
 	 * @return WP_Error
 	 */
-	public function validate_field( $field_key, $field_value, $document_object = null, $document_object_context = null ) {
+	public function validate_field( $field_key, $field_value, $document_object = null, $context = null ) {
 		$errors = new WP_Error();
 
 		try {
@@ -854,11 +854,11 @@ class CheckoutFields {
 			}
 
 			// Evaluate custom validation schema rules on the field.
-			$validate_result = $this->is_valid_field( $field, $document_object, $document_object_context );
+			$validate_result = $this->is_valid_field( $field, $document_object, $context );
 
 			if ( is_wp_error( $validate_result ) ) {
 				$error_code    = 'woocommerce_invalid_checkout_field';
-				$error_message = $this->get_required_field_error_message( $field_key, $document_object_context );
+				$error_message = $this->get_required_field_error_message( $field_key, $context );
 				$errors->add( $error_code, $error_message );
 				return $errors;
 			}
