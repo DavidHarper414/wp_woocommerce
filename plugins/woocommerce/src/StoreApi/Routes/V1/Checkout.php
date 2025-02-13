@@ -266,7 +266,7 @@ class Checkout extends AbstractCartRoute {
 				$field_value           = $field_values[ $field_key ] ?? '';
 				$sanitized_field_value = $sanitized_field_values[ $field_key ] ?? '';
 
-				if ( empty( $field_value ) ) {
+				if ( empty( trim( $field_value ) ) ) {
 					if ( $is_required ) {
 						/* translators: %s: is the field label */
 						$error_message = sprintf( __( '%s is required', 'woocommerce' ), $field['label'] );
@@ -315,7 +315,7 @@ class Checkout extends AbstractCartRoute {
 			}
 
 			if ( $errors->has_errors() ) {
-				$invalid_groups[ $context_data['param'] ]  = implode( ' ', $errors->get_error_messages() );
+				$invalid_groups[ $context_data['param'] ]  = $errors->get_error_message();
 				$invalid_details[ $context_data['param'] ] = rest_convert_error_to_response( $errors )->get_data();
 			}
 		}
