@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Cache the store notices block addition to prevent recursive rendering
