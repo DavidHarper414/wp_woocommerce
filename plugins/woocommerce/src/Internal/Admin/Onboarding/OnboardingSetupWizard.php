@@ -226,8 +226,6 @@ class OnboardingSetupWizard {
 		include_once WC_ABSPATH . 'includes/admin/helper/class-wc-helper-options.php';
 		$wccom_auth                 = \WC_Helper_Options::get( 'auth' );
 		$profile['wccom_connected'] = empty( $wccom_auth['access_token'] ) ? false : true;
-
-		$settings['onboarding']['currencySymbols'] = get_woocommerce_currency_symbols();
 		$settings['onboarding']['profile']         = $profile;
 
 		return apply_filters( 'woocommerce_admin_onboarding_preloaded_data', $settings );

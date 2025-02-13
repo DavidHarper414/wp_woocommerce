@@ -46,6 +46,22 @@ export function geolocationError( error: unknown ) {
 	};
 }
 
+export function getCurrencySymbolsSuccess( symbols: {
+	[ key: string ]: string;
+} ) {
+	return {
+		type: TYPES.CURRENCY_SYMBOLS_SUCCESS as const,
+		symbols,
+	};
+}
+
+export function getCurrencySymbolsError( error: unknown ) {
+	return {
+		type: TYPES.CURRENCY_SYMBOLS_ERROR as const,
+		error,
+	};
+}
+
 export type Action = ReturnType<
 	| typeof getLocalesSuccess
 	| typeof getLocalesError

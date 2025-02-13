@@ -17,7 +17,11 @@ import {
 } from '@woocommerce/components';
 import { getNewPath } from '@woocommerce/navigation';
 import { getAdminLink } from '@woocommerce/settings';
-import { ordersStore, ITEMS_STORE_NAME } from '@woocommerce/data';
+import {
+	ordersStore,
+	ITEMS_STORE_NAME,
+	COUNTRIES_STORE_NAME,
+} from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { CurrencyContext, CurrencyFactory } from '@woocommerce/currency';
 
@@ -239,38 +243,14 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 	);
 
 	const currencyContext = useContext( CurrencyContext );
-
 	const storeCurrency = currencyContext.getCurrencyConfig();
-	const { currencySymbols = {} } = getAdminSetting( 'onboarding', {} );
-	const getFormattedOrderTotal = ( total, orderCurrencyCode ) => {
-		if ( ! orderCurrencyCode ) {
-			return null;
-		}
-
-		// If the order currency is the same as the store currency, we show the formatted amount.
-		if ( storeCurrency && storeCurrency.code === orderCurrencyCode ) {
-			return currencyContext.formatAmount( total );
-		}
-		const symbol = currencySymbols[ orderCurrencyCode ];
-
-		if ( ! symbol ) {
-			// This should never happen, but if it does, we'll just show the currency code.
-			return `${ orderCurrencyCode }${ total }`;
-		}
-
-		// If the order currency is different from the store currency, we show the currency code and amount in the order currency.
-		return CurrencyFactory( {
-			...storeCurrency,
-			symbol: decodeEntities( symbol ),
-			code: orderCurrencyCode,
-		} ).formatAmount( total );
-	};
 
 	const {
 		orders = [],
 		isRequesting,
 		isError,
 		customerItems,
+		currencySymbols,
 	} = useSelect( ( select ) => {
 		const { getOrders, hasFinishedResolution, getOrdersError } =
 			select( ordersStore );
@@ -280,6 +260,9 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 		if ( ! orderStatuses.length && unreadOrdersCount === 0 ) {
 			return { isRequesting: false };
 		}
+
+		/* eslint-disable @wordpress/no-unused-vars-before-return */
+		const { getCurrencySymbols } = select( COUNTRIES_STORE_NAME );
 
 		/* eslint-disable @wordpress/no-unused-vars-before-return */
 		const actionableOrders = getOrders( actionableOrdersQuery, null );
@@ -313,8 +296,33 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 			isRequesting: isRequestingActionable,
 			orderStatuses,
 			customerItems: customers,
+			currencySymbols: getCurrencySymbols(),
 		};
 	} );
+
+	const getFormattedOrderTotal = ( total, orderCurrencyCode ) => {
+		if ( ! orderCurrencyCode ) {
+			return null;
+		}
+
+		// If the order currency is the same as the store currency, we show the formatted amount.
+		if ( storeCurrency && storeCurrency.code === orderCurrencyCode ) {
+			return currencyContext.formatAmount( total );
+		}
+		const symbol = currencySymbols[ orderCurrencyCode ];
+
+		if ( ! symbol ) {
+			// This should never happen, but if it does, we'll just show the currency code.
+			return `${ orderCurrencyCode }${ total }`;
+		}
+
+		// If the order currency is different from the store currency, we show the currency code and amount in the order currency.
+		return CurrencyFactory( {
+			...storeCurrency,
+			symbol: decodeEntities( symbol ),
+			code: orderCurrencyCode,
+		} ).formatAmount( total );
+	};
 
 	if ( isError ) {
 		if ( ! orderStatuses.length && window.wcAdminFeatures.analytics ) {

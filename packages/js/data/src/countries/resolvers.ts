@@ -14,6 +14,8 @@ import {
 	getLocalesError,
 	getCountriesSuccess,
 	getCountriesError,
+	getCurrencySymbolsSuccess,
+	getCurrencySymbolsError,
 } from './actions';
 import { NAMESPACE } from '../constants';
 import { Locales, Country, GeolocationResponse } from './types';
@@ -55,6 +57,24 @@ export function* getCountries() {
 		return getCountriesSuccess( results );
 	} catch ( error ) {
 		return getCountriesError( error );
+	}
+}
+
+export function* getCurrencySymbols() {
+	try {
+		const url = 'wc/v3/data/currencies';
+		const results = yield apiFetch( {
+			path: url,
+			method: 'GET',
+		} );
+
+		return getCurrencySymbolsSuccess(
+			results.map(
+				( currency ) => `${ currency.code }: ${ currency.symbol }`
+			)
+		);
+	} catch ( error ) {
+		return getCurrencySymbolsError( error );
 	}
 }
 
