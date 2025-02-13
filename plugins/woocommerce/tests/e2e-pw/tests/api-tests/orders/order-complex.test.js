@@ -131,7 +131,7 @@ test.describe( 'Orders API test', () => {
 				expect( expectedMessages ).toContain( message );
 			}
 
-			if ( response.status() === 201 ) {
+			if ( response.ok() ) {
 				const { slug } = await response.json();
 				taxClassSlugsToTearDown.push( slug );
 			}
