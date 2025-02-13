@@ -18,6 +18,7 @@ use Automattic\WooCommerce\Utilities\PluginUtil;
 use Plugin_Upgrader;
 use WC_Helper;
 use WC_Helper_Updater;
+use WC_Woo_Update_Manager_Plugin;
 use WP_Error;
 use WP_Upgrader;
 
@@ -91,6 +92,27 @@ class PluginsHelper {
 		add_action( 'admin_notices', array( __CLASS__, 'maybe_show_connect_notice_in_plugin_list' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'maybe_enqueue_scripts_for_connect_notice' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'maybe_enqueue_scripts_for_notices_in_plugins' ) );
+		add_filter( 'plugins_api', array( __CLASS__, 'maybe_filter_plugins_api_for_wum' ), 10, 3 );
+	}
+
+
+	/**
+	 * Filter WUM (which isn't hosted on .org) to add proper data such as download links, etc.
+	 *
+	 * @param false|object|array $result The result object or array. Default false.
+	 * @param string             $action The type of information being requested from the Plugin Installation API.
+	 * @param object             $args   Plugin API arguments.
+	 *
+	 * @return object
+	 */
+	public static function maybe_filter_plugins_api_for_wum( $res, $action, $arg ) {
+		if ( 'plugin_information' === $action && isset( $arg->slug ) && 'woo-update-manager' === $arg->slug ) {
+			return (object) array(
+				'download_link' => WC_Woo_Update_Manager_Plugin::WOO_UPDATE_MANAGER_DOWNLOAD_URL,
+				'slug' => WC_Woo_Update_Manager_Plugin::WOO_UPDATE_MANAGER_SLUG,
+			);
+		}
+		return $res;
 	}
 
 	/**

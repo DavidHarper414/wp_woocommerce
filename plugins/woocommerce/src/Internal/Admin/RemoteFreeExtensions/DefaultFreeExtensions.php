@@ -81,6 +81,7 @@ class DefaultFreeExtensions {
 				'title'   => __( 'Grow your store', 'woocommerce' ),
 				'plugins' => self::with_core_profiler_fields(
 					array(
+						self::get_plugin( 'woo-update-manager' ),
 						self::get_plugin( 'woocommerce-payments' ),
 						self::get_plugin( 'woocommerce-services:shipping' ),
 						self::get_plugin( 'jetpack' ),
@@ -178,6 +179,21 @@ class DefaultFreeExtensions {
 				'image_url'      => plugins_url( '/assets/images/onboarding/pinterest.png', WC_PLUGIN_FILE ),
 				'manage_url'     => 'admin.php?page=wc-admin&path=%2Fpinterest%2Flanding',
 				'is_built_by_wc' => true,
+			),
+			'woo-update-manager'            => array(
+				'name'           => __( 'WooCommerce.com Update Manager', 'woocommerce' ),
+				'description'    => __( 'Easily manage updates for WooCommerce.com plugins, ensuring security and access to the latest features.', 'woocommerce' ),
+				'image_url'      => self::get_woo_logo(),
+				'is_built_by_wc' => true,
+				'is_visible'     => array(
+					array(
+						'type'      => 'base_location_country',
+						'value'     => array(
+							'US',
+						),
+						'operation' => 'in',
+					),
+				),
 			),
 			'mailpoet'                      => array(
 				'name'           => __( 'MailPoet', 'woocommerce' ),
@@ -585,6 +601,13 @@ class DefaultFreeExtensions {
 				'description'      => __( 'Sync your store catalog, set up pixel tracking, and run targeted ad campaigns.', 'woocommerce' ),
 				'learn_more_link'  => 'https://woocommerce.com/products/meta-ads-and-pixel?utm_source=storeprofiler&utm_medium=product&utm_campaign=freefeatures',
 				'install_priority' => 2,
+			),
+			'woo-update-manager'            => array(
+				'label'            => __( 'WooCommerce.com Update Manager', 'woocommerce' ),
+				'image_url'        => self::get_woo_logo(),
+				'description'      => __( 'Easily manage updates for WooCommerce.com plugins, ensuring security and access to the latest features.', 'woocommerce' ),
+				'learn_more_link'  => 'https://woocommerce.com/posts/introducing-woo-com-update-manager/',
+				'install_priority' => 5,
 			),
 			'mailpoet'                      => array(
 				'label'            => __( 'Reach your customers with MailPoet', 'woocommerce' ),
