@@ -328,4 +328,34 @@ class CheckoutFieldsFrontendTest extends TestCase {
 
 		__internal_woocommerce_blocks_deregister_checkout_field( 'mynamespace/email_validation_error' );
 	}
+
+	/**
+	 * @testDox Optional field with existing value can be cleared by submitting empty value.
+	 */
+	public function test_save_account_form_fields_optional_field_can_be_cleared() {
+		woocommerce_register_additional_checkout_field(
+			array(
+				'id'       => 'mynamespace/optional_field',
+				'label'    => 'Optional field',
+				'location' => 'contact',
+				'required' => false,
+			),
+		);
+
+		// First save a value.
+		$_POST['_wc_other/mynamespace/optional_field'] = 'initial value';
+		$this->sut->save_account_form_fields( 1 );
+
+		$value = $this->controller->get_field_from_object( 'mynamespace/optional_field', new WC_Customer( 1 ) );
+		$this->assertEquals( 'initial value', $value );
+
+		// Now clear the value.
+		$_POST['_wc_other/mynamespace/optional_field'] = '';
+		$this->sut->save_account_form_fields( 1 );
+
+		$value = $this->controller->get_field_from_object( 'mynamespace/optional_field', new WC_Customer( 1 ) );
+		$this->assertEquals( '', $value );
+
+		__internal_woocommerce_blocks_deregister_checkout_field( 'mynamespace/optional_field' );
+	}
 }

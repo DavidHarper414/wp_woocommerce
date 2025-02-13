@@ -314,7 +314,9 @@ class CheckoutFieldsFrontend {
 						/* translators: %s: is the field label */
 						sprintf( __( '%s is required', 'woocommerce' ), '<strong>' . $field_data['label'] . '</strong>' )
 					);
+					continue;
 				}
+				$persist_fields[ $field_key ] = '';
 				continue;
 			}
 
