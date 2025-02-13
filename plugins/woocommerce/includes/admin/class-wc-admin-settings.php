@@ -55,8 +55,7 @@ if ( ! class_exists( 'WC_Admin_Settings', false ) ) :
 				$settings[] = include __DIR__ . '/settings/class-wc-settings-products.php';
 				$settings[] = include __DIR__ . '/settings/class-wc-settings-tax.php';
 				$settings[] = include __DIR__ . '/settings/class-wc-settings-shipping.php';
-				// Special check for allowed tracking to prevent request failure.
-				if ( Features::is_enabled( 'reactify-classic-payments-settings' ) && 'yes' === get_option( 'woocommerce_allow_tracking', 'no' ) && Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' ) ) {
+				if ( Features::is_enabled( 'reactify-classic-payments-settings' ) && Experimental_Abtest::in_treatment_handled_exception( 'woocommerce_payment_settings_2025_v1' ) ) {
 					$settings[] = include __DIR__ . '/settings/class-wc-settings-payment-gateways-react.php';
 				} else {
 					$settings[] = include __DIR__ . '/settings/class-wc-settings-payment-gateways.php';

@@ -117,6 +117,31 @@ final class Experimental_Abtest {
 	}
 
 	/**
+	 * Returns true if the current user is in the treatment group of the given experiment.
+	 * The exception is handled by returning false for cases where it shouldn't be handled from outside.
+	 *
+	 * @param string $experiment_name Name of the experiment.
+	 * @param bool   $as_auth_wpcom_user Request variation as a auth wp user or not.
+	 * @return bool
+	 */
+	public static function in_treatment_handled_exception( string $experiment_name, bool $as_auth_wpcom_user = false ) {
+		$anon_id        = isset( $_COOKIE['tk_ai'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['tk_ai'] ) ) : '';
+		$allow_tracking = 'yes' === get_option( 'woocommerce_allow_tracking' );
+		$abtest         = new self(
+			$anon_id,
+			'woocommerce',
+			$allow_tracking,
+			$as_auth_wpcom_user
+		);
+
+		try {
+			return $abtest->get_variation( $experiment_name ) === 'treatment';
+		} catch ( \Exception $e ) {
+			return false;
+		}
+	}
+
+	/**
 	 * Retrieve the test variation for a provided A/B test.
 	 *
 	 * @param string $test_name Name of the A/B test.
