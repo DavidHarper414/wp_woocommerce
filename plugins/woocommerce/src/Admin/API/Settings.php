@@ -84,20 +84,27 @@ class Settings extends \WC_REST_Data_Controller {
         $tab = isset( $params['tab'] ) ? $params['tab'] : 'general';
         $section = isset( $params['section'] ) ? $params['section'] : '';
 
-
-		// Loop through each settings page and save its settings
-		foreach ( $settings_pages as $settings_page ) {
-			if ( $settings_page->get_id() === $tab ) {
-				if ( method_exists( $settings_page, 'save' ) ) {
-                    // Modify the globals so appropriate values are set.
-                    $current_tab = $tab;
-					$current_section = $section;
-					$settings_page->save();
-				}
-			}
-		}
-
-		return new \WP_REST_Response( array( 'status' => 'success' ) );
+        try {
+            // Loop through each settings page and save its settings
+            foreach ( $settings_pages as $settings_page ) {
+                if ( $settings_page->get_id() === $tab ) {
+                    if ( method_exists( $settings_page, 'save' ) ) {
+                        // Modify the globals so appropriate values are set.
+                        $current_tab = $tab;
+                        $current_section = $section;
+                        $settings_page->save();
+                    }
+                }
+            }
+            
+            return new \WP_REST_Response( array( 'status' => 'success' ) );
+        } catch ( \Exception $e ) {
+            return new \WP_Error(
+                'woocommerce_settings_save_error',
+                sprintf( __( 'Failed to save settings: %s', 'woocommerce' ), $e->getMessage() ),
+                array( 'status' => 500 )
+            );
+        }
 	}
 
 	public function get_item_schema() {
