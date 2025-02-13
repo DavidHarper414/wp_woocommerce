@@ -90,24 +90,30 @@ class BackInStockNotifications {
 			}
 		}
 
-		// Check for AJAX activation
-		if ( wp_doing_ajax() && isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'activate-plugin' ) {
-			if ( isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] === $bis_plugin_name ) {
+		// Check for AJAX activation (network admin)
+		if ( wp_doing_ajax() ) {
+			if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'activate-plugin' ) {
+				if ( isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] === $bis_plugin_name ) {
+					self::$is_activation_request = true;
+					return;
+				}
+			}
+		}
+
+		// Check for regular activation requests
+		if ( isset( $_REQUEST['action'] ) ) {
+			// Single plugin activation
+			if ( $_REQUEST['action'] === 'activate' && isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] === $bis_plugin_name ) {
+				self::$is_activation_request = true;
+				return;
+			}
+
+			// Bulk plugin activation
+			if ( $_REQUEST['action'] === 'activate-selected' && isset( $_REQUEST['checked'] ) && is_array( $_REQUEST['checked'] ) && in_array( $bis_plugin_name, $_REQUEST['checked'] ) ) {
 				self::$is_activation_request = true;
 				return;
 			}
 		}
-
-		// Check for regular activation request (e.g., from plugins page)
-		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'activate' ) {
-			if ( isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] === $bis_plugin_name ) {
-				self::$is_activation_request = true;
-				return;
-			}
-		}
-
-		// TODO: check if this also covers activation via woocommerce.com.
-
 	}
 
 	/**
