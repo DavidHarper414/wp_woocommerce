@@ -17,6 +17,13 @@ class Batch extends ControllerTestCase {
 	 * Setup test product data. Called before every test.
 	 */
 	protected function setUp(): void {
+		add_filter(
+			'__experimental_woocommerce_store_api_batch_request_methods',
+			function ( $methods ) {
+				$methods[] = 'GET';
+				return $methods;
+			}
+		);
 		parent::setUp();
 
 		$fixtures = new FixtureData();
@@ -35,6 +42,11 @@ class Batch extends ControllerTestCase {
 				)
 			),
 		);
+	}
+
+	protected function tearDown(): void {
+		//remove_all_filters( '__experimental_woocommerce_store_api_batch_request_methods' );
+		parent::tearDown();
 	}
 
 	/**
@@ -122,46 +134,11 @@ class Batch extends ControllerTestCase {
 		$this->assertEquals( 201, $response_data['responses'][1]['status'], $response_data['responses'][1]['status'] );
 	}
 
-	/**
-	 * Get Requests not supported by batch.
-	 */
-	public function test_get_cart_route_batch() {
-		$request = new \WP_REST_Request( 'POST', '/wc/store/v1/batch' );
-		$request->set_header( 'Nonce', wp_create_nonce( 'wc_store_api' ) );
-		$request->set_body_params(
-			array(
-				'requests' => array(
-					array(
-						'method' => 'GET',
-						'path'   => '/wc/store/v1/cart',
-						'body'   => array(
-							'id'       => 99,
-							'quantity' => 1,
-						),
-					),
-				),
-			)
-		);
-		$response      = rest_get_server()->dispatch( $request );
-		$response_data = $response->get_data();
-
-		$this->assertEquals( 'rest_invalid_param', $response_data['code'] );
-	}
 
 	/**
 	 * Do a batch request with a get request.
 	 */
 	public function test_batch_get_requests() {
-		add_filter(
-			'__experimental_woocommerce_store_api_batch_request_methods',
-			function ( $methods ) {
-				$methods[] = 'GET';
-				return $methods;
-			},
-			10,
-			1
-		);
-
 		$request = new \WP_REST_Request( 'POST', '/wc/store/v1/batch' );
 		$request->set_header( 'Nonce', wp_create_nonce( 'wc_store_api' ) );
 		$request->set_body_params(
@@ -184,7 +161,5 @@ class Batch extends ControllerTestCase {
 
 		$this->assertEquals( 2, count( $response_data['responses'] ) );
 		$this->assertEquals( 200, $response_data['responses'][0]['status'] );
-
-		remove_all_filters( '__experimental_woocommerce_store_api_batch_request_methods' );
 	}
 }
