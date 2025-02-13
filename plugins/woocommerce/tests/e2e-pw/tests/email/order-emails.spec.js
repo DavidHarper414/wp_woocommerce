@@ -64,32 +64,26 @@ const test = baseTest.extend( {
 	{
 		status: 'processing',
 		role: 'customer',
-		subject: /Your .+ order has been received!/,
-		content: /Thank you for your order/,
+		subject: 'Your .+ order has been received!',
+		content: 'Thank you for your order',
 	},
 	{
 		status: 'processing',
 		role: 'admin',
-		subject: /New order #\d+/,
-		content: /Thank you for your order/,
+		subject: 'New order #ORDER_ID',
+		content: 'Congratulations on the sale',
 	},
 	{
 		status: 'completed',
 		role: 'customer',
-		subject: /Your .+ order has been received!/,
-		content: /Thank you for your order/,
-	},
-	{
-		status: 'cancelled',
-		role: 'customer',
-		subject: /Order \d has been cancelled/,
-		content: /Thanks for shopping with us/,
+		subject: 'Your .+ order is now complete',
+		content: 'Thanks for shopping with us',
 	},
 	{
 		status: 'cancelled',
 		role: 'admin',
-		subject: /Order #\d+ has been cancelled/,
-		content: /Thank you for your order/,
+		subject: 'Order #ORDER_ID has been cancelled',
+		content: 'Thanks for reading',
 	},
 ].forEach( ( { role, status, subject, content } ) => {
 	// eslint-disable-next-line playwright/expect-expect
@@ -98,6 +92,9 @@ const test = baseTest.extend( {
 		api,
 		order,
 	} ) => {
+		// Inject the order id into the expected subject and make it a regex
+		subject = new RegExp( subject.replace( 'ORDER_ID', `${ order.id }` ) );
+
 		await api
 			.put( `orders/${ order.id }`, {
 				status,
@@ -130,7 +127,11 @@ const test = baseTest.extend( {
 			);
 
 			await expect(
-				modalContent.getByText( `Receiver ${ order.billing.email }` )
+				modalContent.getByText(
+					`Receiver ${
+						role === 'customer' ? order.billing.email : admin.email
+					}`
+				)
 			).toBeVisible();
 			await expect( modalContent.getByText( subject ) ).toBeVisible();
 
