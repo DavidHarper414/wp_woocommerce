@@ -51,6 +51,7 @@ export { ShippingMethod } from './shipping-methods/types';
 // Export stores
 export { store as onboardingStore } from './onboarding';
 export { store as reviewsStore } from './reviews';
+export { store as settingsStore } from './settings';
 
 // Export hooks
 export { withSettingsHydration } from './settings/with-settings-hydration';
