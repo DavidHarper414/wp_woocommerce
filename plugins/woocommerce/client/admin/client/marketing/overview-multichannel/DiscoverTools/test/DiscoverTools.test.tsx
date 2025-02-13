@@ -19,7 +19,7 @@ jest.mock( '@woocommerce/components', () => {
 	};
 } );
 
-jest.mock( './useRecommendedPluginsWithoutChannels', () => ( {
+jest.mock( '../useRecommendedPluginsWithoutChannels', () => ( {
 	useRecommendedPluginsWithoutChannels: jest.fn(),
 } ) );
 
