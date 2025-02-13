@@ -11,7 +11,7 @@ import {
 } from '@wordpress/element';
 import { SyntheticEvent, useCallback } from 'react';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { pluginsStore } from '@woocommerce/data';
 import type {
 	InstallPluginsResponse,
 	PluginSelectors,
@@ -59,14 +59,10 @@ export const Plugins = ( {
 	const [ hasErrors, setHasErrors ] = useState( false );
 	// Tracks action so that multiple instances of this button don't all light up when one is clicked
 	const [ hasBeenClicked, setHasBeenClicked ] = useState( false );
-	const { installAndActivatePlugins }: PluginActions =
-		useDispatch( PLUGINS_STORE_NAME );
+	const { installAndActivatePlugins } = useDispatch( pluginsStore );
 	const { isRequesting } = useSelect( ( select ) => {
-		const {
-			getActivePlugins,
-			getInstalledPlugins,
-			isPluginsRequesting,
-		}: PluginSelectors = select( PLUGINS_STORE_NAME );
+		const { getActivePlugins, getInstalledPlugins, isPluginsRequesting } =
+			select( pluginsStore );
 
 		return {
 			isRequesting:

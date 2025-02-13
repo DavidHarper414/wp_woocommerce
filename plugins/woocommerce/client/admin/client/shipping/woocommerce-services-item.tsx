@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { Button, ExternalLink } from '@wordpress/components';
 import { Pill } from '@woocommerce/components';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { pluginsStore } from '@woocommerce/data';
 import { getAdminLink } from '@woocommerce/settings';
 
 /**
@@ -23,7 +23,7 @@ const WooCommerceServicesItem: React.FC< {
 	const isSiteConnectedToJetpack = useSelect(
 		( select ) =>
 			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-			select( PLUGINS_STORE_NAME ).isJetpackConnected(),
+			select( pluginsStore ).isJetpackConnected(),
 		[]
 	);
 
