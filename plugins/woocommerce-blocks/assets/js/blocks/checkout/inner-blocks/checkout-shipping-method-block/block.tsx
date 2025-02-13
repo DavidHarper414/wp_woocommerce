@@ -92,10 +92,6 @@ const ShippingSelector = ( {
 } ) => {
 	const hasShippableRates = useSelect( ( select ) => {
 		const rates = select( cartStore ).getShippingRates();
-
-		console.clear();
-		console.log( { rates } );
-
 		return rates.some(
 			( { shipping_rates: shippingRate } ) =>
 				! shippingRate.every( isPackageRateCollectable )
