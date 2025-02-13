@@ -53,6 +53,7 @@ export { store as onboardingStore } from './onboarding';
 export { store as notesStore } from './notes';
 export { store as reviewsStore } from './reviews';
 export { store as settingsStore } from './settings';
+export { store as pluginsStore } from './plugins';
 
 // Export hooks
 export { withSettingsHydration } from './settings/with-settings-hydration';
