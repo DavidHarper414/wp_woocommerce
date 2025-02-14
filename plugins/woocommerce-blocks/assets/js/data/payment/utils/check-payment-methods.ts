@@ -27,9 +27,10 @@ import {
 /**
  * Internal dependencies
  */
-import { store as cartStore } from '../../cart';
+import { STORE_KEY as CART_STORE_KEY } from '../../cart/constants';
 import { STORE_KEY as PAYMENT_STORE_KEY } from '../constants';
 import type { PaymentStoreDescriptor } from '../index';
+import type { CartStoreDescriptor } from '../../cart';
 import { noticeContexts } from '../../../base/context/event-emit';
 import {
 	EMPTY_CART_ERRORS,
@@ -46,7 +47,9 @@ export const getCanMakePaymentArg = (): CanMakePaymentArgument => {
 	let canPayArgument: CanMakePaymentArgument;
 
 	if ( ! isEditor ) {
-		const store = select( cartStore );
+		const store = select(
+			CART_STORE_KEY
+		) as CurriedSelectorsOf< CartStoreDescriptor >;
 		const cart = store.getCartData();
 		const cartErrors = store.getCartErrors();
 		const cartTotals = store.getCartTotals();
@@ -78,7 +81,11 @@ export const getCanMakePaymentArg = (): CanMakePaymentArgument => {
 			isLoadingRates,
 			cartHasCalculatedShipping: cart.hasCalculatedShipping,
 			paymentRequirements: cart.paymentRequirements,
-			receiveCart: dispatch( cartStore ).receiveCart,
+			receiveCart: (
+				dispatch( CART_STORE_KEY ) as ActionCreatorsOf<
+					ConfigOf< CartStoreDescriptor >
+				>
+			 ).receiveCart,
 		};
 		canPayArgument = {
 			cart: cartForCanPayArgument,
