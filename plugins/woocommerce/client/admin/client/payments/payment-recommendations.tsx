@@ -7,7 +7,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { decodeEntities } from '@wordpress/html-entities';
 import { Card, CardHeader, CardFooter, Button } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
-import { EllipsisMenu, List, Pill } from '@woocommerce/components';
+import { EllipsisMenu, List, Pill, Link } from '@woocommerce/components';
 import { Text } from '@woocommerce/experimental';
 import {
 	onboardingStore,
@@ -17,7 +17,8 @@ import {
 	type PaymentSelectors,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import ExternalIcon from 'gridicons/dist/external';
+import interpolateComponents from '@automattic/interpolate-components';
+import { getAdminLink } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -26,9 +27,6 @@ import './payment-recommendations.scss';
 import { createNoticesFromResponse } from '~/lib/notices';
 import { getPluginSlug } from '~/utils';
 import { isWcPaySupported } from './utils';
-
-const SEE_MORE_LINK =
-	'https://woocommerce.com/product-category/woocommerce-extensions/payment-gateways/?utm_source=payments_recommendations';
 
 const WcPayPromotionGateway = document.querySelector(
 	'[data-gateway_id="pre_install_woocommerce_payments_promotion"]'
@@ -262,10 +260,32 @@ const PaymentRecommendations: React.FC = () => {
 			</CardHeader>
 			<List items={ pluginsList } />
 			<CardFooter>
-				<Button href={ SEE_MORE_LINK } target="_blank" isTertiary>
-					{ __( 'Discover other payment providers', 'woocommerce' ) }
-					<ExternalIcon size={ 18 } />
-				</Button>
+				<Text>
+					{ interpolateComponents( {
+						mixedString: __(
+							'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find additional payment providers.',
+							'woocommerce'
+						),
+						components: {
+							sbLink: (
+								<Link
+									onClick={ () => {
+										recordEvent(
+											'settings_payment_recommendations_visit_marketplace_click',
+											{}
+										);
+										window.location.href = getAdminLink(
+											'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways'
+										);
+										return false;
+									} }
+									href=""
+									type="wc-admin"
+								/>
+							),
+						},
+					} ) }
+				</Text>
 			</CardFooter>
 		</Card>
 	);
