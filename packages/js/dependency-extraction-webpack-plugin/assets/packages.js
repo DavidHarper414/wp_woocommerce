@@ -27,4 +27,5 @@ module.exports = [
 	'@woocommerce/blocks-registry',
 	'@woocommerce/price-format',
 	'@woocommerce/settings',
+	'@mailpoet/email-editor',
 ];
