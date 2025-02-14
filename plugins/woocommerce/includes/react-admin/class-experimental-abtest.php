@@ -99,9 +99,11 @@ final class Experimental_Abtest {
 	/**
 	 * Returns true if the current user is in the treatment group of the given experiment.
 	 *
-	 * @param string $experiment_name Name of the experiment.
+	 * @param string $experiment_name    Name of the experiment.
 	 * @param bool   $as_auth_wpcom_user Request variation as a auth wp user or not.
-	 * @return bool
+	 *
+	 * @return bool True if the user is in the treatment group, false otherwise.
+	 * @throws \Exception If there is an error retrieving the variation.
 	 */
 	public static function in_treatment( string $experiment_name, bool $as_auth_wpcom_user = false ) {
 		$anon_id        = isset( $_COOKIE['tk_ai'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['tk_ai'] ) ) : '';
@@ -118,24 +120,17 @@ final class Experimental_Abtest {
 
 	/**
 	 * Returns true if the current user is in the treatment group of the given experiment.
-	 * The exception is handled by returning false for cases where it shouldn't be handled from outside.
+	 *
+	 * If an exception occurs, it will be handled and false will be returned.
 	 *
 	 * @param string $experiment_name Name of the experiment.
-	 * @param bool   $as_auth_wpcom_user Request variation as a auth wp user or not.
-	 * @return bool
+	 * @param bool   $as_auth_wpcom_user Request variation as an auth wp user or not.
+	 *
+	 * @return bool True if the user is in the treatment group, false otherwise (including if an exception is thrown).
 	 */
 	public static function in_treatment_handled_exception( string $experiment_name, bool $as_auth_wpcom_user = false ) {
-		$anon_id        = isset( $_COOKIE['tk_ai'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['tk_ai'] ) ) : '';
-		$allow_tracking = 'yes' === get_option( 'woocommerce_allow_tracking' );
-		$abtest         = new self(
-			$anon_id,
-			'woocommerce',
-			$allow_tracking,
-			$as_auth_wpcom_user
-		);
-
 		try {
-			return $abtest->get_variation( $experiment_name ) === 'treatment';
+			return self::in_treatment_handled_exception( $experiment_name, $as_auth_wpcom_user );
 		} catch ( \Exception $e ) {
 			return false;
 		}
