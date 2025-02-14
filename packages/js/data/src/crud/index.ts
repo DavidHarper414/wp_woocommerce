@@ -70,11 +70,5 @@ export const createCrudDataStore = ( {
 
 	register( store );
 
-	return {
-		store,
-		reducer: crudReducer,
-		actions: { ...crudActions, ...actions },
-		selectors: { ...crudSelectors, ...selectors },
-		resolvers: { ...crudResolvers, ...resolvers },
-	};
+	return store;
 };
