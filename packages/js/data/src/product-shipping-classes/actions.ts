@@ -5,7 +5,7 @@ import { ProductShippingClass } from './types';
 
 export type Resolvers = {
 	createProductShippingClass: (
-		query: ProductShippingClass,
+		query: Partial< ProductShippingClass >,
 		options: {
 			optimisticQueryUpdate?: Partial< ProductShippingClass >;
 			optimisticUrlParameters?: IdType[];
