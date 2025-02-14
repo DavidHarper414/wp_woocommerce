@@ -19,6 +19,7 @@ export const getCheckboxEdit =
 		// We should contribute upstream to allow label to be optional.
 		const label = field.label === id ? undefined : field.label;
 		const value = getValue( { item: data } );
+		const hiddenValue = value === 'yes' ? '1' : '0';
 
 		return (
 			<>
@@ -33,7 +34,7 @@ export const getCheckboxEdit =
 						} );
 					} }
 				/>
-				<input type="hidden" name={ id } value={ value } />
+				<input type="hidden" name={ id } value={ hiddenValue } />
 			</>
 		);
 	};
