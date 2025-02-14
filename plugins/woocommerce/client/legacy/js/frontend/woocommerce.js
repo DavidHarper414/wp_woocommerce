@@ -182,7 +182,7 @@ jQuery( function ( $ ) {
 		} );
 	} );
 
-	$( document.body ).on( 'item_removed_from_classic_cart', focus_populated_live_region );
+	$( document.body ).on( 'item_removed_from_classic_cart', focus_populate_live_region );
 } );
 
 /**
@@ -192,7 +192,7 @@ jQuery( function ( $ ) {
  * This function focus on the first notice message with the role="alert"
  * attribute to make sure it's announced.
  */
-function focus_populated_live_region() {
+function focus_populate_live_region() {
 	var noticeClasses = [
 		'woocommerce-message',
 		'woocommerce-error',
@@ -260,7 +260,7 @@ function dismiss_store_notice_link_keydown_handler() {
 }
 
 function on_document_ready() {
-	focus_populated_live_region();
+	focus_populate_live_region();
 	refresh_sorted_by_live_region();
 	dismiss_store_notice_link_keydown_handler();
 }
