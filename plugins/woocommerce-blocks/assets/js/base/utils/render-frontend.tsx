@@ -1,10 +1,9 @@
 /**
  * External dependencies
  */
-import { createRoot, useEffect, Suspense, render } from '@wordpress/element';
+import { createRoot, useEffect, Suspense } from '@wordpress/element';
 import BlockErrorBoundary from '@woocommerce/base-components/block-error-boundary';
 import type { Root } from 'react-dom/client';
-import { getSetting } from '@woocommerce/settings';
 
 // Some blocks take care of rendering their inner blocks automatically. For
 // example, the empty cart. In those cases, we don't want to trigger the render
