@@ -52,6 +52,7 @@ export { ShippingMethod } from './shipping-methods/types';
 export { store as onboardingStore } from './onboarding';
 export { store as notesStore } from './notes';
 export { store as reviewsStore } from './reviews';
+export { store as settingsStore } from './settings';
 export { store as ordersStore } from './orders';
 
 // Export hooks
