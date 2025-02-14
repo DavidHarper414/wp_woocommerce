@@ -7,18 +7,33 @@ import { Product, ProductType } from './types';
 
 interface ProductListProps {
 	title: string;
+	description: string;
 	productGroup?: string;
 	products: Product[];
 	groupURL: string;
 	type: ProductType;
+	groupURLText: string | null;
 }
 
 export default function ProductList( props: ProductListProps ): JSX.Element {
-	const { title, products, groupURL, type, productGroup } = props;
+	const {
+		title,
+		description,
+		products,
+		groupURL,
+		type,
+		productGroup,
+		groupURLText,
+	} = props;
 
 	return (
 		<div className="woocommerce-marketplace__product-list">
-			<ProductListHeader title={ title } groupURL={ groupURL } />
+			<ProductListHeader
+				title={ title }
+				groupURL={ groupURL }
+				groupURLText={ groupURLText }
+				description={ description }
+			/>
 			<ProductListContent
 				group={ title }
 				products={ products }

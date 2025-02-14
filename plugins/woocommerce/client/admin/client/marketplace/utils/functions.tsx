@@ -33,8 +33,10 @@ import { noticeStore } from '../contexts/notice-store';
 interface ProductGroup {
 	id: string;
 	title: string;
+	description: string;
 	items: Product[];
 	url: string;
+	url_text: string | null;
 	itemType: ProductType;
 }
 

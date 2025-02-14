@@ -14,13 +14,15 @@ import './product-list-header.scss';
 
 interface ProductListHeaderProps {
 	title: string;
+	description: string;
 	groupURL: string | null;
+	groupURLText: string | null;
 }
 
 export default function ProductListHeader(
 	props: ProductListHeaderProps
 ): JSX.Element {
-	const { title, groupURL } = props;
+	const { title, description, groupURL, groupURLText } = props;
 	const isLoading = title === '';
 
 	const classNames = clsx( 'woocommerce-marketplace__product-list-header', {
@@ -32,6 +34,11 @@ export default function ProductListHeader(
 			<h2 className="woocommerce-marketplace__product-list-title">
 				{ title }
 			</h2>
+			{ description && (
+				<p className="woocommerce-marketplace__product-list-description">
+					{ description }
+				</p>
+			) }
 			{ groupURL !== null && (
 				<span className="woocommerce-marketplace__product-list-link">
 					<Link
@@ -44,7 +51,7 @@ export default function ProductListHeader(
 							} );
 						} }
 					>
-						{ __( 'See more', 'woocommerce' ) }
+						{ groupURLText ?? __( 'See more', 'woocommerce' ) }
 						<Icon icon={ isRTL() ? chevronLeft : chevronRight } />
 					</Link>
 				</span>
