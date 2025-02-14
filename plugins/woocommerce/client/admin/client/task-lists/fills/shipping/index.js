@@ -14,11 +14,11 @@ import { Text } from '@woocommerce/experimental';
 import { getAdminLink } from '@woocommerce/settings';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import {
-	SETTINGS_STORE_NAME,
-	ONBOARDING_STORE_NAME,
-	PLUGINS_STORE_NAME,
+	settingsStore,
+	onboardingStore,
+	pluginsStore,
 	COUNTRIES_STORE_NAME,
-	SHIPPING_METHODS_STORE_NAME,
+	shippingMethodsStore,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { registerPlugin } from '@wordpress/plugins';
@@ -689,9 +689,8 @@ export class Shipping extends Component {
 const ShippingWrapper = compose(
 	withSelect( ( select ) => {
 		const { getSettings, isUpdateSettingsRequesting } =
-			select( SETTINGS_STORE_NAME );
-		const { getActivePlugins, isJetpackConnected } =
-			select( PLUGINS_STORE_NAME );
+			select( settingsStore );
+		const { getActivePlugins, isJetpackConnected } = select( pluginsStore );
 		const { getCountry } = select( COUNTRIES_STORE_NAME );
 
 		const { general: settings = {} } = getSettings( 'general' );
@@ -699,9 +698,8 @@ const ShippingWrapper = compose(
 			settings.woocommerce_default_country
 		);
 
-		const shippingPartners = select(
-			SHIPPING_METHODS_STORE_NAME
-		).getShippingMethods();
+		const shippingPartners =
+			select( shippingMethodsStore ).getShippingMethods();
 
 		const country = countryCode ? getCountry( countryCode ) : null;
 		const countryName = country ? country.name : null;
@@ -719,12 +717,11 @@ const ShippingWrapper = compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { updateAndPersistSettingsForGroup } =
-			dispatch( SETTINGS_STORE_NAME );
+		const { updateAndPersistSettingsForGroup } = dispatch( settingsStore );
 		const {
 			invalidateResolutionForStoreSelector,
 			optimisticallyCompleteTask,
-		} = dispatch( ONBOARDING_STORE_NAME );
+		} = dispatch( onboardingStore );
 
 		return {
 			createNotice,
