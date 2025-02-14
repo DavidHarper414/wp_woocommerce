@@ -7,7 +7,16 @@ import { DispatchFromMap } from '@automattic/data-stores';
  * Internal dependencies
  */
 import { CrudActions, CrudSelectors } from '../crud/types';
-import { Resolvers } from './actions';
+
+export type Resolvers = {
+	createProductAttributeTerm: (
+		query: ProductAttributeTermQuery,
+		options?: {
+			optimisticQueryUpdate?: ProductAttributeTermQuery;
+			optimisticUrlParameters?: IdType[];
+		}
+	) => ProductAttributeTerm;
+};
 
 export type ProductAttributeTerm = {
 	id: number;
@@ -16,7 +25,7 @@ export type ProductAttributeTerm = {
 	description: string;
 	menu_order: number;
 	count: number;
-	attribute_id: number;
+	attribute_id?: number;
 };
 
 type Query = {
@@ -41,7 +50,7 @@ type MutableProperties = Partial<
 	Omit< ProductAttributeTerm, ReadOnlyProperties >
 >;
 
-type ProductAttributeTermActions = CrudActions<
+export type ProductAttributeTermActions = CrudActions<
 	'ProductAttributeTerm',
 	ProductAttributeTerm,
 	MutableProperties

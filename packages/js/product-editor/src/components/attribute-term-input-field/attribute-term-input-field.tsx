@@ -138,11 +138,10 @@ export const AttributeTermInputField: React.FC<
 		} );
 		setIsCreatingTerm( true );
 		try {
-			const newAttribute: ProductAttributeTerm =
-				await createProductAttributeTerm( {
-					...attribute,
-					attribute_id: attributeId,
-				} );
+			const newAttribute = await createProductAttributeTerm( {
+				...attribute,
+				attribute_id: attributeId,
+			} );
 			recordEvent( 'product_attribute_term_add_success', {
 				source: TRACKS_SOURCE,
 			} );
