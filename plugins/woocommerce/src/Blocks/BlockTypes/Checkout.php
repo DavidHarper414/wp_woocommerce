@@ -571,9 +571,13 @@ class Checkout extends AbstractBlock {
 	protected function hydrate_customer_payment_methods() {
 		$payment_methods = PaymentUtils::get_saved_payment_methods();
 
+		if ( ! $payment_methods || $this->asset_data_registry->exists( 'customerPaymentMethods' ) ) {
+			return;
+		}
+
 		$this->asset_data_registry->add(
 			'customerPaymentMethods',
-			$payment_methods['enabled']
+			is_array( $payment_methods ) ? $payment_methods['enabled'] : null
 		);
 	}
 
