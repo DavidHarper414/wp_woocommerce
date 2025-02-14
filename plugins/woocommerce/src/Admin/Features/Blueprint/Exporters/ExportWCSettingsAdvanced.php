@@ -17,7 +17,7 @@ use Automattic\WooCommerce\Blueprint\UseWPFunctions;
  *
  * @package Automattic\WooCommerce\Admin\Features\Blueprint\Exporters
  */
-class ExportWCSettingsAdvanced extends ExportWCSettings{
+class ExportWCSettingsAdvanced extends ExportWCSettings {
 	use UseWPFunctions;
 
 	/**
@@ -47,6 +47,11 @@ class ExportWCSettingsAdvanced extends ExportWCSettings{
 		return __( 'It includes all settings in WooCommerce | Settings | Advanced.', 'woocommerce' );
 	}
 
+	/**
+	 * Get the page ID for the settings page.
+	 *
+	 * @return string
+	 */
 	protected function get_page_id(): string {
 		return 'advanced';
 	}

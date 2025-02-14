@@ -47,6 +47,11 @@ class ExportWCSettingsProducts extends ExportWCSettings {
 		return __( 'It includes all settings in WooCommerce | Settings | Products.', 'woocommerce' );
 	}
 
+	/**
+	 * Get the page ID for the settings page.
+	 *
+	 * @return string
+	 */
 	protected function get_page_id(): string {
 		return 'products';
 	}

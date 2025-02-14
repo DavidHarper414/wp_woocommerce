@@ -47,6 +47,11 @@ class ExportWCSettingsAccount extends ExportWCSettings {
 		return __( 'It includes all settings in WooCommerce | Settings | Account and Privacy.', 'woocommerce' );
 	}
 
+	/**
+	 * Get the page ID for the settings page.
+	 *
+	 * @return string
+	 */
 	protected function get_page_id(): string {
 		return 'account';
 	}
