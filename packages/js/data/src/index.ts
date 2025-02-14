@@ -55,7 +55,6 @@ export { store as reviewsStore } from './reviews';
 export { withSettingsHydration } from './settings/with-settings-hydration';
 export { withOnboardingHydration } from './onboarding/with-onboarding-hydration';
 export { withCurrentUserHydration } from './user/with-current-user-hydration';
-export { withNavigationHydration } from './navigation/with-navigation-hydration';
 export { withPluginsHydration } from './plugins/with-plugins-hydration';
 export {
 	withOptionsHydration,
