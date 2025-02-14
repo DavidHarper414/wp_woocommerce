@@ -4,7 +4,7 @@
 import { compose } from '@wordpress/compose';
 import { withSelect, type select as WCDataSelector } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
-import { onboardingStore, withOnboardingHydration } from '@woocommerce/data';
+import { onboardingStore } from '@woocommerce/data';
 import { getHistory, getNewPath, useQuery } from '@woocommerce/navigation';
 
 /**
@@ -38,9 +38,6 @@ const Homescreen = ( {
 	// @ts-expect-error -- TODO: convert Layout to TS component
 	return <Layout query={ query } />;
 };
-
-
-const onboardingData = getAdminSetting( 'onboarding', {} );
 
 const withSelectHandler = ( select: typeof WCDataSelector ) => {
 	const { getProfileItems, hasFinishedResolution } =
