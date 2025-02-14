@@ -88,7 +88,14 @@ export const Form = ( {
 			}
 		);
 
-		console.log( response );
+		const responseData = await response.json();
+
+		if ( responseData.status === 'success' ) {
+			window.wcSettings.admin.settingsData =
+				responseData.data.settingsData;
+		}
+
+		console.log( responseData.data.settingsData );
 	};
 
 	return (

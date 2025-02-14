@@ -8,6 +8,7 @@
 namespace Automattic\WooCommerce\Admin\API;
 
 use WC_Admin_Settings;
+use Automattic\WooCommerce\Admin\Features\Settings\Init;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -86,7 +87,10 @@ class Settings extends \WC_REST_Data_Controller {
                 WC_Admin_Settings::save();
             }
 
-            return new \WP_REST_Response( array( 'status' => 'success' ) );
+            $setting_pages = \WC_Admin_Settings::get_settings_pages();
+            $settings = Init::get_page_data( array(), $setting_pages );
+
+            return new \WP_REST_Response( array( 'status' => 'success', 'data' => $settings ) );
         } catch ( \Exception $e ) {
             return new \WP_Error(
                 'woocommerce_settings_save_error',
