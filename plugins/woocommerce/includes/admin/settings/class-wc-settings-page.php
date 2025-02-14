@@ -188,6 +188,12 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 		 * @return array
 		 */
 		public function add_settings_page_data( $pages ) {
+			$available_pages = apply_filters( 'woocommerce_settings_tabs_array', array() );
+			
+			if ( ! in_array( $this->id, array_keys( $available_pages ), true ) ) {
+				return $pages;
+			}
+
 			$sections      = $this->get_sections();
 			$sections_data = array();
 
