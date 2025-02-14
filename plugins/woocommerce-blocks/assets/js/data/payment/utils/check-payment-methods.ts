@@ -22,7 +22,7 @@ import { previewCart } from '@woocommerce/resource-previews';
 /**
  * Internal dependencies
  */
-import { STORE_KEY as CART_STORE_KEY } from '../../cart/constants';
+import { store as cartStore } from '../../cart';
 import { store as paymentStore } from '../index';
 import { noticeContexts } from '../../../base/context/event-emit';
 import {
@@ -40,7 +40,7 @@ export const getCanMakePaymentArg = (): CanMakePaymentArgument => {
 	let canPayArgument: CanMakePaymentArgument;
 
 	if ( ! isEditor ) {
-		const store = select( CART_STORE_KEY );
+		const store = select( cartStore );
 		const cart = store.getCartData();
 		const cartErrors = store.getCartErrors();
 		const cartTotals = store.getCartTotals();
@@ -71,7 +71,7 @@ export const getCanMakePaymentArg = (): CanMakePaymentArgument => {
 			isLoadingRates,
 			cartHasCalculatedShipping: cart.hasCalculatedShipping,
 			paymentRequirements: cart.paymentRequirements,
-			receiveCart: dispatch( CART_STORE_KEY ).receiveCart,
+			receiveCart: dispatch( cartStore ).receiveCart,
 		};
 		canPayArgument = {
 			cart: cartForCanPayArgument,
