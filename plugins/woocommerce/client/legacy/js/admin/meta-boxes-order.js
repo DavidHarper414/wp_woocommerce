@@ -1599,4 +1599,21 @@ jQuery( function ( $ ) {
 	wc_meta_boxes_order_notes.init();
 	wc_meta_boxes_order_downloads.init();
 	wc_meta_boxes_order_custom_meta.init();
+
+	// this allows third party plugin to call woocommerce function
+	window.addEventListener('wc_meta_boxes_order_init', (e) => {
+		wc_meta_boxes_order.init()
+	});
+	window.addEventListener('wc_meta_boxes_order_items_init', (e) => {
+		wc_meta_boxes_order_items.init()
+	});
+	window.addEventListener('wc_meta_boxes_order_notes_init', (e) => {
+		wc_meta_boxes_order_notes.init()
+	});
+	window.addEventListener('wc_meta_boxes_order_downloads_init', (e) => {
+		wc_meta_boxes_order_downloads.init()
+	});
+	window.addEventListener('wc_meta_boxes_order_custom_meta_init', (e) => {
+		wc_meta_boxes_order_custom_meta.init()
+	});
 });
