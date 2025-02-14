@@ -695,25 +695,35 @@ class Cart extends ControllerTestCase {
 
 		$variable_product = $fixtures->get_variable_product(
 			array(
-				'name'          => 'Test Variable Product',
+				'name'          => 'Test Variable Product with special characters',
 				'stock_status'  => ProductStockStatus::IN_STOCK,
 				'regular_price' => 10,
 				'weight'        => 10,
 			),
 			array(
 				$fixtures->get_product_attribute( 'Size', array( 'Small 🤏', 'Medium' ) ),
-				$fixtures->get_product_attribute( 'Autograph choice ✏️', array( 'Yes 👍', 'No 👎' ) ),
+				[
+					'attribute_taxonomy'=>'Autograph choice ✏️',
+					'term_ids' => ['Yes 👍', 'No 👎']
+				]
 			)
 		);
 
-		$variable_product->save();
+		$variation = $fixtures->get_variation_product(
+			$variable_product->get_id(),
+			array(
+				'pa_size'  => 'small-%f0%9f%a4%8f',
+				'autograph-choice-%e2%9c%8f%ef%b8%8f' => 'Yes 👍',
+			)
+		);
+
 
 		$request = new \WP_REST_Request( 'POST', '/wc/store/v1/cart/add-item' );
 		$request->set_header( 'Nonce', wp_create_nonce( 'wc_store_api' ) );
 
 		$request->set_body_params(
 			array(
-				'id'        => $variable_product->get_id(),
+				'id'        => $variation->get_id(),
 				'quantity'  => 1,
 				'variation' => array(
 					array(
@@ -736,12 +746,12 @@ class Cart extends ControllerTestCase {
 					array(
 						'variation' => array(
 							array(
-								'attribute' => 'Size',
-								'value'     => 'Small 🤏',
-							),
-							array(
 								'attribute' => 'Autograph choice ✏️',
 								'value'     => 'Yes 👍',
+							),
+							array(
+								'attribute' => 'Size',
+								'value'     => 'small-%f0%9f%a4%8f',
 							),
 						),
 					),
