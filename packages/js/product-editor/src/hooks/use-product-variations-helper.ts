@@ -42,6 +42,7 @@ async function getDefaultVariationValues(
 		const products = await resolveSelect(
 			productVariationsStore
 		).getProductVariations( {
+			// @ts-expect-error TODO react-18-upgrade: param type is not correctly typed and was surfaced by https://github.com/woocommerce/woocommerce/pull/54146
 			product_id: productId,
 			per_page: 1,
 			has_price: true,

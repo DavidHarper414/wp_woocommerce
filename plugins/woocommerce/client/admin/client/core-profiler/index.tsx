@@ -29,9 +29,9 @@ import {
 	onboardingStore,
 	Extension,
 	GeolocationResponse,
-	PLUGINS_STORE_NAME,
-	SETTINGS_STORE_NAME,
-	USER_STORE_NAME,
+	pluginsStore,
+	settingsStore,
+	userStore,
 	WCUser,
 	ProfileItems,
 	CoreProfilerStep,
@@ -133,7 +133,7 @@ export type CoreProfilerStateMachineContext = {
 	onboardingProfile: OnboardingProfile;
 	jetpackAuthUrl?: string;
 	currentUserEmail: string | undefined;
-	currentUser?: WCUser< 'capabilities' >;
+	currentUser?: WCUser;
 };
 
 const getAllowTrackingOption = fromPromise( async () =>
@@ -256,18 +256,12 @@ const handleCoreProfilerCompletedSteps = assign( {
 } );
 
 const getCurrentUserEmail = fromPromise( async () => {
-	// @ts-expect-error TODO react-18-upgrade: getCurrentUser type is not correctly typed and was surfaced by https://github.com/woocommerce/woocommerce/pull/54146
-	const currentUser: WCUser< 'email' > = await resolveSelect(
-		USER_STORE_NAME
-	).getCurrentUser();
+	const currentUser = await resolveSelect( userStore ).getCurrentUser();
 	return currentUser?.email;
 } );
 
 const getCurrentUser = fromPromise( async () => {
-	// @ts-expect-error TODO react-18-upgrade: getCurrentUser type is not correctly typed and was surfaced by https://github.com/woocommerce/woocommerce/pull/54146
-	const currentUser: WCUser< 'capabilities' > = await resolveSelect(
-		USER_STORE_NAME
-	).getCurrentUser();
+	const currentUser = await resolveSelect( userStore ).getCurrentUser();
 	return currentUser;
 } );
 
@@ -275,7 +269,7 @@ const assignCurrentUser = assign( {
 	currentUser: ( {
 		event,
 	}: {
-		event: DoneActorEvent< WCUser< 'capabilities' > | undefined >;
+		event: DoneActorEvent< WCUser | undefined >;
 	} ) => {
 		if ( event.output ) {
 			return event.output;
@@ -449,7 +443,7 @@ const updateBusinessLocation = ( countryAndState: string ) => {
 
 const updateStoreCurrency = async ( countryAndState: string ) => {
 	const { general: settings = {} } = await resolveSelect(
-		SETTINGS_STORE_NAME
+		settingsStore
 	).getSettings( 'general' );
 
 	const countryCode = getCountryCode( countryAndState ) as string;
@@ -473,7 +467,7 @@ const updateStoreCurrency = async ( countryAndState: string ) => {
 		return;
 	}
 
-	return dispatch( SETTINGS_STORE_NAME ).updateAndPersistSettingsForGroup(
+	return dispatch( settingsStore ).updateAndPersistSettingsForGroup(
 		'general',
 		{
 			general: {
@@ -517,7 +511,7 @@ const updateStoreMeasurements = async ( countryAndState: string ) => {
 
 	const { weight_unit, dimension_unit } = countryInfo;
 
-	return dispatch( SETTINGS_STORE_NAME ).updateAndPersistSettingsForGroup(
+	return dispatch( settingsStore ).updateAndPersistSettingsForGroup(
 		'products',
 		{
 			products: {
@@ -599,7 +593,7 @@ const preFetchIsJetpackConnected = assign( {
 	isJetpackConnectedRef: ( { spawn } ) =>
 		spawn(
 			fromPromise( async () =>
-				resolveSelect( PLUGINS_STORE_NAME ).isJetpackConnected()
+				resolveSelect( pluginsStore ).isJetpackConnected()
 			)
 		),
 } );
@@ -738,7 +732,7 @@ const skipFlowUpdateBusinessLocation = fromPromise(
 );
 
 export const getJetpackIsConnected = fromPromise( async () => {
-	return resolveSelect( PLUGINS_STORE_NAME ).isJetpackConnected();
+	return resolveSelect( pluginsStore ).isJetpackConnected();
 } );
 
 const reloadPage = () => {
@@ -1878,6 +1872,7 @@ export const CoreProfilerController = ( {
 				},
 				userHasNoInstallPluginsPermission: ( { context } ) => {
 					return (
+						// @ts-expect-error TODO: react-18-upgrade: This comparison appears to be unintentional because the types 'string | undefined' and 'boolean' have no overlap.ts(2367). Need to check if this is a valid comparison.
 						context?.currentUser?.capabilities.install_plugins !==
 						true
 					);

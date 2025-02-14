@@ -11,8 +11,8 @@ import { partial } from 'lodash';
 import { List, Section } from '@woocommerce/components';
 import {
 	onboardingStore,
-	PLUGINS_STORE_NAME,
-	SETTINGS_STORE_NAME,
+	pluginsStore,
+	settingsStore,
 } from '@woocommerce/data';
 import { compose } from 'redux';
 import { recordEvent as fallbackRecordEvent } from '@woocommerce/tracks';
@@ -387,8 +387,8 @@ export const HelpPanel = ( {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getSettings } = select( SETTINGS_STORE_NAME );
-		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
+		const { getSettings } = select( settingsStore );
+		const { getActivePlugins } = select( pluginsStore );
 		const { general: generalSettings = {} } = getSettings( 'general' );
 		const activePlugins = getActivePlugins();
 		const paymentGatewaySuggestions = select( onboardingStore )
