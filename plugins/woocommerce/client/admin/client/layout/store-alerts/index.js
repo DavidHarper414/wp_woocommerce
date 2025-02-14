@@ -17,9 +17,9 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import moment from 'moment';
 import { Icon, chevronLeft, chevronRight, close } from '@wordpress/icons';
 import {
-	NOTES_STORE_NAME,
+	notesStore,
 	QUERY_DEFAULTS,
-	OPTIONS_STORE_NAME,
+	optionsStore,
 	useUserPreferences,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -63,8 +63,8 @@ export const StoreAlerts = () => {
 		isLoading,
 		defaultHomescreenLayout,
 	} = useSelect( ( select ) => {
-		const { getNotes, hasFinishedResolution } = select( NOTES_STORE_NAME );
-		const { getOption } = select( OPTIONS_STORE_NAME );
+		const { getNotes, hasFinishedResolution } = select( notesStore );
+		const { getOption } = select( optionsStore );
 
 		return {
 			alerts: getUnactionedVisibleAlerts( getNotes( ALERTS_QUERY ) ),
@@ -76,7 +76,7 @@ export const StoreAlerts = () => {
 	} );
 
 	const { triggerNoteAction, updateNote, removeNote } =
-		useDispatch( NOTES_STORE_NAME );
+		useDispatch( notesStore );
 	const { createNotice } = useDispatch( 'core/notices' );
 
 	const userPrefs = useUserPreferences();

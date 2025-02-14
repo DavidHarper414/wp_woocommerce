@@ -14,9 +14,9 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
 	useUserPreferences,
-	NOTES_STORE_NAME,
-	ONBOARDING_STORE_NAME,
-	OPTIONS_STORE_NAME,
+	notesStore,
+	onboardingStore,
+	optionsStore,
 } from '@woocommerce/data';
 import { __ } from '@wordpress/i18n';
 
@@ -192,8 +192,8 @@ Layout.propTypes = {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { isNotesRequesting } = select( NOTES_STORE_NAME );
-		const { getOption } = select( OPTIONS_STORE_NAME );
+		const { isNotesRequesting } = select( notesStore );
+		const { getOption } = select( optionsStore );
 		const defaultHomescreenLayout =
 			getOption( 'woocommerce_default_homepage_layout' ) ||
 			'single_column';
@@ -201,7 +201,7 @@ export default compose(
 		const {
 			getTaskLists,
 			hasFinishedResolution: taskListFinishResolution,
-		} = select( ONBOARDING_STORE_NAME );
+		} = select( onboardingStore );
 
 		const visibleTaskListIds = getAdminSetting( 'visibleTaskListIds', [] );
 		const hasTaskList = visibleTaskListIds.length > 0;

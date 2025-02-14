@@ -8,11 +8,7 @@ import { uniqueId, find } from 'lodash';
 import { Icon, help as helpIcon, external } from '@wordpress/icons';
 import { STORE_KEY as CES_STORE_KEY } from '@woocommerce/customer-effort-score';
 import { H, Section } from '@woocommerce/components';
-import {
-	ONBOARDING_STORE_NAME,
-	OPTIONS_STORE_NAME,
-	useUser,
-} from '@woocommerce/data';
+import { onboardingStore, optionsStore, useUser } from '@woocommerce/data';
 import { addHistoryListener } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
 import { useSlot } from '@woocommerce/experimental';
@@ -100,7 +96,7 @@ export const ActivityPanel = ( { isEmbedded, query } ) => {
 		( select, getOption ) => {
 			let trackData = {};
 			if ( query.page === 'wc-admin' && query.task === 'appearance' ) {
-				const { getTaskLists } = select( ONBOARDING_STORE_NAME );
+				const { getTaskLists } = select( onboardingStore );
 				const taskLists = getTaskLists();
 				const tasks = taskLists.reduce(
 					( acc, taskList ) => [ ...acc, ...taskList.tasks ],
@@ -164,7 +160,7 @@ export const ActivityPanel = ( { isEmbedded, query } ) => {
 		previewSiteBtnTrackData,
 	} = useSelect(
 		( select ) => {
-			const { getOption } = select( OPTIONS_STORE_NAME );
+			const { getOption } = select( optionsStore );
 
 			return {
 				hasUnreadNotes: checkIfHasUnreadNotes( select ),
