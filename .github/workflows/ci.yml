@@ -44,7 +44,7 @@ jobs:
         with:
           filters: |
             needs-code-validation:
-              - '!((**/*.md)|(**/*.mdc)|(**/changelog/*))'
+              - '!((**/*.md)|(**/changelog/*)|(.cursor/**))'
             needs-changelog-validation:
               - '{packages,plugins}/*/!(changelog/**)/**'
             needs-markdown-validation:
