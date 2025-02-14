@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
+import type { ReduxStoreConfig } from '@wordpress/data/build-types/types';
 
 /**
  * Internal dependencies
@@ -17,7 +18,13 @@ type CrudDataStore = {
 	resourceName: string;
 	pluralResourceName: string;
 	namespace: string;
-	storeConfig?: Partial< StoreConfig< ResourceState > >;
+	storeConfig?: Partial<
+		ReduxStoreConfig<
+			ResourceState,
+			ReturnType< typeof createDispatchActions >,
+			ReturnType< typeof createSelectors >
+		>
+	>;
 };
 
 export const createCrudDataStore = ( {
