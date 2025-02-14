@@ -50,6 +50,14 @@ export { ShippingMethod } from './shipping-methods/types';
 
 // Export stores
 export { store as onboardingStore } from './onboarding';
+export { store as productAttributesStore } from './product-attributes';
+export { store as productAttributeTermsStore } from './product-attribute-terms';
+export { store as productVariationsStore } from './product-variations';
+export { store as productTagsStore } from './product-tags';
+export { store as shippingZonesStore } from './shipping-zones';
+export { store as productShippingClassesStore } from './product-shipping-classes';
+export { store as productCategoriesStore } from './product-categories';
+export { store as taxClassesStore } from './tax-classes';
 
 // Export hooks
 export { withSettingsHydration } from './settings/with-settings-hydration';

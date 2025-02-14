@@ -14,8 +14,8 @@ import { cleanForSlug } from '@wordpress/url';
 import { Form, FormErrors } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 import {
-	EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME,
 	ProductAttributeTerm,
+	productAttributeTermsStore,
 } from '@woocommerce/data';
 
 /**
@@ -41,7 +41,7 @@ export const CreateAttributeTermModal: React.FC<
 	const { createNotice } = useDispatch( 'core/notices' );
 	const [ isCreating, setIsCreating ] = useState( false );
 	const { createProductAttributeTerm, invalidateResolutionForStoreSelector } =
-		useDispatch( EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME );
+		useDispatch( productAttributeTermsStore );
 
 	const onAdd = async ( attribute: Partial< ProductAttributeTerm > ) => {
 		recordEvent( 'product_attribute_term_add', {
@@ -49,14 +49,14 @@ export const CreateAttributeTermModal: React.FC<
 		} );
 		setIsCreating( true );
 		try {
-			const newAttribute: ProductAttributeTerm =
-				await createProductAttributeTerm( {
-					...attribute,
-					attribute_id: attributeId,
-				} );
+			const newAttribute = await createProductAttributeTerm( {
+				...attribute,
+				attribute_id: attributeId,
+			} );
 			recordEvent( 'product_attribute_term_add_success', {
 				source: TRACKS_SOURCE,
 			} );
+			// @ts-expect-error TODO: Investigate - is this correct?
 			invalidateResolutionForStoreSelector( 'getProductAttributes' );
 			setIsCreating( false );
 			onCreated( newAttribute );

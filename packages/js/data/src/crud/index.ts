@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { registerStore, StoreConfig } from '@wordpress/data';
+import { createReduxStore, register } from '@wordpress/data';
 import { Reducer } from 'redux';
 
 /**
@@ -12,23 +12,55 @@ import { createDispatchActions } from './actions';
 import defaultControls from '../controls';
 import { createResolvers } from './resolvers';
 import { createReducer, ResourceState } from './reducer';
+import { Item } from '../items';
 
-type CrudDataStore = {
+interface CrudStoreParams<
+	TResourceName,
+	TResourceNamePlural,
+	TActions,
+	TSelectors,
+	TResolvers,
+	TControls,
+	TReducer
+> {
 	storeName: string;
-	resourceName: string;
-	pluralResourceName: string;
+	resourceName: TResourceName;
 	namespace: string;
-	storeConfig?: Partial< StoreConfig< ResourceState > >;
-};
+	pluralResourceName: TResourceNamePlural;
+	storeConfig?: {
+		reducer?: TReducer;
+		actions?: TActions;
+		selectors?: TSelectors;
+		resolvers?: TResolvers;
+		controls?: TControls;
+	};
+}
 
-export const createCrudDataStore = ( {
+export const createCrudDataStore = <
+	TResourceType extends Item,
+	TActions extends Record< string, ( ...args: any[] ) => any >,
+	TSelectors,
+	TResourceName extends string = string,
+	TResourceNamePlural extends string = string,
+	TResolvers extends Record< string, any > = Record< string, any >,
+	TControls extends Record< string, any > = Record< string, any >,
+	TReducer extends Reducer< ResourceState > = Reducer< ResourceState >
+>( {
 	storeName,
 	resourceName,
 	namespace,
 	pluralResourceName,
-	storeConfig = {},
-}: CrudDataStore ) => {
-	const crudActions = createDispatchActions( {
+	storeConfig,
+}: CrudStoreParams<
+	TResourceName,
+	TResourceNamePlural,
+	TActions,
+	TSelectors,
+	TResolvers,
+	TControls,
+	TReducer
+> ) => {
+	const crudActions = createDispatchActions< TResourceName, TResourceType >( {
 		resourceName,
 		namespace,
 	} );
@@ -38,6 +70,7 @@ export const createCrudDataStore = ( {
 		pluralResourceName,
 		namespace,
 	} );
+
 	const crudSelectors = createSelectors( {
 		resourceName,
 		pluralResourceName,
@@ -50,15 +83,28 @@ export const createCrudDataStore = ( {
 		selectors = {},
 		resolvers = {},
 		controls = {},
-	} = storeConfig;
+	} = storeConfig || {};
 
 	const crudReducer = createReducer( reducer );
 
-	registerStore( storeName, {
-		reducer: crudReducer as Reducer< ResourceState >,
-		actions: { ...crudActions, ...actions },
-		selectors: { ...crudSelectors, ...selectors },
-		resolvers: { ...crudResolvers, ...resolvers },
-		controls: { ...defaultControls, ...controls },
-	} );
+	const store = createReduxStore< unknown, TActions, TSelectors >(
+		storeName,
+		{
+			reducer: crudReducer,
+			actions: { ...crudActions, ...actions } as TActions,
+			selectors: {
+				...crudSelectors,
+				...selectors,
+			} as TSelectors,
+			resolvers: { ...crudResolvers, ...resolvers },
+			controls: {
+				...defaultControls,
+				...controls,
+			},
+		}
+	);
+
+	register( store );
+
+	return store;
 };

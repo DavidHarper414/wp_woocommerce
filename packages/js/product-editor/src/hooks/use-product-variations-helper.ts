@@ -5,10 +5,10 @@ import { dispatch, resolveSelect, useSelect } from '@wordpress/data';
 import { useCallback, useMemo, useState } from '@wordpress/element';
 import { getNewPath, getPath, navigateTo } from '@woocommerce/navigation';
 import {
-	EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME,
 	Product,
 	ProductDefaultAttribute,
 	ProductVariation,
+	productVariationsStore,
 } from '@woocommerce/data';
 import { applyFilters } from '@wordpress/hooks';
 import {
@@ -38,10 +38,10 @@ async function getDefaultVariationValues(
 		if ( ! alreadyHasVariableAttribute ) {
 			return {};
 		}
+
 		const products = await resolveSelect(
-			EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
+			productVariationsStore
 		).getProductVariations( {
-			// @ts-expect-error TODO react-18-upgrade: param type is not correctly typed and was surfaced by https://github.com/woocommerce/woocommerce/pull/54146
 			product_id: productId,
 			per_page: 1,
 			has_price: true,
@@ -81,13 +81,12 @@ export function useProductVariationsHelper() {
 			const {
 				isGeneratingVariations: getIsGeneratingVariations,
 				generateProductVariationsError,
-			} = select( EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME );
+			} = select( productVariationsStore );
+
 			return {
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				isGeneratingVariations: getIsGeneratingVariations( {
 					product_id: productId,
 				} ),
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				generateError: generateProductVariationsError( {
 					product_id: productId,
 				} ),
@@ -129,10 +128,7 @@ export function useProductVariationsHelper() {
 				] )
 			)
 		);
-		// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-		await dispatch(
-			EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
-		).invalidateResolutionForStore();
+		await dispatch( productVariationsStore ).invalidateResolutionForStore();
 		/**
 		 * Filters the meta_data array for generated variations.
 		 *
@@ -146,12 +142,8 @@ export function useProductVariationsHelper() {
 			product
 		);
 
-		// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-		return dispatch( EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME )
-			.generateProductVariations< {
-				count: number;
-				deleted_count: number;
-			} >(
+		return dispatch( productVariationsStore )
+			.generateProductVariations(
 				{
 					product_id: productId,
 				},
@@ -163,10 +155,10 @@ export function useProductVariationsHelper() {
 				{
 					delete: true,
 					default_values: defaultVariationValues,
-					meta_data,
+					meta_data: meta_data as Product[ 'meta_data' ],
 				}
 			)
-			.then( async ( response: ProductVariation[] ) => {
+			.then( async ( response ) => {
 				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				await dispatch( coreStore ).invalidateResolution(
 					'getEntityRecord',
@@ -179,9 +171,8 @@ export function useProductVariationsHelper() {
 					productId
 				);
 
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				await dispatch(
-					EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
+					productVariationsStore
 				).invalidateResolutionForStore();
 
 				return response;

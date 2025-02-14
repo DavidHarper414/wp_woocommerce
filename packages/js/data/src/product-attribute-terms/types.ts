@@ -7,6 +7,7 @@ import { DispatchFromMap } from '@automattic/data-stores';
  * Internal dependencies
  */
 import { CrudActions, CrudSelectors } from '../crud/types';
+import { Resolvers } from './actions';
 
 export type ProductAttributeTerm = {
 	id: number;
@@ -15,6 +16,7 @@ export type ProductAttributeTerm = {
 	description: string;
 	menu_order: number;
 	count: number;
+	attribute_id: number;
 };
 
 type Query = {
@@ -30,6 +32,7 @@ type Query = {
 	hide_empty: boolean;
 	product: number;
 	slug: string;
+	attribute_id: number;
 };
 
 type ReadOnlyProperties = 'id' | 'count';
@@ -40,16 +43,16 @@ type MutableProperties = Partial<
 
 type ProductAttributeTermActions = CrudActions<
 	'ProductAttributeTerm',
-	ProductAttributeTerm & { attribute_id: string },
-	MutableProperties,
-	'name'
->;
+	ProductAttributeTerm,
+	MutableProperties
+> &
+	Resolvers;
 
 export type ProductAttributeTermsSelectors = CrudSelectors<
 	'ProductAttributeTerm',
 	'ProductAttributeTerms',
 	ProductAttributeTerm,
-	Query,
+	Partial< Query >,
 	MutableProperties
 >;
 

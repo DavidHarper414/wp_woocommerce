@@ -8,6 +8,7 @@ import { DispatchFromMap } from '@automattic/data-stores';
  */
 import { CrudActions, CrudSelectors } from '../crud/types';
 import { BaseQueryParams } from '../types';
+import { Resolvers } from './actions';
 
 export type ProductShippingClass = {
 	id: number;
@@ -28,12 +29,13 @@ type ReadOnlyProperties = 'id';
 
 type MutableProperties = Omit< ProductShippingClass, ReadOnlyProperties >;
 
-type ProductShippingClassActions = CrudActions<
+export type ProductShippingClassActions = CrudActions<
 	'ProductShippingClass',
 	ProductShippingClass,
 	MutableProperties,
 	'name'
->;
+> &
+	Resolvers;
 
 export type ProductShippingClassSelectors = CrudSelectors<
 	'ProductShippingClass',
