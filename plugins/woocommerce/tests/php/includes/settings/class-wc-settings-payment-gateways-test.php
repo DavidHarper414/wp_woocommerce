@@ -15,6 +15,13 @@ require_once __DIR__ . '/class-wc-settings-unit-test-case.php';
  */
 class WC_Settings_Payment_Gateways_Test extends WC_Settings_Unit_Test_Case {
 
+	public function setUp(): void {
+		parent::setUp();
+
+		// Make sure the class file is loaded.
+		require_once WC_ABSPATH . 'includes/admin/settings/class-wc-settings-payment-gateways.php';
+	}
+
 	/**
 	 * @testdox get_sections should get all the existing sections.
 	 */
