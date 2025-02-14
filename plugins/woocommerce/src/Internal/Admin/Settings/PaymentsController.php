@@ -27,9 +27,12 @@ class PaymentsController {
 	 * Register hooks.
 	 */
 	public function register() {
-		// Filter the feature config to allow the experiment to run.
-		// Use a priority higher than the default (10) to ensure we run after any default filtering.
-		add_filter( 'woocommerce_admin_get_feature_config', array( $this, 'filter_feature_config_experiment' ), 20 );
+		// Filter the feature config to allow the experiment to have effect.
+		// Use a priority of 9 to ensure that the filter runs before the user-set feature values
+		// are applied by the WC Beta Tester plugin.
+		// This way we allow users to control the feature flag via the WC Beta Tester plugin and disregard the experiment.
+		// @see plugins/woocommerce-beta-tester/plugin.php
+		add_filter( 'woocommerce_admin_get_feature_config', array( $this, 'filter_feature_config_experiment' ), 9 );
 
 		// Because we gate the hooking based on a feature flag,
 		// we need to delay the registration until the 'woocommerce_init' hook.
@@ -38,7 +41,7 @@ class PaymentsController {
 	}
 
 	public function filter_feature_config_experiment( $features ) {
-		// If the feature flag is not present or has been manually disabled, don't do anything.
+		// If the feature flag is not present or has been disabled, don't do anything.
 		if ( empty( $features['reactify-classic-payments-settings'] ) ) {
 			return $features;
 		}
