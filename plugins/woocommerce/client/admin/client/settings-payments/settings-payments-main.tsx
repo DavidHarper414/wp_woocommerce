@@ -11,10 +11,11 @@ import {
 	type PluginSelectors,
 } from '@woocommerce/data';
 import { resolveSelect, useDispatch, useSelect } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
+import React, { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
+import { Button } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -35,6 +36,7 @@ import {
 	getWooPaymentsTestDriveAccountLink,
 } from '~/settings-payments/utils';
 import { WooPaymentsPostSandboxAccountSetupModal } from '~/settings-payments/components/modals';
+import { getAdminSetting } from '~/utils/admin-settings';
 
 /**
  * A component that renders the main settings page for managing payment gateways in WooCommerce.
@@ -63,6 +65,8 @@ export const SettingsPaymentsMain = () => {
 		window.wcSettings?.admin?.woocommerce_payments_nox_profile
 			?.business_country_code || null
 	);
+
+	const assetUrl = getAdminSetting( 'wcAdminAssetUrl' );
 
 	useEffect( () => {
 		// Record the page view event
@@ -120,24 +124,29 @@ export const SettingsPaymentsMain = () => {
 		PAYMENT_SETTINGS_STORE_NAME
 	);
 
-	const { providers, suggestions, suggestionCategories, isFetching } =
-		useSelect(
-			( select ) => {
-				const paymentSettings = select(
-					PAYMENT_SETTINGS_STORE_NAME
-				) as PaymentSettingsSelectors;
+	const {
+		providers,
+		offlinePaymentGateways,
+		suggestions,
+		suggestionCategories,
+		isFetching,
+	} = useSelect(
+		( select ) => {
+			const paymentSettings = select(
+				PAYMENT_SETTINGS_STORE_NAME
+			) as PaymentSettingsSelectors;
 
-				return {
-					providers:
-						paymentSettings.getPaymentProviders( storeCountry ),
-					suggestions: paymentSettings.getSuggestions(),
-					suggestionCategories:
-						paymentSettings.getSuggestionCategories(),
-					isFetching: paymentSettings.isFetching(),
-				};
-			},
-			[ storeCountry ]
-		);
+			return {
+				providers: paymentSettings.getPaymentProviders( storeCountry ),
+				offlinePaymentGateways:
+					paymentSettings.getOfflinePaymentGateways(),
+				suggestions: paymentSettings.getSuggestions(),
+				suggestionCategories: paymentSettings.getSuggestionCategories(),
+				isFetching: paymentSettings.isFetching(),
+			};
+		},
+		[ storeCountry ]
+	);
 
 	const dismissIncentive = useCallback(
 		( dismissHref: string, context: string ) => {
@@ -346,6 +355,53 @@ export const SettingsPaymentsMain = () => {
 		]
 	);
 
+	const trackMorePaymentsOptionsClicked = () => {
+		// We will gather all the available payment methods (suggestions, gateways, offline PMs)
+		// to track which options the user has.
+		const paymentOptionsList: string[] = providers.map( ( provider ) => {
+			if ( provider.plugin && provider.plugin.slug ) {
+				return provider.plugin.slug.replace( /-/g, '_' );
+			} else if ( provider._suggestion_id ) {
+				return provider._suggestion_id.replace( /-/g, '_' );
+			}
+
+			return provider.id;
+		} );
+
+		offlinePaymentGateways.forEach( ( offlinePaymentGateway ) => {
+			paymentOptionsList.push( offlinePaymentGateway.id );
+		} );
+
+		suggestions.forEach( ( suggestion ) => {
+			if ( suggestion.plugin && suggestion.plugin.slug ) {
+				paymentOptionsList.push(
+					suggestion.plugin.slug.replace( /-/g, '_' )
+				);
+				return;
+			}
+			paymentOptionsList.push( suggestion.id.replace( /-/g, '_' ) );
+		} );
+
+		const uniquePaymentsOptions = [ ...new Set( paymentOptionsList ) ];
+
+		recordEvent( 'settings_payments_recommendations_other_options', {
+			available_payment_methods: uniquePaymentsOptions.join( ', ' ),
+		} );
+	};
+
+	const morePaymentOptionsLink = (
+		<Button
+			variant={ 'link' }
+			target="_blank"
+			href="https://woocommerce.com/product-category/woocommerce-extensions/payment-gateways/"
+			className="more-payment-options-link"
+			onClick={ trackMorePaymentsOptionsClicked }
+		>
+			<img src={ assetUrl + '/icons/external-link.svg' } alt="" />
+			{ __( 'More payment options', 'woocommerce' ) }
+		</Button>
+	);
+
 	return (
 		<>
 			{ showModalIncentive && incentiveProvider && incentive && (
@@ -398,13 +454,24 @@ export const SettingsPaymentsMain = () => {
 					businessRegistrationCountry={ storeCountry }
 					setBusinessRegistrationCountry={ setStoreCountry }
 				/>
-				<OtherPaymentGateways
-					suggestions={ suggestions }
-					suggestionCategories={ suggestionCategories }
-					installingPlugin={ installingPlugin }
-					setupPlugin={ setupPlugin }
-					isFetching={ isFetching }
-				/>
+				{
+					// If no suggestions are available, only show a link to the WooCommerce.com payment marketplace page.
+					! isFetching && suggestions.length === 0 && (
+						<div className="more-payment-options">
+							{ morePaymentOptionsLink }
+						</div>
+					)
+				}
+				{ ( isFetching || suggestions.length > 0 ) && (
+					<OtherPaymentGateways
+						suggestions={ suggestions }
+						suggestionCategories={ suggestionCategories }
+						installingPlugin={ installingPlugin }
+						setupPlugin={ setupPlugin }
+						isFetching={ isFetching }
+						morePaymentOptionsLink={ morePaymentOptionsLink }
+					/>
+				) }
 			</div>
 			<WooPaymentsPostSandboxAccountSetupModal
 				isOpen={
