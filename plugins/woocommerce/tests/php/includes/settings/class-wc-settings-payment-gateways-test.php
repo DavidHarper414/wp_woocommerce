@@ -15,6 +15,11 @@ require_once __DIR__ . '/class-wc-settings-unit-test-case.php';
  */
 class WC_Settings_Payment_Gateways_Test extends WC_Settings_Unit_Test_Case {
 
+	/**
+	 * Setup test case.
+	 *
+	 * @return void
+	 */
 	public function setUp(): void {
 		parent::setUp();
 
