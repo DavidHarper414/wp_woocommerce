@@ -361,7 +361,9 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 			'woocommerce_price_num_decimals' => $country_info['num_decimals'],
 		);
 
-		array_walk( $currency_settings, 'update_option' );
+		foreach ( $currency_settings as $key => $value ) {
+			update_option( $key, $value );
+		}
 
 		return new WP_REST_Response( array(), 204 );
 	}
