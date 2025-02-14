@@ -7,7 +7,6 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\ReviewShippingOptions;
-
 /**
  * Task Lists class.
  */
@@ -135,7 +134,6 @@ class TaskLists {
 
 		// If the React-based Payments settings page is enabled, we don't need the dedicated WooPayments task.
 		if ( Features::is_enabled( 'reactify-classic-payments-settings' ) ) {
-
 			$key = array_search( 'WooCommercePayments', $tasks, true );
 			if ( false !== $key ) {
 				unset( $tasks[ $key ] );
