@@ -763,4 +763,58 @@ class Cart extends ControllerTestCase {
 			)
 		);
 	}
+
+	/**
+	 * Test adding a variable product that doesn't exist to cart with attribute_* attributes.
+	 */
+	public function test_fails_add_variable_product_to_cart_with_wrong_attribute_data() {
+		wc_empty_cart();
+
+		$fixtures = new FixtureData();
+
+		$variable_product = $fixtures->get_variable_product(
+			array(
+				'name'          => 'Test Variable Product with special characters',
+				'stock_status'  => ProductStockStatus::IN_STOCK,
+				'regular_price' => 10,
+				'weight'        => 10,
+			),
+			array(
+				[
+					'attribute_taxonomy'=>'Autograph choice ✏️',
+					'term_ids' => ['Yes 👍', 'No 👎']
+				]
+			)
+		);
+
+		$variation = $fixtures->get_variation_product(
+			$variable_product->get_id(),
+			array(
+				'autograph-choice-%e2%9c%8f%ef%b8%8f' => 'No 👎',
+			)
+		);
+
+
+		$request = new \WP_REST_Request( 'POST', '/wc/store/v1/cart/add-item' );
+		$request->set_header( 'Nonce', wp_create_nonce( 'wc_store_api' ) );
+
+		$request->set_body_params(
+			array(
+				'id'        => $variation->get_id(),
+				'quantity'  => 1,
+				'variation' => array(
+					array(
+						// purposefully using the wrong attribute value, here
+						'attribute' => 'attribute_autograph-choice-%e2%9c%8f%ef%b8%8f',
+						'value'     => 'Yes 👍',
+					),
+				),
+			)
+		);
+
+		$this->assertAPIResponse(
+			$request,
+			400
+		);
+	}
 }
