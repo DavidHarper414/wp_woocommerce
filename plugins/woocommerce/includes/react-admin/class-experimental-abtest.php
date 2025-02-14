@@ -130,7 +130,7 @@ final class Experimental_Abtest {
 	 */
 	public static function in_treatment_handled_exception( string $experiment_name, bool $as_auth_wpcom_user = false ) {
 		try {
-			return self::in_treatment_handled_exception( $experiment_name, $as_auth_wpcom_user );
+			return self::in_treatment( $experiment_name, $as_auth_wpcom_user );
 		} catch ( \Exception $e ) {
 			return false;
 		}

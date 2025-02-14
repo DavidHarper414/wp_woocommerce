@@ -27,24 +27,41 @@ class PaymentsController {
 	 * Register hooks.
 	 */
 	public function register() {
+		// Filter the feature config to allow the experiment to run.
+		// Use a priority higher than the default (10) to ensure we run after any default filtering.
+		add_filter( 'woocommerce_admin_get_feature_config', array( $this, 'filter_feature_config_experiment' ), 20 );
+
 		// Because we gate the hooking based on a feature flag,
 		// we need to delay the registration until the 'woocommerce_init' hook.
 		// Otherwise, we end up in an infinite loop.
 		add_action( 'woocommerce_init', array( $this, 'delayed_register' ) );
 	}
 
+	public function filter_feature_config_experiment( $features ) {
+		// If the feature flag is not present or has been manually disabled, don't do anything.
+		if ( empty( $features['reactify-classic-payments-settings'] ) ) {
+			return $features;
+		}
+
+		// If the feature flag is enabled, but the user is NOT in the experiment treatment group, disable the feature.
+		if ( ! Experimental_Abtest::in_treatment_handled_exception( 'woocommerce_payment_settings_2025_v1' ) ) {
+			return array_merge(
+				$features,
+				[
+					'reactify-classic-payments-settings' => false,
+				]
+			);
+		}
+
+		return $features;
+	}
+
 	/**
 	 * Delayed hook registration.
 	 */
 	public function delayed_register() {
-		// Adding try-catch because in non-production environments it may fail (for example, e2e tests).
-		try {
-			$in_treatment = Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' );
-		} catch ( Exception $e ) {
-			$in_treatment = false;
-		}
 		// Don't do anything if the feature is not enabled.
-		if ( ! ( Features::is_enabled( 'reactify-classic-payments-settings' ) && $in_treatment ) ) {
+		if ( ! Features::is_enabled( 'reactify-classic-payments-settings' ) ) {
 			return;
 		}
 

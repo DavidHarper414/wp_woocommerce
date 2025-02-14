@@ -21,16 +21,9 @@ class Init extends RemoteSpecsEngine {
 	 * Constructor.
 	 */
 	public function __construct() {
-		// Adding try-catch because in non-production environments it may fail (for example, e2e tests).
-		try {
-			$in_treatment = Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_2025_v1' );
-		} catch ( \Exception $e ) {
-			$in_treatment = false;
-		}
-
 		// If the React-based Payments settings page is enabled, we don't need the old WooPayments promotion system,
 		// as we will show the WooPayments suggestion with the new system.
-		if ( Features::is_enabled( 'reactify-classic-payments-settings' ) && $in_treatment ) {
+		if ( Features::is_enabled( 'reactify-classic-payments-settings' ) ) {
 			return;
 		}
 
