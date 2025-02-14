@@ -4,6 +4,13 @@ const path = require( 'path' );
 
 module.exports = {
 	...defaultConfig,
+	cache: ( process.env.CI && { type: 'memory' } ) || {
+		type: 'filesystem',
+		cacheDirectory: path.resolve(
+			__dirname,
+			'../../node_modules/.cache/webpack-woo-ai'
+		),
+	},
 	entry: {
 		index: './src/index.ts',
 	},
