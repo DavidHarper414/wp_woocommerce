@@ -104,6 +104,7 @@ class Cart extends ControllerTestCase {
 		wc()->customer->set_shipping_address_1( '' );
 		wc()->customer->set_billing_address_1( '' );
 	}
+
 	/**
 	 * Test getting cart.
 	 */
@@ -705,8 +706,8 @@ class Cart extends ControllerTestCase {
 				$fixtures->get_product_attribute( 'Size', array( 'Small 🤏', 'Medium' ) ),
 				// this will create a "local" attribute.
 				[
-					'attribute_taxonomy'=>'Autograph choice ✏️',
-					'term_ids' => ['Yes 👍', 'No 👎']
+					'attribute_taxonomy' => 'Autograph choice ✏️',
+					'term_ids'           => [ 'Yes 👍', 'No 👎' ]
 				]
 			)
 		);
@@ -716,7 +717,7 @@ class Cart extends ControllerTestCase {
 			array(
 				// if we need to create a variation product with a taxonomy attribute using special chars,
 				// we need to use their encoded values.
-				'pa_size'  => 'small-%f0%9f%a4%8f',
+				'pa_size'                             => 'small-%f0%9f%a4%8f',
 				'autograph-choice-%e2%9c%8f%ef%b8%8f' => 'Yes 👍',
 			)
 		);
@@ -781,8 +782,8 @@ class Cart extends ControllerTestCase {
 			),
 			array(
 				[
-					'attribute_taxonomy'=>'Autograph choice ✏️',
-					'term_ids' => ['Yes 👍', 'No 👎']
+					'attribute_taxonomy' => 'Autograph choice ✏️',
+					'term_ids'           => [ 'Yes 👍', 'No 👎' ]
 				]
 			)
 		);
@@ -804,7 +805,7 @@ class Cart extends ControllerTestCase {
 				'quantity'  => 1,
 				'variation' => array(
 					array(
-						// purposefully using the wrong attribute value, here
+						// purposefully using the wrong attribute value, here.
 						'attribute' => 'attribute_autograph-choice-%e2%9c%8f%ef%b8%8f',
 						'value'     => 'Yes 👍',
 					),
