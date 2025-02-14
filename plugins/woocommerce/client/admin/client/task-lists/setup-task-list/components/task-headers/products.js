@@ -9,9 +9,13 @@ import { __ } from '@wordpress/i18n';
  */
 import { isImportProduct } from '~/task-lists/fills/utils';
 import { WC_ASSET_URL } from '../../../../utils/admin-settings';
+import { useProfileItems } from '../../../hooks/useProfileItems';
 
 const ProductsHeader = ( { task, goToTask } ) => {
-	const isImportProductHeader = isImportProduct();
+	const profileItems = useProfileItems();
+	const isImportProductHeader = isImportProduct(
+		profileItems.business_choice
+	);
 	return (
 		<div className="woocommerce-task-header__contents-container">
 			<img
