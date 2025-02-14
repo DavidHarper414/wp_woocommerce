@@ -2,9 +2,8 @@
  * External dependencies
  */
 import clsx from 'clsx';
-import { Icon, chevronLeft, chevronRight } from '@wordpress/icons';
 import { Link } from '@woocommerce/components';
-import { isRTL, __ } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -52,7 +51,6 @@ export default function ProductListHeader(
 						} }
 					>
 						{ groupURLText ?? __( 'See more', 'woocommerce' ) }
-						<Icon icon={ isRTL() ? chevronLeft : chevronRight } />
 					</Link>
 				</span>
 			) }
