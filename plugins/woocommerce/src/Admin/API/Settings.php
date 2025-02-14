@@ -51,11 +51,6 @@ class Settings extends \WC_REST_Data_Controller {
 		);
 	}
 
-    public function get_items( $request ) {
-        error_log('working');
-        return new \WP_REST_Response( array( 'status' => 'success' ) );
-    }
-
 	/**
 	 * Check if a given request has access to update settings.
 	 *
@@ -76,18 +71,18 @@ class Settings extends \WC_REST_Data_Controller {
         global $current_section, $current_tab;
 
         $params = $request->get_params();
-		// Get all registered WooCommerce settings pages
-		$settings_pages = WC_Admin_Settings::get_settings_pages();
 
         try {
-            // Get current tab/section.
-            $current_tab     = empty( $_GET['tab'] ) ? 'general' : sanitize_title( wp_unslash( $_GET['tab'] ) ); // WPCS: input var okay, CSRF ok.
-            $current_section = empty( $_REQUEST['section'] ) ? '' : sanitize_title( wp_unslash( $_REQUEST['section'] ) ); // WPCS: input var okay, CSRF ok.
+            // Get current tab/section and set global variables.
+            $current_tab     = empty( $params['tab'] ) ? 'general' : sanitize_title( wp_unslash( $params['tab'] ) ); // WPCS: input var okay, CSRF ok.
+            $current_section = empty( $params['section'] ) ? '' : sanitize_title( wp_unslash( $params['section'] ) ); // WPCS: input var okay, CSRF ok.
 
-            // Save settings if data has been posted.
-            if ( '' !== $current_section && apply_filters( "woocommerce_save_settings_{$current_tab}_{$current_section}", ! empty( $_POST['save'] ) ) ) { // WPCS: input var okay, CSRF ok.
-                WC_Admin_Settings::save();
-            } elseif ( '' === $current_section && apply_filters( "woocommerce_save_settings_{$current_tab}", ! empty( $_POST['save'] ) ) ) { // WPCS: input var okay, CSRF ok.
+            $filter_name = '' === $current_section ? 
+            "woocommerce_save_settings_{$current_tab}" :
+            "woocommerce_save_settings_{$current_tab}_{$current_section}";
+
+            // Save settings if data has been posted
+            if ( apply_filters( $filter_name, ! empty( $_POST['save'] ) ) ) {
                 WC_Admin_Settings::save();
             }
 
