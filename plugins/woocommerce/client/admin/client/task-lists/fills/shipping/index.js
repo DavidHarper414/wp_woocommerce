@@ -15,9 +15,9 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
 import {
 	settingsStore,
 	onboardingStore,
-	PLUGINS_STORE_NAME,
+	pluginsStore,
 	COUNTRIES_STORE_NAME,
-	SHIPPING_METHODS_STORE_NAME,
+	shippingMethodsStore,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { registerPlugin } from '@wordpress/plugins';
@@ -661,8 +661,7 @@ const ShippingWrapper = compose(
 	withSelect( ( select ) => {
 		const { getSettings, isUpdateSettingsRequesting } =
 			select( settingsStore );
-		const { getActivePlugins, isJetpackConnected } =
-			select( PLUGINS_STORE_NAME );
+		const { getActivePlugins, isJetpackConnected } = select( pluginsStore );
 		const { getCountry } = select( COUNTRIES_STORE_NAME );
 
 		const { general: settings = {} } = getSettings( 'general' );
@@ -670,9 +669,8 @@ const ShippingWrapper = compose(
 			settings.woocommerce_default_country
 		);
 
-		const shippingPartners = select(
-			SHIPPING_METHODS_STORE_NAME
-		).getShippingMethods();
+		const shippingPartners =
+			select( shippingMethodsStore ).getShippingMethods();
 
 		const country = countryCode ? getCountry( countryCode ) : null;
 		const countryName = country ? country.name : null;
