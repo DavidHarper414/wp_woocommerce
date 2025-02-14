@@ -701,7 +701,9 @@ class Cart extends ControllerTestCase {
 				'weight'        => 10,
 			),
 			array(
+				// this will create a "taxonomy"/"global" attribute.
 				$fixtures->get_product_attribute( 'Size', array( 'Small 🤏', 'Medium' ) ),
+				// this will create a "local" attribute.
 				[
 					'attribute_taxonomy'=>'Autograph choice ✏️',
 					'term_ids' => ['Yes 👍', 'No 👎']
@@ -712,6 +714,8 @@ class Cart extends ControllerTestCase {
 		$variation = $fixtures->get_variation_product(
 			$variable_product->get_id(),
 			array(
+				// if we need to create a variation product with a taxonomy attribute using special chars,
+				// we need to use their encoded values.
 				'pa_size'  => 'small-%f0%9f%a4%8f',
 				'autograph-choice-%e2%9c%8f%ef%b8%8f' => 'Yes 👍',
 			)
@@ -727,7 +731,7 @@ class Cart extends ControllerTestCase {
 				'quantity'  => 1,
 				'variation' => array(
 					array(
-						'attribute' => 'size',
+						'attribute' => 'pa_size',
 						'value'     => 'Small 🤏',
 					),
 					array(
