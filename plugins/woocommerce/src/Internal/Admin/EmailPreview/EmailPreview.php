@@ -390,8 +390,8 @@ class EmailPreview {
 		$variation->set_price( 20 );
 		$variation->set_attributes(
 			array(
-				'pa_color' => 'red',
-				'pa_size'  => 'small',
+				'Color' => 'red',
+				'Size'  => 'small',
 			)
 		);
 
