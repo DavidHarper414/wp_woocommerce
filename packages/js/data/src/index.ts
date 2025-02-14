@@ -54,6 +54,7 @@ export { store as reviewsStore } from './reviews';
 export { store as shippingMethodsStore } from './shipping-methods';
 export { store as settingsStore } from './settings';
 export { store as experimentalShippingZonesStore } from './shipping-zones';
+export { store as experimentalTaxClassesStore } from './tax-classes';
 export { store as pluginsStore } from './plugins';
 
 // Export hooks
