@@ -8,9 +8,12 @@ on:
             - 'packages/php/**'
             - 'tools/**'
             - '**/changelog/**'
+            - 'changelog.txt'
+            - '.gitignore'
             - '**/tests/**'
             - '**/*.md'
             - '.husky/**'
+            - '.cursor/**'
             - '.github/**'
             - '!.github/workflows/build-live-branch.yml'
 

@@ -9,11 +9,15 @@ on:
         paths-ignore:
             - 'docs/**'
             - 'packages/php/**'
+            - '!packages/php/blueprint/**'
             - 'tools/**'
             - '**/changelog/**'
+            - 'changelog.txt'
+            - '.gitignore'
             - '**/tests/**'
             - '**/*.md'
             - '.husky/**'
+            - '.cursor/**'
             - '.github/**'
             - '!.github/workflows/pr-build-live-branch.yml'
 

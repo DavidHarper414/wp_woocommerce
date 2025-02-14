@@ -5,13 +5,7 @@ import { BlockEditProps } from '@wordpress/blocks';
 
 export type BlockAttributes = {
 	productId?: string;
-	overlayIcon:
-		| 'filter-icon-1'
-		| 'filter-icon-2'
-		| 'filter-icon-3'
-		| 'filter-icon-4';
-	overlayButtonType: 'label-icon' | 'label-only' | 'icon-only';
-	overlayIconSize: number;
+	isPreview: boolean;
 };
 
 export type EditProps = BlockEditProps< BlockAttributes >;

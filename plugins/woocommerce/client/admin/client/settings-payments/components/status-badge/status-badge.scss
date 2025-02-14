@@ -21,27 +21,9 @@
 	}
 
 	& > .woocommerce-status-badge__icon-container {
-		margin-left: 2px;
+		margin-left: 4px;
 		cursor: pointer;
 		display: inline-flex;
 		align-items: center;
-	}
-}
-
-// Popover styling
-.woocommerce-status-badge-popover {
-	.components-popover__content {
-		padding: 4px 12px;
-
-		a {
-			text-decoration: underline;
-			outline: 0;
-		}
-	}
-
-	.settings-payment-gateways__popover-container {
-		width: 236px;
-		font-size: 13px;
-		line-height: 20px;
 	}
 }

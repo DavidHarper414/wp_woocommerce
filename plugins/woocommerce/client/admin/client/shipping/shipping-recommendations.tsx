@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, Children } from '@wordpress/element';
 import { Text } from '@woocommerce/experimental';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { pluginsStore } from '@woocommerce/data';
 import ExternalIcon from 'gridicons/dist/external';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore VisuallyHidden is present, it's just not typed
@@ -28,7 +28,7 @@ const useInstallPlugin = () => {
 		Array< string >
 	>( [] );
 
-	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
+	const { installAndActivatePlugins } = useDispatch( pluginsStore );
 
 	const handleSetup = ( slugs: string[] ): PromiseLike< void > => {
 		if ( pluginsBeingSetup.length > 0 ) {
@@ -52,7 +52,11 @@ const useInstallPlugin = () => {
 	return [ pluginsBeingSetup, handleSetup ] as const;
 };
 
-export const ShippingRecommendationsList: React.FC = ( { children } ) => (
+export const ShippingRecommendationsList = ( {
+	children,
+}: {
+	children: React.ReactNode;
+} ) => (
 	<DismissableList
 		className="woocommerce-recommended-shipping-extensions"
 		dismissOptionName="woocommerce_settings_shipping_recommendations_hidden"
@@ -99,8 +103,9 @@ export const ShippingRecommendationsList: React.FC = ( { children } ) => (
 const ShippingRecommendations: React.FC = () => {
 	const [ pluginsBeingSetup, setupPlugin ] = useInstallPlugin();
 
-	const activePlugins = useSelect( ( select ) =>
-		select( PLUGINS_STORE_NAME ).getActivePlugins()
+	const activePlugins = useSelect(
+		( select ) => select( pluginsStore ).getActivePlugins(),
+		[]
 	);
 
 	if (
