@@ -105,22 +105,24 @@ class Controller extends AbstractBlock {
 	 * @return array The array of hooked blocks.
 	 */
 	public function block_hook_fallback( $hooked_blocks, $position, $anchor_block, $context ) {
+		if ( self::$store_notices_added ) {
+			// Cache the store notices block addition to prevent recursive rendering
+			// in full-site editing mode where both template and post content conditions
+			// may evaluate to true simultaneously.
+			return $hooked_blocks;
+		}
+
 		$anchor_block_to_check = wc_is_block_hook_post_content_supported() ? 'woocommerce/product-collection' : 'core/post-content';
 
 		if ( $anchor_block_to_check === $anchor_block && 'before' === $position ) {
-			if ( ! self::$store_notices_added ) {
-				// Cache the store notices block addition to prevent recursive rendering
-				// in full-site editing mode where both template and post content conditions
-				// may evaluate to true simultaneously.
-				if ( $context instanceof \WP_Block_Template && ! str_contains( $context->content, 'woocommerce/store-notices' ) ) {
-					$hooked_blocks[]           = 'woocommerce/store-notices';
-					self::$store_notices_added = true;
-				}
+			if ( $context instanceof \WP_Block_Template && ! str_contains( $context->content, 'woocommerce/store-notices' ) ) {
+				$hooked_blocks[]           = 'woocommerce/store-notices';
+				self::$store_notices_added = true;
+			}
 
-				if ( $context instanceof \WP_Post && ! str_contains( $context->post_content, 'woocommerce/store-notices' ) ) {
-					$hooked_blocks[]           = 'woocommerce/store-notices';
-					self::$store_notices_added = true;
-				}
+			if ( $context instanceof \WP_Post && ! str_contains( $context->post_content, 'woocommerce/store-notices' ) ) {
+				$hooked_blocks[]           = 'woocommerce/store-notices';
+				self::$store_notices_added = true;
 			}
 		}
 
