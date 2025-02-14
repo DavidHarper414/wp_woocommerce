@@ -69,9 +69,10 @@ export function* getCurrencySymbols() {
 		} );
 
 		return getCurrencySymbolsSuccess(
-			results.map(
-				( currency ) => `${ currency.code }: ${ currency.symbol }`
-			)
+			results.reduce( ( acc, currency ) => {
+				acc[ currency.code ] = currency.symbol;
+				return acc;
+			}, {} )
 		);
 	} catch ( error ) {
 		return getCurrencySymbolsError( error );

@@ -17,7 +17,7 @@ const reducer: Reducer< CountriesState, Action > = (
 		locales: {},
 		countries: [],
 		geolocation: undefined,
-		currencySymbols: [],
+		currencySymbols: {},
 	},
 	action
 ) => {
