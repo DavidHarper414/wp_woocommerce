@@ -54,6 +54,7 @@ export { store as notesStore } from './notes';
 export { store as reviewsStore } from './reviews';
 export { store as settingsStore } from './settings';
 export { store as experimentalShippingZonesStore } from './shipping-zones';
+export { store as experimentalTaxClassesStore } from './tax-classes';
 
 // Export hooks
 export { withSettingsHydration } from './settings/with-settings-hydration';
