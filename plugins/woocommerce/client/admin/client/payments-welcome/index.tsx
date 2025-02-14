@@ -113,7 +113,6 @@ const ConnectAccountPage = () => {
 			const installAndActivateResponse = await installAndActivatePlugins(
 				[ 'woocommerce-payments' ].concat( pluginsToInstall )
 			);
-			// @ts-expect-error TODO react-18-upgrade: useDispatch does not return the correct type for installAndActivatePlugins.
 			if ( installAndActivateResponse?.success ) {
 				recordEvent( 'wcpay_extension_installed', {
 					extensions: [ ...enabledApms ]
@@ -123,7 +122,6 @@ const ConnectAccountPage = () => {
 				} );
 				await activatePromo();
 			} else {
-				// @ts-expect-error TODO react-18-upgrade: useDispatch does not return the correct type for installAndActivatePlugins.
 				throw new Error( installAndActivateResponse.message );
 			}
 		} catch ( e ) {
