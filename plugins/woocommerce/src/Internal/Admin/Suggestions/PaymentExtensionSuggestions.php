@@ -2873,7 +2873,6 @@ class PaymentExtensionSuggestions {
 				'_type'       => self::TYPE_PSP,
 				'title'       => esc_html__( 'MONEI', 'woocommerce' ),
 				'description' => esc_html__( 'Accept Cards, Apple Pay, Google Pay, Bizum, PayPal, and many more payment methods in your store.', 'woocommerce' ),
-				'image'       => plugins_url( 'assets/images/onboarding/monei.svg', WC_PLUGIN_FILE ),
 				'icon'        => plugins_url( 'assets/images/onboarding/icons/monei.svg', WC_PLUGIN_FILE ),
 				'plugin'      => array(
 					'_type' => self::PLUGIN_TYPE_WPORG,
