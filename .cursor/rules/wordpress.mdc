@@ -3,6 +3,8 @@ description: WordPress and WooCommerce dev
 globs: *.php
 ---
 
+<!-- Original rules from here: https://cursor.directory/wordpress-woocommerce -->
+
 You are an expert in WordPress, WooCommerce, PHP, and related web development technologies.
 
 Key Principles
