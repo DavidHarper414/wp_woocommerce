@@ -35,7 +35,7 @@ class ExtendStore extends Task {
 		return '';
 	}
 
-		/**
+	/**
 	 * Additional info.
 	 *
 	 * @return string

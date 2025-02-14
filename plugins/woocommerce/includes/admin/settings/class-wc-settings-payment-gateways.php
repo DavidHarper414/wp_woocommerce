@@ -258,17 +258,19 @@ class WC_Settings_Payment_Gateways extends WC_Settings_Page {
 								$filter_by = 'category_other';
 							}
 
+							$marketplace_cta_allowed_html = array(
+								'a' => array(
+									'href'  => array(),
+									'id'    => array(),
+									'style' => array(),
+								),
+							);
+
 							$marketplace_cta = sprintf(
 								wp_kses(
 									/* translators: %s: URL to WooCommerce marketplace */
 									__( 'Visit the <a href="%s" id="settings-other-payment-methods" style="text-decoration: underline;">Official WooCommerce Marketplace</a> to find additional payment providers.', 'woocommerce' ),
-									array(
-										'a' => array(
-											'href' => array(),
-											'id' => array(),
-											'style' => array(),
-										),
-									)
+									$marketplace_cta_allowed_html
 								),
 								esc_url( admin_url( 'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways' ) )
 							);
@@ -289,7 +291,7 @@ class WC_Settings_Payment_Gateways extends WC_Settings_Page {
 							// phpcs:ignore -- ignoring the error since the value is harded.
 							echo "<td style='font-size: 13px; border-top: 1px solid #c3c4c7; background-color: #fff' colspan='{$columns_count}'>";
 							echo '<span style="margin-right: 10px;">';
-							echo $marketplace_cta;
+							echo wp_kses( $marketplace_cta, $marketplace_cta_allowed_html );
 							echo '</span>';
 							if ( count( $plugin_suggestions ) ) {
 								foreach ( $plugin_suggestions as $plugin_suggestion ) {
