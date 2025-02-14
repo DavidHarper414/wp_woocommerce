@@ -17,8 +17,35 @@ use Automattic\WooCommerce\Blueprint\UseWPFunctions;
  *
  * @package Automattic\WooCommerce\Admin\Features\Blueprint\Exporters
  */
-class ExportWCSettingsGeneral extends ExportWCSettings{
+abstract class ExportWCSettings implements StepExporter, HasAlias {
 	use UseWPFunctions;
+
+	/**
+	 * Return a page I.D to export.
+	 *
+	 * @return string The page ID.
+	 */
+	abstract protected function get_page_id(): string;
+
+	/**
+	 * Export WooCommerce settings.
+	 *
+	 * @return SetSiteOptions
+	 */
+	public function export() {
+		$setting_options = new SettingOptions();
+		return new SetSiteOptions( $setting_options->get_page_options( $this->get_page_id() ) );
+	}
+
+
+	/**
+	 * Get the name of the step.
+	 *
+	 * @return string
+	 */
+	public function get_step_name() {
+		return 'setSiteOptions';
+	}
 
 	/**
 	 * Get the alias for this exporter.
@@ -45,9 +72,5 @@ class ExportWCSettingsGeneral extends ExportWCSettings{
 	 */
 	public function get_description() {
 		return __( 'It includes all settings in WooCommerce | Settings | General.', 'woocommerce' );
-	}
-
-	protected function get_page_id(): string {
-		return 'general';
 	}
 }

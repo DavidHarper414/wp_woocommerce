@@ -17,15 +17,8 @@ use Automattic\WooCommerce\Blueprint\UseWPFunctions;
  *
  * @package Automattic\WooCommerce\Admin\Features\Blueprint\Exporters
  */
-class ExportWCSettingsProducts extends ExportWCSettingsGeneral {
+class ExportWCSettingsProducts extends ExportWCSettings {
 	use UseWPFunctions;
-
-	/**
-	 * Page I.D to export.
-	 *
-	 * @var string The page ID.
-	 */
-	protected string $page_id = 'products';
 
 	/**
 	 * Get the alias for this exporter.
@@ -52,5 +45,9 @@ class ExportWCSettingsProducts extends ExportWCSettingsGeneral {
 	 */
 	public function get_description() {
 		return __( 'It includes all settings in WooCommerce | Settings | Products.', 'woocommerce' );
+	}
+
+	protected function get_page_id(): string {
+		return 'products';
 	}
 }
