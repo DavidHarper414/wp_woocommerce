@@ -15,7 +15,6 @@ import {
 import { getSetting } from '@woocommerce/settings';
 import { Text, useSlot } from '@woocommerce/experimental';
 import { getScreenFromPath, isWCAdmin, getPath } from '@woocommerce/navigation';
-import { loadExperimentAssignment } from '@woocommerce/explat';
 
 /**
  * Internal dependencies
@@ -53,10 +52,6 @@ export const getPageTitle = ( sections ) => {
 	}
 	return pageTitle;
 };
-
-const assignment = await loadExperimentAssignment(
-	'woocommerce_payment_settings_2025_v1'
-);
 
 export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const headerElement = useRef( null );
@@ -141,8 +136,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 		isWCAdmin() && getPath() === '/analytics/overview';
 
 	const isReactifyPaymentsSettingsScreen = Boolean(
-		assignment.variationName === 'treatment' &&
-			window.wcAdminFeatures?.[ 'reactify-classic-payments-settings' ] &&
+		window.wcAdminFeatures?.[ 'reactify-classic-payments-settings' ] &&
 			query?.page === 'wc-settings' &&
 			query?.tab === 'checkout'
 	);

@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { lazy, Suspense } from '@wordpress/element';
-import { loadExperimentAssignment } from '@woocommerce/explat';
 
 /**
  * Internal dependencies
@@ -17,10 +16,6 @@ const PaymentRecommendationsChunk = lazy(
 		)
 );
 
-const assignment = await loadExperimentAssignment(
-	'woocommerce_payment_settings_2025_v1'
-);
-
 export const PaymentRecommendations: React.FC< EmbeddedBodyProps > = ( {
 	page,
 	tab,
@@ -30,8 +25,7 @@ export const PaymentRecommendations: React.FC< EmbeddedBodyProps > = ( {
 		page === 'wc-settings' &&
 		tab === 'checkout' &&
 		( ! section || section === 'main' ) &&
-		( assignment.variationName === 'control' ||
-			! window.wcAdminFeatures?.[ 'reactify-classic-payments-settings' ] ) // don't show this on the new payment settings page.
+		! window.wcAdminFeatures?.[ 'reactify-classic-payments-settings' ] // don't show this on the new payment settings page.
 	) {
 		return (
 			<RecommendationsEligibilityWrapper>
