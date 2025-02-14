@@ -7,7 +7,7 @@ Under the hood this data store makes use of the [CRUD data store](../crud/README
 
 ## Usage
 
-This data store can be accessed under the `experimental/wc/admin/shipping/zones` name. It is recommended you make use of the export constant `EXPERIMENTAL_SHIPPING_ZONES_STORE_NAME`.
+This data store can be accessed under the `experimental/wc/admin/shipping/zones` name. It is recommended you make use of the export store `experimentalShippingZonesStore`.
 
 Example:
 
