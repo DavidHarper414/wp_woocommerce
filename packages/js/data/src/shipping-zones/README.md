@@ -25,7 +25,7 @@ function Component() {
 }
 ```
 
-## Selections and actions:
+## Selections and actions
 
 | Selector                               | Description                                             |
 | -------------------------------------- | ------------------------------------------------------- |
