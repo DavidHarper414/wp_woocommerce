@@ -259,9 +259,6 @@ class Renderer {
 					array_merge(
 						$current_context,
 						array(
-							// The message to be announced by the screen reader when the page is loading or loaded.
-							'accessibilityLoadingMessage'  => __( 'Loading page, please wait.', 'woocommerce' ),
-							'accessibilityLoadedMessage'   => __( 'Page Loaded.', 'woocommerce' ),
 							// We don't prefetch the links if user haven't clicked on pagination links yet.
 							// This way we avoid prefetching when the page loads.
 							'isPrefetchNextOrPreviousLink' => false,
@@ -273,24 +270,7 @@ class Renderer {
 			$block_content = $p->get_updated_html();
 		}
 
-		/**
-		 * Add accessibility div for screen readers, to announce page load states.
-		 */
-		$last_tag_position  = strripos( $block_content, '</div>' );
-		$accessibility_html = '
-				<div
-					data-wp-interactive="woocommerce/product-collection"
-					class="screen-reader-text"
-					aria-live="polite"
-					data-wp-text="context.accessibilityMessage">
-				</div>
-			';
-		return substr_replace(
-			$block_content,
-			$accessibility_html,
-			$last_tag_position,
-			0
-		);
+		return $block_content;
 	}
 
 	/**

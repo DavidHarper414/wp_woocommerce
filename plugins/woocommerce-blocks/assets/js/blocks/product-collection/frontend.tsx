@@ -17,9 +17,6 @@ export type ProductCollectionStoreContext = {
 	// Available on the <li/> product element and deeper
 	productId?: number;
 	isPrefetchNextOrPreviousLink: boolean;
-	accessibilityMessage: string;
-	accessibilityLoadingMessage: string;
-	accessibilityLoadedMessage: string;
 	collection: CoreCollectionNames;
 };
 
@@ -120,16 +117,6 @@ const productCollectionStore = {
 				);
 
 				yield actions.navigate( ref.href );
-
-				// Announce that the page has been loaded. If the message is the
-				// same, we use a no-break space similar to the @wordpress/a11y
-				// package: https://github.com/WordPress/gutenberg/blob/c395242b8e6ee20f8b06c199e4fc2920d7018af1/packages/a11y/src/filter-message.js#L20-L26
-				ctx.accessibilityMessage =
-					ctx.accessibilityLoadedMessage +
-					( ctx.accessibilityMessage ===
-					ctx.accessibilityLoadedMessage
-						? '\u00A0'
-						: '' );
 
 				ctx.isPrefetchNextOrPreviousLink = !! ref.href;
 
