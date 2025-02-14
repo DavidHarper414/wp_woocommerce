@@ -9,6 +9,7 @@ on:
             - 'tools/**'
             - '**/changelog/**'
             - 'changelog.txt'
+            - '.gitignore'
             - '**/tests/**'
             - '**/*.md'
             - '.husky/**'
