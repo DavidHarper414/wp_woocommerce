@@ -1,43 +1,38 @@
 /**
  * External dependencies
  */
-import { createElement, Fragment, useRef } from '@wordpress/element';
-import { unlock, SiteHub, SidebarContent } from '@woocommerce/product-editor';
 import {
 	useViewportMatch,
 	useResizeObserver,
 	useReducedMotion,
 } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
+/* eslint-disable @woocommerce/dependency-group */
 import {
 	// @ts-expect-error missing type.
 	EditorSnackbars,
 	// @ts-expect-error missing type.
 	privateApis as editorPrivateApis,
 } from '@wordpress/editor';
-// eslint-disable-next-line @woocommerce/dependency-group
 import {
-	// @ts-expect-error missing type.
 	__unstableMotion as motion,
-	// @ts-expect-error missing type.
 	__unstableAnimatePresence as AnimatePresence,
 } from '@wordpress/components';
+import { createElement, Fragment, useRef } from '@wordpress/element';
+/* eslint-disable @woocommerce/dependency-group */
+// @ts-ignore No types for this exist yet.
+import { unlock } from '@wordpress/edit-site/build-module/lock-unlock';
+// @ts-ignore No types for this exist yet.
+import SiteHub from '@wordpress/edit-site/build-module/components/site-hub';
+// @ts-ignore No types for this exist yet.
+import SidebarContent from '@wordpress/edit-site/build-module/components/sidebar';
+/* eslint-enable @woocommerce/dependency-group */
 
-type Route = {
-	key: string;
-	areas: {
-		sidebar: React.JSX.Element | React.FunctionComponent;
-		content?: React.JSX.Element | React.FunctionComponent;
-		edit?: React.JSX.Element | React.FunctionComponent;
-		mobile?: React.JSX.Element | React.FunctionComponent | boolean;
-		preview?: boolean;
-	};
-	widths?: {
-		content?: number;
-		edit?: number;
-		sidebar?: number;
-	};
-};
+/**
+ * Internal dependencies
+ */
+import { Route } from './types';
+import { SectionTabs, Header } from './components';
 
 const { NavigableRegion } = unlock( editorPrivateApis );
 
@@ -45,9 +40,17 @@ const ANIMATION_DURATION = 0.3;
 
 type LayoutProps = {
 	route: Route;
+	settingsPage?: SettingsPage;
+	activeSection?: string;
+	tabs?: Array< { name: string; title: string } >;
 };
 
-export function Layout( { route }: LayoutProps ) {
+export function Layout( {
+	route,
+	settingsPage,
+	tabs = [],
+	activeSection,
+}: LayoutProps ) {
 	const [ fullResizer ] = useResizeObserver();
 	const toggleRef = useRef< HTMLAnchorElement >( null );
 	const isMobileViewport = useViewportMatch( 'medium', '<' );
@@ -106,7 +109,16 @@ export function Layout( { route }: LayoutProps ) {
 								maxWidth: widths?.content,
 							} }
 						>
-							{ areas.content }
+							<Header
+								hasTabs={ tabs.length > 1 }
+								pageTitle={ settingsPage?.label }
+							/>
+							<SectionTabs
+								tabs={ tabs }
+								activeSection={ activeSection }
+							>
+								{ areas.content }
+							</SectionTabs>
 						</div>
 					) }
 

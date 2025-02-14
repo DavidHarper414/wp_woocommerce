@@ -5,6 +5,7 @@ namespace Automattic\WooCommerce\Tests\Internal\DataStores\Orders;
 
 use Automattic\WooCommerce\Database\Migrations\CustomOrderTable\PostsToOrdersMigrationController;
 use Automattic\WooCommerce\Enums\OrderStatus;
+use Automattic\WooCommerce\Enums\OrderInternalStatus;
 use Automattic\WooCommerce\Internal\CostOfGoodsSold\CogsAwareUnitTestSuiteTrait;
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use Automattic\WooCommerce\Internal\DataStores\Orders\DataSynchronizer;
@@ -108,7 +109,7 @@ class OrdersTableDataStoreTests extends \HposTestCase {
 		remove_all_filters( 'wc_allow_changing_orders_storage_while_sync_is_pending' );
 		remove_all_filters( 'woocommerce_load_order_cogs_value' );
 		remove_all_filters( 'woocommerce_save_order_cogs_value' );
-
+		wc()->cart->empty_cart();
 		parent::tearDown();
 	}
 
@@ -585,7 +586,7 @@ class OrdersTableDataStoreTests extends \HposTestCase {
 		$this->sut->untrash_order( $order );
 
 		$this->assertEquals( OrderStatus::ON_HOLD, $order->get_status() );
-		$this->assertEquals( 'wc-on-hold', get_post_status( $order_id ) );
+		$this->assertEquals( OrderInternalStatus::ON_HOLD, get_post_status( $order_id ) );
 
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$this->sut->get_meta_table_name()} WHERE order_id = %d AND meta_key LIKE '_wp_trash_meta_%'", $order_id ) ) );
 		$this->assertEmpty( $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE '_wp_trash_meta_%'", $order_id ) ) );
@@ -1198,9 +1199,9 @@ class OrdersTableDataStoreTests extends \HposTestCase {
 	 */
 	public function test_get_order_count(): void {
 		$number_of_orders_by_status = array(
-			'wc-completed'  => 4,
-			'wc-processing' => 2,
-			'wc-pending'    => 4,
+			OrderInternalStatus::COMPLETED  => 4,
+			OrderInternalStatus::PROCESSING => 2,
+			OrderInternalStatus::PENDING    => 4,
 		);
 
 		foreach ( $number_of_orders_by_status as $order_status => $number_of_orders ) {
@@ -1234,8 +1235,8 @@ class OrdersTableDataStoreTests extends \HposTestCase {
 
 		// Create a few orders.
 		$orders_by_status = array(
-			'wc-completed' => 3,
-			'wc-pending'   => 2,
+			OrderInternalStatus::COMPLETED => 3,
+			OrderInternalStatus::PENDING   => 2,
 		);
 		$unpaid_ids       = array();
 		foreach ( $orders_by_status as $order_status => $order_count ) {
@@ -1253,7 +1254,7 @@ class OrdersTableDataStoreTests extends \HposTestCase {
 		}
 
 		// Confirm not all orders are unpaid.
-		$this->assertEquals( $orders_by_status['wc-completed'], $this->sut->get_order_count( 'wc-completed' ) );
+		$this->assertEquals( $orders_by_status[ OrderInternalStatus::COMPLETED ], $this->sut->get_order_count( OrderInternalStatus::COMPLETED ) );
 
 		// Find unpaid orders.
 		$this->assertEqualsCanonicalizing( $unpaid_ids, $this->sut->get_unpaid_orders( $now_ist ) );
@@ -1644,7 +1645,7 @@ class OrdersTableDataStoreTests extends \HposTestCase {
 		foreach ( $orders_test_data as $i => $order_data ) {
 			$order = new \WC_Order();
 			$this->switch_data_store( $order, $this->sut );
-			$order->set_status( 'wc-completed' );
+			$order->set_status( OrderInternalStatus::COMPLETED );
 			$order->set_shipping_city( 'The Universe' );
 			$order->set_billing_first_name( $order_data[0] );
 			$order->set_billing_last_name( $order_data[1] );
@@ -2384,6 +2385,7 @@ class OrdersTableDataStoreTests extends \HposTestCase {
 		$this->toggle_cot_authoritative( true );
 		$this->disable_cot_sync();
 
+		/** @var $order WC_Abstract_Legacy_Order */
 		list($order, $refund) = $this->create_order_with_refund();
 		$order_id             = $order->get_id();
 		$refund_id            = $refund->get_id();
@@ -2477,7 +2479,7 @@ class OrdersTableDataStoreTests extends \HposTestCase {
 
 		$db_row = $db_row_callback->call( $this->sut, $order, false );
 
-		$this->assertEquals( 'wc-completed', $db_row['data']['status'] );
+		$this->assertEquals( OrderInternalStatus::COMPLETED, $db_row['data']['status'] );
 	}
 
 	/**
@@ -2592,6 +2594,9 @@ class OrdersTableDataStoreTests extends \HposTestCase {
 				array( 'parent_order_id' => '%d' ),
 				array( 'id' => '%d' ),
 			);
+
+			// We have to clear the cache after a direct DB update.
+			$this->sut->clear_cached_data( array( $refund->get_id() ) );
 		} else {
 			$wpdb->update(
 				$wpdb->posts,
@@ -2923,7 +2928,7 @@ class OrdersTableDataStoreTests extends \HposTestCase {
 			self::$reading_order_ids     = array();
 		};
 		$reset_state->call( $sut );
-		wp_cache_flush();
+		wc_get_container()->get( \Automattic\WooCommerce\Caches\OrderCache::class )->flush();
 	}
 
 	/**
@@ -3378,8 +3383,7 @@ class OrdersTableDataStoreTests extends \HposTestCase {
 		$order_id = $order->get_id();
 
 		$wpdb->query( "INSERT INTO {$order_meta_table} (order_id, meta_key, meta_value) VALUES ({$order_id}, '{$meta_key}', '{$meta_value}')" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-		$order->set_date_modified( time() + 1 );
-		$order->save();
+		$order->save(); // Trigger a meta cache purge since the above was a direct DB write.
 
 		// Test fetching an order with meta data containing an object of a non-existent class.
 		$fetched_order = wc_get_order( $order->get_id() );

@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import type { Reducer } from 'redux';
+import type { Reducer, AnyAction } from 'redux';
 
 /**
  * Internal dependencies
@@ -9,12 +9,31 @@ import type { Reducer } from 'redux';
 import { ACTION_TYPES as types } from './action-types';
 import { defaultCartState, CartState } from './default-state';
 import { EMPTY_CART_ERRORS } from '../constants';
+import { setIsCustomerDataDirty } from './utils';
+import { persistenceLayer } from './persistence-layer';
 
 /**
  * Reducer for receiving items related to the cart.
  */
 const reducer: Reducer< CartState > = ( state = defaultCartState, action ) => {
 	switch ( action.type ) {
+		case types.PRODUCT_PENDING_ADD:
+			if ( action.isAdding ) {
+				const productsPendingAdd = [ ...state.productsPendingAdd ];
+				productsPendingAdd.push( action.productId );
+				state = {
+					...state,
+					productsPendingAdd,
+				};
+				break;
+			}
+			state = {
+				...state,
+				productsPendingAdd: state.productsPendingAdd.filter(
+					( productId ) => productId !== action.productId
+				),
+			};
+			break;
 		case types.SET_ERROR_DATA:
 			if ( 'error' in action && action.error ) {
 				state = {
@@ -47,6 +66,14 @@ const reducer: Reducer< CartState > = ( state = defaultCartState, action ) => {
 			}
 			break;
 		case types.SET_BILLING_ADDRESS:
+			const billingAddressChanged = Object.keys(
+				action.billingAddress
+			).some( ( key ) => {
+				return (
+					action.billingAddress[ key ] !==
+					state.cartData.billingAddress?.[ key ]
+				);
+			} );
 			state = {
 				...state,
 				cartData: {
@@ -57,8 +84,19 @@ const reducer: Reducer< CartState > = ( state = defaultCartState, action ) => {
 					},
 				},
 			};
+			if ( billingAddressChanged ) {
+				setIsCustomerDataDirty( true );
+			}
 			break;
 		case types.SET_SHIPPING_ADDRESS:
+			const shippingAddressChanged = Object.keys(
+				action.shippingAddress
+			).some( ( key ) => {
+				return (
+					action.shippingAddress[ key ] !==
+					state.cartData.shippingAddress?.[ key ]
+				);
+			} );
 			state = {
 				...state,
 				cartData: {
@@ -69,6 +107,9 @@ const reducer: Reducer< CartState > = ( state = defaultCartState, action ) => {
 					},
 				},
 			};
+			if ( shippingAddressChanged ) {
+				setIsCustomerDataDirty( true );
+			}
 			break;
 
 		case types.REMOVING_COUPON:
@@ -157,4 +198,19 @@ const reducer: Reducer< CartState > = ( state = defaultCartState, action ) => {
 
 export type State = ReturnType< typeof reducer >;
 
-export default reducer;
+/**
+ * Updates cached cart data in local storage.
+ */
+function withPersistenceLayer( cartReducer: Reducer< CartState > ) {
+	return ( state: CartState | undefined, action: AnyAction ): CartState => {
+		const nextState = cartReducer( state, action );
+
+		if ( nextState.cartData ) {
+			persistenceLayer.set( nextState.cartData );
+		}
+
+		return nextState;
+	};
+}
+
+export default withPersistenceLayer( reducer );

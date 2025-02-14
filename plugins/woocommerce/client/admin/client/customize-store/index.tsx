@@ -1,9 +1,7 @@
-// @ts-expect-error -- No types for this exist yet.
-// eslint-disable-next-line @woocommerce/dependency-group
-import { store as coreStore } from '@wordpress/core-data';
 /**
  * External dependencies
  */
+import { store as coreStore } from '@wordpress/core-data';
 import { Sender, createMachine } from 'xstate';
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { useMachine, useSelector } from '@xstate/react';
@@ -135,11 +133,10 @@ const redirectToThemes = ( _context: customizeStoreStateMachineContext ) => {
 const markTaskComplete = async () => {
 	const currentTemplateId: string | undefined = await resolveSelect(
 		coreStore
-		// @ts-expect-error No types for this exist yet.
 	).getDefaultTemplateId( { slug: 'home' } );
 	return dispatch( OPTIONS_STORE_NAME ).updateOptions( {
 		woocommerce_admin_customize_store_completed: 'yes',
-		// we use this on the intro page to determine if this same theme was used in the last customization
+		// We use this on the intro page to determine if this same theme was used in the last customization.
 		woocommerce_admin_customize_store_completed_theme_id: currentTemplateId,
 	} );
 };
@@ -704,7 +701,6 @@ export const CustomizeStoreController = ( {
 					<CYSSpinner />
 				) }
 			</div>
-			{ /* @ts-expect-error 'scope' does exist. @types/wordpress__plugins is outdated. */ }
 			<PluginArea scope="woocommerce-customize-store" />
 		</>
 	);

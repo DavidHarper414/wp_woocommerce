@@ -3,8 +3,9 @@
 echo -e 'Activate default theme \n'
 wp-env run tests-cli wp theme activate twentytwentythree
 
-echo -e 'Install twentytwenty and storefront themes \n'
+echo -e 'Install twentytwenty, twentytwentytwo and storefront themes \n'
 wp-env run tests-cli wp theme install twentytwenty
+wp-env run tests-cli wp theme install twentytwentytwo
 wp-env run tests-cli wp theme install storefront
 
 echo -e 'Update URL structure \n'
@@ -20,6 +21,9 @@ wp-env run tests-cli wp plugin activate process-waiting-actions
 
 echo -e 'Activate Test Helper APIs utility plugin \n'
 wp-env run tests-cli wp plugin activate test-helper-apis
+
+echo -e 'Install Plugin-check utility plugin \n'
+wp-env run tests-cli wp plugin install plugin-check --activate
 
 echo -e 'Add Customer user \n'
 wp-env run tests-cli wp user create customer customer@woocommercecoree2etestsuite.com \

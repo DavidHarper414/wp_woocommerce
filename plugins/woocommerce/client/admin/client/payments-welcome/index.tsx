@@ -5,7 +5,7 @@ import { Notice } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { OPTIONS_STORE_NAME, pluginsStore } from '@woocommerce/data';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
@@ -24,23 +24,26 @@ interface activatePromoResponse {
 const ConnectAccountPage = () => {
 	const incentive = getAdminSetting( 'wcpayWelcomePageIncentive' );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
-	const { installAndActivatePlugins } = useDispatch( 'wc/admin/plugins' );
+	const { installAndActivatePlugins } = useDispatch( pluginsStore );
 	const [ isSubmitted, setSubmitted ] = useState( false );
 	const [ errorMessage, setErrorMessage ] = useState( '' );
 	const [ enabledApms, setEnabledApms ] = useState( new Set< Apm >() );
 
-	const { isJetpackConnected, connectUrl } = useSelect( ( select ) => {
-		return {
-			isJetpackConnected:
-				select( 'wc/admin/plugins' ).isJetpackConnected(),
-			connectUrl:
-				'admin.php?wcpay-connect=1&promo=' +
-				encodeURIComponent( incentive.id ) +
-				'&_wpnonce=' +
-				getAdminSetting( 'wcpay_welcome_page_connect_nonce' ) +
-				'&from=WCADMIN_PAYMENT_INCENTIVE',
-		};
-	} );
+	const { isJetpackConnected, connectUrl } = useSelect(
+		( select ) => {
+			const selectors = select( pluginsStore );
+			return {
+				isJetpackConnected: selectors.isJetpackConnected(),
+				connectUrl:
+					'admin.php?wcpay-connect=1&promo=' +
+					encodeURIComponent( incentive.id ) +
+					'&_wpnonce=' +
+					getAdminSetting( 'wcpay_welcome_page_connect_nonce' ) +
+					'&from=WCADMIN_PAYMENT_INCENTIVE',
+			};
+		},
+		[ incentive ]
+	);
 
 	const determineTrackingSource = () => {
 		const urlParams = new URLSearchParams( window.location.search );

@@ -16,14 +16,25 @@ import {
 	triggerAddedToCartEvent,
 	triggerAddingToCartEvent,
 } from '@woocommerce/base-utils';
+import {
+	type CurriedSelectorsOf,
+	type ConfigOf,
+	type ActionCreatorsOf,
+} from '@wordpress/data/build-types/types';
+import { cartStore } from '@woocommerce/block-data';
 
 /**
  * Internal dependencies
  */
 import { notifyQuantityChanges } from './notify-quantity-changes';
-import { notifyCartErrors } from './notify-errors';
-import { CartDispatchFromMap, CartSelectFromMap } from './index';
+import { updateCartErrorNotices } from './notify-errors';
 import { apiFetchWithHeaders } from '../shared-controls';
+import { getIsCustomerDataDirty, setIsCustomerDataDirty } from './utils';
+
+interface CartThunkArgs {
+	select: CurriedSelectorsOf< typeof cartStore >;
+	dispatch: ActionCreatorsOf< ConfigOf< typeof cartStore > >;
+}
 
 /**
  * A thunk used in updating the store with the cart items retrieved from a request. This also notifies the shopper
@@ -31,23 +42,25 @@ import { apiFetchWithHeaders } from '../shared-controls';
  */
 export const receiveCart =
 	( response: Partial< CartResponse > ) =>
-	( {
-		dispatch,
-		select,
-	}: {
-		dispatch: CartDispatchFromMap;
-		select: CartSelectFromMap;
-	} ) => {
-		const newCart = camelCaseKeys( response ) as unknown as Cart;
+	( { dispatch, select }: CartThunkArgs ) => {
+		const cartResponse = camelCaseKeys( response ) as unknown as Cart;
 		const oldCart = select.getCartData();
-		notifyCartErrors( newCart.errors, oldCart.errors );
+		const oldCartErrors = [ ...oldCart.errors, ...select.getCartErrors() ];
+
+		// Set data from the response.
+		dispatch.setCartData( cartResponse );
+
+		// Get the new cart data before showing updates.
+		const newCart = select.getCartData();
 		notifyQuantityChanges( {
 			oldCart,
 			newCart,
 			cartItemsPendingQuantity: select.getItemsPendingQuantityUpdate(),
 			cartItemsPendingDelete: select.getItemsPendingDelete(),
+			productsPendingAdd: select.getProductsPendingAdd(),
 		} );
-		dispatch.setCartData( newCart );
+
+		updateCartErrorNotices( newCart.errors, oldCartErrors );
 		dispatch.setErrorData( null );
 	};
 
@@ -60,7 +73,7 @@ export const receiveCart =
  */
 export const receiveCartContents =
 	( response: Partial< CartResponse > ) =>
-	( { dispatch }: { dispatch: CartDispatchFromMap } ) => {
+	( { dispatch }: CartThunkArgs ) => {
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		const { shipping_address, billing_address, ...cartWithoutAddress } =
 			response;
@@ -72,13 +85,14 @@ export const receiveCartContents =
  */
 export const receiveError =
 	( response: ApiErrorResponse | null = null ) =>
-	( { dispatch }: { dispatch: CartDispatchFromMap } ) => {
+	( { dispatch }: CartThunkArgs ) => {
 		if ( ! isApiErrorResponse( response ) ) {
 			return;
 		}
 		if ( response.data?.cart ) {
 			dispatch.receiveCart( response?.data?.cart );
 		}
+
 		dispatch.setErrorData( response );
 	};
 
@@ -89,7 +103,7 @@ export const receiveError =
  */
 export const applyExtensionCartUpdate =
 	( args: ExtensionCartUpdateArgs ) =>
-	async ( { dispatch }: { dispatch: CartDispatchFromMap } ) => {
+	async ( { dispatch }: CartThunkArgs ) => {
 		try {
 			const { response } = await apiFetchWithHeaders< {
 				response: CartResponse;
@@ -99,6 +113,21 @@ export const applyExtensionCartUpdate =
 				data: { namespace: args.namespace, data: args.data },
 				cache: 'no-store',
 			} );
+			if ( args.overwriteDirtyCustomerData === true ) {
+				dispatch.receiveCart( response );
+				return response;
+			}
+			if ( getIsCustomerDataDirty() ) {
+				// If the customer data is dirty, we don't want to overwrite it with the response.
+				// Remove shipping and billing address from the response and then receive the cart.
+				const {
+					shipping_address: _,
+					billing_address: __,
+					...responseWithoutShippingOrBilling
+				} = response;
+				dispatch.receiveCart( responseWithoutShippingOrBilling );
+				return response;
+			}
 			dispatch.receiveCart( response );
 			return response;
 		} catch ( error ) {
@@ -116,7 +145,7 @@ export const applyExtensionCartUpdate =
  */
 export const applyCoupon =
 	( couponCode: string ) =>
-	async ( { dispatch }: { dispatch: CartDispatchFromMap } ) => {
+	async ( { dispatch }: CartThunkArgs ) => {
 		try {
 			dispatch.receiveApplyingCoupon( couponCode );
 			const { response } = await apiFetchWithHeaders< {
@@ -148,7 +177,7 @@ export const applyCoupon =
  */
 export const removeCoupon =
 	( couponCode: string ) =>
-	async ( { dispatch }: { dispatch: CartDispatchFromMap } ) => {
+	async ( { dispatch }: CartThunkArgs ) => {
 		try {
 			dispatch.receiveRemovingCoupon( couponCode );
 			const { response } = await apiFetchWithHeaders< {
@@ -171,40 +200,79 @@ export const removeCoupon =
 		}
 	};
 
+type Variation = {
+	attribute: string;
+	value: string;
+};
+
 /**
  * Adds an item to the cart:
  * - Calls API to add item.
  * - If successful, yields action to add item from store.
  * - If error, yields action to store error.
  *
- * @param {number} productId    Product ID to add to cart.
- * @param {number} [quantity=1] Number of product ID being added to cart.
- * @throws           Will throw an error if there is an API problem.
+ * @param {number} productId        Product ID to add to cart.
+ * @param {number} [quantity=1]     Number of product ID being added to cart.
+ * @param {Array}  [variation]      Array of variation attributes for the product.
+ * @param {Object} [additionalData] Array of additional fields for the product.
+ * @throws         Will throw an error if there is an API problem.
  */
 export const addItemToCart =
-	( productId: number, quantity = 1 ) =>
-	async ( { dispatch }: { dispatch: CartDispatchFromMap } ) => {
+	(
+		productId: number,
+		quantity = 1,
+		variation: Variation[],
+		additionalData: Record< string, unknown > = {}
+	) =>
+	async ( { dispatch }: CartThunkArgs ) => {
 		try {
-			triggerAddingToCartEvent();
+			dispatch.startAddingToCart( productId );
 			const { response } = await apiFetchWithHeaders< {
 				response: CartResponse;
 			} >( {
 				path: `/wc/store/v1/cart/add-item`,
 				method: 'POST',
 				data: {
+					...additionalData,
 					id: productId,
 					quantity,
+					variation,
 				},
 				cache: 'no-store',
 			} );
 			dispatch.receiveCart( response );
-			triggerAddedToCartEvent( { preserveCartData: true } );
+			dispatch.finishAddingToCart( productId );
 			return response;
 		} catch ( error ) {
 			dispatch.receiveError( isApiErrorResponse( error ) ? error : null );
+
+			// Finish adding to cart, but don't dispatch the added to cart event.
+			dispatch.finishAddingToCart( productId, false );
 			return Promise.reject( error );
 		}
 	};
+
+/**
+ * Sets the metadata to show an item ID being added.
+ */
+export function startAddingToCart( productId: number ) {
+	return async ( { dispatch }: CartThunkArgs ) => {
+		triggerAddingToCartEvent();
+		dispatch.setProductsPendingAdd( productId, true );
+	};
+}
+
+/**
+ * Removes the metadata of an item ID that was added.
+ */
+export function finishAddingToCart( productId: number, dispatchEvent = true ) {
+	return async ( { dispatch }: CartThunkArgs ) => {
+		if ( dispatchEvent ) {
+			triggerAddedToCartEvent( { preserveCartData: true } );
+		}
+		dispatch.setProductsPendingAdd( productId, false );
+	};
+}
 
 /**
  * Removes specified item from the cart:
@@ -217,7 +285,7 @@ export const addItemToCart =
  */
 export const removeItemFromCart =
 	( cartItemKey: string ) =>
-	async ( { dispatch }: { dispatch: CartDispatchFromMap } ) => {
+	async ( { dispatch }: CartThunkArgs ) => {
 		try {
 			dispatch.itemIsPendingDelete( cartItemKey );
 			const { response } = await apiFetchWithHeaders< {
@@ -255,13 +323,7 @@ export const changeCartItemQuantity =
 		quantity: number
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any -- unclear how to represent multiple different yields as type
 	) =>
-	async ( {
-		dispatch,
-		select,
-	}: {
-		dispatch: CartDispatchFromMap;
-		select: CartSelectFromMap;
-	} ) => {
+	async ( { dispatch, select }: CartThunkArgs ) => {
 		const cartItem = select.getCartItem( cartItemKey );
 		if ( cartItem?.quantity === quantity ) {
 			return;
@@ -300,13 +362,7 @@ let abortController: AbortController | null = null;
  */
 export const selectShippingRate =
 	( rateId: string, packageId: number | null = null ) =>
-	async ( {
-		dispatch,
-		select,
-	}: {
-		dispatch: CartDispatchFromMap;
-		select: CartSelectFromMap;
-	} ) => {
+	async ( { dispatch, select }: CartThunkArgs ) => {
 		const selectedShippingRate = select
 			.getShippingRates()
 			.find(
@@ -374,7 +430,7 @@ export const updateCustomerData =
 		// If the address is being edited, we don't update the customer data in the store from the response.
 		editing = true
 	) =>
-	async ( { dispatch }: { dispatch: CartDispatchFromMap } ) => {
+	async ( { dispatch }: CartThunkArgs ) => {
 		try {
 			dispatch.updatingCustomerData( true );
 			const { response } = await apiFetchWithHeaders< {
@@ -390,9 +446,11 @@ export const updateCustomerData =
 			} else {
 				dispatch.receiveCart( response );
 			}
+			setIsCustomerDataDirty( false );
 			return response;
 		} catch ( error ) {
 			dispatch.receiveError( isApiErrorResponse( error ) ? error : null );
+			setIsCustomerDataDirty( true );
 			return Promise.reject( error );
 		} finally {
 			dispatch.updatingCustomerData( false );

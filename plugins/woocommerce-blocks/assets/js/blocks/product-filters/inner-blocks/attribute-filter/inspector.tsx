@@ -45,7 +45,6 @@ export const Inspector = ( {
 		displayStyle,
 		showCounts,
 		hideEmpty,
-		clearButton,
 	} = attributes;
 	const { updateBlockAttributes, insertBlock, replaceBlock } =
 		dispatch( 'core/block-editor' );
@@ -64,12 +63,10 @@ export const Inspector = ( {
 	);
 
 	if ( displayStyleOptions.length === 0 ) {
-		displayStyleOptions = getBlockTypes().filter(
-			( blockType ) =>
-				blockType.name !== 'woocommerce/product-filter-clear-button' &&
-				blockType.ancestor?.includes(
-					'woocommerce/product-filter-attribute'
-				)
+		displayStyleOptions = getBlockTypes().filter( ( blockType ) =>
+			blockType.ancestor?.includes(
+				'woocommerce/product-filter-attribute'
+			)
 		);
 	}
 
@@ -129,6 +126,7 @@ export const Inspector = ( {
 					/>
 					<ToggleGroupControl
 						label={ __( 'Logic', 'woocommerce' ) }
+						isBlock
 						value={ queryType }
 						onChange={ ( value: BlockAttributes[ 'queryType' ] ) =>
 							setAttributes( { queryType: value } )
@@ -166,6 +164,7 @@ export const Inspector = ( {
 				<PanelBody title={ __( 'Display', 'woocommerce' ) }>
 					<ToggleGroupControl
 						value={ displayStyle }
+						isBlock
 						onChange={ (
 							value: BlockAttributes[ 'displayStyle' ]
 						) => {
@@ -221,13 +220,6 @@ export const Inspector = ( {
 						checked={ ! hideEmpty }
 						onChange={ ( value ) =>
 							setAttributes( { hideEmpty: ! value } )
-						}
-					/>
-					<ToggleControl
-						label={ __( 'Clear button', 'woocommerce' ) }
-						checked={ clearButton }
-						onChange={ ( value ) =>
-							setAttributes( { clearButton: value } )
 						}
 					/>
 				</PanelBody>

@@ -1,11 +1,9 @@
-// @ts-expect-error -- No types for this exist yet.
-// eslint-disable-next-line @woocommerce/dependency-group
-import { store as coreStore } from '@wordpress/core-data';
 /**
  * External dependencies
  */
 import { resolveSelect } from '@wordpress/data';
-import { ONBOARDING_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { store as coreStore } from '@wordpress/core-data';
+import { onboardingStore, OPTIONS_STORE_NAME } from '@woocommerce/data';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
@@ -13,8 +11,6 @@ import apiFetch from '@wordpress/api-fetch';
  */
 import { FlowType, aiStatusResponse } from '../types';
 import { isIframe } from '~/customize-store/utils';
-import { isWooExpress } from '~/utils/is-woo-express';
-import { trackEvent } from '../tracking';
 
 export const fetchAiStatus = async (): Promise< aiStatusResponse > => {
 	const response = await fetch(
@@ -34,7 +30,7 @@ export const fetchThemeCards = async () => {
 };
 
 export const fetchCustomizeStoreCompleted = async () => {
-	const task = await resolveSelect( ONBOARDING_STORE_NAME ).getTask(
+	const task = await resolveSelect( onboardingStore ).getTask(
 		'customize-store'
 	);
 
@@ -44,17 +40,16 @@ export const fetchCustomizeStoreCompleted = async () => {
 };
 
 export const fetchIntroData = async () => {
-	const currentTemplatePromise =
-		// @ts-expect-error No types for this exist yet.
-		resolveSelect( coreStore ).getDefaultTemplateId( { slug: 'home' } );
+	const currentTemplatePromise = resolveSelect(
+		coreStore
+	).getDefaultTemplateId( { slug: 'home' } );
 
 	const maybePreviousTemplatePromise = resolveSelect(
 		OPTIONS_STORE_NAME
 	).getOption( 'woocommerce_admin_customize_store_completed_theme_id' );
 
-	const getTaskPromise = resolveSelect( ONBOARDING_STORE_NAME ).getTask(
-		'customize-store'
-	);
+	const getTaskPromise =
+		resolveSelect( onboardingStore ).getTask( 'customize-store' );
 
 	const themeDataPromise = fetchThemeCards();
 
@@ -145,34 +140,6 @@ export const setFlags = async () => {
 		// Since the _featureFlags values are promises, we need to wait for
 		// all of them to resolve before returning.
 		await Promise.all( Object.values( _featureFlags ) );
-	}
-
-	// Set FlowType flag. We want to set the flag only in the parent window.
-	if ( isWooExpress() && ! isIframe( window ) ) {
-		try {
-			const { status } = await fetchAiStatus();
-
-			const isAiOnline =
-				status.indicator !== 'critical' && status.indicator !== 'major';
-
-			// @ts-expect-error temp workaround;
-			window.cys_aiOnline = status;
-			trackEvent( 'customize_your_store_ai_status', {
-				online: isAiOnline ? 'yes' : 'no',
-			} );
-
-			// @ts-expect-error temp workaround;
-			window.cys_aiFlow = true;
-
-			return isAiOnline ? FlowType.AIOnline : FlowType.AIOffline;
-		} catch ( e ) {
-			// @ts-expect-error temp workaround;
-			window.cys_aiOnline = false;
-			trackEvent( 'customize_your_store_ai_status', {
-				online: 'no',
-			} );
-			return FlowType.AIOffline;
-		}
 	}
 
 	return FlowType.noAI;

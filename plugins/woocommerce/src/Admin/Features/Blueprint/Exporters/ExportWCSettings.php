@@ -77,17 +77,7 @@ class ExportWCSettings implements StepExporter, HasAlias {
 
 		$filtered = $this->wp_apply_filters( 'wooblueprint_export_settings', $options, $pages, $option_info );
 
-		$step = new SetSiteOptions( $filtered['options'] );
-		$step->set_meta_values(
-			array(
-				'plugin' => 'woocommerce',
-				'pages'  => $filtered['pages'],
-				'info'   => $option_info,
-				'alias'  => $this->get_alias(),
-			)
-		);
-
-		return $step;
+		return new SetSiteOptions( $filtered['options'] );
 	}
 
 	/**
@@ -220,5 +210,23 @@ class ExportWCSettings implements StepExporter, HasAlias {
 	 */
 	public function get_alias() {
 		return 'setWCSettings';
+	}
+
+	/**
+	 * Return label used in the frontend.
+	 *
+	 * @return string
+	 */
+	public function get_label() {
+		return __( 'General', 'woocommerce' );
+	}
+
+	/**
+	 * Return description used in the frontend.
+	 *
+	 * @return string
+	 */
+	public function get_description() {
+		return __( 'It includes general store options.', 'woocommerce' );
 	}
 }
