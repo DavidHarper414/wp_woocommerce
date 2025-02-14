@@ -91,8 +91,7 @@ if (
 }
 
 // Render the payment settings components only if
-// the feature flag is enabled. No need to check for treatment here since it's handled further.
-// We need to make sure pages are included.
+// the feature flag is enabled.
 if (
 	window.wcAdminFeatures &&
 	window.wcAdminFeatures[ 'reactify-classic-payments-settings' ] === true
