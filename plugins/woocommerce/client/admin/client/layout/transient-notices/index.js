@@ -4,7 +4,7 @@
 import { applyFilters } from '@wordpress/hooks';
 import clsx from 'clsx';
 import { WooFooterItem } from '@woocommerce/admin-layout';
-import { optionsStore, USER_STORE_NAME } from '@woocommerce/data';
+import { optionsStore, userStore } from '@woocommerce/data';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
@@ -32,7 +32,7 @@ export function TransientNotices( props ) {
 		// NOTE: This uses core/notices2, if this file is copied back upstream
 		// to Gutenberg this needs to be changed back to just core/notices.
 		return {
-			currentUser: select( USER_STORE_NAME ).getCurrentUser(),
+			currentUser: select( userStore ).getCurrentUser(),
 			notices: select( 'core/notices' ).getNotices(),
 			notices2: select( 'core/notices2' ).getNotices(),
 			noticesQueue: select( optionsStore ).getOption( QUEUE_OPTION ),
