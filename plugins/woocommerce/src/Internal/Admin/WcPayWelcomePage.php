@@ -9,7 +9,6 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
 use Automattic\WooCommerce\Admin\PageController;
 use Automattic\WooCommerce\Internal\Admin\Suggestions\PaymentExtensionSuggestionIncentives;
 use Automattic\WooCommerce\Internal\Admin\Suggestions\PaymentExtensionSuggestions;
-use WooCommerce\Admin\Experimental_Abtest;
 
 /**
  * Class WCPayWelcomePage

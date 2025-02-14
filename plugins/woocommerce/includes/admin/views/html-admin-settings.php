@@ -8,7 +8,6 @@
  */
 
 use Automattic\WooCommerce\Admin\Features\Features;
-use WooCommerce\Admin\Experimental_Abtest;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

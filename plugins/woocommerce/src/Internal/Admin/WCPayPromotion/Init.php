@@ -11,7 +11,6 @@ use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\EvaluateSuggestion;
 use Automattic\WooCommerce\Internal\Admin\WCAdminAssets;
 use Automattic\WooCommerce\Admin\RemoteSpecs\RemoteSpecsEngine;
-use WooCommerce\Admin\Experimental_Abtest;
 
 /**
  * WooPayments Promotion engine.

@@ -7,7 +7,6 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\ReviewShippingOptions;
-use WooCommerce\Admin\Experimental_Abtest;
 
 /**
  * Task Lists class.

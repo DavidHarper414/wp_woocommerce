@@ -5,7 +5,6 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\Init;
-use WooCommerce\Admin\Experimental_Abtest;
 
 /**
  * Payments Task
