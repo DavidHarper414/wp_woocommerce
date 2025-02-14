@@ -16,6 +16,7 @@ on:
             - '**/tests/**'
             - '**/*.md'
             - '.husky/**'
+            - '.cursor/**'
             - '.github/**'
             - '!.github/workflows/pr-build-live-branch.yml'
 
