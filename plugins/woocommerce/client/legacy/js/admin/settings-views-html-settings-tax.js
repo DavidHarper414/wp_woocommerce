@@ -291,6 +291,7 @@
 					var $target  = $( event.currentTarget );
 
 					event.preventDefault();
+					event.stopPropagation();
 					event.data.view.page = $target.data( 'goto' ) ? $target.data( 'goto' ) : $target.val();
 					event.data.view.render();
 					event.data.view.updateUrl();
