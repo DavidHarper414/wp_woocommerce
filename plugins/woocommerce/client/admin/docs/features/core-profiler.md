@@ -100,7 +100,7 @@ As this information is not automatically updated, it would be best to refer dire
 
 The following WP Data API calls are used in the Core Profiler:
 
-- `resolveSelect( ONBOARDING_STORE_NAME ).getFreeExtensions()`
+- `resolveSelect( onboardingStore ).getFreeExtensions()`
 
 This is used to retrieve the list of extensions that will be shown on the Extensions page. It makes an API call to the WooCommerce REST API, which will make a call to WooCommerce.com if permitted. Otherwise it retrieves the locally stored list of free extensions.
 
@@ -112,15 +112,15 @@ This is used to retrieve the list of countries that will be shown in the Country
 
 This is used to retrieve the country that the store believes it is in. It makes an API call to the WordPress.com geolocation API, if permitted. Otherwise it will not be used.
 
-- `resolveSelect( PLUGINS_STORE_NAME ).isJetpackConnected()`
+- `resolveSelect( pluginsStore ).isJetpackConnected()`
 
 This is used to determine whether the store is connected to Jetpack.
 
-- `resolveSelect( ONBOARDING_STORE_NAME ).getJetpackAuthUrl()`
+- `resolveSelect( onboardingStore ).getJetpackAuthUrl()`
 
 This is used to retrieve the URL that the browser should be redirected to in order to connect to Jetpack.
 
-- `resolveSelect( ONBOARDING_STORE_NAME ).coreProfilerCompleted()`
+- `resolveSelect( onboardingStore ).coreProfilerCompleted()`
 
 This is used to indicate to WooCommerce Admin that the Core Profiler has been completed, and this sets the Store's coming-soon mode to true. This hides the store pages from the public until the store is ready.
 
