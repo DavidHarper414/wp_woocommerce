@@ -355,17 +355,21 @@
 }
 
 .woocommerce-customize-store-browse-themes {
-	text-align: center;
 	margin: 3.75rem 0;
-	display: flex;
-	gap: $gap;
-	flex-direction: column;
-	align-items: center;
+
+	.components-card__header {
+		border-bottom: none;
+		padding-bottom: 0;
+	}
 
 	.woocommerce-browse-themes-card__title {
 		color: $gray-900;
 		line-height: 16px;
 		font-weight: 600;
+	}
+
+	.components-card__footer {
+		border-top: none;
 	}
 
 	button {
@@ -376,6 +380,6 @@
 		display: inline-block;
 		font-size: 0.8125rem;
 		padding: 0.5rem 0.75rem;
-		max-width: fit-content;
+		min-width: fit-content;
 	}
 }
