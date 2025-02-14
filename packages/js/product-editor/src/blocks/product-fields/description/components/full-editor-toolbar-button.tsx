@@ -7,12 +7,12 @@ import { __ } from '@wordpress/i18n';
 import { recordEvent } from '@woocommerce/tracks';
 import { dispatch } from '@wordpress/data';
 import { useEntityProp } from '@wordpress/core-data';
-import { parse, rawHandler } from '@wordpress/blocks';
+import { BlockInstance, parse, rawHandler } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
  */
-import { store } from '../../../../store/product-editor-ui';
+import { wooProductEditorUiStore } from '../../../../store/product-editor-ui';
 import { getContentFromFreeform } from '../edit';
 import { getGutenbergVersion } from '../../../../utils/get-gutenberg-version';
 
@@ -39,8 +39,9 @@ export default function FullEditorToolbarButton( {
 	label = __( 'Edit Product description', 'woocommerce' ),
 	text = __( 'Full editor', 'woocommerce' ),
 } ) {
-	// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-	const { openModalEditor, setModalEditorBlocks } = dispatch( store );
+	const { openModalEditor, setModalEditorBlocks } = dispatch(
+		wooProductEditorUiStore
+	);
 	const [ description ] = useEntityProp< string >(
 		'postType',
 		'product',

@@ -151,7 +151,11 @@ export const getItemUpdateError = (
 
 const EMPTY_OBJECT = {};
 
-export const createSelectors = ( {
+export const createSelectors = <
+	TResourceName extends string,
+	TResourceNamePlural extends string,
+	TResourceType
+>( {
 	resourceName,
 	pluralResourceName,
 	namespace,
@@ -218,5 +222,5 @@ export const createSelectors = ( {
 		),
 		hasFinishedRequest,
 		isRequesting,
-	};
+	} as CrudSelectors< TResourceName, TResourceNamePlural, TResourceType >;
 };
