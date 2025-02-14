@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
-import type { StoreConfig } from '@wordpress/data';
 
 /**
  * Internal dependencies
