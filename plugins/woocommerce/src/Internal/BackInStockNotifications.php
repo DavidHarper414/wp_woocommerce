@@ -31,9 +31,15 @@ class BackInStockNotifications {
 		if ( ! self::is_enabled() || self::$is_activation_request ) { 
 			return;
 		}
-		//TODO: can this run only in some contexts? admin + front end, rest api if it's related to BIS, but it needs to react to changes in stock levels, so can it actually be reduced..?
+		//TODO: can init run only in some contexts? admin + front end, rest api if it's related to BIS, but it needs to react to changes in stock levels, so can it actually be reduced..?
 		self::$db_utils = wc_get_container()->get( DatabaseUtil::class );
 
+		// Create DB tables if they don't exist. This will be removed in the future to reduce the number of DB calls.
+		if ( ! self::bis_tables_exist() ) {
+			self::create_database_tables();
+		}
+
+		// To have WC_BIS() available.
 		include_once WC_ABSPATH . '/includes/bis/class-wc-bis-notifications.php';
 
 		WC_BIS()->initialize_plugin();
@@ -134,7 +140,7 @@ class BackInStockNotifications {
 	 *
 	 * @return bool
 	 */
-	public static function check_bis_tables_exist(): bool {
+	public static function bis_tables_exist(): bool {
 
 		if ( ! class_exists( 'WC_BIS_Install' ) ) {
 			include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
@@ -162,7 +168,7 @@ class BackInStockNotifications {
 		}
 
 		self::$db_utils->dbdelta( \WC_BIS_Install::get_schema() );
-		$success = self::check_bis_tables_exist();
+		$success = self::bis_tables_exist();
 		if ( ! $success ) {
 			$missing_tables = self::$db_utils->get_missing_tables( \WC_BIS_Install::get_schema() );
 			$missing_tables = implode( ', ', $missing_tables );
@@ -183,7 +189,7 @@ class BackInStockNotifications {
 		}
 
 		// Create DB tables.
-		if ( ! self::check_bis_tables_exist() ) {
+		if ( ! self::bis_tables_exist() ) {
 			self::create_database_tables();
 		}
 
