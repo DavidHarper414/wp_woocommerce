@@ -262,9 +262,6 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 		}
 
 		/* eslint-disable @wordpress/no-unused-vars-before-return */
-		const { getCurrencySymbols } = select( COUNTRIES_STORE_NAME );
-
-		/* eslint-disable @wordpress/no-unused-vars-before-return */
 		const actionableOrders = getOrders( actionableOrdersQuery, null );
 
 		const isRequestingActionable = hasFinishedResolution( 'getOrders', [
@@ -282,6 +279,8 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 				orderStatuses,
 			};
 		}
+
+		const { getCurrencySymbols } = select( COUNTRIES_STORE_NAME );
 
 		const customers = getItems( 'customers', {
 			users: actionableOrders
