@@ -18,7 +18,7 @@
 		"build:project": "pnpm --if-present '/^build:project:.*$/'",
 		"build:project:copy-assets:legacy": "rsync -avhW --checksum --delete --quiet client/legacy/build/css/ assets/css && rsync -avhW --checksum --delete --quiet client/legacy/build/js/ assets/js",
 		"build:project:copy-assets:admin": "rsync -avhW --checksum --delete --quiet client/admin/build/ assets/client/admin",
-		"build:project:copy-assets:blocks": "rsync -avhW --checksum --delete --quiet ../woocommerce-blocks/build/ assets/client/blocks && rsync -avhW --checksum --quiet ../woocommerce-blocks/blocks.ini blocks.ini",
+		"build:project:copy-assets:blocks": "rsync -avhW --checksum --delete --quiet ../woocommerce-blocks/build/ assets/client/blocks && rsync -avhW --checksum --quiet ../woocommerce-blocks/blocks.ini blocks.ini && wp-scripts build-blocks-manifest --input=assets/client/blocks --output=assets/client/blocks/blocks-json.php",
 		"build:project:actualize-translation-domains": "wireit",
 		"changelog": "XDEBUG_MODE=off composer install --quiet && composer exec -- changelogger",
 		"env:destroy": "pnpm wp-env destroy",
@@ -736,7 +736,7 @@
 		"@babel/preset-env": "7.12.7",
 		"@babel/register": "7.12.1",
 		"@faker-js/faker": "^9.3.0",
-		"@playwright/test": "^1.49.1",
+		"@playwright/test": "^1.50.1",
 		"@typescript-eslint/eslint-plugin": "^5.62.0",
 		"@typescript-eslint/experimental-utils": "^5.62.0",
 		"@typescript-eslint/parser": "^5.62.0",
@@ -748,9 +748,10 @@
 		"@wordpress/babel-preset-default": "3.0.2",
 		"@wordpress/e2e-test-utils-playwright": "^1.15.0",
 		"@wordpress/env": "10.17.0",
+		"@wordpress/scripts": "30.6.0",
 		"@wordpress/stylelint-config": "^21.36.0",
-		"allure-commandline": "^2.25.0",
-		"allure-playwright": "^2.9.2",
+		"allure-commandline": "^2.32.2",
+		"allure-playwright": "^3.1.0",
 		"autoprefixer": "9.8.6",
 		"axios": "^0.24.0",
 		"babel-eslint": "10.1.0",
@@ -807,12 +808,13 @@
 		"build:project:actualize-translation-domains": {
 			"command": "node ./bin/package-update-textdomain.js",
 			"files": [
-				"packages/**/*.php"
+				"packages/action-scheduler/action-scheduler.php",
+				"packages/woocommerce-admin/woocommerce-admin.php"
 			],
 			"output": []
 		},
 		"watch:build:project:copy-assets": {
-			"command": "nodemon --exec \"pnpm run\" build:project",
+			"command": "nodemon --exec \"pnpm build:project\"",
 			"service": true
 		},
 		"dependencyOutputs": {
