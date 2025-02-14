@@ -12,17 +12,17 @@
  *
  * @see https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 9.6.0
+ * @version 9.8.0
  */
 
 defined( 'ABSPATH' ) || exit;
 
 global $product;
 
-$attribute_keys  = array_keys( $attributes );
-$variations_json = wp_json_encode( $available_variations );
-$variations_attr = function_exists( 'wc_esc_json' ) ? wc_esc_json( $variations_json ) : _wp_specialchars( $variations_json, ENT_QUOTES, 'UTF-8', true );
-$reset_variations_link = wp_kses_post( apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#" aria-label="' . esc_attr__( 'Clear options', 'woocommerce' ) . '">' . esc_html__( 'Clear', 'woocommerce' ) . '</a>' ) );
+$attribute_keys        = array_keys( $attributes );
+$variations_json       = wp_json_encode( $available_variations );
+$variations_attr       = function_exists( 'wc_esc_json' ) ? wc_esc_json( $variations_json ) : _wp_specialchars( $variations_json, ENT_QUOTES, 'UTF-8', true );
+$reset_variations_link = apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#" aria-label="' . esc_attr__( 'Clear options', 'woocommerce' ) . '">' . esc_html__( 'Clear', 'woocommerce' ) . '</a>' );
 
 do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 
@@ -60,7 +60,7 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 								 *
 								 * @param string  $button The reset variation button HTML.
 								 */
-								echo $reset_variations_link;
+								echo wp_kses_post( $reset_variations_link );
 								?>
 							</td>
 						</tr>
