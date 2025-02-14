@@ -23,10 +23,7 @@ import { EntityProvider } from '@wordpress/core-data';
 // @ts-ignore No types for this exist yet.
 // eslint-disable-next-line @woocommerce/dependency-group
 import { ShortcutProvider } from '@wordpress/keyboard-shortcuts';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore No types for this exist yet.
-// eslint-disable-next-line @woocommerce/dependency-group
-import { InterfaceSkeleton } from '@wordpress/interface';
+import InterfaceSkeleton from '@wordpress/interface/build-module/components/interface-skeleton';
 
 /**
  * Internal dependencies

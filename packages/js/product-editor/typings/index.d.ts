@@ -94,3 +94,13 @@ declare module '@wordpress/interface/build-module/components/action-item' {
 	};
 	export default ActionItem;
 }
+
+declare module '@wordpress/interface/build-module/components/interface-skeleton' {
+	const InterfaceSkeleton: React.FunctionComponent< {
+		children?: React.ReactNode;
+		header?: React.ReactNode;
+		content?: React.ReactNode;
+		actions?: React.ReactNode;
+	} >;
+	export default InterfaceSkeleton;
+}
