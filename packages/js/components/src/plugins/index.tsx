@@ -98,7 +98,6 @@ export const Plugins = ( {
 
 			installAndActivatePlugins( pluginSlugs )
 				.then( ( response ) => {
-					// @ts-expect-error TODO react-18-upgrade: useDispatch does not return the correct type for installAndActivatePlugins.
 					handleSuccess( response.data.activated, response );
 				} )
 				.catch( ( response ) => {
