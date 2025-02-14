@@ -23,15 +23,15 @@ export type ProductCollectionStoreContext = {
 	collection: CoreCollectionNames;
 };
 
-const getRouterRegion = ( ref: HTMLDivElement ) =>
-	ref?.closest( '[data-wp-router-region]' ) as HTMLDivElement;
+const getRouterRegion = ( ref: HTMLElement ) =>
+	ref?.closest( '[data-wp-router-region]' ) as HTMLElement;
 
-const getRouterRegionId = ( ref: HTMLDivElement ) => {
+const getRouterRegionId = ( ref: HTMLElement ) => {
 	const routerRegionElement = getRouterRegion( ref );
 	return routerRegionElement?.dataset?.wpRouterRegion;
 };
 
-const getNavDisabled = ( ref: HTMLDivElement ) => {
+const getNavDisabled = ( ref: HTMLElement ) => {
 	const routerRegionElement = getRouterRegion( ref );
 	return routerRegionElement?.dataset?.wpNavigationDisabled;
 };
@@ -95,15 +95,14 @@ function scrollToFirstProductIfNotVisible( wpRouterRegionId?: string ) {
 const productCollectionStore = {
 	actions: {
 		*navigate( event: MouseEvent ) {
-			const { ref } = getElement();
+			const { ref } = getElement() as unknown as {
+				ref: HTMLAnchorElement;
+			};
 
 			if ( ! ref ) {
 				return;
 			}
 
-			const ctx = getContext< ProductCollectionStoreContext >();
-
-			const routerRegionId = getRouterRegionId( ref );
 			const isNavDisabled = getNavDisabled( ref );
 
 			if ( isNavDisabled ) {
@@ -112,6 +111,9 @@ const productCollectionStore = {
 
 			if ( isValidLink( ref ) && isValidEvent( event ) ) {
 				event.preventDefault();
+
+				const ctx = getContext< ProductCollectionStoreContext >();
+				const routerRegionId = getRouterRegionId( ref );
 
 				const { actions } = yield import(
 					'@wordpress/interactivity-router'
@@ -143,7 +145,13 @@ const productCollectionStore = {
 		 * Optimizes user experience by preloading content for faster access.
 		 */
 		*prefetchOnHover() {
-			const { ref } = getElement();
+			const { ref } = getElement() as unknown as {
+				ref: HTMLAnchorElement;
+			};
+
+			if ( ! ref ) {
+				return;
+			}
 
 			const isNavDisabled = getNavDisabled( ref );
 
@@ -173,7 +181,14 @@ const productCollectionStore = {
 		 * Reduces perceived load times for subsequent page navigations.
 		 */
 		*prefetch() {
-			const { ref } = getElement();
+			const { ref } = getElement() as unknown as {
+				ref: HTMLAnchorElement;
+			};
+
+			if ( ! ref ) {
+				return;
+			}
+
 			const isNavDisabled = getNavDisabled( ref );
 
 			if ( isNavDisabled ) {
