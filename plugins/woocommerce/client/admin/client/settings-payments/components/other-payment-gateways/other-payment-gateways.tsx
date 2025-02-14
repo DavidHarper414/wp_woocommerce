@@ -286,17 +286,6 @@ export const OtherPaymentGateways = ( {
 		categoryIdWithPopoverVisible,
 	] );
 
-
-
-
-	if ( ! isFetching && suggestions.length === 0 ) {
-		return (
-			<div className="more-payment-options">
-				{ morePaymentOptionsLink }
-			</div>
-		);
-	}
-
 	return (
 		<div
 			className={
