@@ -182,7 +182,7 @@ jQuery( function ( $ ) {
 		} );
 	} );
 
-	$( document.body ).on( 'item_removed_from_classic_cart', focus_populate_live_region );
+	$( document.body ).on( 'item_removed_from_classic_cart', focus_populated_live_region );
 } );
 
 /**
@@ -192,7 +192,7 @@ jQuery( function ( $ ) {
  * This function focus on the first notice message with the role="alert"
  * attribute to make sure it's announced.
  */
-function focus_populate_live_region() {
+function focus_populated_live_region() {
 	var noticeClasses = [
 		'woocommerce-message',
 		'woocommerce-error',
@@ -239,9 +239,30 @@ function refresh_sorted_by_live_region() {
 	}
 }
 
+/**
+ * After adding the role="button" attribute to the 
+ * .woocommerce-store-notice__dismiss-link element, 
+ * we need to add the keydown event listener to it.
+ */
+function dismiss_store_notice_link_keydown_handler() {
+	var dismissLink = document.querySelector( '.woocommerce-store-notice__dismiss-link' );
+
+	if ( ! dismissLink ) {
+		return;
+	}
+
+	dismissLink.addEventListener( 'keydown', function ( event ) {
+		if ( ['Enter', ' '].includes( event.key ) ) {
+			event.preventDefault();
+			dismissLink.click();
+		}
+	} );
+}
+
 function on_document_ready() {
-	focus_populate_live_region();
+	focus_populated_live_region();
 	refresh_sorted_by_live_region();
+	dismiss_store_notice_link_keydown_handler();
 }
 
 document.addEventListener( 'DOMContentLoaded', on_document_ready );
