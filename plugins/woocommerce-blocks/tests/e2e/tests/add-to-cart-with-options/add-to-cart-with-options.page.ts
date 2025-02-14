@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { Page } from '@playwright/test';
-import { Editor, Admin, RequestUtils, expect } from '@woocommerce/e2e-utils';
+import { Editor, Admin, RequestUtils } from '@woocommerce/e2e-utils';
 
 class AddToCartWithOptionsPage {
 	private page: Page;
@@ -61,6 +61,12 @@ class AddToCartWithOptionsPage {
 		const parentBlock = await this.editor.getBlockByName( this.BLOCK_SLUG );
 		const parentClientId =
 			( await parentBlock.getAttribute( 'data-block' ) ) ?? '';
+
+		// Add to Cart is a dynamic block, so we need to wait for it to be
+		// ready. If we don't do that, it might clear the paragraph we're
+		// inserting below (depending on the test execution speed).
+		await parentBlock.getByText( 'Add to Cart' ).waitFor();
+
 		await this.editor.insertBlock(
 			{
 				name: 'core/paragraph',
@@ -70,7 +76,6 @@ class AddToCartWithOptionsPage {
 			},
 			{ clientId: parentClientId }
 		);
-		await expect( this.editor.canvas.getByText( content ) ).toBeVisible();
 	}
 }
 
