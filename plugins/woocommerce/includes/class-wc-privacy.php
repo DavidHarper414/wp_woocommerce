@@ -139,6 +139,7 @@ class WC_Privacy extends WC_Abstract_Privacy {
 		self::$background_process->push_to_queue( array( 'task' => 'trash_pending_orders' ) );
 		self::$background_process->push_to_queue( array( 'task' => 'trash_failed_orders' ) );
 		self::$background_process->push_to_queue( array( 'task' => 'trash_cancelled_orders' ) );
+		self::$background_process->push_to_queue( array( 'task' => 'trash_refunded_orders' ) );
 		self::$background_process->push_to_queue( array( 'task' => 'anonymize_completed_orders' ) );
 		self::$background_process->push_to_queue( array( 'task' => 'delete_inactive_accounts' ) );
 		self::$background_process->save()->dispatch();
@@ -243,6 +244,33 @@ class WC_Privacy extends WC_Abstract_Privacy {
 					'date_created' => '<' . strtotime( '-' . $option['number'] . ' ' . $option['unit'] ),
 					'limit'        => $limit, // Batches of 20.
 					'status'       => OrderInternalStatus::CANCELLED,
+					'type'         => 'shop_order',
+				)
+			)
+		);
+	}
+
+	/**
+	 * Find and Anonymize refunded orders.
+	 *
+	 * @since 9.7.0
+	 * @param  int $limit Limit orders to process per batch.
+	 * @return int Number of orders processed.
+	 */
+	public static function anonymize_refunded_orders( $limit = 20 ) {
+		$option = wc_parse_relative_date_option( get_option( 'woocommerce_anonymize_refunded_orders' ) );
+
+		if ( empty( $option['number'] ) ) {
+			return 0;
+		}
+
+		return self::trash_orders_query(
+			apply_filters(
+				'woocommerce_anonymize_refunded_orders_query_args',
+				array(
+					'date_created' => '<' . strtotime( '-' . $option['number'] . ' ' . $option['unit'] ),
+					'limit'        => $limit, // Batches of 20.
+					'status'       => OrderInternalStatus::REFUNDED,
 					'type'         => 'shop_order',
 				)
 			)
