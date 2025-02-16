@@ -6,7 +6,7 @@ use MailPoet\EmailEditor\Engine\Patterns\Abstract_Pattern;
 
 class WooOneColumnPattern extends Abstract_Pattern {
 	public $name = 'woo-1-column-content';
-	public $block_types = ['core/post-content']; 	// required
+	public $block_types = [];
 	public $template_types = ['email-template']; 	// required
 	public $categories = ['email-contents'];  		// optional
 
@@ -27,11 +27,16 @@ class WooOneColumnPattern extends Abstract_Pattern {
 	  <figure class="wp-block-image"><img alt=""/></figure>
 	  <!-- /wp:image -->
 
-	  <!-- wp:buttons -->
-	  <div class="wp-block-buttons"><!-- wp:button -->
-	  <div class="wp-block-button"><a class="wp-block-button__link wp-element-button">' . __('Add button text', 'woocommerce') . '</a></div>
-	  <!-- /wp:button --></div>
-	  <!-- /wp:buttons --></div>
+		<!-- wp:buttons {"layout":{"justifyContent":"center"}} -->
+		<div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#873eff"}}} -->
+		<div class="wp-block-button"><a class="wp-block-button__link has-background wp-element-button" style="background-color:#873eff">Shop now</a></div>
+		<!-- /wp:button --></div>
+		<!-- /wp:buttons -->
+
+		<!-- wp:paragraph -->
+		<p></p>
+		<!-- /wp:paragraph -->
+	   </div>
 	  <!-- /wp:group -->
 	  ';
 	}

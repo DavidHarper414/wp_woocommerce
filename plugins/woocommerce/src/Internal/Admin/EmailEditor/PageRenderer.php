@@ -32,18 +32,17 @@ class PageRenderer {
 			return;
 		}
 
-		// TODO: Fix email editor JS path. Using WC_ABSPATH as a placeholder.
-		$emailEditorAssetsPath = WC_ABSPATH;
-		$emailEditorAssetsUrl = WC()->plugin_url();
+		$emailEditorAssetsPath = WC_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'email-editor/';
+		$emailEditorAssetsUrl = WC()->plugin_url() . '/' . WC_ADMIN_DIST_JS_FOLDER . 'email-editor/';
 
 
 		// Email editor rich text JS - Because the Personalization Tags depend on Gutenberg 19.8.0 and higher
 		// the following code replaces used Rich Text for the version containing the necessary changes.
-		$assetsParams = require $emailEditorAssetsPath . '/packages/js/email-editor/assets/rich-text.asset.php';
+		$assetsParams = require $emailEditorAssetsPath . 'rich-text.asset.php';
 		wp_deregister_script('wp-rich-text');
 		wp_enqueue_script(
 			'wp-rich-text',
-			$emailEditorAssetsUrl . '/packages/js/email-editor/assets/rich-text.js',
+			$emailEditorAssetsUrl . 'rich-text.js',
 			$assetsParams['dependencies'],
 			$assetsParams['version'],
 			true
@@ -51,18 +50,18 @@ class PageRenderer {
 		// End of replacing Rich Text package.
 
 		$fileName = 'index';
-		$assetsParams = require $emailEditorAssetsPath . "/build/{$fileName}.asset.php";
+		$assetsParams = require $emailEditorAssetsPath . "{$fileName}.asset.php";
 
 		wp_enqueue_script(
 			'mailpoet_email_editor',
-			$emailEditorAssetsUrl . "/build/{$fileName}.js",
+			$emailEditorAssetsUrl . "{$fileName}.js",
 			$assetsParams['dependencies'],
 			$assetsParams['version'],
 			true
 		);
 		wp_enqueue_style(
 			'mailpoet_email_editor',
-			$emailEditorAssetsUrl . "/build/{$fileName}.css",
+			$emailEditorAssetsUrl . "{$fileName}.css",
 			[],
 			$assetsParams['version']
 		);
@@ -100,11 +99,12 @@ class PageRenderer {
 	}
 
 	private function preloadRestApiData(\WP_Post $post): void {
+		$emailPostType = $post->post_type;
 		$userThemePostId = $this->userTheme->get_user_theme_post()->ID;
 		$templateSlug = get_post_meta($post->ID, '_wp_page_template', true);
 		$routes = [
 			'/wp/v2/mailpoet_email/' . intval($post->ID) . '?context=edit',
-			"/wp/v2/types/{${Integration::EMAIL_POST_TYPE}}?context=edit",
+			"/wp/v2/types/{$emailPostType}?context=edit",
 			'/wp/v2/global-styles/' . intval($userThemePostId) . '?context=edit', // Global email styles
 			'/wp/v2/block-patterns/patterns',
 			'/wp/v2/templates?context=edit',
@@ -117,7 +117,7 @@ class PageRenderer {
 		if ($templateSlug) {
 			$routes[] = '/wp/v2/templates/lookup?slug=' . $templateSlug;
 		} else {
-			$routes[] = "/wp/v2/{${Integration::EMAIL_POST_TYPE}}?context=edit&per_page=30&status=publish,sent";
+			$routes[] = "/wp/v2/{$emailPostType}?context=edit&per_page=30&status=publish,sent";
 		}
 
 		// Preload the data for the specified routes
