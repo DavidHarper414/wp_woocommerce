@@ -62,7 +62,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 	$order_review_heading = apply_filters( 'woocommerce_checkout_order_review_heading', __( 'Your order', 'woocommerce' ) );
 	if ( $order_review_heading ) :
 		?>
-		<h3 id="order_review_heading"><?php esc_html_e( $order_review_heading ); ?></h3>
+		<h3 id="order_review_heading"><?php echo esc_html( $order_review_heading ); ?></h3>
 	<?php endif; ?>
 
 	<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
