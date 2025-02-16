@@ -14,7 +14,11 @@
 	},
 	"env": {
 		"development": {
-			"mysqlPort": 58888
+			"mysqlPort": 58888,
+			"mappings": {
+				"wp-content/plugins/woocommerce": ".",
+				"wp-content/packages": "../../packages"
+			}
 		},
 		"tests": {
 			"port": 8086,

@@ -28,10 +28,7 @@
 		},
 		{
 			"type": "path",
-			"url": "../../packages/php/email-editor",
-			"options": {
-				"symlink": false
-			}
+			"url": "../../packages/php/email-editor"
 		}
 	],
 	"require": {
@@ -82,7 +79,8 @@
 			"includes/libraries"
 		],
 		"classmap": [
-			"includes/rest-api"
+			"includes/rest-api",
+			"packages/email-editor/src"
 		],
 		"psr-4": {
 			"Automattic\\WooCommerce\\": "src/",
@@ -148,7 +146,8 @@
 	"extra": {
 		"installer-paths": {
 			"packages/{$name}": [
-				"woocommerce/action-scheduler"
+				"woocommerce/action-scheduler",
+				"mailpoet/email-editor"
 			]
 		},
 		"scripts-description": {

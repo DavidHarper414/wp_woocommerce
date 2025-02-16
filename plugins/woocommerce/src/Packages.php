@@ -27,7 +27,9 @@ class Packages {
 	 *
 	 * @var array Key is the package name/directory, value is the main package class which handles init.
 	 */
-	protected static $packages = array();
+	protected static $packages = array(
+		  'email-editor' => '\\MailPoet\\EmailEditor\\Package', // load the email editor package
+	);
 
 	/**
 	 * Array of package names and their main package classes.
@@ -286,6 +288,8 @@ class Packages {
 		foreach ( self::get_enabled_packages() as $package_name => $package_class ) {
 			call_user_func( array( $package_class, 'init' ) );
 		}
+
+		// here
 
 		foreach ( self::$packages as $package_name => $package_class ) {
 			if ( ! self::package_exists( $package_name ) ) {
