@@ -18,7 +18,7 @@ class WooSimpleLightTemplate {
 
 	public function getContent(): string {
 		// translators: This is a text used in a footer on an email <!--[mailpoet/site-title]--> will be replaced with the site title.
-		$footerText = __('You received this email because you shopped on <!--[mailpoet/site-title]-->', 'woocommerce');
+		$footerText = __('You received this email because you shopped on <!--[woocommerce/site-title]-->', 'woocommerce');
 		return '<!-- wp:group {"backgroundColor":"white","style":{"spacing":{"padding":{"top":"var:preset|spacing|10","bottom":"var:preset|spacing|10","left":"var:preset|spacing|20","right":"var:preset|spacing|20"}}},"layout":{"type":"constrained"}} -->
 <div
   class="wp-block-group has-white-background-color has-background"

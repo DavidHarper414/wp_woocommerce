@@ -4,6 +4,8 @@ declare( strict_types=1 );
 
 namespace Automattic\WooCommerce\Internal\Admin\EmailEditor;
 
+use MailPoet\EmailEditor\Engine\PersonalizationTags\Personalization_Tag;
+use MailPoet\EmailEditor\Engine\PersonalizationTags\Personalization_Tags_Registry;
 use Automattic\WooCommerce\Internal\Admin\EmailEditor\Patterns\PatternsController;
 use Automattic\WooCommerce\Internal\Admin\EmailEditor\Templates\TemplatesController;
 
@@ -38,6 +40,7 @@ class Integration {
 		$this->patternsController->registerPatterns();
 		// register templates
 		$this->templatesController->initialize();
+		$this->registerPersonalizationTags();
 	}
 
 	public function addEmailPostType(array $postTypes): array {
@@ -45,13 +48,13 @@ class Integration {
 			'name' => self::EMAIL_POST_TYPE,
 			'args' => [
 				'labels' => [
-					'name' => __('Woo Emails', 'email-editor-demo'),
-					'singular_name' => __('Woo Email', 'email-editor-demo'),
-					'add_new_item' => __('Add New Woo Email', 'email-editor-demo'),
-					'edit_item' => __('Edit Woo Email', 'email-editor-demo'),
-					'new_item' => __('New Woo Email', 'email-editor-demo'),
-					'view_item' => __('View Woo Email', 'email-editor-demo'),
-					'search_items' => __('Search Woo Emails', 'email-editor-demo')
+					'name' => __('Woo Emails', 'woocommerce'),
+					'singular_name' => __('Woo Email', 'woocommerce'),
+					'add_new_item' => __('Add New Woo Email', 'woocommerce'),
+					'edit_item' => __('Edit Woo Email', 'woocommerce'),
+					'new_item' => __('New Woo Email', 'woocommerce'),
+					'view_item' => __('View Woo Email', 'woocommerce'),
+					'search_items' => __('Search Woo Emails', 'woocommerce')
 				],
 				'rewrite' => ['slug' => self::EMAIL_POST_TYPE],
 				'supports' => ['title', 'editor'],
@@ -85,5 +88,37 @@ class Integration {
 			return true;
 		}
 		return $replace;
+	}
+
+	public function registerPersonalizationTags() {
+		add_filter('mailpoet_email_editor_register_personalization_tags', function( Personalization_Tags_Registry $registry ): Personalization_Tags_Registry {
+			$registry->register(new Personalization_Tag(
+				__('Shopper Email', 'woocommerce'),
+				'woocommerce/shopper-email',
+				__('Shopper', 'woocommerce'),
+				function (array $context, array $args = []): string {
+					return $context['recipient_email'] ?? '';
+				},
+			));
+
+			// Site Personalization Tags
+			$registry->register(new Personalization_Tag(
+				__('Site Title', 'woocommerce'),
+				'woocommerce/site-title',
+				__('Site', 'woocommerce'),
+				function (array $context, array $args = []): string {
+					return htmlspecialchars_decode(get_bloginfo('name'));
+				},
+			));
+			$registry->register(new Personalization_Tag(
+				__('Homepage URL', 'woocommerce'),
+				'woocommerce/site-homepage-url',
+				__('Site', 'woocommerce'),
+				function (array $context, array $args = []): string {
+					return get_bloginfo('url');
+				},
+			));
+			return $registry;
+		});
 	}
 }
