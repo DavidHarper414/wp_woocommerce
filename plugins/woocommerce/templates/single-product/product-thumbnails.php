@@ -24,6 +24,11 @@ if ( ! function_exists( 'wc_get_gallery_image_html' ) ) {
 
 global $product;
 
+// Add defensive check for product existence
+if (!$product || !($product instanceof WC_Product)) {
+    return '';
+}
+
 $attachment_ids = $product->get_gallery_image_ids();
 
 if ( $attachment_ids && $product->get_image_id() ) {
