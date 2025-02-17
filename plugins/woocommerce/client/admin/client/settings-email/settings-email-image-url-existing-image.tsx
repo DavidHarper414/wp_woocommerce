@@ -45,17 +45,17 @@ export const ExistingImage: React.FC< ExistingImageProps > = ( {
 		};
 	}, [] );
 	return (
-		<div className="wc-settings-email-image-url-existing-image">
+		<div>
 			<div>
 				<button
 					style={ { backgroundColor } }
 					onClick={ () => selectImage( inputId, setImageUrl ) }
-					className="wc-settings-email-image-url-select-image"
+					className="wc-settings-email-select-image"
 					type="button"
 				>
 					<img
 						src={ imageUrl }
-						className="wc-settings-email-image-url-image-preview"
+						className="wc-settings-email-logo-image"
 						alt={ __( 'Image preview', 'woocommerce' ) }
 					/>
 				</button>
