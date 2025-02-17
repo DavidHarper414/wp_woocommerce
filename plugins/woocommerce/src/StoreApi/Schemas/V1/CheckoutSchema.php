@@ -329,11 +329,6 @@ class CheckoutSchema extends AbstractSchema {
 				'required'    => $field['required'],
 			];
 
-			// Conditional required field rules trump the default required value.
-			if ( ! empty( $field['rules']['required'] ) ) {
-				$field_schema['required'] = false;
-			}
-
 			if ( 'select' === $field['type'] ) {
 				$field_schema['enum'] = array_map(
 					function ( $option ) {
@@ -405,7 +400,9 @@ class CheckoutSchema extends AbstractSchema {
 	}
 
 	/**
-	 * Validate additional fields object.
+	 * Validate additional fields object. This does not validate required fields nor customer validation rules because
+	 * this may be a partial request. That will happen later when the full request is processed during POST. This only
+	 * validates against the schema.
 	 *
 	 * @see rest_validate_value_from_schema
 	 *
@@ -431,12 +428,7 @@ class CheckoutSchema extends AbstractSchema {
 			}
 
 			$field_value = isset( $fields[ $key ] ) ? $fields[ $key ] : null;
-			$result      = rest_validate_value_from_schema( $field_value, $schema, $key );
-
-			// Only allow custom validation on fields that pass the schema validation.
-			if ( true === $result ) {
-				$result = $this->additional_fields_controller->validate_field( $key, $field_value );
-			}
+			$result      = rest_validate_value_from_schema( $field_value, $field_schema, $key );
 
 			if ( is_wp_error( $result ) && $result->has_errors() ) {
 				$location = $this->additional_fields_controller->get_field_location( $key );
@@ -449,18 +441,6 @@ class CheckoutSchema extends AbstractSchema {
 						$code
 					);
 				}
-				$errors->merge_from( $result );
-			}
-		}
-
-		// Validate groups of properties per registered location.
-		$locations = array( 'contact', 'order' );
-
-		foreach ( $locations as $location ) {
-			$location_fields = $this->additional_fields_controller->filter_fields_for_location( $fields, $location );
-			$result          = $this->additional_fields_controller->validate_fields_for_location( $location_fields, $location, 'other' );
-
-			if ( is_wp_error( $result ) && $result->has_errors() ) {
 				$errors->merge_from( $result );
 			}
 		}

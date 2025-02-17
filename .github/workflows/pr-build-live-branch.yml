@@ -12,10 +12,13 @@ on:
             - '!packages/php/blueprint/**'
             - 'tools/**'
             - '**/changelog/**'
-            - 'changelog.txt'
+            - '**/changelog.txt'
+            - '**/readme.txt'
+            - '.gitignore'
             - '**/tests/**'
             - '**/*.md'
             - '.husky/**'
+            - '.cursor/**'
             - '.github/**'
             - '!.github/workflows/pr-build-live-branch.yml'
 
@@ -32,7 +35,7 @@ permissions: {}
 jobs:
     build:
         if: github.repository_owner == 'woocommerce' && github.event.pull_request.draft == false && github.event.pull_request.user.login != 'github-actions[bot]'
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         permissions:
             contents: write
             pull-requests: write
