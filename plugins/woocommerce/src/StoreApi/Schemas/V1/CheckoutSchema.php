@@ -427,8 +427,8 @@ class CheckoutSchema extends AbstractSchema {
 				continue;
 			}
 
-			$field_value = isset( $fields[ $key ] ) ? $fields[ $key ] : null;
-			$result      = rest_validate_value_from_schema( $field_value, $field_schema, $key );
+			$field_value = $fields[ $key ] ?? null;
+			$result      = rest_validate_value_from_schema( $field_value, $schema, $key );
 
 			if ( is_wp_error( $result ) && $result->has_errors() ) {
 				$location = $this->additional_fields_controller->get_field_location( $key );
