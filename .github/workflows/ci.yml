@@ -496,8 +496,11 @@ jobs:
 
       - name: 'Validate - existing entries'
         run: |
-            echp "${{ steps.passed_validation.outputs.passed }}"
-            pnpm --recursive --parallel --stream changelog validate
+            filter= '';
+            for package in $( echo "${{ steps.passed_validation.outputs.passed }}" | tr "," "\n" ); do
+                filter="$filter --filter $package"
+            done
+            pnpm $filter changelog validate
 
   validate-markdown:
     name: 'Validate markdown'
