@@ -489,13 +489,8 @@ jobs:
           pull-package-composer-deps: '@woocommerce/plugin-woocommerce'
 
       - name: 'Validate - missing entries'
-        env:
-          BASE: ${{ github.event.pull_request.base.sha }}
-          HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
-            php tools/monorepo/check-changelogger-use.php --debug "$BASE" "$HEAD" | while read -r -d '' line; do 
-                echo "$line"
-            done
+            php tools/monorepo/check-changelogger-use.php --debug "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}"
 
       - name: 'Validate - existing entries'
         run: |
