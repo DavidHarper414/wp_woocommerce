@@ -496,7 +496,7 @@ jobs:
 
       - name: 'Validate - existing entries'
         run: |
-            filter= '';
+            filter='';
             for package in $( echo "${{ steps.passed_validation.outputs.passed }}" | tr "," "\n" ); do
                 filter="$filter --filter $package"
             done
