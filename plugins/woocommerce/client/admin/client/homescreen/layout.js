@@ -152,7 +152,7 @@ export const Layout = ( {
 	};
 
 	return (
-		<div class="woocommerce-homescreen">
+		<div className="woocommerce-homescreen">
 			{ isDashboardShown && (
 				<WooHomescreenHeaderBanner
 					className={ clsx( 'woocommerce-homescreen', {
