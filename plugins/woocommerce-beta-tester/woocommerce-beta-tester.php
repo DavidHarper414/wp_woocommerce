@@ -185,3 +185,4 @@ if ( $simulate_error ) {
 
 // Initialize the live branches feature.
 require_once dirname( __FILE__ ) . '/includes/class-wc-beta-tester-live-branches.php';
+require_once dirname( __FILE__ ) . '/includes/class-wc-beta-tester-product-editor-devtools.php';

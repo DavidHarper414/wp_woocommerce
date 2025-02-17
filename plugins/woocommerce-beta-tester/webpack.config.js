@@ -8,6 +8,7 @@ module.exports = {
 		...defaultConfig.entry,
 		// Separate entry point for the live-branches page.
 		'live-branches': './src/live-branches/index.tsx',
+		'product-editor-devtools': './src/product-editor-dev-tools/index.ts',
 	},
 	module: {
 		...defaultConfig.module,

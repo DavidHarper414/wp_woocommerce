@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { createRoot } from '@wordpress/element';
-import { addFilter } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -10,7 +9,6 @@ import { addFilter } from '@wordpress/hooks';
 import { App } from './app';
 import './index.scss';
 import './example-fills/experimental-woocommerce-wcpay-feature';
-import { registerProductEditorDevTools } from './product-editor-dev-tools';
 import { registerExceptionFilter } from './remote-logging/register-exception-filter';
 
 const appRoot = document.getElementById(
@@ -21,5 +19,4 @@ if ( appRoot ) {
 	createRoot( appRoot ).render( <App /> );
 }
 
-registerProductEditorDevTools();
 registerExceptionFilter();
