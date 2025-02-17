@@ -63,6 +63,7 @@ export { store as shippingMethodsStore } from './shipping-methods';
 export { store as settingsStore } from './settings';
 export { store as ordersStore } from './orders';
 export { store as pluginsStore } from './plugins';
+export { store as optionsStore } from './options';
 export { store as userStore } from './user';
 
 // Export hooks
