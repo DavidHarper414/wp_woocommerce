@@ -249,6 +249,8 @@ if ( getenv( 'CI' ) ) {
 		},
 		array_keys( $touched_projects )
 	);
+	printf( "CHANGELOG_PACKAGES_TO_VALIDATE='%s'", implode( ',', $passed_packages ) );
+
 	putenv( sprintf( "CHANGELOG_PACKAGES_TO_VALIDATE='%s'", implode( ',', $passed_packages ) ) );
 }
 
