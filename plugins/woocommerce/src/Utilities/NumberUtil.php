@@ -73,7 +73,8 @@ final class NumberUtil {
 		$decimal_point_count = substr_count( $value, '.' );
 
 		// If it's a standard decimal number (single decimal point and is_numeric), accept it directly. This could be in the case where the frontend has de-localised the value.
-		// We check for the decimal point count because is_numeric is looser than that.
+		// We check for the decimal point count in addition to using is_numeric.
+		// This is because is_numeric is much looser and accepts non-base10 numbers as well as 'e' to demarcate exponents.
 		if ( 1 === $decimal_point_count && is_numeric( $value ) ) {
 			return $value;
 		}
@@ -90,7 +91,7 @@ final class NumberUtil {
 				esc_html(
 					sprintf(
 						/* translators: %1$s: Invalid value that was input by the user, %2$s: thousand separator, %3$s: decimal separator */
-						__( '%1$s is not a valid numeric value. Allowed characters are numbers, and the thousand (%2$s) and decimal (%3$s) separators.', 'woocommerce' ),
+						__( '%1$s is not a valid numeric value. Allowed characters are numbers, the thousand (%2$s), and decimal (%3$s) separators.', 'woocommerce' ),
 						$value,
 						wc_get_price_thousand_separator(),
 						wc_get_price_decimal_separator()
@@ -113,8 +114,15 @@ final class NumberUtil {
 				strpos( $value, $decimal_separator ) <= strpos( $value, $thousand_separator )
 			)
 		) {
-			/* translators: %s: Invalid value that was input by the user */
-			throw new \InvalidArgumentException( sprintf( esc_html__( '%s is not a valid numeric value: there should be one decimal separator and it has to be after the thousands separator.', 'woocommerce' ), esc_html( $value ) ) );
+			throw new \InvalidArgumentException(
+				esc_html(
+					sprintf(
+						/* translators: %s: Invalid value that was input by the user */
+						__( '%s is not a valid numeric value: there should be one decimal separator and it has to be after the thousands separator.', 'woocommerce' ),
+						$value
+					)
+				)
+			);
 		}
 
 		/**
@@ -129,7 +137,15 @@ final class NumberUtil {
 
 		if ( $value && ! is_numeric( $value ) ) {
 			/* translators: %s: Invalid value that was input by the user */
-			throw new \InvalidArgumentException( sprintf( esc_html__( '%s is not a valid numeric value', 'woocommerce' ), esc_html( $value ) ) );
+			throw new \InvalidArgumentException(
+				esc_html(
+					sprintf(
+						/* translators: %s: Invalid value that was input by the user */
+						__( '%s is not a valid numeric value.', 'woocommerce' ),
+						$value
+					)
+				)
+			);
 		}
 
 		return $value;
