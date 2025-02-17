@@ -165,24 +165,23 @@ class Init {
 		$setting_pages = \WC_Admin_Settings::get_settings_pages();
 		$pages         = array();
 		foreach ( $setting_pages as $setting_page ) {
-			$scripts_before_adding_settings = $wp_scripts->queue;
-			// $pages                          = $setting_page->add_settings_page_data( $pages );
-
+			$scripts_before_adding_settings                         = $wp_scripts->queue;
 			$settings_scripts_handles                               = array_diff( $wp_scripts->queue, $scripts_before_adding_settings );
 			$settings['settingsScripts'][ $setting_page->get_id() ] = self::get_script_urls( $settings_scripts_handles );
 		}
-
-		// $transformer                       = new Transformer();
-		// $settings['settingsData']['pages'] = $transformer->transform( $pages );
-		// $settings['settingsData']['start'] = $setting_pages[0]->get_custom_view( 'woocommerce_settings_start' );
-
-		// $settings['settingsData']['_wpnonce'] = wp_create_nonce( 'wp_rest' );
 
 		$settings = self::get_page_data( $settings, $setting_pages );
 
 		return $settings;
 	}
 
+	/**
+	 * Get the page data for the settings editor.
+	 *
+	 * @param array $settings The settings array.
+	 * @param array $setting_pages The setting pages.
+	 * @return array The settings array.
+	 */
 	public static function get_page_data( $settings, $setting_pages ) {
 		$pages = array();
 		foreach ( $setting_pages as $setting_page ) {
