@@ -43,7 +43,15 @@ jest.mock( '@woocommerce/components', () => ( {
 			) ) }
 		</div>
 	),
-	Link: ( props: any ) => <a { ...props } />,
+	Link: ( {
+		children,
+		...props
+	}: {
+		children: React.ReactNode;
+		href: string;
+		onClick?: () => void;
+		type?: string;
+	} ) => <a { ...props }>{ children }</a>,
 } ) );
 jest.mock(
 	'../../task-lists/fills/PaymentGatewaySuggestions/components/WCPay',
