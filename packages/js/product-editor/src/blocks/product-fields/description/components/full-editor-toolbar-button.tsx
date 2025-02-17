@@ -7,7 +7,7 @@ import { __ } from '@wordpress/i18n';
 import { recordEvent } from '@woocommerce/tracks';
 import { dispatch } from '@wordpress/data';
 import { useEntityProp } from '@wordpress/core-data';
-import { BlockInstance, parse, rawHandler } from '@wordpress/blocks';
+import { parse, rawHandler } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
