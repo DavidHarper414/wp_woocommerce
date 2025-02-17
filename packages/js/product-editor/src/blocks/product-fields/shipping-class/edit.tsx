@@ -4,7 +4,7 @@
 import { useWooBlockProps } from '@woocommerce/block-templates';
 import { Link } from '@woocommerce/components';
 import {
-	productShippingClassesStore,
+	experimentalProductShippingClassesStore,
 	ProductShippingClass,
 	PartialProduct,
 } from '@woocommerce/data';
@@ -89,7 +89,7 @@ export function Edit( {
 	const blockProps = useWooBlockProps( attributes );
 
 	const { createProductShippingClass } = useDispatch(
-		productShippingClassesStore
+		experimentalProductShippingClassesStore
 	);
 
 	const { createErrorNotice } = useDispatch( 'core/notices' );
@@ -135,7 +135,7 @@ export function Edit( {
 	const { shippingClasses } = useSelect(
 		( select ) => {
 			const { getProductShippingClasses } = select(
-				productShippingClassesStore
+				experimentalProductShippingClassesStore
 			);
 			return {
 				shippingClasses:

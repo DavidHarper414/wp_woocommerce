@@ -17,7 +17,7 @@ import { useDebounce } from '@wordpress/compose';
 import { plus } from '@wordpress/icons';
 import {
 	ProductAttributeTerm,
-	productAttributeTermsStore,
+	experimentalProductAttributeTermsStore,
 } from '@woocommerce/data';
 import {
 	selectControlStateChangeTypes,
@@ -75,12 +75,12 @@ export const AttributeTermInputField: React.FC<
 		useState< string >();
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { createProductAttributeTerm, invalidateResolutionForStoreSelector } =
-		useDispatch( productAttributeTermsStore );
+		useDispatch( experimentalProductAttributeTermsStore );
 
 	const fetchItems = useCallback(
 		( searchString?: string | undefined ) => {
 			setIsFetching( true );
-			return resolveSelect( productAttributeTermsStore )
+			return resolveSelect( experimentalProductAttributeTermsStore )
 				.getProductAttributeTerms( {
 					search: searchString || '',
 					attribute_id: attributeId,

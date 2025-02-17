@@ -7,7 +7,7 @@ import {
 	ProductVariation,
 	Product,
 	useUserPreferences,
-	productVariationsStore,
+	experimentalProductVariationsStore,
 } from '@woocommerce/data';
 import { useWooBlockProps } from '@woocommerce/block-templates';
 import { recordEvent } from '@woocommerce/tracks';
@@ -36,7 +36,9 @@ export function Edit( {
 	context: { isInSelectedTab },
 }: ProductEditorBlockEditProps< VariationOptionsBlockAttributes > ) {
 	const noticeDismissed = useRef( false );
-	const { invalidateResolution } = useDispatch( productVariationsStore );
+	const { invalidateResolution } = useDispatch(
+		experimentalProductVariationsStore
+	);
 	const productId = useEntityId( 'postType', 'product' );
 	const blockProps = useWooBlockProps( attributes );
 	const [ productStatus ] = useEntityProp< string >(
@@ -74,7 +76,7 @@ export function Edit( {
 	const { totalCountWithoutPrice } = useSelect(
 		( select ) => {
 			const { getProductVariationsTotalCount } = select(
-				productVariationsStore
+				experimentalProductVariationsStore
 			);
 
 			return {
@@ -137,7 +139,7 @@ export function Edit( {
 			source: TRACKS_SOURCE,
 		} );
 		const productVariationsListPromise = resolveSelect(
-			productVariationsStore
+			experimentalProductVariationsStore
 		).getProductVariations( {
 			product_id: productId,
 			order: 'asc' as const,

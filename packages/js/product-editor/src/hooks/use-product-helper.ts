@@ -12,7 +12,7 @@ import {
 	productsStore,
 	ReadOnlyProperties,
 	productReadOnlyProperties,
-	productVariationsStore,
+	experimentalProductVariationsStore,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { CurrencyContext } from '@woocommerce/currency';
@@ -60,7 +60,7 @@ export function useProductHelper() {
 	const {
 		batchUpdateProductVariations,
 		invalidateResolutionForStoreSelector,
-	} = useDispatch( productVariationsStore );
+	} = useDispatch( experimentalProductVariationsStore );
 
 	const { createNotice } = useDispatch( 'core/notices' );
 	const [ isDeleting, setIsDeleting ] = useState( false );
