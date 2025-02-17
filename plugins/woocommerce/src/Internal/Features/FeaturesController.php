@@ -338,8 +338,8 @@ class FeaturesController {
 					),
 				),
 				'email_improvements'     => array(
-					'name'        => __( 'Email improvements', 'woocommerce' ),
-					'description' => __(
+					'name'            => __( 'Email improvements', 'woocommerce' ),
+					'description'     => __(
 						'Enable modern email design and live preview for transactional emails',
 						'woocommerce'
 					),
@@ -353,7 +353,8 @@ class FeaturesController {
 					 * @see https://github.com/woocommerce/woocommerce/issues/39147
 					 * @see https://github.com/woocommerce/woocommerce/issues/55540
 					 */
-					'is_legacy'   => true,
+					'is_legacy'       => true,
+					'is_experimental' => false,
 				),
 				'blueprint'              => array(
 					'name'               => __( 'Blueprint (beta)', 'woocommerce' ),
