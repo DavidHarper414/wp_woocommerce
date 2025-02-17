@@ -8,9 +8,11 @@ const { webpackConfig } = require( '@woocommerce/internal-style-build' );
  */
 const path = require( 'path' );
 
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
 module.exports = {
-	mode: process.env.NODE_ENV || 'development',
-	cache: ( process.env.CI && { type: 'memory' } ) || {
+	mode: NODE_ENV,
+	cache: ( NODE_ENV !== 'development' && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,

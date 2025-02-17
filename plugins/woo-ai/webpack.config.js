@@ -2,9 +2,11 @@ const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 const WooCommerceDependencyExtractionWebpackPlugin = require( '@woocommerce/dependency-extraction-webpack-plugin' );
 const path = require( 'path' );
 
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
 module.exports = {
 	...defaultConfig,
-	cache: ( process.env.CI && { type: 'memory' } ) || {
+	cache: ( NODE_ENV !== 'development' && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,

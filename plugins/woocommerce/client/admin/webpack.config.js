@@ -88,7 +88,7 @@ require( 'fs-extra' ).ensureSymlinkSync(
 
 const webpackConfig = {
 	mode: NODE_ENV,
-	cache: ( process.env.CI && { type: 'memory' } ) || {
+	cache: ( NODE_ENV !== 'development' && { type: 'memory' } ) || {
 		type: 'filesystem',
 		cacheDirectory: path.resolve(
 			__dirname,
