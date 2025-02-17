@@ -106,7 +106,7 @@ class WC_Helper_Admin {
 		global $current_screen;
 
 		// Default to wc-addons, although this can be changed from the frontend
-		// (see `connectUrl()` in marketplace functions.tsx)
+		// in the function `connectUrl()` within marketplace functions.tsx.
 		$connect_url_args = array(
 			'page'    => 'wc-addons',
 			'section' => 'helper',
