@@ -21,7 +21,7 @@ class SkippedReporter {
 			const skippedTestsMessage = this.skippedTests.join( '%0A' );
 			// Output a GitHub Actions annotation with line breaks
 			console.log(
-				`::warning title=${ this.skippedTests.length } tests were skipped: ::%0A${ skippedTestsMessage }`
+				`::warning title=${ this.skippedTests.length } tests were skipped::%0ASkipped tests:%0A${ skippedTestsMessage }`
 			);
 		}
 	}
