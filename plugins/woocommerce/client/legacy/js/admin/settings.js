@@ -93,6 +93,11 @@
 			event.preventDefault();
 		} );
 
+		$( '.colorpickpreview' ).on( 'click', function ( event ) {
+			event.stopPropagation();
+			$( this ).next( '.colorpick' ).click();
+		} );
+
 		$( 'body' ).on( 'click', function () {
 			$( '.iris-picker' ).hide();
 		} );
