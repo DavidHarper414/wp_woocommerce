@@ -242,14 +242,14 @@ if ( $exit && ! getenv( 'CI' ) && ! $list ) {
 }
 
 // On success in CI, export list of passed package for further validation.
-if ( ! $exit && getenv( 'CI' ) ) {
+if ( getenv( 'CI' ) ) {
 	$passed_packages = array_map(
 		function ( string $slug ) {
 			return json_decode( file_get_contents( sprintf( './%s/package.json', $slug ) ), true )['name'] ?? ( './' . $slug );
 		},
 		array_keys( $touched_projects )
 	);
-	putenv( sprintf( 'CHANGELOG_PACKAGES_TO_VALIDATE=%s', implode( ',', $passed_packages ) ) );
+	putenv( sprintf( "CHANGELOG_PACKAGES_TO_VALIDATE='%s'", implode( ',', $passed_packages ) ) );
 }
 
 exit( $exit );
