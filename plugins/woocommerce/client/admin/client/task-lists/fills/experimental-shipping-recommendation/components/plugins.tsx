@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Plugins as PluginInstaller } from '@woocommerce/components';
-import { OPTIONS_STORE_NAME, InstallPluginsResponse } from '@woocommerce/data';
+import { optionsStore, InstallPluginsResponse } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
@@ -29,10 +29,9 @@ export const Plugins: React.FC< Props > = ( {
 	nextStep,
 	pluginsToActivate,
 } ) => {
-	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const { updateOptions } = useDispatch( optionsStore );
 	const { isResolving, tosAccepted } = useSelect( ( select ) => {
-		const { getOption, hasFinishedResolution } =
-			select( OPTIONS_STORE_NAME );
+		const { getOption, hasFinishedResolution } = select( optionsStore );
 		const wcConnectOptions = getOption( 'wc_connect_options' );
 
 		return {
@@ -48,7 +47,7 @@ export const Plugins: React.FC< Props > = ( {
 					wcConnectOptions?.tos_accepted ) ||
 				getOption( 'woocommerce_setup_jetpack_opted_in' ) === '1',
 		};
-	} );
+	}, [] );
 
 	useEffect( () => {
 		if ( ! tosAccepted || pluginsToActivate.length ) {

@@ -8,7 +8,11 @@
  * @since   2.6.0
  */
 
+use Automattic\WooCommerce\Enums\ProductStatus;
+use Automattic\WooCommerce\Enums\ProductStockStatus;
+use Automattic\WooCommerce\Enums\ProductTaxStatus;
 use Automattic\WooCommerce\Enums\ProductType;
+use Automattic\WooCommerce\Enums\CatalogVisibility;
 use Automattic\WooCommerce\Utilities\I18nUtil;
 
 defined( 'ABSPATH' ) || exit;
@@ -319,7 +323,7 @@ class WC_REST_Products_V2_Controller extends WC_REST_CRUD_Controller {
 				$args,
 				array(
 					'key'   => '_stock_status',
-					'value' => true === $request['in_stock'] ? 'instock' : 'outofstock',
+					'value' => true === $request['in_stock'] ? ProductStockStatus::IN_STOCK : ProductStockStatus::OUT_OF_STOCK,
 				)
 			);
 		}
@@ -962,7 +966,7 @@ class WC_REST_Products_V2_Controller extends WC_REST_CRUD_Controller {
 
 		// Post status.
 		if ( isset( $request['status'] ) ) {
-			$product->set_status( get_post_status_object( $request['status'] ) ? $request['status'] : 'draft' );
+			$product->set_status( get_post_status_object( $request['status'] ) ? $request['status'] : ProductStatus::DRAFT );
 		}
 
 		// Post slug.
@@ -1131,7 +1135,7 @@ class WC_REST_Products_V2_Controller extends WC_REST_CRUD_Controller {
 
 		// Stock status.
 		if ( isset( $request['in_stock'] ) ) {
-			$stock_status = true === $request['in_stock'] ? 'instock' : 'outofstock';
+			$stock_status = true === $request['in_stock'] ? ProductStockStatus::IN_STOCK : ProductStockStatus::OUT_OF_STOCK;
 		} else {
 			$stock_status = $product->get_stock_status();
 		}
@@ -1157,7 +1161,7 @@ class WC_REST_Products_V2_Controller extends WC_REST_CRUD_Controller {
 				$product->set_manage_stock( 'no' );
 				$product->set_backorders( 'no' );
 				$product->set_stock_quantity( '' );
-				$product->set_stock_status( 'instock' );
+				$product->set_stock_status( ProductStockStatus::IN_STOCK );
 			} elseif ( $product->get_manage_stock() ) {
 				// Stock status is always determined by children so sync later.
 				if ( ! $product->is_type( ProductType::VARIABLE ) ) {
@@ -1639,7 +1643,7 @@ class WC_REST_Products_V2_Controller extends WC_REST_CRUD_Controller {
 
 			// Otherwise, only trash if we haven't already.
 			if ( is_callable( array( $object, 'get_status' ) ) ) {
-				if ( 'trash' === $object->get_status() ) {
+				if ( ProductStatus::TRASH === $object->get_status() ) {
 					return new WP_Error(
 						'woocommerce_rest_already_trashed',
 						/* translators: %s: post type */
@@ -1651,7 +1655,7 @@ class WC_REST_Products_V2_Controller extends WC_REST_CRUD_Controller {
 				}
 
 				$object->delete();
-				$result = 'trash' === $object->get_status();
+				$result = ProductStatus::TRASH === $object->get_status();
 			}
 		}
 
@@ -1754,7 +1758,7 @@ class WC_REST_Products_V2_Controller extends WC_REST_CRUD_Controller {
 					'description' => __( 'Product status (post status).', 'woocommerce' ),
 					'type'        => 'string',
 					'default'     => 'publish',
-					'enum'        => array_merge( array_keys( get_post_statuses() ), array( 'future' ) ),
+					'enum'        => array_merge( array_keys( get_post_statuses() ), array( ProductStatus::FUTURE ) ),
 					'context'     => array( 'view', 'edit' ),
 				),
 				'featured'              => array(
@@ -1766,8 +1770,8 @@ class WC_REST_Products_V2_Controller extends WC_REST_CRUD_Controller {
 				'catalog_visibility'    => array(
 					'description' => __( 'Catalog visibility.', 'woocommerce' ),
 					'type'        => 'string',
-					'default'     => 'visible',
-					'enum'        => array( 'visible', 'catalog', 'search', 'hidden' ),
+					'default'     => CatalogVisibility::VISIBLE,
+					'enum'        => array( CatalogVisibility::VISIBLE, CatalogVisibility::CATALOG, CatalogVisibility::SEARCH, CatalogVisibility::HIDDEN ),
 					'context'     => array( 'view', 'edit' ),
 				),
 				'description'           => array(
@@ -1908,8 +1912,8 @@ class WC_REST_Products_V2_Controller extends WC_REST_CRUD_Controller {
 				'tax_status'            => array(
 					'description' => __( 'Tax status.', 'woocommerce' ),
 					'type'        => 'string',
-					'default'     => 'taxable',
-					'enum'        => array( 'taxable', 'shipping', 'none' ),
+					'default'     => ProductTaxStatus::TAXABLE,
+					'enum'        => array( ProductTaxStatus::TAXABLE, ProductTaxStatus::SHIPPING, ProductTaxStatus::NONE ),
 					'context'     => array( 'view', 'edit' ),
 				),
 				'tax_class'             => array(
@@ -2323,7 +2327,7 @@ class WC_REST_Products_V2_Controller extends WC_REST_CRUD_Controller {
 			'default'           => 'any',
 			'description'       => __( 'Limit result set to products assigned a specific status.', 'woocommerce' ),
 			'type'              => 'string',
-			'enum'              => array_merge( array( 'any', 'future', 'trash' ), array_keys( get_post_statuses() ) ),
+			'enum'              => array_merge( array( 'any', ProductStatus::FUTURE, ProductStatus::TRASH ), array_keys( get_post_statuses() ) ),
 			'sanitize_callback' => 'sanitize_key',
 			'validate_callback' => 'rest_validate_request_arg',
 		);

@@ -39,10 +39,9 @@
 		"gruntify-eslint": "5.0.0",
 		"sass": "^1.69.5",
 		"stylelint": "^14.16.1",
-		"wireit": "0.14.3"
+		"wireit": "0.14.10"
 	},
 	"dependencies": {
-		"@automattic/color-studio": "^2.5.0",
 		"sourcebuster": "github:woocommerce/sourcebuster-js#v1.2.0"
 	},
 	"wireit": {

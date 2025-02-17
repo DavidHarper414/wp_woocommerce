@@ -5,6 +5,7 @@ import { sprintf, __ } from '@wordpress/i18n';
 import {
 	EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME,
 	PartialProductVariation,
+	ProductVariation,
 	Product,
 	useUserPreferences,
 } from '@woocommerce/data';
@@ -80,7 +81,8 @@ export function Edit( {
 
 			return {
 				totalCountWithoutPrice: productHasOptions
-					? getProductVariationsTotalCount< number >(
+					? // @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
+					  getProductVariationsTotalCount(
 							totalCountWithoutPriceRequestParams
 					  )
 					: 0,
@@ -139,9 +141,10 @@ export function Edit( {
 		} );
 		const productVariationsListPromise = resolveSelect(
 			EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
-		).getProductVariations< PartialProductVariation[] >( {
+		).getProductVariations( {
 			product_id: productId,
 			order: 'asc',
+			// @ts-expect-error TODO react-18-upgrade: getProductVariations type is not correctly typed and was surfaced by https://github.com/woocommerce/woocommerce/pull/54146
 			orderby: 'menu_order',
 			has_price: false,
 			_fields: [ 'id' ],
@@ -152,14 +155,16 @@ export function Edit( {
 				recordEvent( 'product_variations_set_prices_update', {
 					source: TRACKS_SOURCE,
 				} );
-				productVariationsListPromise.then( ( variations ) => {
-					handleUpdateAll(
-						variations.map( ( { id } ) => ( {
-							id,
-							regular_price: value,
-						} ) )
-					);
-				} );
+				productVariationsListPromise.then(
+					( variations: ProductVariation[] ) => {
+						handleUpdateAll(
+							variations.map( ( { id } ) => ( {
+								id,
+								regular_price: value,
+							} ) )
+						);
+					}
+				);
 			},
 		} );
 	}

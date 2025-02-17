@@ -23,15 +23,15 @@ import {
 } from '@woocommerce/navigation';
 import {
 	ExtensionList,
-	OPTIONS_STORE_NAME,
+	optionsStore,
 	COUNTRIES_STORE_NAME,
 	Country,
-	ONBOARDING_STORE_NAME,
+	onboardingStore,
 	Extension,
 	GeolocationResponse,
-	PLUGINS_STORE_NAME,
-	SETTINGS_STORE_NAME,
-	USER_STORE_NAME,
+	pluginsStore,
+	settingsStore,
+	userStore,
 	WCUser,
 	ProfileItems,
 	CoreProfilerStep,
@@ -65,7 +65,7 @@ import { getCountryStateOptions } from './services/country';
 import { CoreProfilerLoader } from './components/loader/Loader';
 import { Plugins } from './pages/Plugins/Plugins';
 import { NoPermissionsError } from './pages/Plugins/NoPermissions';
-import { getPluginSlug, useFullScreen } from '~/utils';
+import { useFullScreen } from '~/utils';
 import './style.scss';
 import {
 	InstalledPlugin,
@@ -114,7 +114,7 @@ export type CoreProfilerStateMachineContext = {
 	} & Partial< ProfileItems >;
 	pluginsAvailable: ExtensionList[ 'plugins' ] | [];
 	pluginsTruncated: string[];
-	pluginsSelected: string[]; // extension slugs
+	pluginsSelected: ExtensionList[ 'plugins' ][ number ][ 'key' ][];
 	pluginsInstallationErrors: PluginInstallError[];
 	geolocatedLocation: GeolocationResponse | undefined;
 	businessInfo: {
@@ -133,13 +133,11 @@ export type CoreProfilerStateMachineContext = {
 	onboardingProfile: OnboardingProfile;
 	jetpackAuthUrl?: string;
 	currentUserEmail: string | undefined;
-	currentUser?: WCUser< 'capabilities' >;
+	currentUser?: WCUser;
 };
 
 const getAllowTrackingOption = fromPromise( async () =>
-	resolveSelect( OPTIONS_STORE_NAME ).getOption(
-		'woocommerce_allow_tracking'
-	)
+	resolveSelect( optionsStore ).getOption( 'woocommerce_allow_tracking' )
 );
 
 const handleTrackingOption = assign( {
@@ -151,7 +149,7 @@ const handleTrackingOption = assign( {
 } );
 
 const getStoreNameOption = fromPromise( async () =>
-	resolveSelect( OPTIONS_STORE_NAME ).getOption( 'blogname' )
+	resolveSelect( optionsStore ).getOption( 'blogname' )
 );
 
 const handleStoreNameOption = assign( {
@@ -172,9 +170,7 @@ const handleStoreNameOption = assign( {
 } );
 
 const getStoreCountryOption = fromPromise( async () =>
-	resolveSelect( OPTIONS_STORE_NAME ).getOption(
-		'woocommerce_default_country'
-	)
+	resolveSelect( optionsStore ).getOption( 'woocommerce_default_country' )
 );
 
 const handleStoreCountryOption = assign( {
@@ -195,7 +191,7 @@ const handleStoreCountryOption = assign( {
 const preFetchOptions = fromPromise( async ( { input }: { input: string[] } ) =>
 	Promise.all( [
 		input.map( ( optionName: string ) =>
-			resolveSelect( OPTIONS_STORE_NAME ).getOption( optionName )
+			resolveSelect( optionsStore ).getOption( optionName )
 		),
 	] )
 );
@@ -211,9 +207,7 @@ const handleCountries = assign( {
 } );
 
 const getOnboardingProfileOption = fromPromise( async () =>
-	resolveSelect( OPTIONS_STORE_NAME ).getOption(
-		'woocommerce_onboarding_profile'
-	)
+	resolveSelect( optionsStore ).getOption( 'woocommerce_onboarding_profile' )
 );
 
 const handleOnboardingProfileOption = assign( {
@@ -242,7 +236,7 @@ const handleOnboardingProfileOption = assign( {
 } );
 
 const getCoreProfilerCompletedSteps = fromPromise( async () =>
-	resolveSelect( ONBOARDING_STORE_NAME ).getCoreProfilerCompletedSteps()
+	resolveSelect( onboardingStore ).getCoreProfilerCompletedSteps()
 );
 
 const handleCoreProfilerCompletedSteps = assign( {
@@ -256,16 +250,12 @@ const handleCoreProfilerCompletedSteps = assign( {
 } );
 
 const getCurrentUserEmail = fromPromise( async () => {
-	const currentUser: WCUser< 'email' > = await resolveSelect(
-		USER_STORE_NAME
-	).getCurrentUser();
+	const currentUser = await resolveSelect( userStore ).getCurrentUser();
 	return currentUser?.email;
 } );
 
 const getCurrentUser = fromPromise( async () => {
-	const currentUser: WCUser< 'capabilities' > = await resolveSelect(
-		USER_STORE_NAME
-	).getCurrentUser();
+	const currentUser = await resolveSelect( userStore ).getCurrentUser();
 	return currentUser;
 } );
 
@@ -273,7 +263,7 @@ const assignCurrentUser = assign( {
 	currentUser: ( {
 		event,
 	}: {
-		event: DoneActorEvent< WCUser< 'capabilities' > | undefined >;
+		event: DoneActorEvent< WCUser | undefined >;
 	} ) => {
 		if ( event.output ) {
 			return event.output;
@@ -335,7 +325,7 @@ const redirectToWooHome = raise( { type: 'REDIRECT_TO_WOO_HOME' } );
 
 const exitToWooHome = fromPromise( async () => {
 	if ( window.wcAdminFeatures[ 'launch-your-store' ] ) {
-		await dispatch( ONBOARDING_STORE_NAME ).coreProfilerCompleted();
+		await dispatch( onboardingStore ).coreProfilerCompleted();
 	}
 	window.location.href = getNewPath( {}, '/', {} );
 } );
@@ -391,7 +381,7 @@ const recordUpdateTrackingOption = (
 const updateTrackingOption = fromPromise(
 	async ( { input }: { input: CoreProfilerStateMachineContext } ) => {
 		const prevValue =
-			( await resolveSelect( OPTIONS_STORE_NAME ).getOption(
+			( await resolveSelect( optionsStore ).getOption(
 				'woocommerce_allow_tracking'
 			) ) === 'yes'
 				? 'yes'
@@ -419,7 +409,7 @@ const updateTrackingOption = fromPromise(
 		} );
 
 		const trackingValue = input.optInDataSharing ? 'yes' : 'no';
-		dispatch( OPTIONS_STORE_NAME ).updateOptions( {
+		dispatch( optionsStore ).updateOptions( {
 			woocommerce_allow_tracking: trackingValue,
 		} );
 	}
@@ -429,7 +419,7 @@ const updateOnboardingProfileOption = fromPromise(
 	async ( { input }: { input: CoreProfilerStateMachineContext } ) => {
 		const { businessChoice, sellingOnlineAnswer, sellingPlatforms } =
 			input.userProfile;
-		return dispatch( ONBOARDING_STORE_NAME ).updateProfileItems( {
+		return dispatch( onboardingStore ).updateProfileItems( {
 			...( businessChoice && { business_choice: businessChoice } ),
 			...( sellingOnlineAnswer && {
 				selling_online_answer: sellingOnlineAnswer,
@@ -440,14 +430,14 @@ const updateOnboardingProfileOption = fromPromise(
 );
 
 const updateBusinessLocation = ( countryAndState: string ) => {
-	return dispatch( OPTIONS_STORE_NAME ).updateOptions( {
+	return dispatch( optionsStore ).updateOptions( {
 		woocommerce_default_country: countryAndState,
 	} );
 };
 
 const updateStoreCurrency = async ( countryAndState: string ) => {
 	const { general: settings = {} } = await resolveSelect(
-		SETTINGS_STORE_NAME
+		settingsStore
 	).getSettings( 'general' );
 
 	const countryCode = getCountryCode( countryAndState ) as string;
@@ -471,7 +461,7 @@ const updateStoreCurrency = async ( countryAndState: string ) => {
 		return;
 	}
 
-	return dispatch( SETTINGS_STORE_NAME ).updateAndPersistSettingsForGroup(
+	return dispatch( settingsStore ).updateAndPersistSettingsForGroup(
 		'general',
 		{
 			general: {
@@ -515,7 +505,7 @@ const updateStoreMeasurements = async ( countryAndState: string ) => {
 
 	const { weight_unit, dimension_unit } = countryInfo;
 
-	return dispatch( SETTINGS_STORE_NAME ).updateAndPersistSettingsForGroup(
+	return dispatch( settingsStore ).updateAndPersistSettingsForGroup(
 		'products',
 		{
 			products: {
@@ -563,7 +553,7 @@ const updateBusinessInfo = fromPromise(
 		return Promise.all( [
 			updateStoreCurrency( input.payload.storeLocation ),
 			updateStoreMeasurements( input.payload.storeLocation ),
-			dispatch( ONBOARDING_STORE_NAME ).updateProfileItems( {
+			dispatch( onboardingStore ).updateProfileItems( {
 				is_store_country_set: true,
 				is_agree_marketing: input.payload.isOptInMarketing,
 				...( input.payload.industry && {
@@ -574,7 +564,7 @@ const updateBusinessInfo = fromPromise(
 					store_email: input.payload.storeEmailAddress,
 				} ),
 			} ),
-			dispatch( OPTIONS_STORE_NAME ).updateOptions( {
+			dispatch( optionsStore ).updateOptions( {
 				blogname: input.payload.storeName,
 				woocommerce_default_country: input.payload.storeLocation,
 			} ),
@@ -597,7 +587,7 @@ const preFetchIsJetpackConnected = assign( {
 	isJetpackConnectedRef: ( { spawn } ) =>
 		spawn(
 			fromPromise( async () =>
-				resolveSelect( PLUGINS_STORE_NAME ).isJetpackConnected()
+				resolveSelect( pluginsStore ).isJetpackConnected()
 			)
 		),
 } );
@@ -606,7 +596,7 @@ const preFetchJetpackAuthUrl = assign( {
 	jetpackAuthUrlRef: ( { spawn } ) =>
 		spawn(
 			fromPromise( async () =>
-				resolveSelect( ONBOARDING_STORE_NAME ).getJetpackAuthUrl( {
+				resolveSelect( onboardingStore ).getJetpackAuthUrl( {
 					redirectUrl: getAdminLink( 'admin.php?page=wc-admin' ),
 					from: 'woocommerce-core-profiler',
 				} )
@@ -615,15 +605,15 @@ const preFetchJetpackAuthUrl = assign( {
 } );
 
 const preFetchGetPlugins = fromPromise( async () =>
-	resolveSelect( ONBOARDING_STORE_NAME ).getFreeExtensions()
+	resolveSelect( onboardingStore ).getFreeExtensions()
 );
 
 const getPlugins = fromPromise( async () => {
-	dispatch( ONBOARDING_STORE_NAME ).invalidateResolution(
+	dispatch( onboardingStore ).invalidateResolutionForStoreSelector(
 		'getFreeExtensions'
 	);
 	const extensionsBundles = await resolveSelect(
-		ONBOARDING_STORE_NAME
+		onboardingStore
 	).getFreeExtensions();
 	return (
 		extensionsBundles.find(
@@ -672,7 +662,7 @@ const updateQueryStep = ( _: unknown, params: { step: CoreProfilerStep } ) => {
 
 const updateProfilerCompletedSteps = fromPromise(
 	async ( { input }: { input: { step: CoreProfilerStep } } ) => {
-		dispatch( ONBOARDING_STORE_NAME ).updateCoreProfilerStep( input.step );
+		dispatch( onboardingStore ).updateCoreProfilerStep( input.step );
 	}
 );
 
@@ -682,7 +672,7 @@ const assignPluginsSelected = assign( {
 	}: {
 		event: PluginsInstallationRequestedEvent;
 	} ) => {
-		return event.payload.pluginsSelected.map( getPluginSlug );
+		return event.payload.pluginsSelected;
 	},
 } );
 
@@ -713,7 +703,7 @@ const skipFlowUpdateBusinessLocation = fromPromise(
 	}: {
 		input: CoreProfilerStateMachineContext;
 	} ) => {
-		const skipped = dispatch( ONBOARDING_STORE_NAME ).updateProfileItems( {
+		const skipped = dispatch( onboardingStore ).updateProfileItems( {
 			skipped: true,
 		} );
 		const businessLocation = updateBusinessLocation(
@@ -736,7 +726,7 @@ const skipFlowUpdateBusinessLocation = fromPromise(
 );
 
 export const getJetpackIsConnected = fromPromise( async () => {
-	return resolveSelect( PLUGINS_STORE_NAME ).isJetpackConnected();
+	return resolveSelect( pluginsStore ).isJetpackConnected();
 } );
 
 const reloadPage = () => {
@@ -1519,9 +1509,7 @@ export const coreProfilerStateMachineDefinition = createMachine( {
 					} ),
 					invoke: {
 						src: fromPromise( () => {
-							dispatch(
-								ONBOARDING_STORE_NAME
-							).updateProfileItems( {
+							dispatch( onboardingStore ).updateProfileItems( {
 								is_plugins_page_skipped: true,
 								skipped: false,
 								completed: true,
@@ -1625,7 +1613,7 @@ export const coreProfilerStateMachineDefinition = createMachine( {
 								src: fromPromise(
 									async ( { input: event } ) => {
 										return await dispatch(
-											ONBOARDING_STORE_NAME
+											onboardingStore
 										).updateProfileItems( {
 											business_extensions:
 												event.payload.installationCompletedResult.installedPlugins.map(
@@ -1661,7 +1649,7 @@ export const coreProfilerStateMachineDefinition = createMachine( {
 							invoke: {
 								src: fromPromise( () =>
 									dispatch(
-										ONBOARDING_STORE_NAME
+										onboardingStore
 									).updateProfileItems( {
 										completed: true,
 									} )
@@ -1716,11 +1704,11 @@ export const coreProfilerStateMachineDefinition = createMachine( {
 								window.wcAdminFeatures[ 'launch-your-store' ]
 							) {
 								await dispatch(
-									ONBOARDING_STORE_NAME
+									onboardingStore
 								).coreProfilerCompleted();
 							}
 							return await resolveSelect(
-								ONBOARDING_STORE_NAME
+								onboardingStore
 							).getJetpackAuthUrl( {
 								redirectUrl: getAdminLink(
 									'admin.php?page=wc-admin'
@@ -1878,6 +1866,7 @@ export const CoreProfilerController = ( {
 				},
 				userHasNoInstallPluginsPermission: ( { context } ) => {
 					return (
+						// @ts-expect-error TODO: react-18-upgrade: This comparison appears to be unintentional because the types 'string | undefined' and 'boolean' have no overlap.ts(2367). Need to check if this is a valid comparison.
 						context?.currentUser?.capabilities.install_plugins !==
 						true
 					);

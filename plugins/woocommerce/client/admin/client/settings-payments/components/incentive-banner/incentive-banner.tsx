@@ -56,6 +56,11 @@ interface IncentiveBannerProps {
 	) => void;
 }
 
+/**
+ * A banner component that displays a promotional incentive to the user. The banner allows the user to:
+ * - Accept the incentive, triggering setup actions.
+ * - Dismiss the incentive, removing it from the current context.
+ */
 export const IncentiveBanner = ( {
 	incentive,
 	provider,
@@ -70,6 +75,10 @@ export const IncentiveBanner = ( {
 
 	const context = 'wc_settings_payments__banner';
 
+	/**
+	 * Handles accepting the incentive.
+	 * Triggers the onAccept callback, dismisses the banner, and triggers plugin setup.
+	 */
 	const handleAccept = () => {
 		setIsBusy( true );
 		onAccept( incentive.promo_id );
@@ -79,6 +88,10 @@ export const IncentiveBanner = ( {
 		setIsBusy( false );
 	};
 
+	/**
+	 * Handles dismissing the incentive.
+	 * Triggers the onDismiss callback and hides the banner.
+	 */
 	const handleDismiss = () => {
 		setIsBusy( true );
 		onDismiss( incentive._links.dismiss.href, context );
@@ -86,6 +99,7 @@ export const IncentiveBanner = ( {
 		setIsDismissed( true );
 	};
 
+	// Do not render the banner if it has been submitted, dismissed, or already dismissed in this context.
 	if (
 		isSubmitted ||
 		isIncentiveDismissedInContext( incentive, context ) ||
@@ -97,21 +111,27 @@ export const IncentiveBanner = ( {
 	return (
 		<Card className="woocommerce-incentive-banner" isRounded={ true }>
 			<div className="woocommerce-incentive-banner__content">
-				<img
-					src={
-						WC_ASSET_URL +
-						'images/settings-payments/incentives-illustration.svg'
-					}
-					alt={ __( 'Incentive illustration', 'woocommerce' ) }
-				/>
+				<div className={ 'woocommerce-incentive-banner__image' }>
+					<img
+						src={
+							WC_ASSET_URL +
+							'images/settings-payments/incentives-illustration.svg'
+						}
+						alt={ __( 'Incentive illustration', 'woocommerce' ) }
+					/>
+				</div>
 				<CardBody className="woocommerce-incentive-banner__body">
 					<StatusBadge
 						status="has_incentive"
 						message={ __( 'Limited time offer', 'woocommerce' ) }
 					/>
-					<h2>{ incentive.title }</h2>
-					<p>{ incentive.description }</p>
-					<p className={ 'woocommerce-incentive-banner__terms' }>
+
+					<div className={ 'woocommerce-incentive-banner__copy' }>
+						<h2>{ incentive.title }</h2>
+						<p>{ incentive.description }</p>
+					</div>
+
+					<div className={ 'woocommerce-incentive-banner__terms' }>
 						{ createInterpolateElement(
 							__(
 								'See <termsLink /> for details.',
@@ -133,24 +153,26 @@ export const IncentiveBanner = ( {
 								),
 							}
 						) }
-					</p>
+					</div>
 
-					<Button
-						variant={ 'primary' }
-						isBusy={ isSubmitted }
-						disabled={ isSubmitted }
-						onClick={ handleAccept }
-					>
-						{ incentive.cta_label }
-					</Button>
-					<Button
-						variant={ 'tertiary' }
-						isBusy={ isBusy }
-						disabled={ isBusy }
-						onClick={ handleDismiss }
-					>
-						{ __( 'Dismiss', 'woocommerce' ) }
-					</Button>
+					<div className={ 'woocommerce-incentive-banner__actions' }>
+						<Button
+							variant={ 'primary' }
+							isBusy={ isSubmitted }
+							disabled={ isSubmitted }
+							onClick={ handleAccept }
+						>
+							{ incentive.cta_label }
+						</Button>
+						<Button
+							variant={ 'tertiary' }
+							isBusy={ isBusy }
+							disabled={ isBusy }
+							onClick={ handleDismiss }
+						>
+							{ __( 'Dismiss', 'woocommerce' ) }
+						</Button>
+					</div>
 				</CardBody>
 			</div>
 		</Card>
