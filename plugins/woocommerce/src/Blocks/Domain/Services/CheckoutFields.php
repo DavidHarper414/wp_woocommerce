@@ -240,11 +240,33 @@ class CheckoutFields {
 		if ( is_string( $field ) ) {
 			$field = $this->additional_fields[ $field ] ?? [];
 		}
-		if ( $document_object && ! empty( $field['rules']['required'] ) ) {
-			$document_object->set_context( $context );
-			return true === Validation::validate_document_object( $document_object, $field['rules']['required'] );
+		if ( $document_object ) {
+			// Hidden fields cannot be required.
+			if ( $this->is_hidden_field( $field, $document_object, $context ) ) {
+				return false;
+			}
+			if ( ! empty( $field['rules']['required'] ) ) {
+				$document_object->set_context( $context );
+				return true === Validation::validate_document_object( $document_object, $field['rules']['required'] );
+			}
 		}
 		return true === $field['required'];
+	}
+
+	/**
+	 * Returns true if the field is hidden. Takes rules into consideration if a document object is provided.
+	 *
+	 * @param array|string        $field The field array or field key.
+	 * @param DocumentObject|null $document_object The document object.
+	 * @param string|null         $context The context for the document object.
+	 * @return bool
+	 */
+	public function is_hidden_field( $field, $document_object = null, $context = null ) {
+		if ( $document_object && ! empty( $field['rules']['hidden'] ) ) {
+			$document_object->set_context( $context );
+			return true === Validation::validate_document_object( $document_object, $field['rules']['hidden'] );
+		}
+		return false; // `hidden` prop is not supported yet.
 	}
 
 	/**
@@ -406,7 +428,7 @@ class CheckoutFields {
 		} elseif ( 'select' === $field_data['type'] ) {
 			$field_data = $this->process_select_field( $field_data, $options );
 		}
-		// If the field has conditional required rules, we need to set the required property to false so it can be evaluated.
+		// If the field has conditional rules, we need to set the required property to false so it can be evaluated.
 		if ( Features::is_enabled( 'experimental-blocks' ) && ! empty( $field_data['rules']['required'] ) ) {
 			$field_data['required'] = false;
 		}
@@ -887,6 +909,10 @@ class CheckoutFields {
 	public function update_default_locale_with_fields( $locale ) {
 		foreach ( $this->get_fields_for_location( 'address' ) as $field_id => $additional_field ) {
 			if ( empty( $locale[ $field_id ] ) ) {
+				// If the field has conditional rules, we need to set the required property to false so it can be evaluated.
+				if ( ! empty( $additional_field['rules']['required'] ) || ! empty( $additional_field['rules']['hidden'] ) ) {
+					$additional_field['required'] = false;
+				}
 				$locale[ $field_id ] = $additional_field;
 			}
 		}
@@ -1046,18 +1072,6 @@ class CheckoutFields {
 					__( 'The field %1$s is invalid for the location %2$s.', 'woocommerce' ),
 					$key,
 					$location
-				)
-			);
-		}
-
-		$field = $this->additional_fields[ $key ];
-		if ( ! empty( $field['required'] ) && empty( $value ) ) {
-			return new WP_Error(
-				'woocommerce_required_checkout_field',
-				\sprintf(
-					// translators: %s is field key.
-					__( 'The field %s is required.', 'woocommerce' ),
-					$key
 				)
 			);
 		}

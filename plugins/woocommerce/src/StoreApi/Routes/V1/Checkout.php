@@ -277,6 +277,15 @@ class Checkout extends AbstractCartRoute {
 			$sanitized_field_values = (array) $sanitized_request->get_param( $context_data['param'] ) ?? [];
 
 			foreach ( $additional_fields as $field_key => $field ) {
+				$is_hidden = $this->additional_fields_controller->is_hidden_field( $field, $document_object, $context );
+
+				// Skip hidden fields from validation logic and ensure they are unset from the main request.
+				if ( $is_hidden ) {
+					$field_values[ $field_key ] = null;
+					$request->set_param( $context_data['param'], $field_values );
+					continue;
+				}
+
 				$is_required = $this->additional_fields_controller->is_required_field( $field, $document_object, $context );
 
 				// Skip optional fields that are not set when the request is partial.
