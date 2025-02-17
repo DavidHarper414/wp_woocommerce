@@ -24,6 +24,9 @@ jest.mock( '../more-menu-items', () => ( {
 		</div>
 	) ),
 } ) );
+jest.mock( '@wordpress/interface/build-module/components/pinned-items', () =>
+	jest.fn()
+);
 
 describe( 'MoreMenuFill', () => {
 	beforeEach( () => {

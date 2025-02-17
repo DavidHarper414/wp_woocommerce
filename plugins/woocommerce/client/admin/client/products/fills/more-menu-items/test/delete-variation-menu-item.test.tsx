@@ -27,6 +27,10 @@ jest.mock( '@wordpress/core-data', () => ( {
 		.mockImplementation( ( _1, _2, propType ) => [ propType ] ),
 } ) );
 
+jest.mock( '@wordpress/interface/build-module/components/pinned-items', () =>
+	jest.fn()
+);
+
 describe( 'DeleteVariationMenuItem', () => {
 	beforeEach( () => {
 		jest.clearAllMocks();

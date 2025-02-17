@@ -36,6 +36,9 @@ jest.mock( '@woocommerce/product-editor', () => ( {
 	productApiFetchMiddleware: jest.fn(),
 	__experimentalInitBlocks: jest.fn().mockImplementation( () => () => {} ),
 } ) );
+jest.mock( '@wordpress/interface/build-module/components/pinned-items', () =>
+	jest.fn()
+);
 
 describe( 'ProductPage', () => {
 	beforeEach( () => {

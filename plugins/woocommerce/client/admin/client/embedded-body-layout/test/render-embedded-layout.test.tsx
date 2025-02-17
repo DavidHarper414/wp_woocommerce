@@ -36,6 +36,9 @@ jest.mock( '../../layout', () => ( {
 jest.mock( '../', () => ( {
 	EmbeddedBodyLayout: jest.fn( () => null ),
 } ) );
+jest.mock( '@wordpress/interface/build-module/components/pinned-items', () =>
+	jest.fn()
+);
 
 describe( 'embedded-layout', () => {
 	let mockEmbeddedRoot: HTMLDivElement;
