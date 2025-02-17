@@ -4,9 +4,8 @@
 import { test as setup } from './fixtures';
 import { setComingSoon } from '../utils/coming-soon';
 import { skipOnboardingWizard } from '../utils/onboarding';
-import apiClient from '../utils/api-client';
 
-setup( 'configure HPOS', async () => {
+setup( 'configure HPOS', async ( { api } ) => {
 	const { DISABLE_HPOS } = process.env;
 	console.log( `DISABLE_HPOS: ${ DISABLE_HPOS }` );
 
@@ -22,7 +21,7 @@ setup( 'configure HPOS', async () => {
 						value === 'yes' ? 'on' : 'off'
 					} HPOS...`
 				);
-				const response = await apiClient().post(
+				const response = await api.post(
 					'wc/v3/settings/advanced/woocommerce_custom_orders_table_enabled',
 					{ value }
 				);
@@ -51,7 +50,7 @@ setup( 'configure HPOS', async () => {
 		}
 	}
 
-	const response = await apiClient().get(
+	const response = await api.get(
 		'wc/v3/settings/advanced/woocommerce_custom_orders_table_enabled'
 	);
 	const dataValue = response.data.value;
@@ -108,8 +107,8 @@ setup( 'disable onboarding wizard', async () => {
 	await skipOnboardingWizard();
 } );
 
-setup( 'determine if multisite', async () => {
-	const response = await apiClient().get( 'wc/v3/system_status' );
+setup( 'determine if multisite', async ( { api } ) => {
+	const response = await api.get( 'wc/v3/system_status' );
 	const { environment } = response.data;
 
 	if ( environment.wp_multisite === false ) {

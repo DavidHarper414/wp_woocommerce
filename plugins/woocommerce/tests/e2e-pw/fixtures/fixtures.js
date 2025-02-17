@@ -1,23 +1,24 @@
-const base = require( '@playwright/test' );
-const wcApi = require( '@woocommerce/woocommerce-rest-api' ).default;
-const { admin } = require( '../test-data/data' );
-const { random } = require( '../utils/helpers' );
+/**
+ * External dependencies
+ */
+import wcApi from '@woocommerce/woocommerce-rest-api';
+import {
+	test as baseTest,
+	expect as baseExpect,
+	request as baseRequest,
+	APIRequestContext,
+} from '@playwright/test';
 
-exports.test = base.test.extend( {
-	api: async ( { baseURL }, use ) => {
-		const api = new wcApi( {
-			url: baseURL,
-			consumerKey: process.env.CONSUMER_KEY,
-			consumerSecret: process.env.CONSUMER_SECRET,
-			version: 'wc/v3',
-			axiosConfig: {
-				// allow 404s, so we can check if a resource was deleted without try/catch
-				validateStatus( status ) {
-					return ( status >= 200 && status < 300 ) || status === 404;
-				},
-			},
-		} );
+/**
+ * Internal dependencies
+ */
+import { random } from '../utils/helpers';
+import apiClient from '../utils/api-client';
+import { admin } from '../test-data/data';
 
+export const test = baseTest.extend( {
+	api: async ( {}, use ) => {
+		const api = apiClient();
 		await use( api );
 	},
 	wcAdminApi: async ( { baseURL }, use ) => {
@@ -34,11 +35,11 @@ exports.test = base.test.extend( {
 	/**
 	 * Fixture for interacting with the [WordPress REST API](https://developer.wordpress.org/rest-api/reference/) endpoints.
 	 *
-	 * @param {{baseURL: string}} fixtures
-	 * @param {function(base.APIRequestContext): Promise<void>} use
+	 * @param {{baseURL: string}}                          fixtures
+	 * @param {function(APIRequestContext): Promise<void>} use
 	 */
 	wpApi: async ( { baseURL }, use ) => {
-		const wpApi = await base.request.newContext( {
+		const wpApi = await baseRequest.newContext( {
 			baseURL,
 			extraHTTPHeaders: {
 				Authorization: `Basic ${ Buffer.from(
@@ -52,7 +53,7 @@ exports.test = base.test.extend( {
 	},
 
 	wcbtApi: async ( { baseURL }, use ) => {
-		const wcbtApi = await base.request.newContext( {
+		const wcbtApi = await baseRequest.newContext( {
 			baseURL,
 			extraHTTPHeaders: {
 				Authorization: `Basic ${ Buffer.from(
@@ -124,9 +125,9 @@ exports.test = base.test.extend( {
 	},
 } );
 
-exports.expect = base.expect;
-exports.request = base.request;
-exports.tags = {
+export const expect = baseExpect;
+export const request = baseRequest;
+export const tags = {
 	GUTENBERG: '@gutenberg',
 	SERVICES: '@services',
 	PAYMENTS: '@payments',
