@@ -15,7 +15,7 @@ import { Form, FormErrors } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 import {
 	ProductAttributeTerm,
-	productAttributeTermsStore,
+	experimentalProductAttributeTermsStore,
 } from '@woocommerce/data';
 
 /**
@@ -41,7 +41,7 @@ export const CreateAttributeTermModal: React.FC<
 	const { createNotice } = useDispatch( 'core/notices' );
 	const [ isCreating, setIsCreating ] = useState( false );
 	const { createProductAttributeTerm, invalidateResolutionForStoreSelector } =
-		useDispatch( productAttributeTermsStore );
+		useDispatch( experimentalProductAttributeTermsStore );
 
 	const onAdd = async ( attribute: Partial< ProductAttributeTerm > ) => {
 		recordEvent( 'product_attribute_term_add', {
