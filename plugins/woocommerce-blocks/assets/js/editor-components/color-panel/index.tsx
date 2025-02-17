@@ -2,12 +2,13 @@
 /**
  * External dependencies
  */
-import { useMemo } from '@wordpress/element';
+import { useMemo, RefObject } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import {
 	store as blockEditorStore,
 	getColorClassName,
 	InspectorControls,
+	ContrastChecker,
 	useBlockEditContext,
 	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
@@ -109,10 +110,32 @@ const createSettings = (
 	);
 };
 
+// @TODO Move this to a shared utility if it's needed in more places
+const getBackgroundColor = ( element: HTMLElement ): string => {
+	while ( element ) {
+		const bgColor = window.getComputedStyle( element ).backgroundColor;
+
+		if (
+			bgColor &&
+			bgColor !== 'rgba(0, 0, 0, 0)' &&
+			bgColor !== 'transparent'
+		) {
+			return bgColor;
+		}
+
+		element = element.parentElement as HTMLElement;
+	}
+
+	// White as default background color
+	return 'rgb(255, 255, 255)';
+};
+
 export const ColorPanel = ( {
 	colorTypes,
+	miniCartButtonRef,
 }: {
 	colorTypes: CustomColorsMap;
+	miniCartButtonRef: RefObject< HTMLButtonElement >;
 } ) => {
 	const colorGradientOptions = useMultipleOriginColorsAndGradients();
 	const flattenedColors = flattenColors( colorGradientOptions );
@@ -142,6 +165,52 @@ export const ColorPanel = ( {
 		attributes,
 		clientId,
 	] );
+
+	const colorContrastWarnings = useMemo( () => {
+		if ( ! settings || settings.length === 0 ) {
+			return;
+		}
+
+		const contrastWarnings = [];
+
+		for ( let i = 0; i < settings.length; i++ ) {
+			const setting = settings[ i ];
+
+			if ( ! setting.colorValue ) {
+				continue;
+			}
+
+			if ( ! miniCartButtonRef.current ) {
+				return;
+			}
+
+			const bgColor = getBackgroundColor( miniCartButtonRef.current );
+			// @TODO Calling a component directly is not recommended.
+			// But how to know if it will return null before rendering it?
+			const message = ContrastChecker( {
+				backgroundColor: bgColor,
+				textColor: setting.colorValue,
+			} );
+
+			if ( message ) {
+				contrastWarnings.push(
+					<div
+						style={ { gridColumnEnd: -1, gridColumnStart: 1 } }
+						key={ setting.label }
+					>
+						<p>{ setting.label }</p>
+						<ContrastChecker
+							backgroundColor={ bgColor }
+							textColor={ setting.colorValue }
+						/>
+					</div>
+				);
+			}
+		}
+
+		return contrastWarnings;
+	}, [ settings, miniCartButtonRef ] );
+
 	return (
 		colorGradientOptions.hasColorsOrGradients && (
 			// @ts-ignore The dev package version doesn't have types for group.
@@ -152,6 +221,7 @@ export const ColorPanel = ( {
 					panelId={ clientId }
 					{ ...colorGradientOptions }
 				/>
+				{ colorContrastWarnings?.map( ( warning ) => warning ) }
 			</InspectorControls>
 		)
 	);
