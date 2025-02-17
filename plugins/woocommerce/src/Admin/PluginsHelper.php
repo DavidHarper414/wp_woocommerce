@@ -105,14 +105,14 @@ class PluginsHelper {
 	 *
 	 * @return object
 	 */
-	public static function maybe_filter_plugins_api_for_wum( $res, $action, $arg ) {
-		if ( 'plugin_information' === $action && isset( $arg->slug ) && 'woo-update-manager' === $arg->slug ) {
+	public static function maybe_filter_plugins_api_for_wum( $result, $action, $args ) {
+		if ( 'plugin_information' === $action && isset( $args->slug ) && 'woo-update-manager' === $args->slug ) {
 			return (object) array(
 				'download_link' => WC_Woo_Update_Manager_Plugin::WOO_UPDATE_MANAGER_DOWNLOAD_URL,
-				'slug' => WC_Woo_Update_Manager_Plugin::WOO_UPDATE_MANAGER_SLUG,
+				'slug'          => WC_Woo_Update_Manager_Plugin::WOO_UPDATE_MANAGER_SLUG,
 			);
 		}
-		return $res;
+		return $result;
 	}
 
 	/**
