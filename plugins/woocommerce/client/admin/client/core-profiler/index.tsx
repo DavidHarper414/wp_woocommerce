@@ -23,7 +23,7 @@ import {
 } from '@woocommerce/navigation';
 import {
 	ExtensionList,
-	OPTIONS_STORE_NAME,
+	optionsStore,
 	COUNTRIES_STORE_NAME,
 	Country,
 	onboardingStore,
@@ -31,7 +31,7 @@ import {
 	GeolocationResponse,
 	pluginsStore,
 	settingsStore,
-	USER_STORE_NAME,
+	userStore,
 	WCUser,
 	ProfileItems,
 	CoreProfilerStep,
@@ -133,13 +133,11 @@ export type CoreProfilerStateMachineContext = {
 	onboardingProfile: OnboardingProfile;
 	jetpackAuthUrl?: string;
 	currentUserEmail: string | undefined;
-	currentUser?: WCUser< 'capabilities' >;
+	currentUser?: WCUser;
 };
 
 const getAllowTrackingOption = fromPromise( async () =>
-	resolveSelect( OPTIONS_STORE_NAME ).getOption(
-		'woocommerce_allow_tracking'
-	)
+	resolveSelect( optionsStore ).getOption( 'woocommerce_allow_tracking' )
 );
 
 const handleTrackingOption = assign( {
@@ -151,7 +149,7 @@ const handleTrackingOption = assign( {
 } );
 
 const getStoreNameOption = fromPromise( async () =>
-	resolveSelect( OPTIONS_STORE_NAME ).getOption( 'blogname' )
+	resolveSelect( optionsStore ).getOption( 'blogname' )
 );
 
 const handleStoreNameOption = assign( {
@@ -172,9 +170,7 @@ const handleStoreNameOption = assign( {
 } );
 
 const getStoreCountryOption = fromPromise( async () =>
-	resolveSelect( OPTIONS_STORE_NAME ).getOption(
-		'woocommerce_default_country'
-	)
+	resolveSelect( optionsStore ).getOption( 'woocommerce_default_country' )
 );
 
 const handleStoreCountryOption = assign( {
@@ -195,7 +191,7 @@ const handleStoreCountryOption = assign( {
 const preFetchOptions = fromPromise( async ( { input }: { input: string[] } ) =>
 	Promise.all( [
 		input.map( ( optionName: string ) =>
-			resolveSelect( OPTIONS_STORE_NAME ).getOption( optionName )
+			resolveSelect( optionsStore ).getOption( optionName )
 		),
 	] )
 );
@@ -211,9 +207,7 @@ const handleCountries = assign( {
 } );
 
 const getOnboardingProfileOption = fromPromise( async () =>
-	resolveSelect( OPTIONS_STORE_NAME ).getOption(
-		'woocommerce_onboarding_profile'
-	)
+	resolveSelect( optionsStore ).getOption( 'woocommerce_onboarding_profile' )
 );
 
 const handleOnboardingProfileOption = assign( {
@@ -256,18 +250,12 @@ const handleCoreProfilerCompletedSteps = assign( {
 } );
 
 const getCurrentUserEmail = fromPromise( async () => {
-	// @ts-expect-error TODO react-18-upgrade: getCurrentUser type is not correctly typed and was surfaced by https://github.com/woocommerce/woocommerce/pull/54146
-	const currentUser: WCUser< 'email' > = await resolveSelect(
-		USER_STORE_NAME
-	).getCurrentUser();
+	const currentUser = await resolveSelect( userStore ).getCurrentUser();
 	return currentUser?.email;
 } );
 
 const getCurrentUser = fromPromise( async () => {
-	// @ts-expect-error TODO react-18-upgrade: getCurrentUser type is not correctly typed and was surfaced by https://github.com/woocommerce/woocommerce/pull/54146
-	const currentUser: WCUser< 'capabilities' > = await resolveSelect(
-		USER_STORE_NAME
-	).getCurrentUser();
+	const currentUser = await resolveSelect( userStore ).getCurrentUser();
 	return currentUser;
 } );
 
@@ -275,7 +263,7 @@ const assignCurrentUser = assign( {
 	currentUser: ( {
 		event,
 	}: {
-		event: DoneActorEvent< WCUser< 'capabilities' > | undefined >;
+		event: DoneActorEvent< WCUser | undefined >;
 	} ) => {
 		if ( event.output ) {
 			return event.output;
@@ -393,7 +381,7 @@ const recordUpdateTrackingOption = (
 const updateTrackingOption = fromPromise(
 	async ( { input }: { input: CoreProfilerStateMachineContext } ) => {
 		const prevValue =
-			( await resolveSelect( OPTIONS_STORE_NAME ).getOption(
+			( await resolveSelect( optionsStore ).getOption(
 				'woocommerce_allow_tracking'
 			) ) === 'yes'
 				? 'yes'
@@ -421,7 +409,7 @@ const updateTrackingOption = fromPromise(
 		} );
 
 		const trackingValue = input.optInDataSharing ? 'yes' : 'no';
-		dispatch( OPTIONS_STORE_NAME ).updateOptions( {
+		dispatch( optionsStore ).updateOptions( {
 			woocommerce_allow_tracking: trackingValue,
 		} );
 	}
@@ -442,7 +430,7 @@ const updateOnboardingProfileOption = fromPromise(
 );
 
 const updateBusinessLocation = ( countryAndState: string ) => {
-	return dispatch( OPTIONS_STORE_NAME ).updateOptions( {
+	return dispatch( optionsStore ).updateOptions( {
 		woocommerce_default_country: countryAndState,
 	} );
 };
@@ -576,7 +564,7 @@ const updateBusinessInfo = fromPromise(
 					store_email: input.payload.storeEmailAddress,
 				} ),
 			} ),
-			dispatch( OPTIONS_STORE_NAME ).updateOptions( {
+			dispatch( optionsStore ).updateOptions( {
 				blogname: input.payload.storeName,
 				woocommerce_default_country: input.payload.storeLocation,
 			} ),
@@ -1878,6 +1866,7 @@ export const CoreProfilerController = ( {
 				},
 				userHasNoInstallPluginsPermission: ( { context } ) => {
 					return (
+						// @ts-expect-error TODO: react-18-upgrade: This comparison appears to be unintentional because the types 'string | undefined' and 'boolean' have no overlap.ts(2367). Need to check if this is a valid comparison.
 						context?.currentUser?.capabilities.install_plugins !==
 						true
 					);
