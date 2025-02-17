@@ -7,5 +7,9 @@
 	"include": [
 		"typings/**/*",
 		"src/**/*",
+	],
+	"exclude": [
+		"**/test/**",
+		"**/test-helpers/**",
 	]
 }

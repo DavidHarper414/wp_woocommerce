@@ -2,6 +2,7 @@
  * External dependencies
  */
 const WebpackRTLPlugin = require( 'webpack-rtl-plugin' );
+const path = require( 'path' );
 
 /**
  * Internal dependencies
@@ -11,10 +12,18 @@ const {
 	plugin,
 } = require( '@woocommerce/internal-style-build' );
 
+
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
 	mode: process.env.NODE_ENV || 'development',
+	cache: ( NODE_ENV !== 'development' && { type: 'memory' } ) || {
+		type: 'filesystem',
+		cacheDirectory: path.resolve(
+			__dirname,
+			'../../../node_modules/.cache/webpack-ai'
+		),
+	},
 	entry: {
 		'build-style': __dirname + '/src/style.scss',
 	},

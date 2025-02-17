@@ -2,7 +2,6 @@
 	"extends": "../tsconfig",
 	"compilerOptions": {
 		"rootDir": "src",
-		"noCheck": false,
 		"outDir": "build-module",
 		"declaration": true,
 		"declarationMap": true,
@@ -10,5 +9,12 @@
 		"resolveJsonModule": true,
 		"typeRoots": [ "./typings", "./node_modules/@types" ]
 	},
-	"include": [ "typings/**/*", "src/**/*" ]
+	"include": [
+		"typings/**/*",
+		"src/**/*"
+	],
+	"exclude": [
+		"**/test/**",
+		"**/stories/**",
+	]
 }

@@ -2,7 +2,6 @@
 	"extends": "../tsconfig-cjs",
 	"compilerOptions": {
 		"outDir": "build",
-		"noCheck": false,
 		"resolveJsonModule": true,
 		"typeRoots": [
 			"./typings",
@@ -12,5 +11,9 @@
 	"include": [
 		"typings/**/*",
 		"src/**/*",
+	],
+	"exclude": [
+		"**/test/**",
+		"**/stories/**",
 	]
 }

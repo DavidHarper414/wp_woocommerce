@@ -88,6 +88,13 @@ require( 'fs-extra' ).ensureSymlinkSync(
 
 const webpackConfig = {
 	mode: NODE_ENV,
+	cache: ( NODE_ENV !== 'development' && { type: 'memory' } ) || {
+		type: 'filesystem',
+		cacheDirectory: path.resolve(
+			__dirname,
+			'../../../../node_modules/.cache/webpack-admin'
+		),
+	},
 	entry: getEntryPoints(),
 	output: {
 		filename: ( data ) => {
@@ -266,7 +273,7 @@ const webpackConfig = {
 };
 if ( ! isProduction || WC_ADMIN_PHASE === 'development' ) {
 	// Set default sourcemap mode if it wasn't set by WP_DEVTOOL.
-	webpackConfig.devtool = webpackConfig.devtool || 'source-map';
+	webpackConfig.devtool = webpackConfig.devtool || 'eval-source-map';
 
 	if ( isHot ) {
 		// Add dev server config

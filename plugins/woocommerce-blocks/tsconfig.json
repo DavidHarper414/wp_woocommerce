@@ -12,9 +12,12 @@
 		"./tests/js/setup-after-env.ts"
 	],
 	"exclude": [
+		"**/test/**",
+		"**/stories/**",
 		"./storybook/build",
+		"./storybook/dist",
 		"./storybook/webpack.config.js",
 		"./storybook/preview.js",
 		"./bin"
-	]
+	],
 }
