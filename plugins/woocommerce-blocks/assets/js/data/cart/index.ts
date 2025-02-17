@@ -95,7 +95,7 @@ window.addEventListener(
 		} >;
 		const { type, quantityChanges } = customEvent.detail;
 		if ( type === 'from_iAPI' ) {
-			wpDispatch( store ).syncCartwithIAPIStore( quantityChanges );
+			wpDispatch( store ).syncCartWithIAPIStore( quantityChanges );
 		}
 	}
 );

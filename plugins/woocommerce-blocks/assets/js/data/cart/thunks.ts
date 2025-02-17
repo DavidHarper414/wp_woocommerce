@@ -152,7 +152,7 @@ export const applyExtensionCartUpdate =
  * @param {QuantityChanges} quantityChanges The quantity changes data included in the sync event.
  * @throws Will throw an error if there is an API problem.
  */
-export const syncCartwithIAPIStore =
+export const syncCartWithIAPIStore =
 	( {
 		cartItemsPendingQuantity,
 		cartItemsPendingDelete,
