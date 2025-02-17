@@ -125,11 +125,11 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/update-store-currency',
+			'/' . $this->rest_base . '/update-store-currency-and-measurement-units',
 			array(
 				array(
 					'methods'             => 'POST',
-					'callback'            => array( $this, 'update_store_currency' ),
+					'callback'            => array( $this, 'update_store_currency_and_measurement_units' ),
 					'permission_callback' => array( $this, 'update_items_permissions_check' ),
 					'args'                => array(
 						'country_code' => array(
@@ -334,12 +334,12 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 
 
 	/**
-	 * Update onboarding profile data.
+	 * Update store's currency and measurement units.
 	 *
 	 * @param  WP_REST_Request $request Request data.
 	 * @return WP_Error|WP_REST_Response
 	 */
-	public function update_store_currency( WP_REST_Request $request ) {
+	public function update_store_currency_and_measurement_units( WP_REST_Request $request ) {
 		$country_code = $request->get_param( 'country_code' );
 		$locale_info  = include WC()->plugin_path() . '/i18n/locale-info.php';
 
@@ -359,6 +359,8 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 			'woocommerce_price_thousand_sep' => $country_info['thousand_sep'],
 			'woocommerce_price_decimal_sep'  => $country_info['decimal_sep'],
 			'woocommerce_price_num_decimals' => $country_info['num_decimals'],
+			'woocommerce_weight_unit'        => $country_info['weight_unit'],
+			'woocommerce_dimension_unit'     => $country_info['dimension_unit'],
 		);
 
 		foreach ( $currency_settings as $key => $value ) {
