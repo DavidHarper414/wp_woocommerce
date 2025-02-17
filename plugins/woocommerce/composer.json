@@ -28,7 +28,10 @@
 		},
 		{
 			"type": "path",
-			"url": "../../packages/php/email-editor"
+			"url": "../../packages/php/email-editor",
+			"options": {
+				"symlink": false
+			}
 		}
 	],
 	"require": {
