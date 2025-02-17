@@ -75,6 +75,11 @@ if ( wc_hex_is_light( $body ) ) {
 	$link_color = wc_hex_is_light( $base ) ? $base_text : $base;
 }
 
+// If email improvements are enabled, always use the base color for links.
+if ( $email_improvements_enabled ) {
+	$link_color = $base;
+}
+
 $bg_darker_10    = wc_hex_darker( $bg, 10 );
 $body_darker_10  = wc_hex_darker( $body, 10 );
 $base_lighter_20 = wc_hex_lighter( $base, 20 );
