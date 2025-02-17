@@ -493,11 +493,13 @@ jobs:
           BASE: ${{ github.event.pull_request.base.sha }}
           HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
-            php tools/monorepo/check-changelogger-use.php --debug "$BASE" "$HEAD"
-            echo "Passed validation: ${{ env.CHANGELOG_PACKAGES_TO_VALIDATE }}"
+            php tools/monorepo/check-changelogger-use.php --debug "$BASE" "$HEAD" | while read -r -d '' line; do 
+                echo "$line"
+            done
 
       - name: 'Validate - existing entries'
-        run: pnpm --recursive --parallel --stream changelog validate
+        run: |
+            pnpm --recursive --parallel --stream changelog validate
 
   validate-markdown:
     name: 'Validate markdown'
