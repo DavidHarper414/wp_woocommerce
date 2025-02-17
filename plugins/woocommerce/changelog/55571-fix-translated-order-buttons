@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Fix a bug where the view action was being displayed on the order details page.
