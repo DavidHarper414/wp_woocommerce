@@ -11,8 +11,6 @@ import { getAdminLink } from '@woocommerce/settings';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import { recordEvent } from '@woocommerce/tracks';
 import { applyFilters } from '@wordpress/hooks';
-import interpolateComponents from '@automattic/interpolate-components';
-import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -31,6 +29,7 @@ import {
 	ImportCSVItem,
 	PrintfulAdvertProductPlacement,
 } from './constants';
+import { MarketplaceLink } from '~/marketplace/components/marketplace-link/marketplace-link';
 
 const getOnboardingProductType = (): string[] => {
 	const onboardingData = getAdminSetting( 'onboarding' );
@@ -174,31 +173,16 @@ export const Products = () => {
 					showOtherOptions={ false }
 					isTaskListItemClicked={ isRequesting }
 				/>
-				<Text className="woocommerce-products-marketplace-link">
-					{ interpolateComponents( {
-						mixedString: __(
-							'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your store with additional options such as Subscriptions, Gift Cards, and more.',
-							'woocommerce'
-						),
-						components: {
-							sbLink: (
-								<Link
-									onClick={ () => {
-										recordEvent(
-											'tasklist_add_product_visit_marketplace_click'
-										);
-										window.location.href = getAdminLink(
-											'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=merchandising'
-										);
-										return false;
-									} }
-									href=""
-									type="wc-admin"
-								/>
-							),
-						},
-					} ) }
-				</Text>
+				<MarketplaceLink
+					className="woocommerce-products-marketplace-link"
+					translatedString={ __(
+						// translators: {{sbLink}} is a placeholder for a html element.
+						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your store with additional options such as Subscriptions, Gift Cards, and more.',
+						'woocommerce'
+					) }
+					eventName="tasklist_add_product_visit_marketplace_click"
+					marketplaceUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=merchandising"
+				/>
 			</div>
 			{ isLoadingSampleProducts ? (
 				<LoadSampleProductModal />

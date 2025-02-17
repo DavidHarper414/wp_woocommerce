@@ -10,7 +10,6 @@ import { filter } from 'lodash';
 import interpolateComponents from '@automattic/interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Link, Stepper, Plugins } from '@woocommerce/components';
-import { Text } from '@woocommerce/experimental';
 import { getAdminLink } from '@woocommerce/settings';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import {
@@ -39,6 +38,7 @@ import {
 	ShippingLayoutRow,
 } from './shipping-providers/partners';
 import { TermsOfService } from '~/task-lists/components/terms-of-service';
+import { MarketplaceLink } from '~/marketplace/components/marketplace-link/marketplace-link';
 
 export class Shipping extends Component {
 	constructor( props ) {
@@ -653,34 +653,17 @@ export class Shipping extends Component {
 						/>
 					</CardBody>
 				</Card>
-				<Text
+				<MarketplaceLink
 					as="div"
 					className="woocommerce-task-dashboard__container woocommerce-task-marketplace-link"
-				>
-					{ interpolateComponents( {
-						mixedString: __(
-							'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more shipping, delivery, and fulfillment solutions.',
-							'woocommerce'
-						),
-						components: {
-							sbLink: (
-								<Link
-									onClick={ () => {
-										recordEvent(
-											'tasklist_shipping_visit_marketplace_click'
-										);
-										window.location.href = getAdminLink(
-											'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping-delivery-and-fulfillment'
-										);
-										return false;
-									} }
-									href=""
-									type="wc-admin"
-								/>
-							),
-						},
-					} ) }
-				</Text>
+					translatedString={ __(
+						// translators: {{sbLink}} is a placeholder for a html element.
+						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more shipping, delivery, and fulfillment solutions.',
+						'woocommerce'
+					) }
+					eventName="tasklist_shipping_visit_marketplace_click"
+					marketplaceUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping-delivery-and-fulfillment"
+				/>
 			</div>
 		);
 	}

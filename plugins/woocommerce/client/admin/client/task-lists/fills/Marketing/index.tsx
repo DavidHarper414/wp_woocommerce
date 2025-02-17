@@ -16,9 +16,6 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { registerPlugin } from '@wordpress/plugins';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
 import { getNewPath } from '@woocommerce/navigation';
-import interpolateComponents from '@automattic/interpolate-components';
-import { Link } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -28,6 +25,7 @@ import { createNoticesFromResponse } from '~/lib/notices';
 import { PluginList, PluginListProps } from './PluginList';
 import { PluginProps } from './Plugin';
 import { getPluginSlug } from '../../../utils';
+import { MarketplaceLink } from '~/marketplace/components/marketplace-link/marketplace-link';
 
 // We display the list of plugins ordered by this list.
 const ALLOWED_PLUGIN_LISTS = [ 'task-list/grow', 'task-list/reach' ];
@@ -229,34 +227,17 @@ const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 					} ) }
 				</Card>
 			) }
-			<Text
+			<MarketplaceLink
 				as="div"
 				className="woocommerce-task-dashboard__container woocommerce-task-marketplace-link"
-			>
-				{ interpolateComponents( {
-					mixedString: __(
-						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your store with additional marketing solutions.',
-						'woocommerce'
-					),
-					components: {
-						sbLink: (
-							<Link
-								onClick={ () => {
-									recordEvent(
-										'tasklist_marketing_visit_marketplace_click'
-									);
-									window.location.href = getAdminLink(
-										'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=marketing-extensions'
-									);
-									return false;
-								} }
-								href=""
-								type="wc-admin"
-							/>
-						),
-					},
-				} ) }
-			</Text>
+				translatedString={ __(
+					// translators: {{sbLink}} is a placeholder for a html element.
+					'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to enhance your store with additional marketing solutions.',
+					'woocommerce'
+				) }
+				eventName="tasklist_marketing_visit_marketplace_click"
+				marketplaceUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=marketing-extensions"
+			/>
 		</div>
 	);
 };

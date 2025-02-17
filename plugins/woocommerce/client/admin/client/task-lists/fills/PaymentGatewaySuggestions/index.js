@@ -14,10 +14,6 @@ import { useMemo, useCallback, useEffect } from '@wordpress/element';
 import { registerPlugin } from '@wordpress/plugins';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
 import { getNewPath, getQuery } from '@woocommerce/navigation';
-import { Text } from '@woocommerce/experimental';
-import interpolateComponents from '@automattic/interpolate-components';
-import { Link } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -26,6 +22,7 @@ import { List, Placeholder as ListPlaceholder } from './components/List';
 import { Setup, Placeholder as SetupPlaceholder } from './components/Setup';
 import { WCPaySuggestion } from './components/WCPay';
 import { WCPayBNPLSuggestion } from './components/WCPayBNPL';
+import { MarketplaceLink } from '~/marketplace/components/marketplace-link/marketplace-link';
 import { getCountryCode } from '~/dashboard/utils';
 import {
 	getEnrichedPaymentGateways,
@@ -270,29 +267,15 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 			paymentGateways={ additionalGateways }
 			markConfigured={ markConfigured }
 			footerLink={
-				<Text>
-					{ interpolateComponents( {
-						mixedString: __(
-							'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find additional payment providers.',
-							'woocommerce'
-						),
-						components: {
-							sbLink: (
-								<Link
-									onClick={ () => {
-										trackSeeMore();
-										window.location.href = getAdminLink(
-											'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways'
-										);
-										return false;
-									} }
-									href=""
-									type="wc-admin"
-								/>
-							),
-						},
-					} ) }
-				</Text>
+				<MarketplaceLink
+					translatedString={ __(
+						// translators: {{sbLink}} is a placeholder for a html element.
+						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find additional payment providers.',
+						'woocommerce'
+					) }
+					onClickCallback={ trackSeeMore }
+					marketplaceUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways"
+				/>
 			}
 		></List>
 	);

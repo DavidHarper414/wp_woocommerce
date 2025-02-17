@@ -5,16 +5,12 @@ import { __ } from '@wordpress/i18n';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { Children } from '@wordpress/element';
 import clsx from 'clsx';
-import interpolateComponents from '@automattic/interpolate-components';
-import { Link } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/settings';
-import { Text } from '@woocommerce/experimental';
-import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import { TaxChildProps } from '../utils';
+import { MarketplaceLink } from '~/marketplace/components/marketplace-link/marketplace-link';
 import './partners.scss';
 
 export const Partners = ( {
@@ -71,34 +67,17 @@ export const Partners = ( {
 					</ul>
 				</CardBody>
 			</Card>
-			<Text
+			<MarketplaceLink
 				as="div"
 				className="woocommerce-task-dashboard__container woocommerce-task-marketplace-link"
-			>
-				{ interpolateComponents( {
-					mixedString: __(
-						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more tax solutions.',
-						'woocommerce'
-					),
-					components: {
-						sbLink: (
-							<Link
-								onClick={ () => {
-									recordEvent(
-										'tasklist_tax_visit_marketplace_click'
-									);
-									window.location.href = getAdminLink(
-										'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=operations'
-									);
-									return false;
-								} }
-								href=""
-								type="wc-admin"
-							/>
-						),
-					},
-				} ) }
-			</Text>
+				translatedString={ __(
+					// translators: {{sbLink}} is a placeholder for a html element.
+					'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more tax solutions.',
+					'woocommerce'
+				) }
+				eventName="tasklist_tax_visit_marketplace_click"
+				marketplaceUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=operations"
+			/>
 		</>
 	);
 };

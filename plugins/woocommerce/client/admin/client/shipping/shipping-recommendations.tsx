@@ -6,10 +6,6 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, Children } from '@wordpress/element';
 import { Text } from '@woocommerce/experimental';
 import { pluginsStore } from '@woocommerce/data';
-import interpolateComponents from '@automattic/interpolate-components';
-import { Link } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/settings';
-import { recordEvent } from '@woocommerce/tracks';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore VisuallyHidden is present, it's just not typed
 // eslint-disable-next-line @woocommerce/dependency-group
@@ -25,6 +21,7 @@ import {
 } from '../settings-recommendations/dismissable-list';
 import WooCommerceServicesItem from './woocommerce-services-item';
 import './shipping-recommendations.scss';
+import { MarketplaceLink } from '~/marketplace/components/marketplace-link/marketplace-link';
 
 const useInstallPlugin = () => {
 	const [ pluginsBeingSetup, setPluginsBeingSetup ] = useState<
@@ -87,31 +84,15 @@ export const ShippingRecommendationsList = ( {
 			) ) }
 		</ul>
 		<CardFooter>
-			<Text>
-				{ interpolateComponents( {
-					mixedString: __(
-						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more shipping, delivery, and fulfillment solutions.',
-						'woocommerce'
-					),
-					components: {
-						sbLink: (
-							<Link
-								onClick={ () => {
-									recordEvent(
-										'settings_shipping_recommendation_visit_marketplace_click'
-									);
-									window.location.href = getAdminLink(
-										'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping-delivery-and-fulfillment'
-									);
-									return false;
-								} }
-								href=""
-								type="wc-admin"
-							/>
-						),
-					},
-				} ) }
-			</Text>
+			<MarketplaceLink
+				translatedString={ __(
+					// translators: {{sbLink}} is a placeholder for a html element.
+					'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more shipping, delivery, and fulfillment solutions.',
+					'woocommerce'
+				) }
+				marketplaceUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping-delivery-and-fulfillment"
+				eventName="settings_shipping_recommendation_visit_marketplace_click"
+			/>
 		</CardFooter>
 	</DismissableList>
 );
