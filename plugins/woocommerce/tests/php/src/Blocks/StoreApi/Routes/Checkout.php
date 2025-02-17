@@ -1326,7 +1326,7 @@ class Checkout extends MockeryTestCase {
 		$additional_fields_order   = $checkout_fields->get_order_additional_fields_with_values( $order, 'order', 'other', 'view' );
 
 		// Verify that address fields are not updated, but contact and order fields are.
-		$this->assertEquals( null, $additional_fields_address['plugin-namespace/student-id'] );
+		$this->assertArrayNotHasKey( 'plugin-namespace/student-id', $additional_fields_address );
 		$this->assertEquals( 'engineering', $additional_fields_contact['plugin-namespace/job-function']['value'] );
 		$this->assertEquals( true, $additional_fields_order['plugin-namespace/leave-on-porch']['value'] );
 	}
