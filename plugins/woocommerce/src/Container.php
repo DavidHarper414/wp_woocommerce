@@ -15,6 +15,7 @@ use Automattic\WooCommerce\Internal\DependencyManagement\ServiceProviders\CostOf
 use Automattic\WooCommerce\Internal\DependencyManagement\ServiceProviders\COTMigrationServiceProvider;
 use Automattic\WooCommerce\Internal\DependencyManagement\ServiceProviders\DownloadPermissionsAdjusterServiceProvider;
 use Automattic\WooCommerce\Internal\DependencyManagement\ServiceProviders\AssignDefaultCategoryServiceProvider;
+use Automattic\WooCommerce\Internal\DependencyManagement\ServiceProviders\EmailEditorServiceProvider;
 use Automattic\WooCommerce\Internal\DependencyManagement\ServiceProviders\EmailPreviewServiceProvider;
 use Automattic\WooCommerce\Internal\DependencyManagement\ServiceProviders\EnginesServiceProvider;
 use Automattic\WooCommerce\Internal\DependencyManagement\ServiceProviders\FeaturesServiceProvider;
@@ -171,6 +172,7 @@ final class Container {
 			CostOfGoodsSoldServiceProvider::class,
 			AdminSettingsServiceProvider::class,
 			AdminSuggestionsServiceProvider::class,
+			EmailEditorServiceProvider::class,
 		);
 	}
 }
