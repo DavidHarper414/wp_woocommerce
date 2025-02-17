@@ -501,8 +501,7 @@ jobs:
             for package in $( echo "${{ steps.passed_validation.outputs.passed }}" | tr "," "\n" ); do
                 filter="$filter --filter $package"
             done
-            # pnpm --parallel --stream $filter changelog validate
-            pnpm --recursive --parallel --stream changelog validate
+            pnpm --parallel --stream $filter changelog validate
 
   validate-markdown:
     name: 'Validate markdown'
