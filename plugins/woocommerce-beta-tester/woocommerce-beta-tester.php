@@ -105,26 +105,22 @@ function add_extension_register_script() {
 	);
 	wp_enqueue_script( 'woocommerce-admin-test-helper' );
 
-	$css_file_version = filemtime( dirname( __FILE__ ) . '/build/index.css' );
+	$css_file = dirname( __FILE__ ) . '/build/index.css';
+	if ( file_exists( $css_file ) ) {
+		$css_file_version = filemtime( $css_file );
 
-	wp_register_style(
-		'wp-components',
-		plugins_url( 'dist/components/style.css', __FILE__ ),
-		array(),
-		$css_file_version
-	);
+		wp_register_style(
+			'woocommerce-admin-test-helper',
+			plugins_url( '/build/index.css', __FILE__ ),
+			// Add any dependencies styles may have, such as wp-components.
+			array(
+				'wp-components',
+			),
+			$css_file_version
+		);
 
-	wp_register_style(
-		'woocommerce-admin-test-helper',
-		plugins_url( '/build/index.css', __FILE__ ),
-		// Add any dependencies styles may have, such as wp-components.
-		array(
-			'wp-components',
-		),
-		$css_file_version
-	);
-
-	wp_enqueue_style( 'woocommerce-admin-test-helper' );
+		wp_enqueue_style( 'woocommerce-admin-test-helper' );
+	}
 }
 
 add_action( 'admin_enqueue_scripts', 'add_extension_register_script' );
