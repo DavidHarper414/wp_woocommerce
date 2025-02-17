@@ -89,6 +89,10 @@
 				}
 			} );
 
+		$( '.iris-square-value' ).on( 'click', function ( event ) {
+			event.preventDefault();
+		} );
+
 		$( 'body' ).on( 'click', function () {
 			$( '.iris-picker' ).hide();
 		} );
