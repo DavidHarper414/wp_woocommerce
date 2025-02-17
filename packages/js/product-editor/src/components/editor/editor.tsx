@@ -36,7 +36,7 @@ import { BlockEditor } from '../block-editor';
 import { EditorLoadingContext } from '../../contexts/editor-loading-context';
 import { ValidationProvider } from '../../contexts/validation-context';
 import { EditorProps } from './types';
-import { store as productEditorUiStore } from '../../store/product-editor-ui';
+import { wooProductEditorUiStore } from '../../store/product-editor-ui';
 import { PrepublishPanel } from '../prepublish-panel/prepublish-panel';
 
 export function Editor( { productId, postType = 'product' }: EditorProps ) {
@@ -54,9 +54,11 @@ export function Editor( { productId, postType = 'product' }: EditorProps ) {
 	// Check if the prepublish sidebar is open from the store.
 	const isPrepublishPanelOpen = useSelect(
 		(
-			select: ( key: string ) => { isPrepublishPanelOpen: () => boolean }
+			select: ( key: typeof wooProductEditorUiStore ) => {
+				isPrepublishPanelOpen: () => boolean | undefined;
+			}
 		) => {
-			return select( productEditorUiStore ).isPrepublishPanelOpen();
+			return select( wooProductEditorUiStore ).isPrepublishPanelOpen();
 		},
 		[]
 	);
