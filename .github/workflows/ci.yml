@@ -490,8 +490,9 @@ jobs:
 
       - name: 'Validate - missing entries'
         run: |
-            php tools/monorepo/check-changelogger-use.php --debug "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | tee -a "$(tty)" | grep 'Passed validation:' | read passed_validation
-            echo "Next verify - $passed_validation"
+            php tools/monorepo/check-changelogger-use.php --debug "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | tee -a "$(tty)" | grep 'Passed validation'
+            # | read passed_validation
+            # echo "Next verify - $passed_validation"
 
       - name: 'Validate - existing entries'
         run: |
