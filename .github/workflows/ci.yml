@@ -489,14 +489,14 @@ jobs:
           pull-package-composer-deps: '@woocommerce/plugin-woocommerce'
 
       - name: 'Validate - missing entries'
+        id: passed_validation
         run: |
             passed_validation=$( php tools/monorepo/check-changelogger-use.php --debug "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | tee -a /dev/stderr | grep 'Passed validation' )
-            echo "Next verify - $passed_validation"
-            passed_validation="${passed_validation/Passed validation: /}"
-            echo "Next verify - $passed_validation"
+            echo "passed=${passed_validation/Passed validation: /}" >> $GITHUB_OUTPUT
 
       - name: 'Validate - existing entries'
         run: |
+            echp "${{ steps.passed_validation.outputs.passed }}"
             pnpm --recursive --parallel --stream changelog validate
 
   validate-markdown:
