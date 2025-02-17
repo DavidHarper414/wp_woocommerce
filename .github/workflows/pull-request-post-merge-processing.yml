@@ -67,7 +67,7 @@ jobs:
                 WOO_PR_TESTING_ANALYSIS_TEAM_ID: ${{ secrets.WOO_PR_TESTING_ANALYSIS_TEAM_ID }}
 
     process-pull-request-after-close:
-        name: "Process a pull request after it's closed or merged"
+        name: "Process a pull request after it's been closed or merged"
         runs-on: ubuntu-latest
         steps:
             - name: 'Cleanup: GitHub caches associated with the merged branch'
