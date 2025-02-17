@@ -277,9 +277,10 @@ $wc-setting-email-width: 634px;
 	}
 
 	.wc-settings-email-image-url-image-preview {
-		max-width: 400px;
 		border: 1px #ccc solid;
 		border-radius: 4px;
+		max-height: 200px;
+		max-width: 400px;
 
 		&:hover {
 			cursor: pointer;
