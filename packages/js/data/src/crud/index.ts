@@ -14,31 +14,31 @@ import { createReducer } from './reducer';
 import { Item } from '../items';
 
 interface CrudStoreParams<
-	TResourceName,
-	TResourceNamePlural,
-	TActions,
-	TSelectors,
-	TResolvers,
-	TControls,
-	TReducer
+	ResourceName,
+	ResourceNamePlural,
+	Actions,
+	Selectors,
+	Resolvers,
+	Controls,
+	Reducer
 > {
 	storeName: string;
-	resourceName: TResourceName;
+	resourceName: ResourceName;
 	namespace: string;
-	pluralResourceName: TResourceNamePlural;
+	pluralResourceName: ResourceNamePlural;
 	storeConfig?: {
-		reducer?: TReducer;
-		actions?: TActions;
-		selectors?: TSelectors;
-		resolvers?: TResolvers;
-		controls?: TControls;
+		reducer?: Reducer;
+		actions?: Actions;
+		selectors?: Selectors;
+		resolvers?: Resolvers;
+		controls?: Controls;
 	};
 }
 
 export const createCrudDataStore = <
-	TResourceType extends Item,
-	TActions extends Record< string, ( ...args: any[] ) => any >,
-	TSelectors
+	ResourceType extends Item,
+	Actions extends Record< string, ( ...args: unknown[] ) => unknown >,
+	Selectors
 >( {
 	storeName,
 	resourceName,
@@ -46,12 +46,12 @@ export const createCrudDataStore = <
 	pluralResourceName,
 	storeConfig,
 }: CrudStoreParams<
-	TResourceName,
-	TResourceNamePlural,
-	TActions,
-	TSelectors
+	ResourceName,
+	ResourceNamePlural,
+	Actions,
+	Selectors
 > ) => {
-	const crudActions = createDispatchActions< TResourceName, TResourceType >( {
+	const crudActions = createDispatchActions< ResourceName, ResourceType >( {
 		resourceName,
 		namespace,
 	} );
@@ -82,22 +82,19 @@ export const createCrudDataStore = <
 
 	const crudReducer = createReducer( reducer );
 
-	const store = createReduxStore< unknown, TActions, TSelectors >(
-		storeName,
-		{
-			reducer: crudReducer,
-			actions: { ...crudActions, ...actions } as TActions,
-			selectors: {
-				...crudSelectors,
-				...selectors,
-			} as TSelectors,
-			resolvers: { ...crudResolvers, ...resolvers },
-			controls: {
-				...defaultControls,
-				...controls,
-			},
-		}
-	);
+	const store = createReduxStore< unknown, Actions, Selectors >( storeName, {
+		reducer: crudReducer,
+		actions: { ...crudActions, ...actions } as Actions,
+		selectors: {
+			...crudSelectors,
+			...selectors,
+		} as Selectors,
+		resolvers: { ...crudResolvers, ...resolvers },
+		controls: {
+			...defaultControls,
+			...controls,
+		},
+	} );
 
 	register( store );
 

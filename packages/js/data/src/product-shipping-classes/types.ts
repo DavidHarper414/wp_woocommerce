@@ -8,7 +8,16 @@ import { DispatchFromMap } from '@automattic/data-stores';
  */
 import { CrudActions, CrudSelectors } from '../crud/types';
 import { BaseQueryParams } from '../types';
-import { Resolvers } from './actions';
+
+export type CustomActions = {
+	createProductShippingClass: (
+		query: Partial< ProductShippingClass >,
+		options: {
+			optimisticQueryUpdate?: Partial< ProductShippingClass >;
+			optimisticUrlParameters?: IdType[];
+		}
+	) => ProductShippingClass;
+};
 
 export type ProductShippingClass = {
 	id: number;
@@ -35,7 +44,7 @@ export type ProductShippingClassActions = CrudActions<
 	MutableProperties,
 	'name'
 > &
-	Resolvers;
+	CustomActions;
 
 export type ProductShippingClassSelectors = CrudSelectors<
 	'ProductShippingClass',

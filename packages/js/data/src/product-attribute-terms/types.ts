@@ -8,7 +8,7 @@ import { DispatchFromMap } from '@automattic/data-stores';
  */
 import { CrudActions, CrudSelectors } from '../crud/types';
 
-export type Resolvers = {
+export type CustomActions = {
 	createProductAttributeTerm: (
 		query: ProductAttributeTermQuery,
 		options?: {
@@ -55,7 +55,7 @@ export type ProductAttributeTermActions = CrudActions<
 	ProductAttributeTerm,
 	MutableProperties
 > &
-	Resolvers;
+	CustomActions;
 
 export type ProductAttributeTermsSelectors = CrudSelectors<
 	'ProductAttributeTerm',
