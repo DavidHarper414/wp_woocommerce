@@ -706,6 +706,7 @@ class Cart extends ControllerTestCase {
 				$fixtures->get_product_attribute( 'Size', array( 'Small 🤏', 'Medium' ) ),
 				// this will create a "local" attribute.
 				[
+					'attribute_id'       => 0,
 					'attribute_taxonomy' => 'Autograph choice ✏️',
 					'term_ids'           => [ 'Yes 👍', 'No 👎' ],
 				],
@@ -781,6 +782,7 @@ class Cart extends ControllerTestCase {
 			),
 			array(
 				[
+					'attribute_id'       => 0,
 					'attribute_taxonomy' => 'Autograph choice ✏️',
 					'term_ids'           => [ 'Yes 👍', 'No 👎' ],
 				],
