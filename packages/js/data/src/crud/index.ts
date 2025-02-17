@@ -55,11 +55,7 @@ export const createCrudDataStore = <
 		resourceName,
 		namespace,
 	} );
-	const crudResolvers = createResolvers<
-		TResourceName,
-		TResourceTypePlural,
-		TResourceType
-	>( {
+	const crudResolvers = createResolvers( {
 		storeName,
 		resourceName,
 		pluralResourceName,
