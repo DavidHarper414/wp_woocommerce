@@ -5,6 +5,7 @@ on:
         paths:
             - 'packages/**'
             - 'plugins/woocommerce/**'
+            - '.github/workflows/pull-request-post-merge-processing.yml'
 
 permissions: {}
 
