@@ -473,7 +473,7 @@ jobs:
     name: 'Validate changelog'
     if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'trunk' && needs.identify-jobs-to-run.outputs.needs-changelog-validation == 'true' }}
     needs: [ 'identify-jobs-to-run' ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
 
@@ -496,11 +496,13 @@ jobs:
 
       - name: 'Validate - existing entries'
         run: |
+            echo "Validating: ${{ steps.passed_validation.outputs.passed }}"
             filter='';
             for package in $( echo "${{ steps.passed_validation.outputs.passed }}" | tr "," "\n" ); do
                 filter="$filter --filter $package"
             done
-            pnpm $filter changelog validate
+            # pnpm --parallel --stream $filter changelog validate
+            pnpm --recursive --parallel --stream changelog validate
 
   validate-markdown:
     name: 'Validate markdown'
