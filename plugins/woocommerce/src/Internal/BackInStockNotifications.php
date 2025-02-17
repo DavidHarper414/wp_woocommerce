@@ -8,6 +8,7 @@ declare( strict_types = 1);
 namespace Automattic\WooCommerce\Internal;
 
 use Automattic\WooCommerce\Internal\Utilities\DatabaseUtil;
+use Automattic\WooCommerce\Proxies\LegacyProxy;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -31,18 +32,32 @@ class BackInStockNotifications {
 		if ( ! self::is_enabled() || self::$is_activation_request ) { 
 			return;
 		}
+
 		//TODO: can init run only in some contexts? admin + front end, rest api if it's related to BIS, but it needs to react to changes in stock levels, so can it actually be reduced..?
 		self::$db_utils = wc_get_container()->get( DatabaseUtil::class );
 
-		// Create DB tables if they don't exist. This will be removed in the future to reduce the number of DB calls.
-		if ( ! self::bis_tables_exist() ) {
-			self::create_database_tables();
-		}
-
-		// To have WC_BIS() available.
+		// Include BIS files
 		include_once WC_ABSPATH . '/includes/bis/class-wc-bis-notifications.php';
 
-		WC_BIS()->initialize_plugin();
+		// Hook into feature flag changes
+		add_action( 'update_option_wc_feature_woocommerce_bis_notifications_enabled', array( __CLASS__, 'maybe_setup_events' ), 10, 2 );
+		
+		// Hook into WC updates
+		add_action( 'woocommerce_update', array( __CLASS__, 'maybe_setup_events' ) );
+
+		// Check during admin init
+		if ( is_admin() ) {
+			// Check if events need to be created during admin init.
+			add_action( 'admin_init', array( __CLASS__, 'check_events' ) );
+
+			// Create DB tables if they don't exist. This will be removed in the future to reduce the number of DB calls.
+			if ( ! self::bis_tables_exist() ) {
+				self::create_database_tables();
+			}
+		}
+
+		$wc_bis = wc_get_container()->get( LegacyProxy::class )->call_function( 'WC_BIS' );
+		$wc_bis->initialize_plugin();
 
 	}
 
@@ -82,9 +97,14 @@ class BackInStockNotifications {
 			// This skips the initialization of BIS plugin to avoid duplicate code & fatal errors.
 			// BIS plugin is then deactivated during plugins_loaded.10 from \Automattic\WooCommerce\Packages::on_init().
 			remove_action( 'plugins_loaded', array( WC_BIS(), 'initialize_plugin' ), 9 );
+
+			// Strictly speaking, it's not necessarily an activation request, but when WC_BIS() is present before
+			// loading BIS from core, it will fatal during init(), so init() needs to be skipped.
+			// This should only be triggered once after a plugin update during the reuqest when BIS plugin is deactivated.
+			self::$is_activation_request = true;
 		}
 
-		// Set flag for activation request to prevent fatal errors.
+		// Set flag for activation request to prevent fatal errors when BIS is activated while WC+BIS is already active.
 		$bis_plugin_name = 'woocommerce-back-in-stock-notifications/woocommerce-back-in-stock-notifications.php';
 
 		// Check for CLI activation via WP-CLI
@@ -131,7 +151,8 @@ class BackInStockNotifications {
 			include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
 		}
 
-		return \WC_BIS_Install::get_schema();
+
+		return wc_get_container()->get( LegacyProxy::class )->call_static( 'WC_BIS_Install', 'get_schema' );
 	}
 
 	/**
@@ -147,7 +168,7 @@ class BackInStockNotifications {
 			include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
 		}
 
-		$missing_tables = self::$db_utils->get_missing_tables( \WC_BIS_Install::get_schema() );
+		$missing_tables = self::$db_utils->get_missing_tables( wc_get_container()->get( LegacyProxy::class )->call_static( 'WC_BIS_Install', 'get_schema' ) );
 
 		if ( 0 === count( $missing_tables ) ) {
 			return true;
@@ -168,10 +189,11 @@ class BackInStockNotifications {
 			include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
 		}
 
-		self::$db_utils->dbdelta( \WC_BIS_Install::get_schema() );
+		$db_schema = wc_get_container()->get( LegacyProxy::class )->call_static( 'WC_BIS_Install', 'get_schema' );
+		self::$db_utils->dbdelta( $db_schema );
 		$success = self::bis_tables_exist();
 		if ( ! $success ) {
-			$missing_tables = self::$db_utils->get_missing_tables( \WC_BIS_Install::get_schema() );
+			$missing_tables = self::$db_utils->get_missing_tables( $db_schema );
 			$missing_tables = implode( ', ', $missing_tables );
 			$logger = wc_get_container()->get( LegacyProxy::class )->call_function( 'wc_get_logger' );
 			$logger->error( "Back In Stock Notifications tables are missing in the database and couldn't be created. The missing tables are: $missing_tables" );
@@ -179,6 +201,7 @@ class BackInStockNotifications {
 		return $success;
 	}
 
+	//TODO: decide what to do with this.
 	/**
 	 * Run this on option update, i.e. not on each request, preferably?
 	 *
@@ -189,18 +212,10 @@ class BackInStockNotifications {
 			return;
 		}
 
-		// Create DB tables.
-		if ( ! self::bis_tables_exist() ) {
-			self::create_database_tables();
-		}
-
-		// Schedule jobs.
-		\WC_BIS_Install::create_events();
-
 		// Activate notices.
 
 		// Welcome notice on activation.
-		\WC_BIS_Admin_Notices::add_maintenance_notice( 'welcome' );
+		// \WC_BIS_Admin_Notices::add_maintenance_notice( 'welcome' );
 
 		// Run a loopback test after activation. Will only run once if successful.
 		\WC_BIS_Admin_Notices::add_maintenance_notice( 'loopback' );
@@ -209,8 +224,47 @@ class BackInStockNotifications {
 		if ( method_exists( WC(), 'queue' ) ) {
 			\WC_BIS_Admin_Notices::add_maintenance_notice( 'queue' );
 		}
+	}
 
-		// Flush rules to include our new endpoint.
-		flush_rewrite_rules();
+	/**
+	 * Check if events need to be created during admin init.
+	 * This catches cases where the option was changed directly in the database.
+	 */
+	public static function check_events() {
+		// Only check occasionally to avoid unnecessary DB calls
+		$last_check = get_option( 'wc_bis_events_last_check', 0 );
+		if ( time() - $last_check < DAY_IN_SECONDS ) {
+			return;
+		}
+
+		update_option( 'wc_bis_events_last_check', time() );
+		self::maybe_setup_events();
+	}
+
+	public static function maybe_setup_events( $old_value = null, $new_value = null ) {
+		// For option change, check if being disabled
+		if ( isset( $old_value ) && isset( $new_value ) && $new_value === 'no' ) {
+			self::cleanup_events();
+			return;
+		}
+
+		if ( ! self::is_enabled() ) {
+			return;
+		}
+
+		if ( ! wp_next_scheduled( 'wc_bis_daily' ) ) {
+			wc_get_container()->get( LegacyProxy::class )->call_static( 'WC_BIS_Install', 'create_events' );
+		}
+	}
+
+	/**
+	 * Clean up scheduled events when WooCommerce is deactivated.
+	 * This should be called from WooCommerce's deactivation hook.
+	 */
+	public static function cleanup_events() {
+		$timestamp = wp_next_scheduled( 'wc_bis_daily' );
+		if ( $timestamp ) {
+			wp_unschedule_event( $timestamp, 'wc_bis_daily' );
+		}
 	}
 }

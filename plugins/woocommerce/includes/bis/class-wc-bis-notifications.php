@@ -302,32 +302,6 @@ class WC_BIS_Notifications {
 	}
 
 	/**
-	 * Handle plugin activation process.
-	 *
-	 * @since  1.2.0
-	 *
-	 * @return void
-	 */
-	public function on_activation() {
-		// Add daily maintenance process.
-		if ( ! wp_next_scheduled( 'wc_bis_daily' ) ) {
-			wp_schedule_event( time() + 10, 'daily', 'wc_bis_daily' );
-		}
-	}
-
-	/**
-	 * Handle plugin deactivation process.
-	 *
-	 * @since  1.2.0
-	 *
-	 * @return void
-	 */
-	public function on_deactivation() {
-		// Clear daily maintenance process.
-		wp_clear_scheduled_hook( 'wc_bis_daily' );
-	}
-
-	/**
 	 * Get screen ids.
 	 */
 	public function get_screen_ids() {
@@ -428,7 +402,3 @@ if ( ! function_exists( 'WC_BIS' ) ) {
 	WC_BIS();
 }
 
-
-
-register_activation_hook( __FILE__, array( WC_BIS(), 'on_activation' ) );
-register_deactivation_hook( __FILE__, array( WC_BIS(), 'on_deactivation' ) );

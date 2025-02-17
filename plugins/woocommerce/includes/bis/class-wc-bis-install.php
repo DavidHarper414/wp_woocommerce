@@ -63,45 +63,8 @@ class WC_BIS_Install {
 	 * Install PB.
 	 */
 	public static function install() {
-
-		if ( ! is_blog_installed() ) {
-			return;
-		}
-
-		// Running for the first time? Set a transient now. Used in 'can_install' to prevent race conditions.
-		// set_transient( 'wc_bis_installing', 'yes', 10 ); // handled by core install
-
-		// Set a flag to indicate we're installing in the current request.
-		// self::$is_install_request = true;
-
-		// Create tables.
-		// self::create_tables(); moved to WC_Install::get_schema && \Automattic\WooCommerce\Internal\BackInStockNotifications::create_database_tables.
-
-		// Create events.
-		// self::create_events(); moved to \Automattic\WooCommerce\Internal\BackInStockNotifications::activate_bis
-
-		// Update plugin version - once set, 'maybe_install' will not call 'install' again.
-		// self::update_version();
-
-//		if ( ! class_exists( 'WC_BIS_Admin_Notices' ) ) {
-//			require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
-//		}
-
-//		if ( is_null( self::$current_version ) ) {
-//			// Add dismissible welcome notice.
-//			WC_BIS_Admin_Notices::add_maintenance_notice( 'welcome' );
-//		}
-
-//		// Run a loopback test after every update. Will only run once if successful.
-//		WC_BIS_Admin_Notices::add_maintenance_notice( 'loopback' );
-//
-//		// Run an AS test after every update. Will only run once if successful.
-//		if ( method_exists( WC(), 'queue' ) ) {
-//			WC_BIS_Admin_Notices::add_maintenance_notice( 'queue' );
-//		}
-
-		// Flush rules to include our new endpoint.
-//		flush_rewrite_rules();
+		wc_deprecated_function( 'WC_BIS_Install::install', '9.9.0' );
+		// Migrated to WC core's install routine.
 	}
 
 	/**
