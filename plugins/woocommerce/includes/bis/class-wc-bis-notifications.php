@@ -412,16 +412,23 @@ class WC_BIS_Notifications {
 	}
 }
 
-/**
- * Returns the main instance of WC_BIS_Notifications to prevent the need to use globals.
- *
- * @return  WC_BIS_Notifications
- */
-function WC_BIS() {
-	return WC_BIS_Notifications::instance();
+if ( ! function_exists( 'WC_BIS' ) ) {
+	/**
+	 * Returns the main instance of WC_BIS_Notifications to prevent the need to use globals.
+	 *
+	 * @return  WC_BIS_Notifications
+	 */
+	function WC_BIS() {
+		return WC_BIS_Notifications::instance();
+	}
+
+	// If the function already existed, it's from the standalone plugin. Avoid calling init of the plugin.
+	// This should only be skipped in the first request after WC gets updated to a version with BIS included
+	// and during which the standalone plugin gets deactivated.
+	WC_BIS();
 }
 
-WC_BIS();
+
 
 register_activation_hook( __FILE__, array( WC_BIS(), 'on_activation' ) );
 register_deactivation_hook( __FILE__, array( WC_BIS(), 'on_deactivation' ) );

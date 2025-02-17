@@ -78,9 +78,10 @@ class BackInStockNotifications {
 			return;
 		}
 
-		if ( function_exists( 'wc_bis_get_notifications' ) ) {
-			//TODO: check if this is needed & works.
-			remove_action( 'plugins_loaded', array( \WC_BIS_Notifications::instance(), 'initialize_plugin' ), 9 );
+		if ( function_exists( 'WC_BIS' ) ) {
+			// This skips the initialization of BIS plugin to avoid duplicate code & fatal errors.
+			// BIS plugin is then deactivated during plugins_loaded.10 from \Automattic\WooCommerce\Packages::on_init().
+			remove_action( 'plugins_loaded', array( WC_BIS(), 'initialize_plugin' ), 9 );
 		}
 
 		// Set flag for activation request to prevent fatal errors.
