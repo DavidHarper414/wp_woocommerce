@@ -4,7 +4,6 @@
 import { useState } from '@wordpress/element';
 import { resolveSelect } from '@wordpress/data';
 import { escapeHTML } from '@woocommerce/components';
-import { store as coreStore } from '@wordpress/core-data';
 /**
  * Internal dependencies
  */
