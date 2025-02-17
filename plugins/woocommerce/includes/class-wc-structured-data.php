@@ -243,6 +243,7 @@ class WC_Structured_Data {
 						'priceSpecification' => array(
 							array(
 								'@type'                 => 'UnitPriceSpecification',
+								'priceType'             => 'https://schema.org/ListPrice',
 								'price'                 => wc_format_decimal( $lowest, wc_get_price_decimals() ),
 								'priceCurrency'         => $currency,
 								'valueAddedTaxIncluded' => wc_prices_include_tax(),
@@ -314,17 +315,13 @@ class WC_Structured_Data {
 
 				$unit_price_specification = array(
 					'@type'                 => 'UnitPriceSpecification',
+					'priceType'             => 'https://schema.org/ListPrice',
 					'price'                 => wc_format_decimal( $min_price, wc_get_price_decimals() ),
 					'priceCurrency'         => $currency,
 					'valueAddedTaxIncluded' => wc_prices_include_tax(),
 					'validThrough'          => $price_valid_until,
 				);
-				if ( $product->is_on_sale() && $min_price !== $min_sale_price ) {
-					// `priceType` should only be specified in prices which are not the current offer.
-					// https://developers.google.com/search/docs/appearance/structured-data/merchant-listing#sale-pricing-example
-					$unit_price_specification['priceType'] = 'https://schema.org/ListPrice';
-				}
-				$markup_offer = array(
+				$markup_offer             = array(
 					'@type'              => 'Offer',
 					'priceSpecification' => array(
 						$unit_price_specification,
@@ -342,6 +339,7 @@ class WC_Structured_Data {
 						$markup_offer['priceSpecification'],
 						array(
 							'@type'                 => 'UnitPriceSpecification',
+							'priceType'             => 'https://schema.org/SalePrice',
 							'price'                 => wc_format_decimal( $min_sale_price, wc_get_price_decimals() ),
 							'priceCurrency'         => $currency,
 							'valueAddedTaxIncluded' => wc_prices_include_tax(),
@@ -352,17 +350,13 @@ class WC_Structured_Data {
 			} else {
 				$unit_price_specification = array(
 					'@type'                 => 'UnitPriceSpecification',
+					'priceType'             => 'https://schema.org/ListPrice',
 					'price'                 => wc_format_decimal( $product->get_regular_price(), wc_get_price_decimals() ),
 					'priceCurrency'         => $currency,
 					'valueAddedTaxIncluded' => wc_prices_include_tax(),
 					'validThrough'          => $price_valid_until,
 				);
-				if ( $product->is_on_sale() ) {
-					// `priceType` should only be specified in prices which are not the current offer.
-					// https://developers.google.com/search/docs/appearance/structured-data/merchant-listing#sale-pricing-example
-					$unit_price_specification['priceType'] = 'https://schema.org/ListPrice';
-				}
-				$markup_offer = array(
+				$markup_offer             = array(
 					'@type'              => 'Offer',
 					'priceSpecification' => array(
 						$unit_price_specification,
@@ -380,6 +374,7 @@ class WC_Structured_Data {
 						$markup_offer['priceSpecification'],
 						array(
 							'@type'                 => 'UnitPriceSpecification',
+							'priceType'             => 'https://schema.org/SalePrice',
 							'price'                 => wc_format_decimal( $product->get_sale_price(), wc_get_price_decimals() ),
 							'priceCurrency'         => $currency,
 							'valueAddedTaxIncluded' => wc_prices_include_tax(),
