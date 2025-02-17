@@ -473,7 +473,7 @@ jobs:
     name: 'Validate changelog'
     if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'trunk' && needs.identify-jobs-to-run.outputs.needs-changelog-validation == 'true' }}
     needs: [ 'identify-jobs-to-run' ]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
 
@@ -492,10 +492,12 @@ jobs:
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
           HEAD: ${{ github.event.pull_request.head.sha }}
-        run: php tools/monorepo/check-changelogger-use.php --debug "$BASE" "$HEAD"
+        run: |
+            php tools/monorepo/check-changelogger-use.php --debug "$BASE" "$HEAD"
+            echo $CHANGELOG_PACKAGES_TO_VALIDATE
 
       - name: 'Validate - existing entries'
-        run: composer global require automattic/jetpack-changelogger:3.3.0 --quiet && pnpm --recursive --parallel --stream changelog validate
+        run: pnpm --recursive --parallel --stream changelog validate
 
   validate-markdown:
     name: 'Validate markdown'
