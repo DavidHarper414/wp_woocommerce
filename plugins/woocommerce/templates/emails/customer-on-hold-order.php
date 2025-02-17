@@ -28,12 +28,12 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 <?php echo $email_improvements_enabled ? '<div class="email-introduction">' : ''; ?>
 <p>
-<?php 
-if( !empty($order->get_billing_first_name()) ) {
+<?php
+if ( ! empty( $order->get_billing_first_name() ) ) {
 	/* translators: %s: Customer first name */
-	printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) ); 
+	printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) );
 } else {
-	printf('Hi,');
+	printf( 'Hi,' );
 }
 ?>
 </p>
