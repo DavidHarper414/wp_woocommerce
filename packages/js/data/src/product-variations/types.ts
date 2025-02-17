@@ -8,7 +8,7 @@ import { DispatchFromMap } from '@automattic/data-stores';
  */
 import { CrudActions, CrudSelectors } from '../crud/types';
 import { Product, ProductQuery, ReadOnlyProperties } from '../products/types';
-import { Resolvers } from './actions';
+import { CustomActions } from './actions';
 import { Selectors } from './selectors';
 
 export type ProductVariationAttribute = {
@@ -101,7 +101,7 @@ export type ProductVariationActions = CrudActions<
 	ProductVariation,
 	MutableProperties
 > &
-	Resolvers;
+	CustomActions;
 
 export type ProductVariationSelectors = CrudSelectors<
 	'ProductVariation',

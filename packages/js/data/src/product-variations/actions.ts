@@ -143,7 +143,7 @@ export function* batchUpdateProductVariations(
 	}
 }
 
-export type Resolvers = {
+export type CustomActions = {
 	generateProductVariationsRequest: typeof generateProductVariationsRequest;
 	generateProductVariationsError: typeof generateProductVariationsError;
 	generateProductVariationsSuccess: typeof generateProductVariationsSuccess;
