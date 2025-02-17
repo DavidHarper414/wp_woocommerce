@@ -15,17 +15,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- * Check if the block hooks API supports contents of post_content.
- *
- * @since 9.8.0
- * @return bool
- */
-function wc_is_block_hook_post_content_supported() {
-	return (
-		has_filter( 'the_content', 'gutenberg_apply_block_hooks_to_post_content' ) ||
-		has_filter( 'the_content', 'apply_block_hooks_to_content' )
-	);
+if ( ! function_exists( 'wc_is_block_hook_post_content_supported' ) ) {
+
+	/**
+	 * Check if the block hooks API supports contents of post_content.
+	 *
+	 * Introduced in WordPress 6.8:
+	 * https://github.com/WordPress/wordpress-develop/pull/8212 and
+	 * https://github.com/WordPress/gutenberg/pull/68926
+	 *
+	 * @since 9.8.0
+	 * @return bool
+	 */
+	function wc_is_block_hook_post_content_supported() {
+		return has_filter( 'the_content', 'apply_block_hooks_to_content_from_post_object' );
+	}
 }
 
 /**
