@@ -23,9 +23,7 @@ There are two ways to do this, depending on how your code is running.
 
 #### If your code is running in a React component
 
-This would usually be true if your component is an inner block of the Cart/Checkout, or a component rendered in a Slot/Fill.
-
-To do this, you'd directly select the data you're interested in from the relevant data store and then do any work you need to do if it has changed. Please refer to the documentation for the relevant data store for the data you're interested in to know what selectors are available.
+If your component is an inner block of the Cart/Checkout, or rendered in a [Slot/Fill](./slot-fills.md), you can directly select the data you need from the relevant data store and perform any necessary actions when the data changes. For more information on available selectors, refer to the [documentation for the relevant data store](https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce-blocks/docs/third-party-developers/extensibility/data-store).
 
 ```js
 /**
