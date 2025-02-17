@@ -45,7 +45,7 @@ class Settings extends \WC_REST_Data_Controller {
 					'callback'            => array( $this, 'save_settings' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 					'args'               => array(
-						'schema' => array( $this, 'get_item_schema' ),
+						'schema' => array( $this, 'save_items_schema' ),
 					),
 				),
 			)
@@ -100,7 +100,7 @@ class Settings extends \WC_REST_Data_Controller {
         }
 	}
 
-	public function get_item_schema() {
+	public function save_items_schema() {
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => 'options',
