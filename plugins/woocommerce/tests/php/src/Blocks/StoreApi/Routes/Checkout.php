@@ -1266,14 +1266,14 @@ class Checkout extends MockeryTestCase {
 	public function test_put_order_update() {
 		$fields = array(
 			array(
-				'id'                => 'plugin-namespace/gov-id',
-				'label'             => 'Government ID',
+				'id'                => 'plugin-namespace/student-id',
+				'label'             => 'Student ID',
 				'location'          => 'address',
 				'type'              => 'text',
 				'required'          => true,
 				'attributes'        => array(
-					'title'          => 'This is a gov id',
-					'autocomplete'   => 'gov-id',
+					'title'          => 'This is a student id',
+					'autocomplete'   => 'student-id',
 					'autocapitalize' => 'none',
 					'maxLength'      => '30',
 				),
@@ -1305,7 +1305,7 @@ class Checkout extends MockeryTestCase {
 		$request->set_body_params(
 			array(
 				'additional_fields' => array(
-					'plugin-namespace/gov-id'         => '1234567890',
+					'plugin-namespace/student-id'     => '1234567890',
 					'plugin-namespace/job-function'   => 'engineering',
 					'plugin-namespace/leave-on-porch' => true,
 				),
@@ -1325,7 +1325,7 @@ class Checkout extends MockeryTestCase {
 		$additional_fields_order   = $checkout_fields->get_order_additional_fields_with_values( $order, 'order', 'other', 'view' );
 
 		// Verify that address fields are not updated, but contact and order fields are.
-		$this->assertEquals( null, $additional_fields_address['plugin-namespace/gov-id'] );
+		$this->assertEquals( null, $additional_fields_address['plugin-namespace/student-id'] );
 		$this->assertEquals( 'engineering', $additional_fields_contact['plugin-namespace/job-function']['value'] );
 		$this->assertEquals( true, $additional_fields_order['plugin-namespace/leave-on-porch']['value'] );
 	}
