@@ -2,13 +2,11 @@
  * Internal dependencies
  */
 import { test as setup } from './fixtures';
-import { ADMIN_STATE_PATH } from '../playwright.config';
 import { setComingSoon } from '../utils/coming-soon';
 import { skipOnboardingWizard } from '../utils/onboarding';
+import apiClient from '../utils/api-client';
 
-setup.use( { storageState: ADMIN_STATE_PATH } );
-
-setup( 'configure HPOS', async ( { api } ) => {
+setup( 'configure HPOS', async () => {
 	const { DISABLE_HPOS } = process.env;
 	console.log( `DISABLE_HPOS: ${ DISABLE_HPOS }` );
 
@@ -24,8 +22,8 @@ setup( 'configure HPOS', async ( { api } ) => {
 						value === 'yes' ? 'on' : 'off'
 					} HPOS...`
 				);
-				const response = await api.post(
-					'settings/advanced/woocommerce_custom_orders_table_enabled',
+				const response = await apiClient().post(
+					'wc/v3/settings/advanced/woocommerce_custom_orders_table_enabled',
 					{ value }
 				);
 				if ( response.data.value === value ) {
@@ -53,8 +51,8 @@ setup( 'configure HPOS', async ( { api } ) => {
 		}
 	}
 
-	const response = await api.get(
-		'settings/advanced/woocommerce_custom_orders_table_enabled'
+	const response = await apiClient().get(
+		'wc/v3/settings/advanced/woocommerce_custom_orders_table_enabled'
 	);
 	const dataValue = response.data.value;
 	const enabledOption = response.data.options[ dataValue ];
@@ -110,8 +108,8 @@ setup( 'disable onboarding wizard', async () => {
 	await skipOnboardingWizard();
 } );
 
-setup( 'determine if multisite', async ( { api } ) => {
-	const response = await api.get( 'system_status' );
+setup( 'determine if multisite', async () => {
+	const response = await apiClient().get( 'wc/v3/system_status' );
 	const { environment } = response.data;
 
 	if ( environment.wp_multisite === false ) {
