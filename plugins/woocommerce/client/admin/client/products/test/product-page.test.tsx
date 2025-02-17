@@ -3,7 +3,6 @@
  */
 import { render } from '@testing-library/react';
 import { recordEvent } from '@woocommerce/tracks';
-import { TRACKS_SOURCE } from '@woocommerce/product-editor';
 import { useParams } from 'react-router-dom';
 
 /**
@@ -40,6 +39,7 @@ jest.mock( '@wordpress/interface/build-module/components/pinned-items', () =>
 	jest.fn()
 );
 
+const TRACKS_SOURCE = 'product-block-editor-v1';
 describe( 'ProductPage', () => {
 	beforeEach( () => {
 		jest.clearAllMocks();

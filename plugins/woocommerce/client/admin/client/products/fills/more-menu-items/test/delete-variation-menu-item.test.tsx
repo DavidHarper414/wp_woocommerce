@@ -27,9 +27,15 @@ jest.mock( '@wordpress/core-data', () => ( {
 		.mockImplementation( ( _1, _2, propType ) => [ propType ] ),
 } ) );
 
-jest.mock( '@wordpress/interface/build-module/components/pinned-items', () =>
-	jest.fn()
-);
+jest.mock( '@woocommerce/product-editor', () => ( {
+	RemoveConfirmationModal: jest.fn(),
+	__experimentalUseVariationSwitcher: jest.fn().mockReturnValue( {
+		invalidateVariationList: jest.fn(),
+		goToNextVariation: jest.fn(),
+		goToPreviousVariation: jest.fn(),
+		numberOfVariations: 1,
+	} ),
+} ) );
 
 describe( 'DeleteVariationMenuItem', () => {
 	beforeEach( () => {

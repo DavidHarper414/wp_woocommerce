@@ -24,9 +24,9 @@ jest.mock( '../more-menu-items', () => ( {
 		</div>
 	) ),
 } ) );
-jest.mock( '@wordpress/interface/build-module/components/pinned-items', () =>
-	jest.fn()
-);
+jest.mock( '@woocommerce/product-editor', () => ( {
+	isValidEmail: jest.fn(),
+} ) );
 
 describe( 'MoreMenuFill', () => {
 	beforeEach( () => {
