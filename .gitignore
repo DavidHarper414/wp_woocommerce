@@ -1,0 +1,13 @@
+.DS_Store
+.env
+.idea
+.vscode
+dev/data
+docker-compose.override.yml
+node_modules
+npm-debug.log
+mailpoet-premium
+tsconfig.tsbuildinfo
+/wordpress
+packages/php/*/vendor
+tests_env/vendor

@@ -1,0 +1,91 @@
+.mailpoet_coupon_block {
+  .mailpoet_editor_coupon {
+    text-align: center;
+  }
+
+  .mailpoet_editor_coupon_overlay {
+    background: rgba(255, 255, 255, 0.5);
+    color: #000;
+    cursor: pointer;
+    display: none;
+    font-size: 18px;
+    height: 100%;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    width: 100%;
+  }
+
+  :hover {
+    .mailpoet_editor_coupon {
+      opacity: 0.5;
+    }
+
+    .mailpoet_editor_coupon_overlay {
+      display: block;
+    }
+  }
+}
+
+.coupon_amount_wrapper {
+  position: relative;
+}
+
+.amount_percentage_sign {
+  font-size: 18px;
+  font-weight: bold;
+  left: 150px; // .mailpoet_input_medium width
+  line-height: 30px;
+  margin-left: 10px;
+  position: absolute;
+}
+
+.mailpoet_coupon_block_coupon {
+  background: $color-white;
+  font-size: 13px;
+  height: auto;
+  line-height: 21px;
+  margin-bottom: 16px;
+  padding: 16px 0;
+  width: 100%;
+
+  input[type='radio'] {
+    margin-left: 16px;
+  }
+
+  div {
+    padding: 0 16px 0 40px;
+
+    &.discount_type {
+      font-style: italic;
+    }
+  }
+}
+
+.mailpoet_coupon_block_settings,
+.mailpoet_coupon_block_display_options {
+  @include animation-slide-open-downwards();
+  overflow-x: hidden;
+}
+
+.mailpoet_editor_settings {
+  .components-panel__header.edit-post-sidebar__panel-tabs {
+    background: $color-primary-background;
+    border-bottom: none;
+  }
+
+  .components-base-control {
+    width: 100%;
+  }
+
+  .components-panel {
+    background: $color-primary-background;
+    border-left: none;
+    border-right: none;
+  }
+
+  .components-search-control
+    input[type='search'].components-search-control__input {
+    background: $color-white;
+  }
+}

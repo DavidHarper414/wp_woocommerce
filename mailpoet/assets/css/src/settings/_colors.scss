@@ -1,0 +1,89 @@
+// General colors
+$color-placeholder-select2: #999; /* default Select2 placeholder color for single dropdown */
+$color-transparent: rgba(#fff, 0);
+$color-white: #fff;
+$color-black: #000;
+$color-wordpress-grey-dark: #787c82;
+$color-wordpress-text: #3c434a;
+$color-wordpress-border: #c3c4c7;
+$color-wordpress-heading: #1d2327;
+$color-wordpress-button-border: #2271b1;
+$color-wordpress-button-background: #f6f7f7;
+$color-poet-gray-dividers: #dcdcde;
+
+// Primary (blueish) color
+$color-primary: #007cba;
+$color-primary-hover: #0063a1;
+$color-primary-background: #f8f8f8;
+$color-primary-button: #2ea1cd;
+$color-primary-highlight: #1e8cbe;
+$color-primary-inactive: #a4a4a4;
+$color-primary-shadow-inset: #025c80;
+$color-primary-text: #656565;
+$color-secondary: #ff5301;
+$color-secondary-hover: darken($color-secondary, 10%);
+$color-secondary-middle: #f5a278;
+$color-secondary-middle-hover: darken($color-secondary-middle, 10%);
+$color-secondary-light: #ffe0d0;
+$color-secondary-light-hover: darken($color-secondary-light, 10%);
+$color-tertiary: $color-wordpress-heading;
+$color-tertiary-hover: darken($color-tertiary, 10%);
+$color-tertiary-light: #dcdcde;
+$color-grey-0: #f6f7f7;
+$color-tertiary-light-hover: darken($color-tertiary-light, 10%);
+$color-tertiary-light-focus: #777;
+$color-tertiary-light-background: rgba($color-tertiary-light, 0.3);
+$color-destructive: #b52727;
+$color-destructive-hover: #a02222;
+
+// Typography colors
+$color-heading: $color-wordpress-heading;
+$color-text: $color-wordpress-text;
+$color-text-hover: darken($color-text, 10%);
+$color-text-light: #757575;
+$color-text-light-hover: darken($color-text-light, 10%);
+$color-text-dark: #2c3338;
+
+// Form colors
+$color-input-background: #fdfdff;
+$color-input-border: $color-tertiary-light-hover;
+$color-input-border-focus: $color-tertiary-light-focus;
+$color-input-error: #f00;
+$color-input-success: #7ed321;
+
+// Newsletter editor colors
+$color-editor-background-column: #7fbbd0;
+$color-editor-background-content: #0078a2;
+
+$color-editor-border-content: #e5e5e5;
+$color-editor-border-structure: #ddd;
+
+$color-editor-warning: #d54e21;
+$color-editor-warning-alternate: #f4c6c8;
+$color-editor-warning-text: $color-white;
+
+// Newsletter stats badges
+$color-badge-bad: #d54e21;
+$color-badge-excellent: #2993ab;
+$color-badge-good: #f0b849;
+$color-badge-green: #55bd56;
+$color-badge-video-guide: #46b450;
+
+$color-stats-average: #f559c3;
+$color-stats-good: #ff9f00;
+$color-stats-excellent: #7ed321;
+$color-stats-critical: #f00;
+$color-stats-unknown: $color-primary-inactive;
+
+// Automation editor
+$color-chip-gray-bg: #dcdcde;
+$color-chip-gray-text: #2c3338;
+$color-chip-success-bg: #b8e6bf;
+$color-chip-success-text: #005c12;
+$color-chip-danger-bg: #facfd2;
+$color-chip-danger-text: #8a2424;
+
+// Homepage
+$color-homepage-borders: #e0e0e0;
+$color-homepage-dark-grey: #1e1e1e;
+$color-homepage-light-grey: #f0f0f0;

@@ -1,0 +1,63 @@
+{
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/mailpoet/html2text"
+    }
+  ],
+  "require": {
+    "php": ">=7.4",
+    "carbonphp/carbon-doctrine-types": "2.*",
+    "cerdic/css-tidy": "2.1.0",
+    "doctrine/common": "3.4.4",
+    "doctrine/dbal": "3.8.4",
+    "doctrine/orm": "2.14.3",
+    "gregwar/captcha": "1.2.1",
+    "monolog/monolog": "2.9.3",
+    "nesbot/carbon": "2.72.6",
+    "pelago/emogrifier": "7.2.0",
+    "psr/cache": "^1.0",
+    "sabberworm/php-css-parser": "8.5.1",
+    "soundasleep/html2text": "dev-master",
+    "symfony/dependency-injection": "5.4.40",
+    "symfony/polyfill-ctype": "1.29.0",
+    "symfony/polyfill-iconv": "1.29.0",
+    "symfony/polyfill-intl-idn": "1.29.0",
+    "symfony/polyfill-intl-normalizer": "1.29.0",
+    "symfony/polyfill-mbstring": "1.29.0",
+    "symfony/polyfill-php80": "1.29.0",
+    "symfony/polyfill-php81": "1.29.0",
+    "symfony/translation": "5.4.35",
+    "symfony/translation-contracts": "2.5.3",
+    "symfony/validator": "5.4.*",
+    "twig/twig": "3.11.2"
+  },
+  "scripts": {
+    "post-update-cmd": "@process",
+    "post-install-cmd": "@process",
+    "process": [
+      "rm -rf ../vendor-prefixed",
+      "mkdir ../vendor-prefixed",
+      "php -d memory_limit=2G ../tools/vendor/php-scoper.phar add-prefix --force",
+      "mv ./build/* ../vendor-prefixed",
+      "php fix-carbon.php",
+      "php fix-twig.php",
+      "php fix-doctrine.php",
+      "php fix-validator.php",
+      "php fix-monolog.php",
+      "php fix-symfony-di.php",
+      "php fix-symfony-polyfill.php",
+      "php fix-attributes.php",
+      "php fix-captcha.php"
+    ]
+  },
+  "config": {
+    "platform": {
+      "php": "7.4"
+    },
+    "sort-packages": true
+  },
+  "require-dev": {
+    "doctrine/annotations": "^1.14"
+  }
+}

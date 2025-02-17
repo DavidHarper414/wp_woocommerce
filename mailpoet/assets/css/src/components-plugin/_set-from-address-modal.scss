@@ -1,0 +1,15 @@
+.set-from-address-modal {
+  p:first-child {
+    margin-top: 0;
+  }
+
+  input[type='text'] {
+    display: block;
+    width: 230px;
+  }
+
+  input[type='submit'] {
+    display: block;
+    margin-top: 30px;
+  }
+}

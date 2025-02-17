@@ -1,0 +1,93 @@
+.mailpoet_hidden,
+.mailpoet_validation_error {
+  display: none;
+}
+
+.subscribers_data {
+  overflow: auto;
+
+  table {
+    width: auto;
+  }
+
+  td {
+    padding: 0.5em;
+  }
+
+  > table {
+    > thead {
+      > tr {
+        > th {
+          > span {
+            width: 15em !important;
+          }
+        }
+      }
+    }
+
+    > tbody {
+      > td {
+        padding: 0.5em;
+      }
+
+      > tr {
+        &:nth-child(odd) {
+          background: #f9f9f9;
+        }
+      }
+    }
+  }
+
+  th:first-child,
+  td:first-child {
+    padding: 0 1em !important;
+    text-align: center !important;
+    vertical-align: inherit !important;
+    width: 10em !important;
+  }
+
+  .mailpoet_header {
+    font-weight: 600;
+    text-decoration: underline;
+    text-transform: uppercase;
+  }
+}
+
+.mailpoet_data_match {
+  color: #0e90d2;
+  margin-left: 0.25em;
+}
+
+.mailpoet_import_error,
+.mailpoet_validation_error {
+  color: #900;
+}
+
+tr {
+  &.mailpoet_segments {
+    > td {
+      > a {
+        margin-left: 15px;
+      }
+    }
+  }
+}
+
+.mailpoet_subscribers_data_parse_results_details_show {
+  cursor: pointer;
+}
+
+.default-list {
+  font-size: 13px;
+  list-style-type: disc;
+  margin-left: 40px;
+}
+
+.mailpoet-clean-list-step-container {
+  margin: -$grid-gap 0 !important;
+  max-width: 42em;
+
+  p {
+    font-size: $font-size;
+  }
+}

@@ -1,0 +1,195 @@
+#mailpoet_landingpage_container {
+  $content-padding: 32px 65px;
+  $mobile-content-padding: 25px;
+  $landingpage-max-width: 1200px;
+
+  .mailpoet-content-center {
+    text-align: center;
+  }
+
+  .mailpoet-content-padding {
+    padding: $content-padding;
+
+    @include respond-to(small-screen) {
+      padding: $mobile-content-padding;
+    }
+  }
+
+  .landing-header {
+    padding: $content-padding;
+
+    @include respond-to(small-screen) {
+      padding: $mobile-content-padding;
+    }
+  }
+
+  .landing-footer {
+    @include full-width-background($color-grey-0);
+    margin: 0 auto;
+    max-width: 900px;
+    padding: $content-padding;
+    position: relative;
+
+    .landing-footer-content {
+      box-shadow: 0 -1px 0 0 $color-tertiary-light;
+      padding: 25px 0;
+    }
+  }
+
+  .landing-faq {
+    @include full-width-background($color-grey-0);
+    margin: 0 auto;
+    max-width: 800px;
+    padding: $content-padding;
+    position: relative;
+
+    .mailpoet-faq-accordion {
+      margin: 25px 0;
+    }
+
+    .landing-faq-mobile {
+      display: none;
+    }
+
+    @include respond-to(small-screen) {
+      padding: $mobile-content-padding;
+
+      .landing-faq-header {
+        display: none;
+      }
+
+      .landing-faq-mobile {
+        display: block;
+      }
+    }
+  }
+
+  .landing-content {
+    .hero-section {
+      $hero-image-offset: 6rem;
+      @include full-width-background($color-grey-0);
+      margin-top: $hero-image-offset;
+      padding: $content-padding;
+      position: relative;
+
+      .hero-image {
+        margin-top: -($hero-image-offset + 2rem);
+        max-width: 717px;
+        width: 100%;
+      }
+
+      @include respond-to(small-screen) {
+        padding: $mobile-content-padding;
+      }
+    }
+
+    .landingpage-general-features {
+      p:last-child {
+        margin: 10px auto;
+        width: 60%;
+      }
+
+      .landingpage-feature-icon {
+        display: block;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+      }
+
+      @include respond-to(medium-screen) {
+        p:last-child {
+          width: 100%;
+        }
+      }
+    }
+
+    .landingpage-wooCommerce-features {
+      margin: 60px auto 30px;
+      max-width: 800px;
+
+      @include respond-to(small-screen) {
+        text-align: center;
+      }
+    }
+
+    .landingpage-wooCommerce-feature-item {
+      align-items: center;
+      grid-gap: 30px;
+      padding: 10px 0 20px;
+    }
+
+    .landingpage-images {
+      width: 100%;
+    }
+  }
+
+  main {
+    margin: 0 auto;
+    max-width: $landingpage-max-width;
+  }
+}
+
+.mailpoet-faq-accordion {
+  details {
+    overflow: hidden;
+
+    &:not(:first-child) {
+      border-top: 1px solid $color-editor-border-structure;
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 20px 5px;
+      position: relative;
+
+      &::-webkit-details-marker {
+        // remove default marker
+        content: '';
+        display: none;
+      }
+
+      &::marker {
+        // remove default marker
+        content: '';
+        display: none;
+      }
+
+      &:after {
+        content: '›';
+        font-size: 30px;
+        position: absolute;
+        right: 20px;
+        top: 0;
+        transform: rotate(90deg);
+        transform-origin: center;
+        transition: 0.2s transform ease;
+      }
+
+      @include respond-to(small-screen) {
+        &:after {
+          right: -1px;
+        }
+      }
+    }
+
+    .content {
+      max-height: 0;
+      overflow: hidden;
+      padding: 10px 5px;
+      transition: max-height 0.3s ease;
+    }
+
+    // when accordion is opened
+    &[open] {
+      summary:after {
+        transform: rotate(-90deg);
+        transition: 0.5s transform ease;
+      }
+
+      .content {
+        max-height: 400px;
+        transition: max-height 0.5s ease-in;
+      }
+    }
+  }
+}

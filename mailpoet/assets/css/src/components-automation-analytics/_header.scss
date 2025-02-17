@@ -1,0 +1,50 @@
+@import '../components-automation/colors';
+
+.mailpoet-automation-analytics-title {
+  color: $color-gutenberg-grey-700;
+  font-size: 16px;
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  strong {
+    color: $color-gutenberg-grey-900;
+  }
+
+  .mailpoet-automation-status {
+    display: inline-block;
+    margin-left: 8px;
+  }
+}
+
+.mailpoet-analytics-header {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  .woocommerce-filters-filter {
+    width: 100%;
+
+    * {
+      box-sizing: border-box;
+    }
+  }
+
+  .components-dropdown {
+    .components-button.is-primary {
+      box-shadow: none;
+    }
+  }
+}
+
+.admin_page_mailpoet-automation-analytics {
+  .woocommerce-filters-date__content .components-popover__content {
+    padding: 0;
+
+    * {
+      box-sizing: border-box;
+    }
+  }
+}

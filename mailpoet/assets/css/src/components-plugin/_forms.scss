@@ -1,0 +1,246 @@
+.mailpoet_form {
+  margin: 0 0 20px;
+}
+
+.mailpoet_form td {
+  vertical-align: top !important;
+}
+
+.select2-container {
+  max-width: 100%;
+  width: 25em !important;
+}
+
+input.select2-search__field::-webkit-input-placeholder {
+  color: $color-placeholder-select2;
+}
+
+input.select2-search__field:-moz-placeholder {
+  color: $color-placeholder-select2;
+}
+
+input.select2-search__field::-moz-placeholder {
+  color: $color-placeholder-select2;
+}
+
+input.select2-search__field:-ms-input-placeholder {
+  color: $color-placeholder-select2;
+}
+
+textarea.regular-text {
+  width: 25em !important;
+}
+
+.regular-text-full-width {
+  width: 100%;
+}
+
+@include respond-to(small-screen) {
+  .select2-container {
+    width: 100% !important;
+  }
+}
+
+progress {
+  background-color: $progress-background;
+  border: 0;
+  height: 2em;
+  width: 100%;
+}
+
+progress::-webkit-progress-bar {
+  background-color: $progress-background;
+}
+
+progress::-webkit-progress-value {
+  background-color: $progress-foreground;
+  border-radius: $progress-border-radius;
+}
+
+progress::-moz-progress-bar {
+  background-color: $progress-foreground;
+  border-radius: $progress-border-radius;
+}
+
+.mailpoet-form-content-around {
+  margin: 0 auto;
+  max-width: 976px;
+}
+
+.mailpoet-form-grid {
+  align-items: flex-start;
+  display: grid;
+  grid-gap: $grid-gap;
+  grid-template-columns: 1fr 1fr;
+  justify-content: space-between;
+  margin: $grid-gap auto;
+
+  @include respond-to(small-screen) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mailpoet-form-actions {
+  grid-column: span 2;
+
+  p {
+    color: $color-text;
+    font-size: $font-size;
+    margin: $grid-gap 0;
+  }
+
+  @include respond-to(small-screen) {
+    grid-column: 1;
+  }
+}
+
+.mailpoet-form-description {
+  color: $color-text;
+  font-size: $font-size;
+  margin-top: 0;
+
+  .mailpoet-h4 + & {
+    margin-top: -$grid-gap;
+  }
+}
+
+.mailpoet-form-field + .mailpoet-form-field {
+  margin-top: $grid-gap;
+}
+
+.mailpoet-form-field-description {
+  grid-row: span 2;
+}
+
+.mailpoet-form-field-email-header {
+  border-bottom: 1px solid $color-tertiary-light;
+  grid-column: 1 / -1;
+  margin-bottom: $grid-gap-medium;
+  padding: $grid-gap-large 0 $grid-gap-xl;
+}
+
+.mailpoet-form-field-subject,
+.mailpoet-form-field-preheader {
+  background: transparent;
+  border: 0;
+  height: auto;
+  width: 100%;
+
+  .mailpoet-form-input-label {
+    background: #fff;
+    bottom: 100%;
+    color: $color-text-light;
+    display: none;
+    font-size: 12px;
+    font-weight: bold;
+    height: 16px;
+    left: 4px;
+    position: absolute;
+    text-transform: uppercase;
+    width: 100%;
+  }
+
+  .parsley-errors-list {
+    left: 4px;
+  }
+
+  input,
+  textarea {
+    padding: 4px;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background: rgba($color-tertiary-light, 0.6);
+
+      ~ .mailpoet-form-input-label {
+        display: block;
+      }
+    }
+  }
+
+  .mailpoet-form-tooltip-holder {
+    opacity: 0;
+  }
+
+  &:hover,
+  &:focus {
+    .mailpoet-form-tooltip-holder {
+      opacity: 1;
+    }
+  }
+}
+
+.mailpoet-form-field-subject {
+  input {
+    font-size: $heading-font-size-h1;
+    font-weight: bold;
+    line-height: 40px;
+  }
+
+  .mailpoet-form-tooltip-holder {
+    margin-top: -($grid-gap + 8px) + 2px;
+  }
+}
+
+.mailpoet-form-field-preheader {
+  textarea {
+    font-size: 18px;
+    height: 56px;
+    line-height: 24px;
+  }
+
+  .mailpoet-form-tooltip-holder {
+    margin-top: -($grid-gap + 8px) - 9px;
+  }
+}
+
+.mailpoet-form-schedule-time,
+.mailpoet-form-toggle-text {
+  color: $color-text;
+  margin-left: $grid-gap;
+  vertical-align: middle;
+}
+
+.mailpoet-form-field {
+  .mailpoet-form-error-message {
+    color: $color-input-error;
+    font-style: italic;
+  }
+
+  .mailpoet-form-notice-message {
+    font-style: italic;
+  }
+
+  .parsley-errors-list {
+    left: 0;
+    margin-top: 2px;
+  }
+
+  .filter-segment-tooltip {
+    fill: $color-primary;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+
+  .estimated-recipient-count {
+    border-bottom: #949494 dashed 1px;
+    margin-left: 5px;
+  }
+
+  .mailpoet-recipient-count-spinner {
+    height: 14px;
+    margin: 0 0 0 6px;
+    vertical-align: middle;
+    width: 14px;
+  }
+}
+
+// We need to hide the label because it doesn't fit to our form design, and it's added automatically by Gutenberg component
+.mailpoet-form-field-tags label.components-form-token-field__label {
+  display: none;
+}
+
+.mailpoet-form-field-disabled {
+  cursor: not-allowed;
+}

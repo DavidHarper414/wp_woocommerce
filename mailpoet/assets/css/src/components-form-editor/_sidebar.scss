@@ -1,0 +1,135 @@
+.components-panel {
+  .select2-container {
+    width: 100% !important;
+
+    input.select2-search__field:focus {
+      border: 0;
+      box-shadow: none;
+    }
+
+    .select2-selection {
+      border-color: $gutenberg-control-border-color;
+    }
+
+    &.select2-container--focus {
+      .select2-selection {
+        border-color: $gutenberg-control-border-color-focus;
+        box-shadow: 0 0 0 1px $gutenberg-control-border-color-focus;
+      }
+    }
+  }
+
+  .mailpoet-form-missing-lists {
+    .select2-selection {
+      border-color: red;
+    }
+
+    .mailpoet-form-lists-error {
+      color: red;
+    }
+  }
+}
+
+.components-base-control.mailpoet-form-inline-radios__control {
+  .components-flex {
+    flex-direction: row;
+    gap: $grid-gap-half;
+    justify-content: flex-start;
+    margin-bottom: $grid-gap-half;
+  }
+
+  .components-base-control__label {
+    display: block;
+  }
+
+  .components-radio-control__option {
+    display: inline-block;
+
+    input {
+      margin-right: 6px;
+    }
+  }
+}
+
+.button-on-top,
+.button-on-top.components-button.is-link {
+  margin-bottom: 12px;
+  max-height: 30px;
+}
+
+.mailpoet-dnd-items-list > div {
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    margin-bottom: 12px;
+  }
+}
+
+.mailpoet-form-segments-settings-list {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+
+  .components-base-control {
+    flex-grow: 1;
+    margin: 8px 0;
+
+    .components-base-control__field {
+      margin: 0;
+    }
+  }
+
+  .mailpoet-form-segments-segment-remove {
+    cursor: pointer;
+    flex-grow: 0;
+    margin: 8px 0;
+  }
+}
+
+.CodeMirror {
+  border: 1px solid #eee;
+
+  textarea {
+    font-size: 12px;
+  }
+}
+
+.components-button.mailpoet-save-button {
+  background-color: $gutenberg-control-active-color;
+  border-radius: 4px;
+  color: #fff;
+  display: block;
+  font-size: 16px;
+  font-stretch: normal;
+  font-style: normal;
+  font-weight: bold;
+  height: 48px;
+  letter-spacing: normal;
+  line-height: 1.25;
+  margin-left: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+  text-align: center;
+
+  &:hover {
+    background-color: #fff !important;
+    color: #ff5301 !important;
+  }
+}
+
+.mailpoet_form_editor_sidebar {
+  .mailpoet-sidebar-header-heading {
+    margin: auto 0;
+    padding-left: 16px;
+  }
+}
+
+// This style hides the horizontal scrollbar in Firefox browser and add space for the support beacon
+.interface-interface-skeleton__sidebar {
+  overflow-x: hidden;
+
+  div[role='tabpanel'] {
+    padding-bottom: 100px;
+  }
+}

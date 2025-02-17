@@ -1,0 +1,78 @@
+.mailpoet-form-yesno {
+  background: $color-input-background;
+  border: 1px solid $color-input-border;
+  border-radius: $form-control-border-radius;
+  box-sizing: border-box;
+  color: $color-text-light;
+  cursor: pointer;
+  height: 32px;
+  line-height: 19px;
+  position: relative;
+  width: $form-control-yesno-width * 2 + 3px; // add 3 borders
+
+  &:after {
+    background: $color-input-border;
+    content: '';
+    height: 100%;
+    left: $form-control-yesno-width;
+    position: absolute;
+    top: 0;
+    width: 1px;
+  }
+
+  input {
+    height: 1px;
+    opacity: 0;
+    position: absolute;
+    width: 1px;
+
+    &:focus {
+      ~ .mailpoet-form-yesno-control {
+        box-shadow: 0 0 0 1px $color-input-border-focus;
+        z-index: 1;
+      }
+    }
+  }
+}
+
+.mailpoet-form-yesno-error {
+  border-color: $color-input-error;
+  box-shadow: 0 0 0 1px $color-input-error inset;
+  color: $color-input-error;
+
+  &:after {
+    height: calc(100% - 2px);
+    top: 1px;
+  }
+}
+
+.mailpoet-form-yesno-control {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  width: $form-control-yesno-width;
+}
+
+.mailpoet-form-yesno-yes {
+  border-radius: 3px 0 0 3px;
+  left: 0;
+
+  input:checked + & {
+    background: $color-input-success;
+    color: #fff;
+  }
+}
+
+.mailpoet-form-yesno-no {
+  border-radius: 0 3px 3px 0;
+  right: 0;
+
+  input:checked + & {
+    background: $color-input-error;
+    color: #fff;
+  }
+}

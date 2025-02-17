@@ -1,0 +1,58 @@
+.form-placement-option-list {
+  display: grid;
+  grid-gap: $grid-gap;
+  grid-template-columns: 1fr 1fr;
+  text-align: center;
+}
+
+.form-placement-settings {
+  width: 400px;
+}
+
+.form-editor-sidebar-heading {
+  margin-bottom: 8px;
+}
+
+.form-placement-option-label {
+  align-items: center;
+  color: $selection-item-text-color;
+  display: flex;
+  font-size: 14px;
+  height: 40px;
+  justify-content: center;
+  pointer-events: none;
+  width: 100%;
+  z-index: 2;
+
+  p {
+    line-height: 1.2;
+    margin-bottom: 0;
+  }
+}
+
+.form-placement-option-icon {
+  background-color: #fff;
+  box-shadow: 0 4px 18px 0 rgba(68, 75, 102, 0.15);
+  height: 63px;
+  margin: 0 auto;
+  object-fit: contain;
+  pointer-events: none;
+  width: 76px;
+  z-index: 2;
+
+  svg {
+    height: 63px;
+    width: 76px;
+  }
+}
+
+.mailpoet-form-placement-save {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.form-editor-placement-selection {
+  font-size: $font-size-small;
+  max-width: 280px;
+}

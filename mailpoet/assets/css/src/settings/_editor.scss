@@ -1,0 +1,49 @@
+@use 'sass:math';
+
+$editor-line-height: 1.6em;
+
+$editor-column-margin: 20px;
+$editor-column-width-one: $grid-editor-width - (2 * $editor-column-margin);
+$editor-column-width-two: math.div($grid-editor-width, 2) -
+  (2 * $editor-column-margin);
+$editor-column-width-two-wider: (
+    math.div($grid-editor-width, 3) - $editor-column-margin
+  ) * 2;
+$editor-column-width-three: math.div($grid-editor-width, 3) -
+  (2 * $editor-column-margin);
+
+$editor-divider-background-color: #daebf2;
+$editor-divider-border-color: #adadad;
+$editor-divider-border-color-hover: $color-primary;
+
+$editor-dnd-drag-zindex: 2;
+$editor-dnd-drop-size: 2px;
+$editor-dnd-drop-zindex: 1;
+
+$editor-resize-color: $color-editor-background-content;
+$editor-resize-handle-color: $color-white;
+$editor-resize-handle-zindex: 2;
+
+$editor-sidebar-background: $color-primary-background;
+$editor-sidebar-color: $color-primary-text;
+$editor-sidebar-font-size: 13px;
+$editor-sidebar-width: 330px;
+
+$editor-social-icon-background-color: #daebf2;
+$editor-social-icon-border-color: #adadad;
+$editor-social-icon-border-color-hover: $color-primary;
+$editor-social-icon-width: 32px;
+
+$editor-tool-size: 14px;
+$editor-tool-size-with-padding: 24px;
+$editor-tool-column-size: 15px;
+$editor-tool-column-size-with-padding: 27px;
+$editor-tool-social-color: #333;
+$editor-tool-social-hover: #bbb;
+$editor-tool-social-width: 16px;
+
+$editor-widget-icon-color-hover: $color-primary;
+$editor-widget-icon-color: darken($color-primary-background, 31.5%);
+$editor-widget-icon-size: 30px;
+$editor-widget-shadow-color: darken($color-primary-background, 13%);
+$editor-widget-size: 70px;

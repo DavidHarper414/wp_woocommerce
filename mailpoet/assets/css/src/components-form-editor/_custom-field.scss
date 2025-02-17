@@ -1,0 +1,38 @@
+.mailpoet_custom_select {
+  .mailpoet_select {
+    padding: 0 24px 0 8px;
+  }
+}
+
+.edit-post-visual-editor .mailpoet_custom_date,
+.edit-post-visual-editor .mailpoet_custom_field_add_form,
+.mailpoet_form_editor_sidebar {
+  select {
+    padding: 0 24px 0 8px;
+  }
+}
+
+.mailpoet_custom_field_add_form {
+  width: 100%;
+
+  .components-base-control,
+  .custom-field-settings {
+    text-align: left;
+  }
+}
+
+// Keep create custom field placeholder centered
+// @wordpress/components@9.0.0 changed default alignment to left
+.components-placeholder.mailpoet_custom_field_add_placeholder {
+  align-items: center;
+
+  .components-placeholder__label {
+    align-items: center;
+  }
+
+  .components-placeholder__fieldset {
+    justify-content: center;
+    max-width: 400px;
+    text-align: center;
+  }
+}

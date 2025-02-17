@@ -1,0 +1,16 @@
+.mailpoet_notice {
+  clear: both;
+  position: relative;
+
+  p:empty {
+    display: none;
+  }
+
+  .button {
+    overflow: initial;
+  }
+}
+
+.mailpoet_notice_server {
+  margin: 20px 20px 0 2px;
+}

@@ -1,0 +1,162 @@
+@import '../../components-automation/colors';
+
+.mailpoet-automation-editor-stats-placeholder {
+  .mailpoet-automation-stats-label {
+    background: $color-gutenberg-grey-100;
+    color: $color-gutenberg-grey-100;
+    margin-bottom: 3px;
+  }
+
+  .mailpoet-automation-stats-value {
+    background: $color-gutenberg-grey-100;
+    color: $color-gutenberg-grey-100;
+    display: block;
+    margin: auto;
+    width: 10px;
+  }
+}
+
+.mailpoet-automation-editor-step-wrapper-placeholder {
+  .mailpoet-automation-editor-step-icon {
+    background: $color-gutenberg-grey-100;
+    border-radius: 50%;
+    height: 48px;
+    width: 48px;
+  }
+
+  .mailpoet-automation-editor-step-title {
+    background: $color-gutenberg-grey-100;
+    height: 20px;
+    margin-bottom: 3px;
+    width: 50%;
+  }
+
+  .mailpoet-automation-editor-step-subtitle {
+    background: $color-gutenberg-grey-100;
+    height: 20px;
+    width: 90%;
+  }
+}
+
+.mailpoet-automation-analytics-step-failed {
+  bottom: 0;
+  display: none;
+  grid-column: 1 / -1;
+  justify-content: center;
+  left: -100px;
+  position: absolute;
+
+  &:after {
+    border-top: 1px dashed $color-gutenberg-grey-600;
+    content: '';
+    height: 0;
+    left: 100%;
+    position: absolute;
+    top: 15px;
+    width: 100px;
+  }
+
+  span {
+    display: block;
+  }
+
+  p {
+    padding: 0 8px;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .mailpoet-automation-analytics-step-failed {
+    display: block;
+  }
+}
+
+.mailpoet-automation-analytics-step-footer {
+  background: $color-wp-gray-0;
+  border-top: 1px solid $color-poet-gray-dividers;
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: center;
+  margin-bottom: -12px;
+  margin-left: -12px;
+  width: calc(100% + 24px);
+  z-index: 1;
+
+  p {
+    padding: 6px 0;
+  }
+}
+
+.mailpoet-automation-analytics-step-footer,
+.mailpoet-automation-analytics-step-failed {
+  p {
+    margin: 0;
+
+    a {
+      color: $color-gutenberg-grey-800;
+      text-decoration: none;
+
+      &:hover {
+        color: $color-gutenberg-blue;
+      }
+    }
+  }
+
+  span {
+    color: $color-gutenberg-grey-600;
+  }
+
+  a:hover span {
+    color: $color-gutenberg-blue;
+  }
+}
+
+.mailpoet-automation-analytics-separator {
+  p {
+    background: $color-wp-gray-0;
+    text-align: center;
+  }
+
+  span {
+    display: block;
+  }
+
+  .mailpoet-automation-analytics-separator-text {
+    color: $color-gutenberg-grey-600;
+  }
+}
+
+// Send Email Panel
+.mailpoet-automation-analytics-send-email-panel {
+  grid-column: 1 / -1;
+}
+
+.mailpoet-automation-analytics-send-email-panel-section {
+  display: flex;
+  justify-content: space-between;
+  margin: 1em 0;
+
+  &.is-loading {
+    background: $color-gutenberg-grey-100;
+    height: 20px;
+  }
+}
+
+.mailpoet-automation-analytics-send-email-panel-label {
+  color: $color-gutenberg-grey-700;
+}
+
+.mailpoet-automation-analytics-send-email-panel-value {
+  text-align: end;
+}
+
+.mailpoet-automation-editor-automation-notices {
+  background: $color-wp-gray-0;
+  padding: 32px 0 0;
+}
+
+.mailpoet-automation-flow-notice {
+  margin: 0 auto;
+  max-width: 480px;
+  width: 100%;
+}
