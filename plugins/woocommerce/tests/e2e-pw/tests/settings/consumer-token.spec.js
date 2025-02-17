@@ -86,16 +86,13 @@ test( 'admin can manage consumer keys', async ( { page } ) => {
 			page.getByText( '1 API key permanently revoked' )
 		).toBeVisible();
 
-		let errorResponse;
-		try {
-			await apiClient.get( `/wc/v3/products/${ testProduct.id }` );
-		} catch ( error ) {
-			errorResponse = error;
-		}
-
-		await expect( errorResponse.statusCode ).toBe( 401 );
-		await expect( errorResponse.data.message ).toBe(
-			'Consumer key is invalid.'
-		);
+		await expect(
+			apiClient.get( `/wc/v3/products/${ testProduct.id }` )
+		).rejects.toMatchObject( {
+			statusCode: 401,
+			data: {
+				message: 'Consumer key is invalid.',
+			},
+		} );
 	} );
 } );
