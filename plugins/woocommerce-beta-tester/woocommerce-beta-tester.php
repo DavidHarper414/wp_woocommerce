@@ -94,7 +94,9 @@ function add_extension_register_script() {
 		);
 	$script_url        = plugins_url( $script_path, __FILE__ );
 
-	$script_asset['dependencies'][] = WC_ADMIN_APP; // Add WCA as a dependency to ensure it loads first.
+	if ( class_exists( '\Automattic\WooCommerce\Admin\PageController' ) && \Automattic\WooCommerce\Admin\PageController::is_admin_page() ) {
+		$script_asset['dependencies'][] = WC_ADMIN_APP; // Add WCA as a dependency to ensure it loads first.
+	}
 
 	wp_register_script(
 		'woocommerce-admin-test-helper',
@@ -113,9 +115,7 @@ function add_extension_register_script() {
 			'woocommerce-admin-test-helper',
 			plugins_url( '/build/index.css', __FILE__ ),
 			// Add any dependencies styles may have, such as wp-components.
-			array(
-				'wp-components',
-			),
+			array(),
 			$css_file_version
 		);
 
