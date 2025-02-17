@@ -52,16 +52,9 @@ export function Editor( { productId, postType = 'product' }: EditorProps ) {
 	const updatedLayoutContext = useExtendLayout( 'product-block-editor' );
 
 	// Check if the prepublish sidebar is open from the store.
-	const isPrepublishPanelOpen = useSelect(
-		(
-			select: ( key: typeof wooProductEditorUiStore ) => {
-				isPrepublishPanelOpen: () => boolean | undefined;
-			}
-		) => {
-			return select( wooProductEditorUiStore ).isPrepublishPanelOpen();
-		},
-		[]
-	);
+	const isPrepublishPanelOpen = useSelect( ( select ) => {
+		return select( wooProductEditorUiStore ).isPrepublishPanelOpen();
+	}, [] );
 
 	return (
 		<LayoutContextProvider value={ updatedLayoutContext }>
