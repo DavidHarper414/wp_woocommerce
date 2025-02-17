@@ -10,7 +10,7 @@ import {
 	useEffect,
 	Fragment,
 } from '@wordpress/element';
-import { Product, ProductQuery } from '@woocommerce/data';
+import { Product, ProductQuery, productsStore } from '@woocommerce/data';
 import { drawerRight, seen, unseen } from '@wordpress/icons';
 import { privateApis as routerPrivateApis } from '@wordpress/router';
 import { store as coreStore } from '@wordpress/core-data';
@@ -196,13 +196,10 @@ export default function ProductList( {
 	const { records, totalCount, isLoading } = useSelect(
 		( select ) => {
 			const { getProducts, getProductsTotalCount, isResolving } =
-				select( 'wc/admin/products' );
+				select( productsStore );
 			return {
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				records: getProducts( queryParams ) as Product[],
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-				totalCount: getProductsTotalCount( queryParams ) as number,
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
+				totalCount: getProductsTotalCount( queryParams ),
 				isLoading: isResolving( 'getProducts', [ queryParams ] ),
 			};
 		},
@@ -222,11 +219,11 @@ export default function ProductList( {
 			const { getPostType, canUser } = select( coreStore );
 			const postTypeData:
 				| { labels: Record< string, string > }
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
+				// @ts-expect-error Selector is not typed
 				| undefined = getPostType( postType );
 			return {
 				labels: postTypeData?.labels,
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
+				// @ts-expect-error Selector is not typed
 				canCreateRecord: canUser( 'create', {
 					kind: 'postType',
 					name: postType,

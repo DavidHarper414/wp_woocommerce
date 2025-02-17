@@ -27,7 +27,6 @@ export function useMetaboxHiddenProduct() {
 		try {
 			setIsSaving( true );
 
-			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 			const { saveEntityRecord } = dispatch( coreStore );
 			const currentUser: WCUser = ( await saveEntityRecord(
 				'root',

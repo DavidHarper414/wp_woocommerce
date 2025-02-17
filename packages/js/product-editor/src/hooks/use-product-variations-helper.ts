@@ -120,7 +120,6 @@ export function useProductVariationsHelper() {
 
 		await Promise.all(
 			variations.map( ( variationId: number ) =>
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				dispatch( coreStore ).invalidateResolution( 'getEntityRecord', [
 					'postType',
 					'product_variation',
@@ -161,7 +160,6 @@ export function useProductVariationsHelper() {
 				}
 			)
 			.then( async ( response ) => {
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				await dispatch( coreStore ).invalidateResolution(
 					'getEntityRecord',
 					[ 'postType', 'product', productId ]

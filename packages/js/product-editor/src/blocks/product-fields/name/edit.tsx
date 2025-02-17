@@ -24,7 +24,11 @@ import {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore No types for this exist yet.
 // eslint-disable-next-line @woocommerce/dependency-group
-import { useEntityProp, useEntityId } from '@wordpress/core-data';
+import {
+	useEntityProp,
+	useEntityId,
+	store as coreStore,
+} from '@wordpress/core-data';
 
 /**
  * Internal dependencies
@@ -54,10 +58,9 @@ export function NameBlockEdit( {
 		useState( false );
 
 	const productId = useEntityId( 'postType', 'product' );
-	const product: Product = useSelect(
+	const product = useSelect(
 		( select ) =>
-			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-			select( 'core' ).getEditedEntityRecord(
+			select( coreStore ).getEditedEntityRecord(
 				'postType',
 				'product',
 				productId
@@ -73,6 +76,7 @@ export function NameBlockEdit( {
 	);
 
 	const { prefix: permalinkPrefix, suffix: permalinkSuffix } =
+		// @ts-expect-error product is not typed
 		getPermalinkParts( product );
 
 	const {

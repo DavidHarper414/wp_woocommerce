@@ -25,6 +25,7 @@ import { privateApis as editorPrivateApis } from '@wordpress/editor';
  */
 import { unlock } from '../../lock-unlock';
 import { productFields } from '../product-list/fields';
+import { productsStore } from '@woocommerce/data';
 
 const { NavigableRegion } = unlock( editorPrivateApis );
 
@@ -59,8 +60,9 @@ export default function ProductEdit( {
 			return {
 				initialEdits:
 					ids.length === 1
-						? // @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-						  select( 'wc/admin/products' ).getProduct( ids[ 0 ] )
+						? select( productsStore ).getProduct(
+								Number.parseInt( ids[ 0 ], 10 )
+						  )
 						: null,
 			};
 		},

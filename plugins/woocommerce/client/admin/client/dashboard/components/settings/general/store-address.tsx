@@ -314,7 +314,7 @@ export function StoreAddress( {
 					getLocale,
 					getCountries,
 					hasFinishedResolution: hasFinishedCountryResolution,
-				} = select( COUNTRIES_STORE_NAME );
+				} = select( experimentalCountriesStore );
 				return {
 					// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 					locale: getLocale( countryState ) as Locale,

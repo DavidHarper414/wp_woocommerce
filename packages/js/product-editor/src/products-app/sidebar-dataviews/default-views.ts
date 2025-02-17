@@ -82,9 +82,9 @@ export function useDefaultViews( { postType }: { postType: string } ): Array< {
 } > {
 	const labels = useSelect(
 		( select ) => {
+			// @ts-expect-error Selector is not typed
 			const { getPostType } = select( coreStore );
 			const postTypeData: { labels?: Record< string, string > } =
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				getPostType( postType );
 			return postTypeData?.labels;
 		},

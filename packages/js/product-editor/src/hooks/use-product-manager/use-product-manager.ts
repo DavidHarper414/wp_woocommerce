@@ -47,7 +47,6 @@ export function useProductManager< T = Product >( postType: string ) {
 			setIsSaving( true );
 
 			await validate( extraProps );
-			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 			const { saveEntityRecord } = dispatch( coreStore );
 
 			const { blocks, content, selection, ...editedProduct } = wpSelect(

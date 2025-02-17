@@ -1,3 +1,5 @@
+import { StoreDescriptor } from '@wordpress/data';
+
 declare module '@woocommerce/settings' {
 	export declare function getAdminLink( path: string ): string;
 	export declare function getSetting< T >(
@@ -31,7 +33,6 @@ declare module '@wordpress/core-data' {
 		isResolving: boolean;
 		hasResolved: boolean;
 	};
-	const store: string;
 }
 declare module '@wordpress/keyboard-shortcuts' {
 	function useShortcut(
