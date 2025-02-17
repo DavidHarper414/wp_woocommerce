@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -181,6 +181,25 @@ describe( 'Payment recommendations', () => {
 		const { container } = render( <PaymentRecommendations /> );
 
 		expect( container.firstChild ).toBeNull();
+	} );
+
+	it( 'should trigger event settings_payment_recommendations_visit_marketplace_click when clicking the Official WooCommerce Marketplace link', () => {
+		( isWCPaySupported as jest.Mock ).mockReturnValue( true );
+		( useSelect as jest.Mock ).mockReturnValue( {
+			installedPaymentGateways: {},
+			paymentGatewaySuggestions: [
+				{ title: 'test', id: 'test', plugins: [ 'test' ] },
+			],
+		} );
+		const { container } = render( <PaymentRecommendations /> );
+
+		expect( container.firstChild ).not.toBeNull();
+		fireEvent.click(
+			screen.getByText( 'Official WooCommerce Marketplace' )
+		);
+		expect( recordEvent ).toHaveBeenCalledWith(
+			'settings_payment_recommendations_visit_marketplace_click'
+		);
 	} );
 
 	describe( 'interactions', () => {

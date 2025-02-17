@@ -251,4 +251,14 @@ describe( 'Products', () => {
 				.length
 		).toBeGreaterThanOrEqual( 1 );
 	} );
+
+	it( 'should trigger event tasklist_add_product_visit_marketplace_click when clicking the Official WooCommerce Marketplace link', () => {
+		const { getByText } = render( <Products /> );
+
+		userEvent.click( getByText( 'Official WooCommerce Marketplace' ) );
+
+		expect( recordEvent ).toHaveBeenCalledWith(
+			'tasklist_add_product_visit_marketplace_click'
+		);
+	} );
 } );

@@ -1,8 +1,9 @@
 /**
  * External dependencies
  */
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelect } from '@wordpress/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -30,6 +31,9 @@ jest.mock( '@woocommerce/admin-layout', () => {
 		useExtendLayout: jest.fn().mockReturnValue( mockContext ),
 	};
 } );
+jest.mock( '@woocommerce/tracks', () => ( {
+	recordEvent: jest.fn(),
+} ) );
 
 const defaultSelectReturn = {
 	getActivePlugins: () => [],
@@ -130,5 +134,17 @@ describe( 'ShippingRecommendations', () => {
 		expect(
 			screen.queryByText( 'WooCommerce Shipping' )
 		).toBeInTheDocument();
+	} );
+
+	it( 'should trigger event settings_shipping_recommendation_visit_marketplace_click when clicking the Official WooCommerce Marketplace link', () => {
+		render( <ShippingRecommendations /> );
+
+		fireEvent.click(
+			screen.getByText( 'Official WooCommerce Marketplace' )
+		);
+
+		expect( recordEvent ).toHaveBeenCalledWith(
+			'settings_shipping_recommendation_visit_marketplace_click'
+		);
 	} );
 } );
