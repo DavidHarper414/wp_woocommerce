@@ -27,7 +27,7 @@ This would usually be true if your component is an inner block of the Cart/Check
 
 To do this, you'd directly select the data you're interested in from the relevant data store and then do any work you need to do if it has changed. Please refer to the documentation for the relevant data store for the data you're interested in to know what selectors are available.
 
-```php
+```js
 /**
  * External dependencies
  */
