@@ -1,6 +1,6 @@
 <?php
 /**
- * Beta Tester Plugin Live Branches feature class.
+ * Beta Tester Plugin Product Editor Devtools feature class.
  *
  * @package WC_Beta_Tester
  */
@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WC_Beta_Tester Live Branches Feature Class.
+ * WC_Beta_Tester Product Editor Devtools Feature Class.
  */
 class WC_Beta_Tester_Product_Editor_Devtools {
 	/**
@@ -60,7 +60,7 @@ class WC_Beta_Tester_Product_Editor_Devtools {
 			array(),
 			$css_file_version
 		);
-	
+
 		wp_enqueue_style( 'woocommerce-beta-tester-product-editor-devtools' );
 	}
 }
