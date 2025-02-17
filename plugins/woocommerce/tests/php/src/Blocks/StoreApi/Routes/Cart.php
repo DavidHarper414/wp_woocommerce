@@ -707,8 +707,8 @@ class Cart extends ControllerTestCase {
 				// this will create a "local" attribute.
 				[
 					'attribute_taxonomy' => 'Autograph choice ✏️',
-					'term_ids'           => [ 'Yes 👍', 'No 👎' ]
-				]
+					'term_ids'           => [ 'Yes 👍', 'No 👎' ],
+				],
 			)
 		);
 
@@ -721,7 +721,6 @@ class Cart extends ControllerTestCase {
 				'autograph-choice-%e2%9c%8f%ef%b8%8f' => 'Yes 👍',
 			)
 		);
-
 
 		$request = new \WP_REST_Request( 'POST', '/wc/store/v1/cart/add-item' );
 		$request->set_header( 'Nonce', wp_create_nonce( 'wc_store_api' ) );
@@ -783,8 +782,8 @@ class Cart extends ControllerTestCase {
 			array(
 				[
 					'attribute_taxonomy' => 'Autograph choice ✏️',
-					'term_ids'           => [ 'Yes 👍', 'No 👎' ]
-				]
+					'term_ids'           => [ 'Yes 👍', 'No 👎' ],
+				],
 			)
 		);
 
@@ -794,7 +793,6 @@ class Cart extends ControllerTestCase {
 				'autograph-choice-%e2%9c%8f%ef%b8%8f' => 'No 👎',
 			)
 		);
-
 
 		$request = new \WP_REST_Request( 'POST', '/wc/store/v1/cart/add-item' );
 		$request->set_header( 'Nonce', wp_create_nonce( 'wc_store_api' ) );
