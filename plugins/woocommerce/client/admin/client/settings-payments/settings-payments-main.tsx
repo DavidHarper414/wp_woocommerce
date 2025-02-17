@@ -4,11 +4,10 @@
 import { useCallback } from 'react';
 import { __, sprintf } from '@wordpress/i18n';
 import {
-	PLUGINS_STORE_NAME,
+	pluginsStore,
 	PAYMENT_SETTINGS_STORE_NAME,
 	PaymentProvider,
 	type PaymentSettingsSelectors,
-	type PluginSelectors,
 } from '@woocommerce/data';
 import { resolveSelect, useDispatch, useSelect } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
@@ -48,7 +47,7 @@ export const SettingsPaymentsMain = () => {
 	const [ sortedProviders, setSortedProviders ] = useState<
 		PaymentProvider[] | null
 	>( null );
-	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
+	const { installAndActivatePlugins } = useDispatch( pluginsStore );
 	const { updateProviderOrdering } = useDispatch(
 		PAYMENT_SETTINGS_STORE_NAME
 	);
@@ -107,9 +106,7 @@ export const SettingsPaymentsMain = () => {
 	}, [] );
 
 	const installedPluginSlugs = useSelect( ( select ) => {
-		return (
-			select( PLUGINS_STORE_NAME ) as PluginSelectors
-		 ).getInstalledPlugins();
+		return select( pluginsStore ).getInstalledPlugins();
 	}, [] );
 
 	// Make UI refresh when plugin is installed.
@@ -157,6 +154,13 @@ export const SettingsPaymentsMain = () => {
 		} );
 	}, [] );
 
+	/**
+	 * Clear sortedProviders when data store updates.
+	 */
+	useEffect( () => {
+		setSortedProviders( null );
+	}, [ providers ] );
+
 	function handleOrderingUpdate( sorted: PaymentProvider[] ) {
 		// Extract the existing _order values in the sorted order
 		const updatedOrderValues = sorted
@@ -180,6 +184,36 @@ export const SettingsPaymentsMain = () => {
 	);
 	const incentive = incentiveProvider ? incentiveProvider._incentive : null;
 
+	// Determine what type of incentive surface to display.
+	let showModalIncentive = false;
+	let showBannerIncentive = false;
+	if ( incentiveProvider && incentive ) {
+		if ( isSwitchIncentive( incentive ) ) {
+			if (
+				! isIncentiveDismissedInContext(
+					incentive,
+					'wc_settings_payments__modal'
+				)
+			) {
+				showModalIncentive = true;
+			} else if (
+				! isIncentiveDismissedInContext(
+					incentive,
+					'wc_settings_payments__banner'
+				)
+			) {
+				showBannerIncentive = true;
+			}
+		} else if (
+			! isIncentiveDismissedInContext(
+				incentive,
+				'wc_settings_payments__banner'
+			)
+		) {
+			showBannerIncentive = true;
+		}
+	}
+
 	const setupPlugin = useCallback(
 		( id: string, slug: string, onboardingUrl: string | null ) => {
 			if ( installingPlugin ) {
@@ -194,7 +228,7 @@ export const SettingsPaymentsMain = () => {
 
 			setInstallingPlugin( id );
 			installAndActivatePlugins( [ slug ] )
-				.then( async ( response: Response ) => {
+				.then( async ( response ) => {
 					createNoticesFromResponse( response );
 					invalidateResolutionForStoreSelector(
 						'getPaymentProviders'
@@ -249,25 +283,19 @@ export const SettingsPaymentsMain = () => {
 
 	return (
 		<>
-			{ incentiveProvider &&
-				incentive &&
-				isSwitchIncentive( incentive ) &&
-				! isIncentiveDismissedInContext(
-					incentive,
-					'wc_settings_payments__modal'
-				) && (
-					<IncentiveModal
-						incentive={ incentive }
-						provider={ incentiveProvider }
-						onboardingUrl={
-							incentiveProvider.onboarding?._links.onboard.href ??
-							null
-						}
-						onDismiss={ dismissIncentive }
-						onAccept={ acceptIncentive }
-						setupPlugin={ setupPlugin }
-					/>
-				) }
+			{ showModalIncentive && incentiveProvider && incentive && (
+				<IncentiveModal
+					incentive={ incentive }
+					provider={ incentiveProvider }
+					onboardingUrl={
+						incentiveProvider.onboarding?._links.onboard.href ??
+						null
+					}
+					onDismiss={ dismissIncentive }
+					onAccept={ acceptIncentive }
+					setupPlugin={ setupPlugin }
+				/>
+			) }
 			{ errorMessage && (
 				<div className="notice notice-error is-dismissible wcpay-settings-notice">
 					<p>{ errorMessage }</p>
@@ -280,25 +308,19 @@ export const SettingsPaymentsMain = () => {
 					></button>
 				</div>
 			) }
-			{ incentiveProvider &&
-				incentive &&
-				! isSwitchIncentive( incentive ) &&
-				! isIncentiveDismissedInContext(
-					incentive,
-					'wc_settings_payments__banner'
-				) && (
-					<IncentiveBanner
-						incentive={ incentive }
-						provider={ incentiveProvider }
-						onboardingUrl={
-							incentiveProvider.onboarding?._links.onboard.href ??
-							null
-						}
-						onDismiss={ dismissIncentive }
-						onAccept={ acceptIncentive }
-						setupPlugin={ setupPlugin }
-					/>
-				) }
+			{ showBannerIncentive && incentiveProvider && incentive && (
+				<IncentiveBanner
+					incentive={ incentive }
+					provider={ incentiveProvider }
+					onboardingUrl={
+						incentiveProvider.onboarding?._links.onboard.href ??
+						null
+					}
+					onDismiss={ dismissIncentive }
+					onAccept={ acceptIncentive }
+					setupPlugin={ setupPlugin }
+				/>
+			) }
 			<div className="settings-payments-main__container">
 				<PaymentGateways
 					providers={ sortedProviders || providers }

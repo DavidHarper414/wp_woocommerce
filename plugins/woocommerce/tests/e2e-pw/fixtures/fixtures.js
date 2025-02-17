@@ -31,6 +31,12 @@ exports.test = base.test.extend( {
 		await use( wcAdminApi );
 	},
 
+	/**
+	 * Fixture for interacting with the [WordPress REST API](https://developer.wordpress.org/rest-api/reference/) endpoints.
+	 *
+	 * @param {{baseURL: string}} fixtures
+	 * @param {function(base.APIRequestContext): Promise<void>} use
+	 */
 	wpApi: async ( { baseURL }, use ) => {
 		const wpApi = await base.request.newContext( {
 			baseURL,
@@ -43,6 +49,20 @@ exports.test = base.test.extend( {
 		} );
 
 		await use( wpApi );
+	},
+
+	wcbtApi: async ( { baseURL }, use ) => {
+		const wcbtApi = await base.request.newContext( {
+			baseURL,
+			extraHTTPHeaders: {
+				Authorization: `Basic ${ Buffer.from(
+					`${ admin.username }:${ admin.password }`
+				).toString( 'base64' ) }`,
+				cookie: '',
+			},
+		} );
+
+		await use( wcbtApi );
 	},
 
 	testPageTitlePrefix: [ '', { option: true } ],

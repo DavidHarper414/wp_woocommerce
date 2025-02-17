@@ -11,7 +11,7 @@ import {
 	useRef,
 	createPortal,
 } from '@wordpress/element';
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { optionsStore } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
@@ -44,8 +44,7 @@ const useShowShippingTour = () => {
 		businessCountry,
 		isLoading,
 	} = useSelect( ( select ) => {
-		const { hasFinishedResolution, getOption } =
-			select( OPTIONS_STORE_NAME );
+		const { hasFinishedResolution, getOption } = select( optionsStore );
 
 		return {
 			isLoading:
@@ -66,7 +65,7 @@ const useShowShippingTour = () => {
 				getOption( 'woocommerce_default_country' ) as string
 			),
 		};
-	} );
+	}, [] );
 
 	return {
 		isLoading,
@@ -214,7 +213,7 @@ const TourFloaterWrapper = ( { step }: { step: number } ) => {
 export const ShippingTour: React.FC< {
 	showShippingRecommendationsStep: boolean;
 } > = ( { showShippingRecommendationsStep } ) => {
-	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const { updateOptions } = useDispatch( optionsStore );
 	const { show: showTour, isUspsDhlEligible } = useShowShippingTour();
 	const [ step, setStepNumber ] = useState( 0 );
 	const { createNotice } = useDispatch( 'core/notices' );

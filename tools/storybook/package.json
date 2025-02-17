@@ -55,7 +55,7 @@
 		"storybook": "7.6.19",
 		"typescript": "5.7.x",
 		"webpack": "^5.89.0",
-		"wireit": "0.14.3"
+		"wireit": "0.14.10"
 	},
 	"wireit": {
 		"build:storybook": {
@@ -103,13 +103,13 @@
 		"dependencyOutputs": {
 			"allowUsuallyExcludedPaths": true,
 			"files": [
-				"node_modules/@woocommerce/eslint-plugin/configs",
-				"node_modules/@woocommerce/eslint-plugin/rules",
-				"node_modules/@woocommerce/eslint-plugin/index.js",
+				"package.json",
+				"node_modules/@woocommerce/admin-library/build",
 				"node_modules/@woocommerce/block-library/build",
 				"node_modules/@woocommerce/block-library/blocks.ini",
-				"node_modules/@woocommerce/admin-library/build",
-				"package.json"
+				"node_modules/@woocommerce/eslint-plugin/configs",
+				"node_modules/@woocommerce/eslint-plugin/rules",
+				"node_modules/@woocommerce/eslint-plugin/index.js"
 			]
 		}
 	}

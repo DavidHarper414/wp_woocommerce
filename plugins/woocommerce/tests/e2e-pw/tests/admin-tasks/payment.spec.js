@@ -1,7 +1,8 @@
 const { test: baseTest, expect, tags } = require( '../../fixtures/fixtures' );
+const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
 
 const test = baseTest.extend( {
-	storageState: process.env.ADMINSTATE,
+	storageState: ADMIN_STATE_PATH,
 	page: async ( { api, page, wpApi, wcAdminApi }, use ) => {
 		await wcAdminApi.post( 'onboarding/profile', {
 			skipped: true,
@@ -9,13 +10,11 @@ const test = baseTest.extend( {
 
 		// Ensure store's base country location is a WooPayments non-supported country (AF).
 		// Otherwise, the WooPayments task page logic or WooPayments redirects will kick in.
-		await api.post( 'settings/general/batch', {
-			update: [
-				{
-					id: 'woocommerce_default_country',
-					value: 'AF',
-				},
-			],
+		const initialDefaultCountry = await api.get(
+			'settings/general/woocommerce_default_country'
+		);
+		await api.put( 'settings/general/woocommerce_default_country', {
+			value: 'AF',
 		} );
 
 		const bacsInitialState = await api.get( 'payment_gateways/bacs' );
@@ -38,6 +37,9 @@ const test = baseTest.extend( {
 		} );
 		await api.put( 'payment_gateways/cod', {
 			enabled: codInitialState.data.enabled,
+		} );
+		await api.put( 'settings/general/woocommerce_default_country', {
+			value: initialDefaultCountry.data.value,
 		} );
 	},
 } );

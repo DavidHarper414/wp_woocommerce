@@ -6,6 +6,7 @@
  */
 
 use Automattic\Jetpack\Constants;
+use Automattic\WooCommerce\Admin\PluginsHelper;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -826,6 +827,9 @@ class WC_Helper {
 		 * Fires when the Helper connection process is initiated.
 		 */
 		do_action( 'woocommerce_helper_connect_start' );
+
+		// Ignore all previously dismissed connected notices.
+		delete_metadata( 'user', 0, \Automattic\WooCommerce\Admin\PluginsHelper::DISMISS_CONNECT_NOTICE, '', true );
 
 		$connect_url = add_query_arg(
 			array(
@@ -2359,6 +2363,11 @@ class WC_Helper {
 				'authenticated' => true,
 			)
 		);
+
+		$data = WC_Helper_Options::get( 'auth_user_data' );
+		WC_Helper_Options::update( 'last_disconnected_user_data', $data );
+		// Ignore all previously dismissed disconnect notices.
+		delete_metadata( 'user', 0, PluginsHelper::DISMISS_DISCONNECT_NOTICE, '', true );
 
 		WC_Helper_Options::update( 'auth', array() );
 		WC_Helper_Options::update( 'auth_user_data', array() );

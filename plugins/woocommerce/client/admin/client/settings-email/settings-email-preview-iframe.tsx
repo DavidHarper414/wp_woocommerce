@@ -3,21 +3,30 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { debounce } from 'lodash';
+
+/**
+ * Internal dependencies
+ */
+import { emailPreviewNonce } from './settings-email-preview-nonce';
 
 type EmailPreviewIframeProps = {
 	src: string;
+	isLoading: boolean;
 	setIsLoading: ( isLoading: boolean ) => void;
 	settingsIds: string[];
 };
 
 export const EmailPreviewIframe: React.FC< EmailPreviewIframeProps > = ( {
 	src,
+	isLoading,
 	setIsLoading,
 	settingsIds,
 } ) => {
 	const [ counter, setCounter ] = useState( 0 );
+	const nonce = emailPreviewNonce();
+	const iframeRef = useRef< HTMLIFrameElement | null >( null );
 
 	useEffect( () => {
 		const handleFieldChange = async ( jqEvent: JQuery.Event ) => {
@@ -32,13 +41,20 @@ export const EmailPreviewIframe: React.FC< EmailPreviewIframeProps > = ( {
 
 			try {
 				await apiFetch( {
-					path: 'wc-admin-email/settings/email/save-transient',
+					path: `wc-admin-email/settings/email/save-transient?nonce=${ nonce }`,
 					method: 'POST',
 					data: { key, value },
 				} );
 			} finally {
 				target.dispatchEvent( new Event( 'transient-saved' ) );
 				setCounter( ( prevCounter ) => prevCounter + 1 );
+
+				// Update iframe src using replace to avoid polluting browser history
+				if ( iframeRef.current ) {
+					iframeRef.current.contentWindow?.location.replace(
+						`${ src }&hash=${ counter + 1 }`
+					);
+				}
 			}
 		};
 
@@ -63,13 +79,17 @@ export const EmailPreviewIframe: React.FC< EmailPreviewIframeProps > = ( {
 				}
 			} );
 		};
-	}, [ setIsLoading, settingsIds, setCounter ] );
+	}, [ nonce, setIsLoading, settingsIds, setCounter ] );
 
 	return (
-		<iframe
-			src={ `${ src }&hash=${ counter }` }
-			title={ __( 'Email preview frame', 'woocommerce' ) }
-			onLoad={ () => setIsLoading( false ) }
-		/>
+		<div>
+			<iframe
+				ref={ iframeRef }
+				className={ isLoading ? 'iframe-is-loading' : '' }
+				src={ src }
+				title={ __( 'Email preview frame', 'woocommerce' ) }
+				onLoad={ () => setIsLoading( false ) }
+			/>
+		</div>
 	);
 };

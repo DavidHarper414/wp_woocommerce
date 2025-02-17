@@ -27,7 +27,7 @@
 		"@woocommerce/dependency-extraction-webpack-plugin": "workspace:*",
 		"@woocommerce/eslint-plugin": "workspace:*",
 		"@wordpress/data": "wp-6.6",
-		"@wordpress/env": "10.14.0",
+		"@wordpress/env": "10.17.0",
 		"@wordpress/prettier-config": "2.17.0",
 		"@wordpress/scripts": "^19.2.4",
 		"babel-jest": "27.5.x",
@@ -36,7 +36,7 @@
 		"ts-loader": "9.5.x",
 		"typescript": "5.7.x",
 		"uglify-js": "^3.17.4",
-		"wireit": "0.14.3"
+		"wireit": "0.14.10"
 	},
 	"scripts": {
 		"build": "pnpm --if-present --workspace-concurrency=Infinity --stream --filter=\"$npm_package_name...\" '/^build:project:.*$/'",
@@ -128,23 +128,23 @@
 		"dependencyOutputs": {
 			"allowUsuallyExcludedPaths": true,
 			"files": [
-				"node_modules/@woocommerce/eslint-plugin/configs",
-				"node_modules/@woocommerce/eslint-plugin/rules",
-				"node_modules/@woocommerce/eslint-plugin/index.js",
-				"node_modules/@woocommerce/dependency-extraction-webpack-plugin/src/",
-				"node_modules/@woocommerce/dependency-extraction-webpack-plugin/assets/",
-				"node_modules/@woocommerce/tracks/build",
-				"node_modules/@woocommerce/tracks/build-module",
-				"node_modules/@woocommerce/tracks/build-types",
-				"node_modules/@woocommerce/components/build",
-				"node_modules/@woocommerce/components/build-module",
-				"node_modules/@woocommerce/components/build-style",
-				"node_modules/@woocommerce/components/build-types",
+				"package.json",
 				"node_modules/@woocommerce/ai/build",
 				"node_modules/@woocommerce/ai/build-module",
 				"node_modules/@woocommerce/ai/build-style",
 				"node_modules/@woocommerce/ai/build-types",
-				"package.json"
+				"node_modules/@woocommerce/components/build",
+				"node_modules/@woocommerce/components/build-module",
+				"node_modules/@woocommerce/components/build-style",
+				"node_modules/@woocommerce/components/build-types",
+				"node_modules/@woocommerce/tracks/build",
+				"node_modules/@woocommerce/tracks/build-module",
+				"node_modules/@woocommerce/tracks/build-types",
+				"node_modules/@woocommerce/dependency-extraction-webpack-plugin/src/",
+				"node_modules/@woocommerce/dependency-extraction-webpack-plugin/assets/",
+				"node_modules/@woocommerce/eslint-plugin/configs",
+				"node_modules/@woocommerce/eslint-plugin/rules",
+				"node_modules/@woocommerce/eslint-plugin/index.js"
 			]
 		}
 	}

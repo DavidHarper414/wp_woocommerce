@@ -12,6 +12,8 @@ use Automattic\WooCommerce\StoreApi\Schemas\V1\CheckoutSchema;
 use Automattic\WooCommerce\Tests\Blocks\Helpers\FixtureData;
 use Automattic\WooCommerce\Tests\Blocks\Mocks\OrderConfirmation\TotalsMock;
 use Automattic\WooCommerce\Tests\Blocks\StoreApi\MockSessionHandler;
+use WC_Gateway_BACS;
+use Automattic\WooCommerce\Enums\ProductStockStatus;
 
 /**
  * Tests for the Totals block type inside the Order Confirmation.
@@ -74,7 +76,7 @@ class Totals extends \WP_UnitTestCase {
 			$fixtures->get_simple_product(
 				array(
 					'name'          => 'Test Product 1',
-					'stock_status'  => 'instock',
+					'stock_status'  => ProductStockStatus::IN_STOCK,
 					'regular_price' => 10,
 					'weight'        => 10,
 				)
@@ -82,7 +84,7 @@ class Totals extends \WP_UnitTestCase {
 			$fixtures->get_simple_product(
 				array(
 					'name'          => 'Test Product 2',
-					'stock_status'  => 'instock',
+					'stock_status'  => ProductStockStatus::IN_STOCK,
 					'regular_price' => 10,
 					'weight'        => 10,
 				)
@@ -99,6 +101,7 @@ class Totals extends \WP_UnitTestCase {
 	public function tearDown(): void {
 		parent::tearDown();
 		WC()->cart->empty_cart();
+		WC()->session->destroy_session();
 	}
 
 	/**
@@ -145,7 +148,7 @@ class Totals extends \WP_UnitTestCase {
 				),
 				'create_account'   => true,
 				'customer_note'    => '<a href="http://attackerpage.com/csrf.html">This text should not save inside an anchor.</a><script>alert("alert")</script>',
-				'payment_method'   => 'bacs',
+				'payment_method'   => WC_Gateway_BACS::ID,
 				'extensions'       => array(
 					'extension_namespace' => array(
 						'extension_key' => true,
