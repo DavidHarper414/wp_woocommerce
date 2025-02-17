@@ -1,0 +1,29 @@
+.mailpoet_heading_form_field {
+  margin-bottom: 5px;
+  margin-top: 5px;
+
+  &:first-child {
+    margin-top: 0 !important;
+  }
+}
+
+.mailpoet_input_title,
+.mailpoet_input_preheader {
+  line-height: normal;
+  padding: 3px;
+  width: 500px;
+}
+
+.mailpoet_input_title {
+  font-size: 23px;
+}
+
+#mailpoet_heading_email_type {
+  width: 200px;
+}
+
+.mailpoet_heading_wc_template_description {
+  color: #666;
+  font-style: italic;
+  max-width: 800px;
+}

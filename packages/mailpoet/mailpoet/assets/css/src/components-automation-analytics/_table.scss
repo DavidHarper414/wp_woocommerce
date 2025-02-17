@@ -1,0 +1,29 @@
+.mailpoet-automation-analytics {
+  .woocommerce-table__header,
+  .woocommerce-table__item,
+  .woocommerce-table__empty-item {
+    text-wrap: balance;
+
+    @include respond-to(medium-screen) {
+      padding: 8px 12px;
+    }
+  }
+
+  .woocommerce-table__header.is-sortable {
+    padding: 2px;
+
+    button {
+      padding: 4px 20px;
+      width: 100%;
+
+      @include respond-to(medium-screen) {
+        padding: 4px 8px;
+      }
+    }
+  }
+
+  .woocommerce-table__header,
+  .woocommerce-table__header button {
+    font-weight: bold;
+  }
+}

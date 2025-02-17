@@ -1,0 +1,94 @@
+.mailpoet-form-input {
+  align-items: center;
+  background: $color-input-background;
+  border: 1px solid $color-input-border;
+  border-radius: $form-control-border-radius;
+  box-sizing: border-box;
+  display: inline-flex;
+  height: $form-control-height;
+  justify-content: center;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0;
+  position: relative;
+  text-align: left;
+  vertical-align: top;
+  width: $grid-column;
+
+  input,
+  select {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    border-radius: 3px;
+    box-shadow: none !important;
+    color: $color-text;
+    flex-grow: 1;
+    font-size: $font-size;
+    line-height: $form-control-line-height;
+    margin: 0;
+    max-width: 100%;
+    padding: $form-control-spacing $form-control-spacing-horizontal;
+
+    &::placeholder {
+      color: $color-text-light;
+    }
+  }
+
+  > svg {
+    fill: $color-text-light;
+    flex-shrink: 0;
+    height: $form-control-icon;
+    width: $form-control-icon;
+
+    &:first-child {
+      margin: 0 (-$form-control-spacing - $form-control-icon) 0
+        $form-control-spacing;
+    }
+
+    + input,
+    + select,
+    + * input {
+      padding-left: $form-control-icon + 2 * $form-control-spacing;
+    }
+
+    &:last-child {
+      margin: 0 $form-control-spacing 0 (-$form-control-spacing);
+    }
+  }
+
+  &.mailpoet-full-width + .mailpoet-form-input.mailpoet-full-width,
+  &.mailpoet-full-width + .mailpoet-button.mailpoet-full-width {
+    margin-top: $grid-gap;
+  }
+
+  &:not(.mailpoet-full-width)
+    + .mailpoet-form-input:not(.mailpoet-full-width):not(.mailpoet-form-select),
+  &:not(.mailpoet-full-width) + .mailpoet-button:not(.mailpoet-full-width) {
+    margin-left: $grid-gap;
+  }
+
+  &.mailpoet-min-width {
+    max-width: $grid-column;
+  }
+}
+
+.mailpoet-form-input-small {
+  font-size: $font-size-small;
+  height: $form-control-height-small;
+  width: $grid-column-small;
+
+  input,
+  select {
+    font-size: $font-size-small;
+  }
+
+  svg {
+    height: $form-control-icon-small;
+    width: $form-control-icon-small;
+  }
+
+  &.mailpoet-min-width {
+    max-width: $grid-column-small;
+  }
+}

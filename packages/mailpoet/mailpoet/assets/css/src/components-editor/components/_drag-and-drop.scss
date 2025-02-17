@@ -1,0 +1,78 @@
+@use 'sass:math';
+
+.mailpoet_drop_marker {
+  background-color: $color-primary;
+  box-shadow: 0 0 1px 0 $color-primary;
+  min-height: $editor-dnd-drop-size;
+  min-width: $editor-dnd-drop-size;
+  position: absolute;
+  z-index: $editor-dnd-drop-zindex;
+
+  &:before,
+  &:after {
+    color: $color-primary;
+    font: 400 40px / 1 dashicons;
+    margin-top: -18px;
+    position: absolute;
+  }
+
+  &:before {
+    content: '\f139';
+    left: -25px;
+  }
+
+  &:after {
+    content: '\f141';
+    right: -23px;
+  }
+}
+
+.mailpoet_drop_marker.mailpoet_drop_marker_middle,
+.mailpoet_drop_marker.mailpoet_drop_marker_first.mailpoet_drop_marker_after,
+.mailpoet_drop_marker.mailpoet_drop_marker_last.mailpoet_drop_marker_before {
+  margin-top: -1 * math.div($editor-dnd-drop-size, 2);
+}
+
+.mailpoet_drop_marker.mailpoet_drop_marker_last.mailpoet_drop_marker_after {
+  margin-top: -1 * $editor-dnd-drop-size;
+}
+
+#mailpoet_editor .mailpoet_droppable_active {
+  z-index: 21000;
+}
+
+.mailpoet_block.mailpoet_droppable_active {
+  border: 1px dashed $color-primary !important;
+  width: $grid-editor-width;
+
+  .mailpoet_tools {
+    display: none !important;
+  }
+}
+
+.mailpoet_widget.mailpoet_droppable_active {
+  margin: 0;
+  padding: 0;
+  z-index: $editor-dnd-drag-zindex;
+
+  @include animation-fade-in();
+
+  .mailpoet_widget_icon {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.mailpoet_drop_active > .mailpoet_container > div > .mailpoet_container_empty {
+  background-color: $color-primary;
+  box-shadow: inset 1px 2px 1px $color-primary-shadow-inset;
+  color: $color-white;
+}
+
+.mailpoet_droppable_block {
+  cursor: move;
+
+  &.mailpoet_ignore_drag {
+    cursor: auto;
+  }
+}

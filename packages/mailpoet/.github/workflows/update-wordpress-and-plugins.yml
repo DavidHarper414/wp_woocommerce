@@ -1,0 +1,182 @@
+name: Check new versions of plugins and WordPress
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # At 06:00 on Monday
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  check-versions:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3' # Specify the PHP version you want to use
+
+      # Updating used WordPress
+      - name: Check WordPress Docker Versions
+        run: php .github/workflows/scripts/check_wordpress_versions.php
+
+      - name: Check for WordPress changes
+        id: check_wp_changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          if [ "$(git status --porcelain)" != "" ]; then
+            echo "CHANGES_DETECTED=true" >> $GITHUB_ENV
+            echo "WORDPRESS_CHANGES=true" >> $GITHUB_ENV
+          fi
+
+      - name: Get WordPress versions from files
+        id: get_wp_versions
+        run: |
+          echo "WORDPRESS_LATEST_VERSION=$(cat /tmp/latest_wordpress_version.txt)" >> $GITHUB_ENV
+          echo "WORDPRESS_PREVIOUS_VERSION=$(cat /tmp/previous_wordpress_version.txt)" >> $GITHUB_ENV
+
+      - name: Commit WordPress changes
+        if: env.WORDPRESS_CHANGES == 'true'
+        run: |
+          git add .
+          git commit -m $'Update used WordPress images in Circle CI\n\n - latest version: ${{ env.WORDPRESS_LATEST_VERSION }}\n - previous version: ${{ env.WORDPRESS_PREVIOUS_VERSION }}'
+
+      # Updating used WooCommerce plugin
+      - name: Check WooCommerce Versions
+        run: php .github/workflows/scripts/check_woocommerce_versions.php
+
+      - name: Check for WooCommerce changes
+        id: check_wc_changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          if [ "$(git status --porcelain)" != "" ]; then
+            echo "CHANGES_DETECTED=true" >> $GITHUB_ENV
+            echo "WOOCOMMERCE_CHANGES=true" >> $GITHUB_ENV
+          fi
+
+      - name: Get WooCommerce versions from files
+        id: get_wc_versions
+        run: |
+          echo "WOOCOMMERCE_LATEST_VERSION=$(cat /tmp/latest_woocommerce_version.txt)" >> $GITHUB_ENV
+          echo "WOOCOMMERCE_PREVIOUS_VERSION=$(cat /tmp/previous_woocommerce_version.txt)" >> $GITHUB_ENV
+
+      - name: Commit WooCommerce changes
+        if: env.WOOCOMMERCE_CHANGES == 'true'
+        run: |
+          git add .
+          git commit -m $'Update used WooCommerce plugin in Circle CI\n\n - latest version: ${{ env.WOOCOMMERCE_LATEST_VERSION }}\n - previous version: ${{ env.WOOCOMMERCE_PREVIOUS_VERSION }}'
+
+      # Updating used Automate Woo plugin
+      - name: Check Automate Woo Versions
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: php .github/workflows/scripts/check_automate_woo_versions.php
+
+      - name: Check for Automate Woo changes
+        id: check_aw_changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          if [ "$(git status --porcelain)" != "" ]; then
+            echo "CHANGES_DETECTED=true" >> $GITHUB_ENV
+            echo "AUTOMATE_WOO_CHANGES=true" >> $GITHUB_ENV
+          fi
+
+      - name: Get Automate Woo versions from files
+        id: get_aw_versions
+        run: |
+          echo "AUTOMATE_WOO_LATEST_VERSION=$(cat /tmp/latest_automate_woo_version.txt)" >> $GITHUB_ENV
+          echo "AUTOMATE_WOO_PREVIOUS_VERSION=$(cat /tmp/previous_automate_woo_version.txt)" >> $GITHUB_ENV
+
+      - name: Commit Automate Woo changes
+        if: env.AUTOMATE_WOO_CHANGES == 'true'
+        run: |
+          git add .
+          git commit -m $'Update used Automate Woo plugin in Circle CI\n\n - latest version: ${{ env.AUTOMATE_WOO_LATEST_VERSION }}\n - previous version: ${{ env.AUTOMATE_WOO_PREVIOUS_VERSION }}'
+
+      # Updating used WooCommerce Subscriptions plugin
+      - name: Check WooCommerce Subscriptions Versions
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: php .github/workflows/scripts/check_woocommerce_subscriptions_versions.php
+
+      - name: Check for WooCommerce Subscriptions changes
+        id: check_ws_changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          if [ "$(git status --porcelain)" != "" ]; then
+            echo "CHANGES_DETECTED=true" >> $GITHUB_ENV
+            echo "SUBSCRIPTIONS_CHANGES=true" >> $GITHUB_ENV
+          fi
+
+      - name: Get WooCommerce Subscriptions versions from files
+        id: get_ws_versions
+        run: |
+          echo "WOOCOMMERCE_SUBSCRIPTIONS_LATEST_VERSION=$(cat /tmp/latest_woocommerce_subscriptions_version.txt)" >> $GITHUB_ENV
+          echo "WOOCOMMERCE_SUBSCRIPTIONS_PREVIOUS_VERSION=$(cat /tmp/previous_woocommerce_subscriptions_version.txt)" >> $GITHUB_ENV
+
+      - name: Commit WooCommerce Subscriptions changes
+        if: env.SUBSCRIPTIONS_CHANGES == 'true'
+        run: |
+          git add .
+          git commit -m $'Update used WooCommerce Subscriptions plugin in Circle CI\n\n - latest version: ${{ env.WOOCOMMERCE_SUBSCRIPTIONS_LATEST_VERSION }}\n - previous version: ${{ env.WOOCOMMERCE_SUBSCRIPTIONS_PREVIOUS_VERSION }}'
+
+      # Updating used WooCommerce Memberships plugin
+      - name: Check WooCommerce Memberships Versions
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: php .github/workflows/scripts/check_woocommerce_memberships_versions.php
+
+      - name: Check for WooCommerce Memberships changes
+        id: check_wm_changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          if [ "$(git status --porcelain)" != "" ]; then
+            echo "CHANGES_DETECTED=true" >> $GITHUB_ENV
+            echo "MEMBERSHIPS_CHANGES=true" >> $GITHUB_ENV
+          fi
+
+      - name: Get WooCommerce Memberships versions from files
+        id: get_wm_versions
+        run: |
+          echo "WOOCOMMERCE_MEMBERSHIPS_LATEST_VERSION=$(cat /tmp/latest_woocommerce_memberships_version.txt)" >> $GITHUB_ENV
+          echo "WOOCOMMERCE_MEMBERSHIPS_PREVIOUS_VERSION=$(cat /tmp/previous_woocommerce_memberships_version.txt)" >> $GITHUB_ENV
+
+      - name: Commit WooCommerce Memberships changes
+        if: env.MEMBERSHIPS_CHANGES == 'true'
+        run: |
+          git add .
+          git commit -m $'Update used WooCommerce Memberships plugin in Circle CI\n\n - latest version: ${{ env.WOOCOMMERCE_MEMBERSHIPS_LATEST_VERSION }}\n - previous version: ${{ env.WOOCOMMERCE_MEMBERSHIPS_PREVIOUS_VERSION }}'
+
+      # Push all changes at the end if any changes were detected
+      #
+      # For local testing with act tool add following:
+      # env:
+      #   GH_PAT: ${{ secrets.GH_TOKEN }}
+      # run: |
+      #   git remote set-url origin https://${GH_PAT}@github.com/mailpoet/mailpoet
+      #   git push -f origin HEAD:refs/heads/update-plugins-and-wordpress-test
+      - name: Push changes
+        if: env.CHANGES_DETECTED == 'true'
+        run: |
+          git push -f origin HEAD:refs/heads/update-plugins-and-wordpress
+
+      # Create a pull request if there are changes
+      - name: Create Pull Request
+        if: env.CHANGES_DETECTED == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          branch: update-plugins-and-wordpress
+          title: Update WordPress and plugins in CI jobs
+          base: trunk
+          labels: automated, check-versions
+          body: |
+            1. If all checks passed, you can merge this PR.
+            2. If the build failed, please investigate the failure and either address the issues or delegate the job. Then, make sure these changes are merged.

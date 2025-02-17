@@ -1,0 +1,46 @@
+input.parsley-success,
+select.parsley-success,
+textarea.parsley-success {
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+  color: #468847;
+}
+
+input.parsley-error,
+select.parsley-error,
+textarea.parsley-error {
+  background-color: #f2dede;
+  border-color: #eed3d7;
+  color: #900;
+}
+
+.parsley-errors-list {
+  color: #900;
+  font-size: 0.8rem;
+  line-height: 1em;
+  list-style-type: none;
+  margin: 8px 0 3px;
+  opacity: 0;
+  padding: 0;
+  transition: all 0.3s ease-in;
+
+  &.filled {
+    opacity: 1;
+  }
+
+  .mailpoet-form-input & {
+    left: $grid-gap;
+    margin-top: 2px;
+    position: absolute;
+    top: 100%;
+  }
+}
+
+.parsley-required,
+.parsley-custom-error-message {
+  color: #900;
+}
+
+.mailpoet-form-errors {
+  padding: 0 16px;
+}

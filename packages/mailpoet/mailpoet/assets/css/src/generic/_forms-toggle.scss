@@ -1,0 +1,74 @@
+@use 'sass:math';
+
+.mailpoet-form-toggle {
+  cursor: pointer;
+  display: inline-block;
+  height: $form-control-choice-height;
+  position: relative;
+  width: 40px;
+
+  input {
+    height: 1px;
+    opacity: 0;
+    position: absolute;
+    width: 1px;
+
+    &:focus {
+      ~ .mailpoet-form-toggle-control {
+        border-color: $color-input-border-focus;
+      }
+    }
+  }
+}
+
+.mailpoet-form-toggle-control {
+  background: $color-input-background;
+  border: 1px solid $color-input-border;
+  border-radius: math.div($form-control-choice-height, 2);
+  box-sizing: border-box;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: all 0.2s ease;
+  width: 100%;
+
+  &:after {
+    background: #fff;
+    border: 1px solid $color-input-border;
+    border-radius: math.div($form-control-choice-height, 2);
+    box-shadow: 0 4px 8px rgba(#dcdcdc, 0.5);
+    box-sizing: border-box;
+    content: '';
+    height: calc(100% + 2px);
+    left: -1px;
+    position: absolute;
+    top: -1px;
+    transition: all 0.2s ease;
+    width: $form-control-choice-height;
+  }
+
+  input:checked ~ & {
+    background: $color-secondary-middle;
+    border-color: $color-secondary-middle;
+
+    &:after {
+      border-color: $color-secondary-middle;
+      box-shadow: -3px 0 8px rgba($color-secondary-middle, 0.4);
+      transform: translateX(40px - $form-control-choice-height);
+    }
+  }
+}
+
+.mailpoet-form-toggle-small {
+  height: $form-control-choice-height-small;
+  width: 24px;
+
+  .mailpoet-form-toggle-control:after {
+    width: $form-control-choice-height-small;
+  }
+
+  input:checked ~ .mailpoet-form-toggle-control:after {
+    transform: translateX(24px - $form-control-choice-height-small);
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "presets": [
+    ["@babel/preset-react", { "runtime": "automatic" }],
+    "@babel/preset-env",
+    ["@babel/preset-typescript", { "allowDeclareFields": true }]
+  ],
+  "plugins": [
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "sourceType": "unambiguous",
+        "corejs": 3
+      }
+    ],
+    "@babel/plugin-proposal-function-sent",
+    "@babel/plugin-proposal-throw-expressions"
+  ]
+}

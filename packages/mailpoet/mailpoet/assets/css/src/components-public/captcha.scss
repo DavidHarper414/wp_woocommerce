@@ -1,0 +1,24 @@
+.mailpoet_captcha_form {
+  .mailpoet_icon_button {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+
+    img {
+      height: 20px;
+      width: 20px;
+    }
+  }
+}
+
+// WP registration form
+form#registerform .g-recaptcha:not([data-size='invisible']) {
+  scale: 0.9;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+
+// WC registration form
+form.woocommerce-form-register .g-recaptcha {
+  padding-inline-start: 3px;
+}

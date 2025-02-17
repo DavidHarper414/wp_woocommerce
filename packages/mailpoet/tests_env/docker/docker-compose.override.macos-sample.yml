@@ -1,0 +1,30 @@
+services:
+  # for M1 Macs
+  mysql:
+    image: mariadb:10.5.8
+
+  # for M1 Macs
+  chrome:
+    image: seleniarm/standalone-chromium:4.20.0-20240427
+
+  codeception_acceptance:
+    volumes:
+      - nfs-mailpoet:/project
+      - nfs-mailpoet:/wp-core/wp-content/plugins/mailpoet
+
+  codeception_integration:
+    volumes:
+      - nfs-mailpoet:/project
+      - nfs-mailpoet:/wp-core/wp-content/plugins/mailpoet
+
+  wordpress:
+    volumes:
+      - nfs-mailpoet:/var/www/html/wp-content/plugins/mailpoet
+
+volumes:
+  nfs-mailpoet:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,nolock
+      device: ':${PWD}/../..'

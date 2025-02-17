@@ -1,0 +1,110 @@
+.mailpoet-tags {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  & + & {
+    margin-left: 6px;
+  }
+}
+
+.mailpoet-tags-prefix {
+  line-height: 20px;
+}
+
+.mailpoet-tag {
+  border: 1px solid $color-tertiary;
+  border-radius: 3px;
+  color: $color-tertiary;
+  display: inline-block;
+  font-size: $font-size-extra-small;
+  font-weight: normal;
+  line-height: 14px;
+  padding: 2px 4px;
+}
+
+.mailpoet-tag-large {
+  font-size: $font-size-small;
+  min-width: 50px;
+  padding: 4px 9px;
+  text-align: center;
+}
+
+.mailpoet-tag-inverted {
+  background: $color-tertiary;
+  color: #fff !important;
+}
+
+.mailpoet-tag-average {
+  border-color: $color-stats-average;
+  color: $color-stats-average;
+
+  &.mailpoet-tag-inverted {
+    background: $color-stats-average;
+  }
+}
+
+.mailpoet-tag-critical {
+  border-color: $color-stats-critical;
+  color: $color-stats-critical;
+
+  &.mailpoet-tag-inverted {
+    background: $color-stats-critical;
+  }
+}
+
+.mailpoet-tag-good {
+  border-color: $color-stats-good;
+  color: $color-stats-good;
+
+  &.mailpoet-tag-inverted {
+    background: $color-stats-good;
+  }
+}
+
+.mailpoet-tag-excellent {
+  border-color: $color-stats-excellent;
+  color: $color-stats-excellent;
+
+  &.mailpoet-tag-inverted {
+    background: $color-stats-excellent;
+  }
+}
+
+.mailpoet-tag-unknown {
+  border-color: $color-stats-unknown;
+  color: $color-stats-unknown;
+
+  &.mailpoet-tag-inverted {
+    background: $color-stats-unknown;
+  }
+}
+
+.mailpoet-tag-filter_segment {
+  background-color: $color-white;
+  border-color: $color-black;
+  border-style: dashed;
+}
+
+.mailpoet-tag-wordpress {
+  background: $color-wordpress-button-background;
+  border-color: $color-wordpress-button-border;
+  color: $color-wordpress-button-border;
+
+  &.mailpoet-tag-inverted {
+    background: $color-wordpress-button-border;
+    color: $color-wordpress-button-background;
+  }
+}
+
+.mailpoet-tag-list {
+  background: rgba($color-tertiary-light, 0.7);
+  border-color: transparent;
+  color: $color-text;
+
+  &.mailpoet-tag-inverted {
+    background: $color-text;
+    color: $color-tertiary-light;
+  }
+}

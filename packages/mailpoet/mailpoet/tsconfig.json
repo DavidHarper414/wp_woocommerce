@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "include": [
+    "assets/js/src/**/*",
+    "assets/js/src/**/*.json",
+    "tests/javascript/**/*.ts",
+    "tests/javascript-newsletter-editor/**/*.ts"
+  ],
+  "compilerOptions": {
+    "baseUrl": "./assets/js/src",
+    "noEmit": true
+  }
+}

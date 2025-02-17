@@ -1,0 +1,80 @@
+.mailpoet-segments-name-section,
+.mailpoet-segments-description-section,
+.mailpoet-segments-segments-section,
+.mailpoet-segments-counter-section {
+  grid-column: span 2;
+}
+
+.mailpoet-segments-counter-section {
+  text-align: right;
+}
+
+.mailpoet-segments-grid {
+  align-content: flex-start;
+  align-items: center;
+  display: flex;
+  flex: 1 0 0;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  .mailpoet-centered-row {
+    max-width: 300px;
+  }
+
+  .mailpoet-segments-input-small {
+    margin-left: 0 !important;
+    width: 80px;
+  }
+
+  .mailpoet-segments-input-medium {
+    margin-left: 0 !important;
+    width: 200px;
+  }
+
+  .mailpoet-segments-datepicker-small {
+    margin-left: 0 !important;
+    width: 110px;
+  }
+}
+
+.mailpoet-segments-description-section .mailpoet-form-textarea textarea {
+  height: 100px;
+}
+
+.mailpoet-segments-segments-section .mailpoet-form-segment-delete {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  height: 24px;
+  justify-content: center;
+  position: absolute;
+  right: 34px;
+  width: 24px;
+}
+
+.mailpoet-segments-conditions-bottom {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  padding-top: 24px;
+}
+
+.mailpoet-segments-segments-section p {
+  padding: 24px 0;
+}
+
+.mailpoet-segments-filter-selector {
+  width: 210px;
+}
+
+.mailpoet-segments-segments-section .mailpoet-form-radio-control:before {
+  background: $color-primary;
+}
+
+.mailpoet-segments-condition-type-selector {
+  padding-bottom: 40px;
+}
+
+.mailpoet-segments-condition-type {
+  color: $color-text-light;
+}

@@ -1,0 +1,37 @@
+.mailpoet-homepage-section__container {
+  background-color: $color-white;
+  box-shadow: rgb(0 0 0 / 10%) 0 0 0 1px;
+  margin: $grid-gap-xl 0 $grid-gap-medium;
+}
+
+.mailpoet-homepage-section__heading {
+  align-items: center;
+  border-bottom: 1px solid $color-homepage-borders;
+  display: grid;
+  grid-template-columns: auto 100px;
+  padding: $grid-gap $grid-gap-medium;
+  position: relative;
+
+  h2 {
+    font-size: 20px;
+    font-weight: normal;
+    line-height: 28px;
+    margin: 0;
+
+    span {
+      color: $color-text-light;
+      display: block;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  }
+
+  .mailpoet-homepage-section__heading-after {
+    display: grid;
+    justify-items: end;
+  }
+
+  @include respond-to(small-screen) {
+    padding: $grid-gap-half $grid-gap-medium;
+  }
+}

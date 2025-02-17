@@ -1,0 +1,45 @@
+#mailpoet_editor {
+  clear: both;
+  width: 100%;
+}
+
+#mailpoet_editor_heading_left {
+  float: left;
+}
+
+#mailpoet_editor_heading_right {
+  float: right;
+}
+
+#mailpoet_editor_heading {
+  clear: both;
+  margin-bottom: 13px;
+  margin-left: 2px;
+  padding-left: 15px;
+}
+
+#mailpoet_editor_main_wrapper {
+  border: 1px solid $color-editor-border-structure;
+  border-left: 0;
+  min-width: 1050px;
+  position: relative;
+}
+
+#mailpoet_editor_content_container {
+  box-sizing: border-box;
+  padding-right: $editor-sidebar-width;
+  width: 100%;
+}
+
+#mailpoet_editor_sidebar {
+  box-sizing: border-box;
+  float: right;
+  width: $editor-sidebar-width;
+}
+
+.mailpoet_newsletter_wrapper {
+  margin: auto;
+  max-width: $grid-editor-width;
+  position: relative;
+  width: $grid-editor-width;
+}

@@ -1,0 +1,22 @@
+.mailpoet_image_block {
+  img {
+    height: auto;
+    max-width: 100%;
+    vertical-align: bottom;
+  }
+
+  &.mailpoet_full_image {
+    margin: auto;
+    padding: 0;
+  }
+
+  .mailpoet_content {
+    margin: auto;
+    max-width: 100%;
+    min-width: 36px;
+
+    a:hover {
+      cursor: all-scroll;
+    }
+  }
+}

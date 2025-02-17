@@ -1,0 +1,107 @@
+import _ from 'underscore';
+import { __ } from '@wordpress/i18n';
+import { MailPoet } from 'mailpoet';
+import html2canvas from 'html2canvas';
+
+const getProxyURL = (url) => {
+  const params = new URLSearchParams({
+    mailpoet_router: '',
+    endpoint: 'template_image',
+    action: 'get_external_image',
+  });
+  return `${url}?${params.toString()}`;
+};
+
+/**
+ * Generates a thumbnail from a HTML element.
+ *
+ * @param  {HTMLElement}      element
+ * @return {Promise<String>} DataURL of the generated image.
+ */
+export const fromDom = async (element: HTMLElement) => {
+  const canvas = await html2canvas(element, {
+    logging: false,
+    proxy: getProxyURL('/'),
+    scale: 1, // Use a constant scale to prevent generating large images on Retina displays
+  });
+  return canvas.toDataURL('image/jpeg');
+};
+
+interface ThumbnailIframe extends HTMLIFrameElement {
+  onError?: () => void;
+}
+
+/**
+ * Generates a thumbnail from an URL.
+ *
+ * @param  {String}        url
+ * @return {Promise<String>} DataURL of the generated image.
+ */
+export const fromUrl = (url) =>
+  new Promise((resolve, reject) => {
+    const iframe: ThumbnailIframe = document.createElement('iframe');
+    const protocol = document.location.href.startsWith('https://')
+      ? 'https:'
+      : 'http:';
+    iframe.src = `${protocol}${url.replace(/^https?:/, '')}`;
+    iframe.style.opacity = '0';
+    iframe.scrolling = 'no';
+    iframe.onload = async () => {
+      try {
+        const container = iframe.contentDocument.documentElement;
+        container.style.padding = '10px 20px';
+        const image = await fromDom(container);
+        document.body.removeChild(iframe);
+        resolve(image);
+      } catch (err) {
+        document.body.removeChild(iframe);
+        reject(
+          __(
+            'An error occurred while saving the template in "Recently sent"',
+            'mailpoet',
+          ),
+        );
+      }
+    };
+    const onError = () => {
+      document.body.removeChild(iframe);
+      reject(
+        __(
+          'An error occurred while saving the template in "Recently sent"',
+          'mailpoet',
+        ),
+      );
+    };
+    iframe.onerror = onError;
+    iframe.onError = onError;
+    iframe.className = 'mailpoet-template-iframe';
+    try {
+      document.body.appendChild(iframe);
+    } catch (err) {
+      onError();
+    }
+  });
+
+/**
+ * Generates a thumbnail from a newsletter's data.
+ *
+ * @param  {Object}        data
+ * @return {Promise<String>} DataURL of the generated image.
+ */
+export const fromNewsletter = (data) =>
+  new Promise((resolve, reject) => {
+    const json = data;
+    if (!_.isUndefined(json.body)) {
+      json.body = JSON.stringify(json.body);
+    }
+    void MailPoet.Ajax.post({
+      api_version: MailPoet.apiVersion,
+      endpoint: 'newsletters',
+      action: 'showPreview',
+      data: json,
+    })
+      .done((response) => {
+        void fromUrl(response.meta.preview_url).then(resolve).catch(reject);
+      })
+      .fail((response) => reject(response.errors));
+  });

@@ -1,0 +1,23 @@
+@import '../mailpoet-listing';
+
+#mailpoet_automation * {
+  box-sizing: border-box;
+
+  .mailpoet-add-new-button {
+    padding-right: 12px;
+  }
+}
+
+.mailpoet-automation-is-onboarding {
+  .notice {
+    display: none;
+  }
+}
+
+.mailpoet-automation-listing-cell-name.woocommerce-table__item {
+  width: 100%;
+
+  > a:only-child {
+    display: inline-flex;
+  }
+}

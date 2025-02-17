@@ -1,0 +1,72 @@
+/* Sidepanel */
+.mailpoet_editor_settings {
+  color: $editor-sidebar-color;
+  font-size: $editor-sidebar-font-size;
+  padding: 0 20px;
+
+  p {
+    font-size: 1em;
+  }
+
+  h3 {
+    color: $color-primary;
+    font-size: 1.4em;
+    text-transform: uppercase;
+  }
+
+  .components-panel__row {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+}
+
+.mailpoet_sidepanel_field {
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.mailpoet_sidepanel_field_title {
+  clear: both;
+  margin-bottom: 5px;
+}
+
+.mailpoet_sidepanel_field_title_small {
+  width: 120px;
+}
+
+.mailpoet_sidepanel_field_title_inline {
+  display: inline-block;
+  line-height: 30px;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+
+.mailpoet_sidepanel_field_optional {
+  color: $color-primary-inactive;
+  font-size: 0.8em;
+}
+
+.mailpoet_sidepanel_radio_option,
+.mailpoet_sidepanel_checkbox_option {
+  display: inline-block;
+  line-height: 30px;
+  margin-right: 15px;
+  vertical-align: top;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.mailpoet_sidepanel_input_option {
+  display: inline-block;
+
+  input[type='checkbox'] {
+    vertical-align: top;
+  }
+
+  input[type='text'] {
+    vertical-align: middle;
+  }
+}

@@ -1,0 +1,32 @@
+var fs = require('fs');
+module.exports = {
+  loadFileToContainer: function loadFileToContainer(
+    path,
+    window,
+    containerTagName,
+    opts,
+  ) {
+    var contents = fs.readFileSync(path);
+    var container = window.document.createElement(containerTagName);
+    var options = opts || {};
+    container.innerHTML = contents;
+
+    if (options.type) {
+      container.type = options.type;
+    }
+    if (options.id) {
+      container.id = options.id;
+    }
+    global.window.document.body.appendChild(container);
+  },
+  loadScript: function loadScript(scriptPath, window, options) {
+    this.loadFileToContainer(scriptPath, window, 'script', options);
+  },
+  loadTemplate: function loadTemplate(path, window, opts) {
+    var w = window || global.window;
+    var options = opts || {};
+    options.type = 'text/x-handlebars-template';
+
+    this.loadScript('views/newsletter/templates/' + path, w, options);
+  },
+};
