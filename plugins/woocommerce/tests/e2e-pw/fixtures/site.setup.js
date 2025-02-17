@@ -104,3 +104,15 @@ setup( 'convert Cart and Checkout pages to shortcode', async ( { wpApi } ) => {
 setup( 'disable coming soon', async ( { baseURL } ) => {
 	await setComingSoon( { baseURL, enabled: 'no' } );
 } );
+
+setup( 'determine if multisite', async ( { api } ) => {
+	const response = await api.get( 'system_status' );
+	const { environment } = response.data;
+
+	if ( environment.wp_multisite === false ) {
+		delete process.env.IS_MULTISITE;
+	} else {
+		process.env.IS_MULTISITE = environment.wp_multisite;
+		console.log( `IS_MULTISITE: ${ process.env.IS_MULTISITE }` );
+	}
+} );
