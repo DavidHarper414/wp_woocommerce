@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	productAttributeTermsStore,
+	experimentalProductAttributeTermsStore,
 	Product,
 	type ProductProductAttribute,
 	ProductAttributeTerm,
@@ -76,7 +76,7 @@ export function useProductAttributes( {
 
 	const fetchTerms = useCallback(
 		( attributeId: number ) => {
-			return resolveSelect( productAttributeTermsStore )
+			return resolveSelect( experimentalProductAttributeTermsStore )
 				.getProductAttributeTerms( {
 					attribute_id: attributeId,
 				} )

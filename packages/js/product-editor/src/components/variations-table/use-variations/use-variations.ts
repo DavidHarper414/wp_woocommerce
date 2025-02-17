@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	productVariationsStore,
+	experimentalProductVariationsStore,
 	PartialProductVariation,
 	ProductProductAttribute,
 	ProductVariation,
@@ -45,7 +45,9 @@ export function useVariations( { productId }: UseVariationsProps ) {
 		};
 
 		try {
-			const { invalidateResolution } = dispatch( productVariationsStore );
+			const { invalidateResolution } = dispatch(
+				experimentalProductVariationsStore
+			);
 
 			if ( invalidateResolutionBeforeRequest ) {
 				await invalidateResolution( 'getProductVariations', [
@@ -57,7 +59,7 @@ export function useVariations( { productId }: UseVariationsProps ) {
 			}
 
 			const { getProductVariations, getProductVariationsTotalCount } =
-				resolveSelect( productVariationsStore );
+				resolveSelect( experimentalProductVariationsStore );
 
 			setIsLoading( true );
 			setGetVariationsError( undefined );
@@ -161,7 +163,7 @@ export function useVariations( { productId }: UseVariationsProps ) {
 		setIsSelectingAll( true );
 
 		const { getProductVariations } = resolveSelect(
-			productVariationsStore
+			experimentalProductVariationsStore
 		);
 
 		let currentPage = 1;
@@ -277,7 +279,9 @@ export function useVariations( { productId }: UseVariationsProps ) {
 			} )
 		);
 
-		const { updateProductVariation } = dispatch( productVariationsStore );
+		const { updateProductVariation } = dispatch(
+			experimentalProductVariationsStore
+		);
 
 		return updateProductVariation(
 			{ product_id: productId, id: variationId },
@@ -304,7 +308,7 @@ export function useVariations( { productId }: UseVariationsProps ) {
 		if ( isUpdating[ variationId ] ) return;
 
 		const { deleteProductVariation, invalidateResolutionForStore } =
-			dispatch( productVariationsStore );
+			dispatch( experimentalProductVariationsStore );
 
 		return deleteProductVariation( {
 			product_id: productId,
@@ -346,7 +350,7 @@ export function useVariations( { productId }: UseVariationsProps ) {
 			dispatch( 'core' );
 
 		const { batchUpdateProductVariations, invalidateResolutionForStore } =
-			dispatch( productVariationsStore );
+			dispatch( experimentalProductVariationsStore );
 
 		selectedVariationsRef.current = {};
 		setSelectedCount( 0 );
@@ -413,7 +417,7 @@ export function useVariations( { productId }: UseVariationsProps ) {
 			dispatch( 'core' );
 
 		const { batchUpdateProductVariations, invalidateResolutionForStore } =
-			dispatch( productVariationsStore );
+			dispatch( experimentalProductVariationsStore );
 
 		selectedVariationsRef.current = {};
 		setSelectedCount( 0 );

@@ -4,7 +4,7 @@
 import { FormEvent, KeyboardEvent, UIEvent, useEffect, useRef } from 'react';
 import {
 	ProductAttributeTerm,
-	productAttributeTermsStore,
+	experimentalProductAttributeTermsStore,
 } from '@woocommerce/data';
 import { useDebounce, useInstanceId } from '@wordpress/compose';
 import { resolveSelect } from '@wordpress/data';
@@ -58,7 +58,7 @@ export function VariationsFilter( {
 			const {
 				getProductAttributeTerms,
 				getProductAttributeTermsTotalCount,
-			} = resolveSelect( productAttributeTermsStore );
+			} = resolveSelect( experimentalProductAttributeTermsStore );
 
 			const sharedRequestArgs = {
 				attribute_id: attributeId,

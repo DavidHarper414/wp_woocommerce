@@ -21,7 +21,7 @@ import {
 } from '@wordpress/data';
 import { cleanForSlug } from '@wordpress/url';
 import {
-	productAttributeTermsStore,
+	experimentalProductAttributeTermsStore,
 	type ProductAttributeTerm,
 } from '@woocommerce/data';
 import type { MouseEventHandler } from 'react';
@@ -114,7 +114,7 @@ export const AttributeTableRow: React.FC< AttributeTableRowProps > = ( {
 } ) => {
 	const attributeId = attribute ? attribute.id : undefined;
 	const { createProductAttributeTerm } = useDispatch(
-		productAttributeTermsStore
+		experimentalProductAttributeTermsStore
 	);
 	const selectItemsQuery = useMemo(
 		() => ( {
@@ -134,7 +134,7 @@ export const AttributeTableRow: React.FC< AttributeTableRowProps > = ( {
 		// @ts-ignore
 		( select: WCDataSelector ) => {
 			const { getProductAttributeTerms } = select(
-				productAttributeTermsStore
+				experimentalProductAttributeTermsStore
 			);
 
 			return attributeId
@@ -337,7 +337,7 @@ export const AttributeTableRow: React.FC< AttributeTableRowProps > = ( {
 		 * The optimistic rendering should be implemented in the store.
 		 */
 		const recentTermsList = sel(
-			productAttributeTermsStore
+			experimentalProductAttributeTermsStore
 		).getProductAttributeTerms( selectItemsQuery );
 
 		/*

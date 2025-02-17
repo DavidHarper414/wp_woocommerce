@@ -8,7 +8,7 @@ import {
 	Product,
 	ProductDefaultAttribute,
 	ProductVariation,
-	productVariationsStore,
+	experimentalProductVariationsStore,
 } from '@woocommerce/data';
 import { applyFilters } from '@wordpress/hooks';
 import {
@@ -40,7 +40,7 @@ async function getDefaultVariationValues(
 		}
 
 		const products = await resolveSelect(
-			productVariationsStore
+			experimentalProductVariationsStore
 		).getProductVariations( {
 			product_id: productId,
 			per_page: 1,
@@ -81,7 +81,7 @@ export function useProductVariationsHelper() {
 			const {
 				isGeneratingVariations: getIsGeneratingVariations,
 				generateProductVariationsError,
-			} = select( productVariationsStore );
+			} = select( experimentalProductVariationsStore );
 
 			return {
 				isGeneratingVariations: getIsGeneratingVariations( {
@@ -128,7 +128,9 @@ export function useProductVariationsHelper() {
 				] )
 			)
 		);
-		await dispatch( productVariationsStore ).invalidateResolutionForStore();
+		await dispatch(
+			experimentalProductVariationsStore
+		).invalidateResolutionForStore();
 		/**
 		 * Filters the meta_data array for generated variations.
 		 *
@@ -142,7 +144,7 @@ export function useProductVariationsHelper() {
 			product
 		);
 
-		return dispatch( productVariationsStore )
+		return dispatch( experimentalProductVariationsStore )
 			.generateProductVariations(
 				{
 					product_id: productId,
@@ -172,7 +174,7 @@ export function useProductVariationsHelper() {
 				);
 
 				await dispatch(
-					productVariationsStore
+					experimentalProductVariationsStore
 				).invalidateResolutionForStore();
 
 				return response;
