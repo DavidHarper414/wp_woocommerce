@@ -119,7 +119,14 @@ class EmailPreview {
 	 * Get email style settings IDs.
 	 */
 	public static function get_email_style_settings_ids() {
-		return self::$email_style_settings_ids;
+		/**
+		 * Filter the email style settings IDs. Email preview automatically refreshes when these settings are changed.
+		 *
+		 * @param array $settings_ids The email style settings IDs.
+		 *
+		 * @since 9.8.0
+		 */
+		return apply_filters( 'woocommerce_email_preview_email_style_settings_ids', self::$email_style_settings_ids );
 	}
 
 	/**
@@ -131,12 +138,22 @@ class EmailPreview {
 		if ( ! $email_id ) {
 			return array();
 		}
-		return array(
+		$settings_ids = array(
 			"woocommerce_{$email_id}_subject",
 			"woocommerce_{$email_id}_heading",
 			"woocommerce_{$email_id}_additional_content",
 			"woocommerce_{$email_id}_email_type",
 		);
+
+		/**
+		 * Filter the email content settings IDs for specific email. Email preview automatically refreshes when these settings are changed.
+		 *
+		 * @param array  $settings_ids The email content settings IDs.
+		 * @param string $email_id The email ID.
+		 *
+		 * @since 9.8.0
+		 */
+		return apply_filters( 'woocommerce_email_preview_email_content_settings_ids', $settings_ids, $email_id );
 	}
 
 	/**
