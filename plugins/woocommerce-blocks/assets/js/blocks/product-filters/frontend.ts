@@ -196,13 +196,13 @@ const productFiltersStore = store( 'woocommerce/product-filters', {
 				( item ) => item.type === type && item.value === value
 			);
 		},
-		navigate: () => {
-			const { originalParams } = getContext< ProductFiltersContext >();
+		*navigate() {
+			const context = getContext< ProductFiltersContext >();
 
 			if (
 				isParamsEqual(
 					productFiltersStore.state.params,
-					originalParams
+					context.originalParams
 				)
 			) {
 				return;
@@ -211,18 +211,34 @@ const productFiltersStore = store( 'woocommerce/product-filters', {
 			const url = new URL( window.location.href );
 			const { searchParams } = url;
 
-			for ( const key in originalParams ) {
-				searchParams.delete( key, originalParams[ key ] );
+			for ( const key in context.originalParams ) {
+				if (
+					Object.prototype.hasOwnProperty.call(
+						context.originalParams,
+						key
+					)
+				) {
+					searchParams.delete( key );
+				}
 			}
 
 			for ( const key in productFiltersStore.state.params ) {
-				searchParams.set(
-					key,
-					productFiltersStore.state.params[ key ]
-				);
+				if (
+					Object.prototype.hasOwnProperty.call(
+						productFiltersStore.state.params,
+						key
+					)
+				) {
+					searchParams.set(
+						key,
+						productFiltersStore.state.params[ key ]
+					);
+				}
 			}
 
-			navigate( url.href );
+			context.originalParams = { ...productFiltersStore.state.params };
+
+			yield navigate( url.href );
 		},
 	},
 	callbacks: {
