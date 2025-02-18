@@ -95,12 +95,12 @@ trait OrderTraits {
 	 *
 	 * @param WC_Order_Item $item Line item from order.
 	 *
-	 * @return float|int
+	 * @return float
 	 */
 	public function get_item_cart_tax_amount( $item ) {
 		$order_taxes     = $this->get_taxes();
 		$tax_data        = $item->get_taxes();
-		$cart_tax_amount = 0;
+		$cart_tax_amount = 0.0;
 
 		foreach ( $order_taxes as $tax_item ) {
 			$tax_item_id      = $tax_item->get_rate_id();
