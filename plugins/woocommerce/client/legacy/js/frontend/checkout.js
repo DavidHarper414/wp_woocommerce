@@ -696,7 +696,13 @@ jQuery( function( $ ) {
 				.addClass( 'has-error' )
 				.attr( 'aria-invalid', 'true' )
 				.attr( 'aria-describedby', 'coupon-error-notice' );
-			$target.append( '<span class="coupon-error-notice" id="coupon-error-notice" role="alert">' + msg + '</span>' );
+
+			$('<span>', {
+				class: 'coupon-error-notice',
+				id: 'coupon-error-notice',
+				role: 'alert',
+				text: msg
+			}).appendTo($target);
 		},
 		remove_coupon_error: function( evt ) {
 			$( evt.currentTarget )
