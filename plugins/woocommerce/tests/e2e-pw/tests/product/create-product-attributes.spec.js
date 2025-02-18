@@ -169,14 +169,12 @@ test( 'can add custom product attributes', async ( { page, product } ) => {
 		const attributeValues = productAttributes[ j ].options.join( ' | ' );
 
 		await test.step( `Expect "${ attributeName }" to appear on the list of saved attributes, and expand it.`, async () => {
-			const heading_attributeName = page
+			await page
 				.getByRole( 'heading', {
 					name: attributeName,
 				} )
-				.last();
-
-			await expect( heading_attributeName ).toBeVisible();
-			await heading_attributeName.click();
+				.last()
+				.click();
 		} );
 
 		await test.step( `Expect its details to be saved correctly`, async () => {
