@@ -12,7 +12,7 @@ import './icon-with-text.scss';
 export interface IconWithTextProps {
 	icon: JSX.Element;
 	title: ReactElement | string;
-	description: string;
+	description?: string;
 }
 
 export default function IconWithText( props: IconWithTextProps ): JSX.Element {
@@ -29,9 +29,11 @@ export default function IconWithText( props: IconWithTextProps ): JSX.Element {
 					{ title }
 				</h3>
 			</div>
-			<p className="woocommerce-marketplace__icon-group-description">
-				{ description }
-			</p>
+			{ description && (
+				<p className="woocommerce-marketplace__icon-group-description">
+					{ description }
+				</p>
+			) }
 		</div>
 	);
 }
