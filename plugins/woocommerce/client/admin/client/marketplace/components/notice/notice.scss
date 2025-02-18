@@ -88,6 +88,12 @@
 	}
 }
 
+.woocommerce-marketplace__notice--error {
+	&:last-child {
+		margin-bottom: $grid-unit-50;
+	}
+}
+
 @media only screen and (min-width: 600px) {
 	.woocommerce-marketplace__notice {
 		margin-bottom: 40px;
