@@ -23,7 +23,7 @@ import { Product } from '@woocommerce/data';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore No types for this exist yet.
 // eslint-disable-next-line @woocommerce/dependency-group
-import { PinnedItems } from '@wordpress/interface';
+import PinnedItems from '@wordpress/interface/build-module/components/pinned-items';
 
 /**
  * Internal dependencies
@@ -104,7 +104,7 @@ export function Header( {
 	const selectedImage = isVariation ? product?.image : product?.images;
 
 	if ( isEditorLoading ) {
-		return <LoadingState />;
+		return <LoadingState data-testid="loading-state" />;
 	}
 
 	const isHeaderImageVisible =
