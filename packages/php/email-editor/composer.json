@@ -1,7 +1,7 @@
 {
   "name": "mailpoet/email-editor",
   "description": "Email editor based on WordPress Gutenberg package.",
-  "type": "library",
+	"type": "wordpress-plugin",
   "autoload": {
     "classmap": [
       "src/"

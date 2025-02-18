@@ -8,7 +8,7 @@
 declare(strict_types = 1);
 namespace MailPoet\EmailEditor\Engine\Renderer;
 
-require_once __DIR__ . '/../../../vendor/autoload.php';
+// require_once __DIR__ . '/../../../vendor/autoload.php'; // wrong vendor path. TODO: need to fix this
 
 use MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\Content_Renderer;
 use MailPoet\EmailEditor\Engine\Templates\Templates;
