@@ -22,6 +22,11 @@ const waitExpectTooltipToShow = async ( timeout = 3000 ) =>
 const waitExpectTooltipToHide = async ( timeout = 3000 ) =>
 	await waitFor( expectTooltipToBeHidden, { timeout } );
 
+const hoverOutside = async () => {
+	await userEvent.hover( document.body );
+	await userEvent.hover( document.body, { clientX: 10, clientY: 10 } );
+};
+
 describe( 'ReportSummary', () => {
 	function renderChart(
 		type,
@@ -77,8 +82,7 @@ describe( 'ReportSummary', () => {
 		const tooltip = await screen.findByText( 'Previous year: 500.25' );
 		expect( tooltip ).toBeInTheDocument();
 
-		// press esc to close the tooltip
-		userEvent.keyboard( '{Escape}' );
+		await hoverOutside();
 		await waitExpectTooltipToHide();
 
 		expect( screen.queryByText( 'Previous year: 500.25' ) ).toBeNull();
@@ -99,7 +103,7 @@ describe( 'ReportSummary', () => {
 		expect( tooltip ).toBeInTheDocument();
 		expect( tooltip ).toBeInTheDocument();
 
-		userEvent.keyboard( '{Escape}' );
+		await hoverOutside();
 		await waitExpectTooltipToHide();
 
 		expect( screen.queryByText( 'Previous year: $500.25' ) ).toBeNull();
@@ -118,7 +122,7 @@ describe( 'ReportSummary', () => {
 		const tooltip = await screen.findByText( 'Previous year: 500' );
 		expect( tooltip ).toBeInTheDocument();
 
-		userEvent.keyboard( '{Escape}' );
+		await hoverOutside();
 		await waitExpectTooltipToHide();
 
 		expect( screen.queryByText( 'Previous year: 500' ) ).toBeNull();
@@ -138,7 +142,7 @@ describe( 'ReportSummary', () => {
 		await waitExpectTooltipToShow();
 		expect( tooltip ).toBeInTheDocument();
 
-		userEvent.keyboard( '{Escape}' );
+		await hoverOutside();
 		await waitExpectTooltipToHide();
 
 		expect( screen.queryByText( 'Previous year: 0' ) ).toBeNull();
