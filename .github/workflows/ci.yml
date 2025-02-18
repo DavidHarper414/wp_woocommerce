@@ -498,6 +498,8 @@ jobs:
             for package in $( echo "${{ steps.validate_missing.outputs.passed }}" | tr " " "" | tr "," "\n" ); do
                 filter="$filter --filter $package"
             done
+            echo "Populated filter: $filter"
+
             pnpm --parallel --workspace-concurrency=10 --stream $filter changelog validate
 
   validate-markdown:
