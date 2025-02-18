@@ -134,7 +134,7 @@ class ProductFilterPriceSlider extends AbstractBlock {
 						max="<?php echo esc_attr( $max_range ); ?>"
 						value="<?php echo esc_attr( $max_price ); ?>"
 						data-wp-bind--value="woocommerce/product-filter-price::state.maxPrice"
-						data-wp-bind--max="woocommerce/product-filter-price::context.maxRange"
+						data-wp-bind--min="woocommerce/product-filter-price::context.minRange"
 						data-wp-bind--max="woocommerce/product-filter-price::context.maxRange"
 						data-wp-on--input--update-price="woocommerce/product-filter-price::actions.setMaxPrice"
 						data-wp-on--input--limit-range="actions.limitRange"
