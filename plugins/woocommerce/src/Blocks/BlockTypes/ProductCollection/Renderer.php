@@ -311,42 +311,22 @@ class Renderer {
 		$p = new \WP_HTML_Tag_Processor( $block_content );
 		$p->next_tag( array( 'class_name' => 'wp-block-query-pagination' ) );
 
-		// This will help us to find the start of the block content using the `seek` method.
-		$p->set_bookmark( 'start' );
-
-		$this->update_pagination_anchors( $p, 'page-numbers', 'product-collection-pagination-numbers' );
-		$this->update_pagination_anchors( $p, 'wp-block-query-pagination-next', 'product-collection-pagination--next' );
-		$this->update_pagination_anchors( $p, 'wp-block-query-pagination-previous', 'product-collection-pagination--previous' );
-
-		return $p->get_updated_html();
-	}
-
-	/**
-	 * Sets up data attributes required for interactivity and client-side navigation.
-	 *
-	 * @param \WP_HTML_Tag_Processor $processor The HTML tag processor.
-	 * @param string                 $class_name The class name of the anchor tags.
-	 * @param string                 $key_prefix The prefix for the data-wp-key attribute.
-	 */
-	private function update_pagination_anchors( $processor, $class_name, $key_prefix ) {
-		// Start from the beginning of the block content.
-		$processor->seek( 'start' );
-
-		while ( $processor->next_tag(
-			array(
-				'tag_name'   => 'a',
-				'class_name' => $class_name,
-			)
-		) ) {
-			$this->set_product_collection_namespace( $processor );
-			$processor->set_attribute( 'data-wp-on--click', 'actions.navigate' );
-			$processor->set_attribute( 'data-wp-key', $key_prefix . '--' . esc_attr( wp_rand() ) );
-
-			if ( in_array( $class_name, array( 'wp-block-query-pagination-next', 'wp-block-query-pagination-previous' ), true ) ) {
-				$processor->set_attribute( 'data-wp-watch', 'callbacks.prefetch' );
-				$processor->set_attribute( 'data-wp-on--mouseenter', 'actions.prefetchOnHover' );
+		while ( $p->next_tag( 'A' ) ) {
+			if ( $p->has_class( 'wp-block-query-pagination-next' ) || $p->has_class( 'wp-block-query-pagination-previous' ) ) {
+				$p->set_attribute( 'data-wp-on--click', 'woocommerce/product-collection::actions.navigate' );
+				$p->set_attribute( 'data-wp-key', $p->has_class( 'wp-block-query-pagination-next' ) 
+					? 'product-collection-pagination--next'
+					: 'product-collection-pagination--previous'
+				);
+				$p->set_attribute( 'data-wp-watch', 'woocommerce/product-collection::callbacks.prefetch' );
+				$p->set_attribute( 'data-wp-on--mouseenter', 'woocommerce/product-collection::actions.prefetchOnHover' );
+			} elseif ( $p->has_class( 'page-numbers' ) ) {
+				$p->set_attribute( 'data-wp-on--click', 'woocommerce/product-collection::actions.navigate' );
+				$p->set_attribute( 'data-wp-key', "product-collection-pagination-numbers--" . $p->get_attribute( 'aria-label' ) );
 			}
 		}
+
+		return $p->get_updated_html();
 	}
 
 	/**

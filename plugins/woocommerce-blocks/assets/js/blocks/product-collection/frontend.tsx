@@ -16,7 +16,7 @@ import './style.scss';
 export type ProductCollectionStoreContext = {
 	// Available on the <li/> product element and deeper
 	productId?: number;
-	isPrefetchNextOrPreviousLink: boolean;
+	isPrefetchNextOrPreviousLink: string;
 	collection: CoreCollectionNames;
 };
 
@@ -61,7 +61,7 @@ const productCollectionStore = {
 
 				yield actions.navigate( ref.href );
 
-				ctx.isPrefetchNextOrPreviousLink = !! ref.href;
+				ctx.isPrefetchNextOrPreviousLink = ref.href;
 
 				// Moves focus to the product link.
 				const product: HTMLAnchorElement | null =
@@ -80,13 +80,7 @@ const productCollectionStore = {
 		 * Optimizes user experience by preloading content for faster access.
 		 */
 		*prefetchOnHover() {
-			const { ref } = getElement() as unknown as {
-				ref: HTMLAnchorElement;
-			};
-
-			if ( ! ref ) {
-				return;
-			}
+			const { ref } = getElement();
 
 			if ( isValidLink( ref ) ) {
 				const { actions } = yield import(
@@ -113,7 +107,7 @@ const productCollectionStore = {
 			const { ref } = getElement();
 			const context = getContext< ProductCollectionStoreContext >();
 
-			if ( isValidLink( ref ) && context?.isPrefetchNextOrPreviousLink ) {
+			if ( isValidLink( ref ) && context.isPrefetchNextOrPreviousLink ) {
 				const { actions } = yield import(
 					'@wordpress/interactivity-router'
 				);
