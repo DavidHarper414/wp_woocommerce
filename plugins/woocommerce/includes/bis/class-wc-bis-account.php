@@ -260,9 +260,9 @@ class WC_BIS_Account {
 				$enable_myaccount_registration = get_option( 'woocommerce_enable_myaccount_registration', 'no' );
 
 				// Notice text based on environment.
-				$create_account_text = __( ', or create a new account now.', 'woocommerce-back-in-stock-notifications' );
+				$create_account_text = __( ', or create a new account now.', 'woocommerce' );
 				/* translators: create_account_text */
-				$notice_text = sprintf( __( 'Please log in to complete the sign-up process%s.', 'woocommerce-back-in-stock-notifications' ), 'yes' === $enable_myaccount_registration ? $create_account_text : '' );
+				$notice_text = sprintf( __( 'Please log in to complete the sign-up process%s.', 'woocommerce' ), 'yes' === $enable_myaccount_registration ? $create_account_text : '' );
 
 				wc_add_notice( $notice_text, 'notice' );
 				return;
@@ -302,7 +302,7 @@ class WC_BIS_Account {
 				$signup_args  = (array) apply_filters( 'woocommerce_bis_sign_up_account_args', $args );
 				$notification = $this->signup( $signup_args, $handle_posted_attributes ? $posted_attributes : array() );
 				if ( ! $notification ) {
-					throw new Exception( __( 'Sign up failed. Please try again.', 'woocommerce-back-in-stock-notifications' ) );
+					throw new Exception( __( 'Sign up failed. Please try again.', 'woocommerce' ) );
 				}
 
 				$redirect_url = $notification ? $notification->get_product_permalink() : '';
@@ -350,10 +350,10 @@ class WC_BIS_Account {
 
 			if ( $notification->is_active() ) {
 
-				$notice_text     = esc_html__( 'You have already joined this waitlist.', 'woocommerce-back-in-stock-notifications' );
+				$notice_text     = esc_html__( 'You have already joined this waitlist.', 'woocommerce' );
 				$button_class    = wc_bis_wp_theme_get_element_class_name( 'button' );
 				$wp_button_class = $button_class ? ' ' . $button_class : '';
-				$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', wc_get_account_endpoint_url( 'backinstock' ), $wp_button_class, esc_html__( 'Manage notifications', 'woocommerce-back-in-stock-notifications' ), $notice_text );
+				$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', wc_get_account_endpoint_url( 'backinstock' ), $wp_button_class, esc_html__( 'Manage notifications', 'woocommerce' ), $notice_text );
 				if ( is_user_logged_in() ) {
 					wc_add_notice( $notice, 'success' );
 				} else {
@@ -373,19 +373,19 @@ class WC_BIS_Account {
 						do_action( 'woocommerce_bis_verify_notification_to_customer', $notification );
 
 						if ( $account_created ) {
-							wc_add_notice( esc_html__( 'Thanks for signing up! An account has been created for you. Please complete the sign-up process by following the verification link sent to your e-mail.', 'woocommerce-back-in-stock-notifications' ) );
+							wc_add_notice( esc_html__( 'Thanks for signing up! An account has been created for you. Please complete the sign-up process by following the verification link sent to your e-mail.', 'woocommerce' ) );
 						} else {
-							wc_add_notice( esc_html__( 'Thanks for signing up! Please complete the sign-up process by following the verification link sent to your e-mail.', 'woocommerce-back-in-stock-notifications' ) );
+							wc_add_notice( esc_html__( 'Thanks for signing up! Please complete the sign-up process by following the verification link sent to your e-mail.', 'woocommerce' ) );
 						}
 					}
 				} else {
 
 					// Code is valid. Show an noop notice.
-					$notice_text     = esc_html__( 'You have already joined this waitlist. Please complete the sign-up process by following the verification link sent to your e-mail.', 'woocommerce-back-in-stock-notifications' );
+					$notice_text     = esc_html__( 'You have already joined this waitlist. Please complete the sign-up process by following the verification link sent to your e-mail.', 'woocommerce' );
 					$url             = wp_nonce_url( add_query_arg( array( 'wc_bis_resend_notification' => $notification->get_id() ), $notification->get_product_permalink() ), 'resend_verification_email_nonce' );
 					$button_class    = wc_bis_wp_theme_get_element_class_name( 'button' );
 					$wp_button_class = $button_class ? ' ' . $button_class : '';
-					$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', $url, $wp_button_class, esc_html__( 'Resend verification', 'woocommerce-back-in-stock-notifications' ), $notice_text );
+					$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', $url, $wp_button_class, esc_html__( 'Resend verification', 'woocommerce' ), $notice_text );
 
 					wc_add_notice( $notice, 'success' );
 				}
@@ -398,16 +398,16 @@ class WC_BIS_Account {
 
 					if ( $account_created ) {
 						/* translators: Product name */
-						$notice_text = sprintf( esc_html__( 'You have successfully signed up and will be notified when "%s" is back in stock! Note that a new account has been created for you; please check your e-mail for details.', 'woocommerce-back-in-stock-notifications' ), $notification->get_product_name() );
+						$notice_text = sprintf( esc_html__( 'You have successfully signed up and will be notified when "%s" is back in stock! Note that a new account has been created for you; please check your e-mail for details.', 'woocommerce' ), $notification->get_product_name() );
 					} else {
 						/* translators: Product name */
-						$notice_text = sprintf( esc_html__( 'You have successfully signed up! You will be notified when "%s" is back in stock.', 'woocommerce-back-in-stock-notifications' ), $notification->get_product_name() );
+						$notice_text = sprintf( esc_html__( 'You have successfully signed up! You will be notified when "%s" is back in stock.', 'woocommerce' ), $notification->get_product_name() );
 					}
 
 					if ( is_user_logged_in() ) {
 						$button_class    = wc_bis_wp_theme_get_element_class_name( 'button' );
 						$wp_button_class = $button_class ? ' ' . $button_class : '';
-						$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', wc_get_account_endpoint_url( 'backinstock' ), $wp_button_class, esc_html__( 'Manage notifications', 'woocommerce-back-in-stock-notifications' ), $notice_text );
+						$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', wc_get_account_endpoint_url( 'backinstock' ), $wp_button_class, esc_html__( 'Manage notifications', 'woocommerce' ), $notice_text );
 						wc_add_notice( $notice, 'success' );
 					} else {
 						wc_add_notice( $notice_text, 'success' );
@@ -437,17 +437,17 @@ class WC_BIS_Account {
 
 					if ( $account_created ) {
 						/* translators: Product name */
-						$notice_text = sprintf( esc_html__( 'You have successfully signed up and will be notified when "%s" is back in stock! Note that a new account has been created for you; please check your e-mail for details.', 'woocommerce-back-in-stock-notifications' ), $notification->get_product_name() );
+						$notice_text = sprintf( esc_html__( 'You have successfully signed up and will be notified when "%s" is back in stock! Note that a new account has been created for you; please check your e-mail for details.', 'woocommerce' ), $notification->get_product_name() );
 					} else {
 						/* translators: Product name */
-						$notice_text = sprintf( esc_html__( 'You have successfully signed up! You will be notified when "%s" is back in stock.', 'woocommerce-back-in-stock-notifications' ), $notification->get_product_name() );
+						$notice_text = sprintf( esc_html__( 'You have successfully signed up! You will be notified when "%s" is back in stock.', 'woocommerce' ), $notification->get_product_name() );
 					}
 
 					if ( is_user_logged_in() ) {
 
 						$button_class    = wc_bis_wp_theme_get_element_class_name( 'button' );
 						$wp_button_class = $button_class ? ' ' . $button_class : '';
-						$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', wc_get_account_endpoint_url( 'backinstock' ), $wp_button_class, esc_html__( 'Manage notifications', 'woocommerce-back-in-stock-notifications' ), $notice_text );
+						$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', wc_get_account_endpoint_url( 'backinstock' ), $wp_button_class, esc_html__( 'Manage notifications', 'woocommerce' ), $notice_text );
 						wc_add_notice( $notice, 'success' );
 					} else {
 						wc_add_notice( $notice_text, 'success' );
@@ -463,9 +463,9 @@ class WC_BIS_Account {
 					}
 
 					if ( $account_created ) {
-						wc_add_notice( esc_html__( 'Thanks for signing up! A new account has been created for you. Please complete the sign-up process by following the verification link sent to your e-mail.', 'woocommerce-back-in-stock-notifications' ) );
+						wc_add_notice( esc_html__( 'Thanks for signing up! A new account has been created for you. Please complete the sign-up process by following the verification link sent to your e-mail.', 'woocommerce' ) );
 					} else {
-						wc_add_notice( esc_html__( 'Thanks for signing up! Please complete the sign-up process by following the verification link sent to your e-mail.', 'woocommerce-back-in-stock-notifications' ) );
+						wc_add_notice( esc_html__( 'Thanks for signing up! Please complete the sign-up process by following the verification link sent to your e-mail.', 'woocommerce' ) );
 					}
 
 					do_action( 'woocommerce_bis_verify_notification_to_customer', $notification );
@@ -493,7 +493,7 @@ class WC_BIS_Account {
 		}
 
 		if ( ! is_numeric( $_GET['wc_bis_reactivate'] ) || ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( wc_clean( $_REQUEST['_wpnonce'] ), 'reactivate_notification_account_nonce' ) ) {
-			wc_add_notice( __( 'We were unable to process your request. Please try again later, or get in touch with us for assistance.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( __( 'We were unable to process your request. Please try again later, or get in touch with us for assistance.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $this->get_endpoint_url() );
 			exit;
 		}
@@ -501,13 +501,13 @@ class WC_BIS_Account {
 		// Reactivate.
 		$notification = wc_bis_get_notification( absint( $_GET['wc_bis_reactivate'] ) );
 		if ( ! is_a( $notification, 'WC_BIS_Notification_Data' ) ) {
-			wc_add_notice( __( 'We were unable to process your request. Notification not found.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( __( 'We were unable to process your request. Notification not found.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $this->get_endpoint_url() );
 			exit;
 		}
 
 		if ( ! is_user_logged_in() || $notification->is_pending() || $notification->get_user_id() !== get_current_user_id() ) {
-			wc_add_notice( __( 'We were unable to authorize your request. Please try again later, or get in touch with us for assistance.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( __( 'We were unable to authorize your request. Please try again later, or get in touch with us for assistance.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $this->get_endpoint_url() );
 			exit;
 		}
@@ -521,7 +521,7 @@ class WC_BIS_Account {
 		}
 
 		if ( $notification->save() ) {
-			wc_add_notice( __( 'Notification reactivated.', 'woocommerce-back-in-stock-notifications' ), 'success' );
+			wc_add_notice( __( 'Notification reactivated.', 'woocommerce' ), 'success' );
 		}
 
 		wp_safe_redirect( $this->get_endpoint_url() );
@@ -540,7 +540,7 @@ class WC_BIS_Account {
 		}
 
 		if ( ! is_numeric( $_GET['wc_bis_deactivate'] ) || ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( wc_clean( $_REQUEST['_wpnonce'] ), 'deactivate_notification_account_nonce' ) ) {
-			wc_add_notice( __( 'We were unable to process your request. Please try again later, or get in touch with us for assistance.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( __( 'We were unable to process your request. Please try again later, or get in touch with us for assistance.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $this->get_endpoint_url() );
 			exit;
 		}
@@ -548,13 +548,13 @@ class WC_BIS_Account {
 		// Reactivate.
 		$notification = wc_bis_get_notification( absint( $_GET['wc_bis_deactivate'] ) );
 		if ( ! is_a( $notification, 'WC_BIS_Notification_Data' ) ) {
-			wc_add_notice( __( 'We were unable to process your request. Notification not found.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( __( 'We were unable to process your request. Notification not found.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $this->get_endpoint_url() );
 			exit;
 		}
 
 		if ( ! is_user_logged_in() || $notification->get_user_id() !== get_current_user_id() ) {
-			wc_add_notice( __( 'We were unable to process your request. Please try again later, or get in touch with us for assistance.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( __( 'We were unable to process your request. Please try again later, or get in touch with us for assistance.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $this->get_endpoint_url() );
 			exit;
 		}
@@ -567,10 +567,10 @@ class WC_BIS_Account {
 		}
 
 		if ( $notification->save() ) {
-			$notice_text     = esc_html__( 'Notification deactivated.', 'woocommerce-back-in-stock-notifications' );
+			$notice_text     = esc_html__( 'Notification deactivated.', 'woocommerce' );
 			$button_class    = wc_bis_wp_theme_get_element_class_name( 'button' );
 			$wp_button_class = $button_class ? ' ' . $button_class : '';
-			$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', wp_nonce_url( add_query_arg( array( 'wc_bis_reactivate' => $notification->get_id() ), $this->get_endpoint_url() ), 'reactivate_notification_account_nonce' ), $wp_button_class, esc_html__( 'Undo', 'woocommerce-back-in-stock-notifications' ), $notice_text );
+			$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', wp_nonce_url( add_query_arg( array( 'wc_bis_reactivate' => $notification->get_id() ), $this->get_endpoint_url() ), 'reactivate_notification_account_nonce' ), $wp_button_class, esc_html__( 'Undo', 'woocommerce' ), $notice_text );
 			wc_add_notice( $notice, 'success' );
 		}
 
@@ -612,27 +612,27 @@ class WC_BIS_Account {
 		}
 
 		if ( ! is_a( $current_notification, 'WC_BIS_Notification_Data' ) ) {
-			wc_add_notice( esc_html__( 'Invalid link.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( esc_html__( 'Invalid link.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
 
 		if ( ! $current_notification->is_verification_data_valid() || $current_notification->is_active() ) {
-			wc_add_notice( esc_html__( 'The verification link you followed has expired.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( esc_html__( 'The verification link you followed has expired.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
 
 		$hash_to_check = urldecode( base64_decode( $verify_hash ) );
 		if ( ! $current_notification->validate_verification_code( $verify_code, $hash_to_check ) ) {
-			wc_add_notice( esc_html__( 'Invalid link.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( esc_html__( 'Invalid link.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
 
 		$product = $current_notification->get_product();
 		if ( ! $product || ! is_a( $product, 'WC_Product' ) ) {
-			wc_add_notice( esc_html__( 'Invalid product.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( esc_html__( 'Invalid product.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
@@ -650,13 +650,13 @@ class WC_BIS_Account {
 		do_action( 'woocommerce_bis_confirm_notification_to_customer', $current_notification );
 
 		/* translators: %s product name */
-		$notice_text = sprintf( esc_html__( 'Successfully verified stock notifications for "%s".', 'woocommerce-back-in-stock-notifications' ), $current_notification->get_product_name() );
+		$notice_text = sprintf( esc_html__( 'Successfully verified stock notifications for "%s".', 'woocommerce' ), $current_notification->get_product_name() );
 
 		if ( is_user_logged_in() ) {
 
 			$button_class    = wc_bis_wp_theme_get_element_class_name( 'button' );
 			$wp_button_class = $button_class ? ' ' . $button_class : '';
-			$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', $this->get_endpoint_url(), $wp_button_class, esc_html__( 'Manage notifications', 'woocommerce-back-in-stock-notifications' ), $notice_text );
+			$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', $this->get_endpoint_url(), $wp_button_class, esc_html__( 'Manage notifications', 'woocommerce' ), $notice_text );
 			wc_add_notice( $notice, 'success' );
 		} else {
 			wc_add_notice( $notice_text, 'success' );
@@ -722,14 +722,14 @@ class WC_BIS_Account {
 		}
 
 		if ( ! is_a( $current_notification, 'WC_BIS_Notification_Data' ) ) {
-			wc_add_notice( esc_html__( 'Invalid link.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( esc_html__( 'Invalid link.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
 
 		$product = $current_notification->get_product();
 		if ( ! $product || ! is_a( $product, 'WC_Product' ) ) {
-			wc_add_notice( esc_html__( 'Invalid product.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( esc_html__( 'Invalid product.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
@@ -777,13 +777,13 @@ class WC_BIS_Account {
 			}
 
 			/* translators: %2$s product name, %1$s user email */
-			$notice_text = sprintf( esc_html__( 'Successfully unsubscribed %1$s. You will not receive a notification when "%2$s" becomes available.', 'woocommerce-back-in-stock-notifications' ), $current_notification->get_user_email(), $product->get_name() );
+			$notice_text = sprintf( esc_html__( 'Successfully unsubscribed %1$s. You will not receive a notification when "%2$s" becomes available.', 'woocommerce' ), $current_notification->get_user_email(), $product->get_name() );
 
 			if ( is_user_logged_in() ) {
 
 				$button_class    = wc_bis_wp_theme_get_element_class_name( 'button' );
 				$wp_button_class = $button_class ? ' ' . $button_class : '';
-				$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', $this->get_endpoint_url(), $wp_button_class, esc_html__( 'Manage notifications', 'woocommerce-back-in-stock-notifications' ), $notice_text );
+				$notice          = sprintf( '<a href="%s" class="button wc-forward%s">%s</a> %s', $this->get_endpoint_url(), $wp_button_class, esc_html__( 'Manage notifications', 'woocommerce' ), $notice_text );
 
 				wc_add_notice( $notice, 'success' );
 			} else {
@@ -795,7 +795,7 @@ class WC_BIS_Account {
 
 				// Redirect to account with notice.
 			if ( ! is_user_logged_in() ) {
-				wc_add_notice( __( 'Please log in to manage your notifications.', 'woocommerce-back-in-stock-notifications' ), 'notice' );
+				wc_add_notice( __( 'Please log in to manage your notifications.', 'woocommerce' ), 'notice' );
 			}
 
 				wp_safe_redirect( $this->get_endpoint_url() );
@@ -817,7 +817,7 @@ class WC_BIS_Account {
 			}
 
 			/* translators: %s user email */
-			$notice_text = sprintf( esc_html__( 'Successfully unsubscribed %s from all stock notifications.', 'woocommerce-back-in-stock-notifications' ), $current_notification->get_user_email() );
+			$notice_text = sprintf( esc_html__( 'Successfully unsubscribed %s from all stock notifications.', 'woocommerce' ), $current_notification->get_user_email() );
 			wc_add_notice( $notice_text, 'success' );
 		}
 
@@ -846,20 +846,20 @@ class WC_BIS_Account {
 		}
 
 		if ( ! is_numeric( $_GET['wc_bis_resend_notification'] ) || ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( wc_clean( $_REQUEST['_wpnonce'] ), 'resend_verification_email_nonce' ) ) {
-			wc_add_notice( __( 'We were unable to process your request. Please try again later, or get in touch with us for assistance.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( __( 'We were unable to process your request. Please try again later, or get in touch with us for assistance.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
 
 		$notification = wc_bis_get_notification( absint( $_GET['wc_bis_resend_notification'] ) );
 		if ( ! is_a( $notification, 'WC_BIS_Notification_Data' ) || ! $notification->is_pending() ) {
-			wc_add_notice( esc_html__( 'Invalid link.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( esc_html__( 'Invalid link.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
 
 		if ( $notification->get_user_id() && ( is_user_logged_in() && $notification->get_user_id() !== get_current_user_id() ) ) {
-			wc_add_notice( __( 'We were unable to authorize your request. Please try again later, or get in touch with us for assistance.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( __( 'We were unable to authorize your request. Please try again later, or get in touch with us for assistance.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
@@ -871,7 +871,7 @@ class WC_BIS_Account {
 		do_action( 'woocommerce_bis_verify_notification_to_customer', $notification );
 
 		/* translators: %s user email */
-		$notice_text = sprintf( esc_html__( 'Verification e-mail sent to "%s". Please check your inbox!', 'woocommerce-back-in-stock-notifications' ), $notification->get_user_email() );
+		$notice_text = sprintf( esc_html__( 'Verification e-mail sent to "%s". Please check your inbox!', 'woocommerce' ), $notification->get_user_email() );
 		wc_add_notice( $notice_text, 'success' );
 
 		wp_safe_redirect( $url );
@@ -899,20 +899,20 @@ class WC_BIS_Account {
 		}
 
 		if ( ! is_numeric( $_GET['wc_bis_cancel_pending_notification'] ) || ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( wc_clean( $_REQUEST['_wpnonce'] ), 'cancel_pending_verification_nonce' ) ) {
-			wc_add_notice( __( 'We were unable to process your request. Please try again later, or get in touch with us for assistance.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( __( 'We were unable to process your request. Please try again later, or get in touch with us for assistance.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
 
 		$notification = wc_bis_get_notification( absint( $_GET['wc_bis_cancel_pending_notification'] ) );
 		if ( ! is_a( $notification, 'WC_BIS_Notification_Data' ) || ! $notification->is_pending() ) {
-			wc_add_notice( esc_html__( 'Invalid link.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( esc_html__( 'Invalid link.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
 
 		if ( ! is_user_logged_in() || $notification->get_user_id() !== get_current_user_id() ) {
-			wc_add_notice( __( 'We were unable to authorize your request. Please try again later, or get in touch with us for assistance.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( __( 'We were unable to authorize your request. Please try again later, or get in touch with us for assistance.', 'woocommerce' ), 'error' );
 			wp_safe_redirect( $url );
 			exit;
 		}
@@ -922,7 +922,7 @@ class WC_BIS_Account {
 		$notification->add_event( 'verification_cancelled', wp_get_current_user() );
 
 		/* translators: %s user email */
-		$notice_text = esc_html__( 'Pending notification cancelled.', 'woocommerce-back-in-stock-notifications' );
+		$notice_text = esc_html__( 'Pending notification cancelled.', 'woocommerce' );
 		wc_add_notice( $notice_text, 'success' );
 
 		wp_safe_redirect( $url );
@@ -949,7 +949,7 @@ class WC_BIS_Account {
 		}
 
 		$after_menu_position = 3;
-		$bis_menu_item       = array( 'backinstock' => __( 'Stock Notifications', 'woocommerce-back-in-stock-notifications' ) );
+		$bis_menu_item       = array( 'backinstock' => __( 'Stock Notifications', 'woocommerce' ) );
 		$items               = array_slice( $items, 0, $after_menu_position, true ) + $bis_menu_item + array_slice( $items, $after_menu_position, count( $items ) - $after_menu_position, true );
 
 		return $items;
@@ -978,8 +978,8 @@ class WC_BIS_Account {
 		if ( isset( $end_index ) ) {
 
 			$setting = array(
-				'title'    => __( 'Stock notifications', 'woocommerce-back-in-stock-notifications' ),
-				'desc'     => __( 'Endpoint for the "My account &rarr; Stock Notifications" page.', 'woocommerce-back-in-stock-notifications' ),
+				'title'    => __( 'Stock notifications', 'woocommerce' ),
+				'desc'     => __( 'Endpoint for the "My account &rarr; Stock Notifications" page.', 'woocommerce' ),
 				'id'       => 'woocommerce_myaccount_backinstock_endpoint',
 				'type'     => 'text',
 				'default'  => 'backinstock',
@@ -1011,7 +1011,7 @@ class WC_BIS_Account {
 	public function get_endpoint_title( $title, $endpoint ) {
 
 		if ( 'backinstock' === $endpoint ) {
-			$title = __( 'Stock Notifications', 'woocommerce-back-in-stock-notifications' );
+			$title = __( 'Stock Notifications', 'woocommerce' );
 		}
 
 		return $title;

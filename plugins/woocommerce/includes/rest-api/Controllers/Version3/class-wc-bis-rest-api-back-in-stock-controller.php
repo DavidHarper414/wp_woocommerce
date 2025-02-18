@@ -93,7 +93,7 @@ class WC_BIS_REST_API_Back_In_Stock_Controller extends WC_REST_Controller {
 			$updated = WC_BIS_Admin::handle_bulk_admin_deactivation( $params['productId'] );
 
 			if ( 0 === $updated ) {
-				throw new Exception( __( 'No notifications found to deactivate.', 'woocommerce-back-in-stock-notifications' ), 404 );
+				throw new Exception( __( 'No notifications found to deactivate.', 'woocommerce' ), 404 );
 			}
 
 			$notice = sprintf(
@@ -102,7 +102,7 @@ class WC_BIS_REST_API_Back_In_Stock_Controller extends WC_REST_Controller {
 					'%1$s notification deactivated.',
 					'%1$s notifications deactivated.',
 					$updated,
-					'woocommerce-back-in-stock-notifications'
+					'woocommerce'
 				),
 				number_format_i18n( $updated )
 			);
@@ -140,7 +140,7 @@ class WC_BIS_REST_API_Back_In_Stock_Controller extends WC_REST_Controller {
 			}
 
 			if ( empty( $params['productIds'] ) ) {
-				throw new Exception( __( 'No product IDs found to force-send notifications.', 'woocommerce-back-in-stock-notifications' ), 404 );
+				throw new Exception( __( 'No product IDs found to force-send notifications.', 'woocommerce' ), 404 );
 			}
 
 			if ( ! class_exists( 'WC_BIS_Admin_Notices' ) ) {
@@ -175,7 +175,7 @@ class WC_BIS_REST_API_Back_In_Stock_Controller extends WC_REST_Controller {
 	public function get_items_permissions_check( $request ) {
 
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			return new WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot list resources.', 'woocommerce-back-in-stock-notifications' ), array( 'status' => rest_authorization_required_code() ) );
+			return new WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot list resources.', 'woocommerce' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -189,7 +189,7 @@ class WC_BIS_REST_API_Back_In_Stock_Controller extends WC_REST_Controller {
 	public function get_deactivation_collection_params() {
 		$params              = array();
 		$params['productId'] = array(
-			'description'       => __( 'The product ID to deactivate notifications.', 'woocommerce-back-in-stock-notifications' ),
+			'description'       => __( 'The product ID to deactivate notifications.', 'woocommerce' ),
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
 			'validate_callback' => 'rest_validate_request_arg',
@@ -206,7 +206,7 @@ class WC_BIS_REST_API_Back_In_Stock_Controller extends WC_REST_Controller {
 		$params               = array();
 		$params['productIds'] = array(
 			'default'           => array(),
-			'description'       => __( 'The product IDs to force-send notifications. Ensure to specify variation IDs.', 'woocommerce-back-in-stock-notifications' ),
+			'description'       => __( 'The product IDs to force-send notifications. Ensure to specify variation IDs.', 'woocommerce' ),
 			'type'              => 'array',
 			'items'             => array(
 				'type' => 'integer',

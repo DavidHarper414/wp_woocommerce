@@ -84,38 +84,38 @@ if ( ! function_exists( 'wc_bis_get_activity_description' ) ) {
 			case 'created':
 				if ( $notification && $product ) {
 					/* translators: %1$s: notification id, %2$s: product name */
-					$description = sprintf( __( 'Created "%2$s" notification (#%1$d)', 'woocommerce-back-in-stock-notifications' ), $notification->get_id(), $notification->get_product_name() );
+					$description = sprintf( __( 'Created "%2$s" notification (#%1$d)', 'woocommerce' ), $notification->get_id(), $notification->get_product_name() );
 				} else {
 					/* translators: %1$s: notification id*/
-					$description = sprintf( __( 'Created #%1$s notification', 'woocommerce-back-in-stock-notifications' ), $activity_data->get_notification_id() );
+					$description = sprintf( __( 'Created #%1$s notification', 'woocommerce' ), $activity_data->get_notification_id() );
 				}
 
 				break;
 			case 'delivered':
 				if ( $notification && $product ) {
 					/* translators: %1$s: notification id, %2$s: product name */
-					$description = sprintf( __( 'Delivered "%2$s" notification (#%1$d)', 'woocommerce-back-in-stock-notifications' ), $notification->get_id(), $notification->get_product_name() );
+					$description = sprintf( __( 'Delivered "%2$s" notification (#%1$d)', 'woocommerce' ), $notification->get_id(), $notification->get_product_name() );
 				} else {
 					/* translators: %d: notification id*/
-					$description = sprintf( __( 'Delivered notification (#%d)', 'woocommerce-back-in-stock-notifications' ), $activity_data->get_notification_id() );
+					$description = sprintf( __( 'Delivered notification (#%d)', 'woocommerce' ), $activity_data->get_notification_id() );
 				}
 				break;
 			case 'reactivated':
 				if ( $notification && $product ) {
 					/* translators: %1$s: notification id, %2$s: product name */
-					$description = sprintf( __( 'Reactivated "%2$s" notification (#%1$d)', 'woocommerce-back-in-stock-notifications' ), $notification->get_id(), $notification->get_product_name() );
+					$description = sprintf( __( 'Reactivated "%2$s" notification (#%1$d)', 'woocommerce' ), $notification->get_id(), $notification->get_product_name() );
 				} else {
 					/* translators: %d: notification id*/
-					$description = sprintf( __( 'Reactivated notification (#%d)', 'woocommerce-back-in-stock-notifications' ), $activity_data->get_notification_id() );
+					$description = sprintf( __( 'Reactivated notification (#%d)', 'woocommerce' ), $activity_data->get_notification_id() );
 				}
 				break;
 			case 'deactivated':
 				if ( $notification && $product ) {
 					/* translators: %1$s: notification id, %2$s: product name */
-					$description = sprintf( __( 'Deactivated "%2$s" notification (#%1$d)', 'woocommerce-back-in-stock-notifications' ), $notification->get_id(), $notification->get_product_name() );
+					$description = sprintf( __( 'Deactivated "%2$s" notification (#%1$d)', 'woocommerce' ), $notification->get_id(), $notification->get_product_name() );
 				} else {
 					/* translators: %d: notification id*/
-					$description = sprintf( __( 'Deactivated notification (#%d)', 'woocommerce-back-in-stock-notifications' ), $activity_data->get_notification_id() );
+					$description = sprintf( __( 'Deactivated notification (#%d)', 'woocommerce' ), $activity_data->get_notification_id() );
 				}
 				break;
 		}
@@ -130,7 +130,7 @@ if ( ! function_exists( 'wc_bis_get_activity_description' ) ) {
 if ( ! function_exists( 'wc_bis_get_form_header_default_text' ) ) {
 
 	function wc_bis_get_form_header_default_text() {
-		return __( 'Want to be notified when this product is back in stock?', 'woocommerce-back-in-stock-notifications' );
+		return __( 'Want to be notified when this product is back in stock?', 'woocommerce' );
 	}
 }
 
@@ -142,7 +142,7 @@ if ( ! function_exists( 'wc_bis_get_form_header_default_text' ) ) {
 if ( ! function_exists( 'wc_bis_get_form_header_signed_up_default_text' ) ) {
 
 	function wc_bis_get_form_header_signed_up_default_text() {
-		return __( 'You have already joined the waitlist! Click {manage_account_link} to manage your notifications.', 'woocommerce-back-in-stock-notifications' );
+		return __( 'You have already joined the waitlist! Click {manage_account_link} to manage your notifications.', 'woocommerce' );
 	}
 }
 
@@ -152,7 +152,7 @@ if ( ! function_exists( 'wc_bis_get_form_header_signed_up_default_text' ) ) {
 if ( ! function_exists( 'wc_bis_get_form_button_default_text' ) ) {
 
 	function wc_bis_get_form_button_default_text() {
-		return __( 'Notify me', 'woocommerce-back-in-stock-notifications' );
+		return __( 'Notify me', 'woocommerce' );
 	}
 }
 
@@ -164,7 +164,7 @@ if ( ! function_exists( 'wc_bis_get_form_button_default_text' ) ) {
 if ( ! function_exists( 'wc_bis_get_form_header_signed_up_link_default_text' ) ) {
 
 	function wc_bis_get_form_header_signed_up_link_default_text() {
-		return __( 'here', 'woocommerce-back-in-stock-notifications' );
+		return __( 'here', 'woocommerce' );
 	}
 }
 
@@ -174,7 +174,7 @@ if ( ! function_exists( 'wc_bis_get_form_header_signed_up_link_default_text' ) )
 if ( ! function_exists( 'wc_bis_get_form_privacy_default_text' ) ) {
 
 	function wc_bis_get_form_privacy_default_text() {
-		return __( 'Use this e-mail address to send me availability alerts and updates.', 'woocommerce-back-in-stock-notifications' );
+		return __( 'Use this e-mail address to send me availability alerts and updates.', 'woocommerce' );
 	}
 }
 
@@ -184,14 +184,14 @@ if ( ! function_exists( 'wc_bis_get_form_privacy_default_text' ) ) {
 if ( ! function_exists( 'wc_bis_get_form_signups_count_plural_default_text' ) ) {
 
 	function wc_bis_get_form_signups_count_plural_default_text() {
-		return __( '{customers_count} customers have joined the waitlist.', 'woocommerce-back-in-stock-notifications' );
+		return __( '{customers_count} customers have joined the waitlist.', 'woocommerce' );
 	}
 }
 
 if ( ! function_exists( 'wc_bis_get_form_signups_count_default_text' ) ) {
 
 	function wc_bis_get_form_signups_count_default_text() {
-		return __( '1 customer has joined the waitlist.', 'woocommerce-back-in-stock-notifications' );
+		return __( '1 customer has joined the waitlist.', 'woocommerce' );
 	}
 }
 
@@ -205,7 +205,7 @@ if ( ! function_exists( 'wc_bis_get_loop_signup_prompt_default_text' ) ) {
 	 * @return string
 	 */
 	function wc_bis_get_loop_signup_prompt_default_text() {
-		return __( 'Out of stock. {prompt_link} to be notified when this product becomes available.', 'woocommerce-back-in-stock-notifications' );
+		return __( 'Out of stock. {prompt_link} to be notified when this product becomes available.', 'woocommerce' );
 	}
 }
 
@@ -219,7 +219,7 @@ if ( ! function_exists( 'wc_bis_get_loop_signup_prompt_link_default_text' ) ) {
 	 * @return string
 	 */
 	function wc_bis_get_loop_signup_prompt_link_default_text() {
-		return __( 'Join the waitlist', 'woocommerce-back-in-stock-notifications' );
+		return __( 'Join the waitlist', 'woocommerce' );
 	}
 }
 
@@ -233,7 +233,7 @@ if ( ! function_exists( 'wc_bis_get_loop_signup_prompt_subscribed_default_text' 
 	 * @return string
 	 */
 	function wc_bis_get_loop_signup_prompt_signed_up_default_text() {
-		return __( 'Out of stock. {prompt_link} and will be notified when this product becomes available.', 'woocommerce-back-in-stock-notifications' );
+		return __( 'Out of stock. {prompt_link} and will be notified when this product becomes available.', 'woocommerce' );
 	}
 }
 
@@ -247,7 +247,7 @@ if ( ! function_exists( 'wc_bis_get_loop_signup_prompt_subscribed_link_default_t
 	 * @return string
 	 */
 	function wc_bis_get_loop_signup_prompt_signed_up_link_default_text() {
-		return __( 'You have joined the waitlist', 'woocommerce-back-in-stock-notifications' );
+		return __( 'You have joined the waitlist', 'woocommerce' );
 	}
 }
 

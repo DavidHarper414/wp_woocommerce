@@ -28,8 +28,8 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Verify', false ) ) :
 			$this->id             = 'bis_notification_verify';
 			$this->customer_email = true;
 
-			$this->title       = __( 'Back in stock sign-up verification', 'woocommerce-back-in-stock-notifications' );
-			$this->description = __( 'Verification e-mail sent to customers, as part of the double opt-in sign-up process.', 'woocommerce-back-in-stock-notifications' );
+			$this->title       = __( 'Back in stock sign-up verification', 'woocommerce' );
+			$this->description = __( 'Verification e-mail sent to customers, as part of the double opt-in sign-up process.', 'woocommerce' );
 
 			$this->template_html  = 'emails/back-in-stock-notification-verify.php';
 			$this->template_plain = 'emails/plain/back-in-stock-notification-verify.php';
@@ -93,7 +93,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Verify', false ) ) :
 		 * @return string
 		 */
 		public function get_default_subject() {
-			return __( 'Join the "{product_name}" waitlist.', 'woocommerce-back-in-stock-notifications' );
+			return __( 'Join the "{product_name}" waitlist.', 'woocommerce' );
 		}
 
 		/**
@@ -102,7 +102,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Verify', false ) ) :
 		 * @return string
 		 */
 		public function get_default_heading() {
-			return __( 'Confirm sign-up', 'woocommerce-back-in-stock-notifications' );
+			return __( 'Confirm sign-up', 'woocommerce' );
 		}
 
 		/**
@@ -111,7 +111,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Verify', false ) ) :
 		 * @return string
 		 */
 		public function get_default_intro_content() {
-			return __( 'Please follow the link below to complete the sign-up process and join the "{product_name}" waitlist.', 'woocommerce-back-in-stock-notifications' );
+			return __( 'Please follow the link below to complete the sign-up process and join the "{product_name}" waitlist.', 'woocommerce' );
 		}
 
 		/**
@@ -239,8 +239,8 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Verify', false ) ) :
 			$placeholder_text = sprintf( __( 'Available placeholders: %s', 'woocommerce' ), '<code>' . esc_html( implode( '</code>, <code>', array_keys( $this->placeholders ) ) ) . '</code>' );
 
 			$intro_content_field = array(
-				'title'       => __( 'Email content', 'woocommerce-back-in-stock-notifications' ),
-				'description' => __( 'Text to appear below the main e-mail header.', 'woocommerce-back-in-stock-notifications' ) . ' ' . $placeholder_text,
+				'title'       => __( 'Email content', 'woocommerce' ),
+				'description' => __( 'Text to appear below the main e-mail header.', 'woocommerce' ) . ' ' . $placeholder_text,
 				'css'         => 'width: 400px; height: 75px;',
 				'placeholder' => $this->get_default_intro_content(),
 				'type'        => 'textarea',

@@ -30,7 +30,7 @@ do_action( 'woocommerce_bis_before_form', $product );
 	<?php do_action( 'woocommerce_bis_before_form_fields', $product ); ?>
 
 	<?php if ( ! is_user_logged_in() && ! wc_bis_is_account_required() ) : ?>
-		<input type="text" id="wc_bis_email" name="wc_bis_email" class="input-text" placeholder="<?php echo esc_attr__( 'Enter your e-mail', 'woocommerce-back-in-stock-notifications' ); ?>" />
+		<input type="text" id="wc_bis_email" name="wc_bis_email" class="input-text" placeholder="<?php echo esc_attr__( 'Enter your e-mail', 'woocommerce' ); ?>" />
 	<?php endif; ?>
 
 	<button class="<?php echo esc_attr( $button_class ); ?>" type="button" id="wc_bis_send_form" name="wc_bis_send_form">

@@ -52,7 +52,7 @@ class WC_BIS_Product {
 			 */
 			$use_security = ! (bool) apply_filters( 'woocommerce_bis_prevent_sign_up_security', true );
 			if ( $use_security && ( ! isset( $_POST['security'] ) || ! wp_verify_nonce( wc_clean( $_POST['security'] ), 'wc-bis-registration-form' ) ) ) {
-				wc_add_notice( __( 'Sign-up failed. If this issue persists, please refresh the page and try again.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+				wc_add_notice( __( 'Sign-up failed. If this issue persists, please refresh the page and try again.', 'woocommerce' ), 'error' );
 				return;
 			}
 
@@ -63,12 +63,12 @@ class WC_BIS_Product {
 			$handle_posted_attributes = false;
 			$product                  = isset( $_POST['wc_bis_product_id'] ) ? wc_get_product( absint( $_POST['wc_bis_product_id'] ) ) : false;
 			if ( ! is_a( $product, 'WC_Product' ) ) {
-				wc_add_notice( __( 'Sign-up failed. Invalid product properties.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+				wc_add_notice( __( 'Sign-up failed. Invalid product properties.', 'woocommerce' ), 'error' );
 				return;
 			}
 
 			if ( $this->is_disabled( $product ) ) {
-				wc_add_notice( __( 'Sign-up failed. Stock notifications for this product have been disabled.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+				wc_add_notice( __( 'Sign-up failed. Stock notifications for this product have been disabled.', 'woocommerce' ), 'error' );
 				return;
 			}
 
@@ -83,7 +83,7 @@ class WC_BIS_Product {
 				$variation = wc_get_product( absint( $_POST['wc_bis_variation_id'] ) );
 
 				if ( ! is_a( $variation, 'WC_Product' ) ) {
-					wc_add_notice( __( 'Sign-up failed. Invalid variation properties.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+					wc_add_notice( __( 'Sign-up failed. Invalid variation properties.', 'woocommerce' ), 'error' );
 					return;
 				}
 
@@ -171,13 +171,13 @@ class WC_BIS_Product {
 					// Check for valid email.
 					$email_input = isset( $_POST['wc_bis_email'] ) ? wc_clean( $_POST['wc_bis_email'] ) : false;
 					if ( ! $email_input || ! wc_bis_is_email( $email_input ) ) {
-						throw new Exception( __( 'Invalid e-mail.', 'woocommerce-back-in-stock-notifications' ) );
+						throw new Exception( __( 'Invalid e-mail.', 'woocommerce' ) );
 					}
 
 					// Check for valid privacy terms.
 					$privacy_input = isset( $_POST['wc_bis_opt_in'] ) ? wc_clean( $_POST['wc_bis_opt_in'] ) : false;
 					if ( wc_bis_is_opt_in_required() && 'on' !== $privacy_input ) {
-						throw new Exception( __( 'To proceed, please consent to the creation of a new account with your e-mail.', 'woocommerce-back-in-stock-notifications' ) );
+						throw new Exception( __( 'To proceed, please consent to the creation of a new account with your e-mail.', 'woocommerce' ) );
 					}
 
 					$args['user_email'] = $email_input;
@@ -215,7 +215,7 @@ class WC_BIS_Product {
 				$signup_args  = (array) apply_filters( 'woocommerce_bis_sign_up_args', $args );
 				$notification = WC_BIS()->account->signup( $signup_args, $handle_posted_attributes ? $posted_attributes : array() );
 				if ( ! $notification ) {
-					throw new Exception( __( 'Sign up failed. Please try again.', 'woocommerce-back-in-stock-notifications' ) );
+					throw new Exception( __( 'Sign up failed. Please try again.', 'woocommerce' ) );
 				}
 
 				$redirect_url = $notification ? $notification->get_product_permalink() : '';
@@ -655,7 +655,7 @@ class WC_BIS_Product {
 		$use_security = false;
 		// nosemgrep: scanner.php.wp.security.csrf.nonce-flawed-logic
 		if ( $use_security && isset( $_POST['security'] ) && ! wp_verify_nonce( wc_clean( $_POST['security'] ), 'wc-bis-sign-up-prompt-notice' ) ) {
-			wc_add_notice( __( 'Session expired. Please reload the page and try again.', 'woocommerce-back-in-stock-notifications' ), 'error' );
+			wc_add_notice( __( 'Session expired. Please reload the page and try again.', 'woocommerce' ), 'error' );
 			return;
 		}
 
@@ -684,13 +684,13 @@ class WC_BIS_Product {
 			if ( $product->has_options() ) {
 				$notice = sprintf(
 				/* translators: 1: Sign-up form button text  */
-					esc_html__( 'To join the waitlist, please choose product options and click the "%1$s" button.', 'woocommerce-back-in-stock-notifications' ),
+					esc_html__( 'To join the waitlist, please choose product options and click the "%1$s" button.', 'woocommerce' ),
 					$button_text
 				);
 			} else {
 				$notice = sprintf(
 				/* translators: 1: Sign-up form button text  */
-					esc_html__( 'To join the waitlist, please click the "%1$s" button.', 'woocommerce-back-in-stock-notifications' ),
+					esc_html__( 'To join the waitlist, please click the "%1$s" button.', 'woocommerce' ),
 					$button_text
 				);
 			}
@@ -698,13 +698,13 @@ class WC_BIS_Product {
 
 				$notice = sprintf(
 				/* translators: 1: Sign-up form button text  */
-					esc_html__( 'To join the waitlist, please: (1) Choose product options. (2) Enter your e-mail. (3) Click the "%1$s" button.', 'woocommerce-back-in-stock-notifications' ),
+					esc_html__( 'To join the waitlist, please: (1) Choose product options. (2) Enter your e-mail. (3) Click the "%1$s" button.', 'woocommerce' ),
 					$button_text
 				);
 		} else {
 			$notice = sprintf(
 			/* translators: 1: Sign-up form button text  */
-				esc_html__( 'To join the waitlist, please enter your e-mail and click the "%1$s" button.', 'woocommerce-back-in-stock-notifications' ),
+				esc_html__( 'To join the waitlist, please enter your e-mail and click the "%1$s" button.', 'woocommerce' ),
 				$button_text
 			);
 		}

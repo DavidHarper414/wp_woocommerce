@@ -129,11 +129,11 @@ class WC_BIS_Compatibility {
 
 			if ( ! defined( 'WC_PB_VERSION' ) || version_compare( WC_PB_VERSION, $required_version ) < 0 ) {
 
-				$extension      = __( 'Product Bundles', 'woocommerce-back-in-stock-notifications' );
-				$extension_full = __( 'WooCommerce Product Bundles', 'woocommerce-back-in-stock-notifications' );
+				$extension      = __( 'Product Bundles', 'woocommerce' );
+				$extension_full = __( 'WooCommerce Product Bundles', 'woocommerce' );
 				$extension_url  = 'https://woocommerce.com/products/product-bundles/';
 				/* translators: %1$s extension name, %2$s extension url, %3$s extension full name */
-				$notice = sprintf( __( 'The installed version of <strong>%1$s</strong> is not supported by <strong>WooCommerce Back In Stock Notifications</strong>. Please update <a href="%2$s" target="_blank">%3$s</a> to version <strong>%4$s</strong> or higher.', 'woocommerce-back-in-stock-notifications' ), $extension, $extension_url, $extension_full, $required_version );
+				$notice = sprintf( __( 'The installed version of <strong>%1$s</strong> is not supported by <strong>WooCommerce Back In Stock Notifications</strong>. Please update <a href="%2$s" target="_blank">%3$s</a> to version <strong>%4$s</strong> or higher.', 'woocommerce' ), $extension, $extension_url, $extension_full, $required_version );
 
 				WC_BIS_Admin_Notices::add_dismissible_notice(
 					$notice,

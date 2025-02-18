@@ -97,7 +97,7 @@ class WC_BIS_Admin_Menus {
 				array(
 					'id'        => 'woocommerce-bis_notifications',
 					'screen_id' => wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_notifications' ) . '-notifications',
-					'title'     => __( 'Stock Notifications', 'woocommerce-back-in-stock-notifications' ),
+					'title'     => __( 'Stock Notifications', 'woocommerce' ),
 					'path'      => add_query_arg(
 						array(
 							'page' => 'bis_notifications',
@@ -112,7 +112,7 @@ class WC_BIS_Admin_Menus {
 					'id'        => 'woocommerce-bis_dashboard',
 					'parent'    => 'woocommerce-bis_notifications',
 					'screen_id' => wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_dashboard' ),
-					'title'     => __( 'Dashboard', 'woocommerce-back-in-stock-notifications' ),
+					'title'     => __( 'Dashboard', 'woocommerce' ),
 					'path'      => add_query_arg(
 						array(
 							'page' => 'bis_dashboard',
@@ -127,7 +127,7 @@ class WC_BIS_Admin_Menus {
 					'id'        => 'woocommerce-bis_notifications-create',
 					'parent'    => 'woocommerce-bis_notifications',
 					'screen_id' => wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_notifications' ) . '-notifications-create',
-					'title'     => __( 'Add Notification', 'woocommerce-back-in-stock-notifications' ),
+					'title'     => __( 'Add Notification', 'woocommerce' ),
 					'path'      => add_query_arg(
 						array(
 							'page'         => 'bis_notifications',
@@ -144,7 +144,7 @@ class WC_BIS_Admin_Menus {
 					'id'        => 'woocommerce-bis_notifications-edit',
 					'parent'    => 'woocommerce-bis_notifications',
 					'screen_id' => wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_notifications' ) . '-notifications-edit',
-					'title'     => __( 'Edit Notification', 'woocommerce-back-in-stock-notifications' ),
+					'title'     => __( 'Edit Notification', 'woocommerce' ),
 					'path'      => add_query_arg(
 						array(
 							'page'         => 'bis_notifications',
@@ -161,7 +161,7 @@ class WC_BIS_Admin_Menus {
 					'id'        => 'woocommerce-bis_notifications-activity',
 					'parent'    => 'woocommerce-bis_notifications',
 					'screen_id' => wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_activity' ),
-					'title'     => __( 'Activity', 'woocommerce-back-in-stock-notifications' ),
+					'title'     => __( 'Activity', 'woocommerce' ),
 					'path'      => add_query_arg(
 						array(
 							'page' => 'bis_activity',
@@ -190,17 +190,17 @@ class WC_BIS_Admin_Menus {
 		$tabs = array();
 
 		$tabs['dashboard'] = array(
-			'title' => __( 'Dashboard', 'woocommerce-back-in-stock-notifications' ),
+			'title' => __( 'Dashboard', 'woocommerce' ),
 			'url'   => admin_url( 'admin.php?page=bis_dashboard' ),
 		);
 
 		$tabs['notifications'] = array(
-			'title' => __( 'Notifications', 'woocommerce-back-in-stock-notifications' ),
+			'title' => __( 'Notifications', 'woocommerce' ),
 			'url'   => admin_url( 'admin.php?page=bis_notifications' ),
 		);
 
 		$tabs['activity'] = array(
-			'title' => __( 'Activity', 'woocommerce-back-in-stock-notifications' ),
+			'title' => __( 'Activity', 'woocommerce' ),
 			'url'   => admin_url( 'admin.php?page=bis_activity' ),
 		);
 
@@ -263,8 +263,8 @@ class WC_BIS_Admin_Menus {
 
 		$dashboard_page = add_submenu_page(
 			'woocommerce',
-			__( 'Stock Notifications Dashboard', 'woocommerce-back-in-stock-notifications' ),
-			__( 'Stock Notifications', 'woocommerce-back-in-stock-notifications' ),
+			__( 'Stock Notifications Dashboard', 'woocommerce' ),
+			__( 'Stock Notifications', 'woocommerce' ),
 			'manage_woocommerce',
 			'bis_dashboard',
 			array( __CLASS__, 'dashboard_page' )
@@ -272,8 +272,8 @@ class WC_BIS_Admin_Menus {
 
 		$backinstock_page = add_submenu_page(
 			'woocommerce',
-			__( 'Notifications', 'woocommerce-back-in-stock-notifications' ),
-			__( 'Notifications', 'woocommerce-back-in-stock-notifications' ),
+			__( 'Notifications', 'woocommerce' ),
+			__( 'Notifications', 'woocommerce' ),
 			'manage_woocommerce',
 			'bis_notifications',
 			array( __CLASS__, 'backinstock_page' )
@@ -281,8 +281,8 @@ class WC_BIS_Admin_Menus {
 
 		$activity_page = add_submenu_page(
 			'woocommerce',
-			__( 'Activity', 'woocommerce-back-in-stock-notifications' ),
-			__( 'Activity', 'woocommerce-back-in-stock-notifications' ),
+			__( 'Activity', 'woocommerce' ),
+			__( 'Activity', 'woocommerce' ),
 			'manage_woocommerce',
 			'bis_activity',
 			array( __CLASS__, 'activity_page' )

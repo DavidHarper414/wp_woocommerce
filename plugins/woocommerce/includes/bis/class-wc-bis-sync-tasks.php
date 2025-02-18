@@ -92,7 +92,7 @@ class WC_BIS_Sync_Tasks {
 	 */
 	private static function handle_spam_notices( array $product_ids, int $spam_count ) {
 		/* translators: $d number of notifications */
-		$notice_text = sprintf( _n( '%d identical back-in-stock notification was sent to the same customer recently. This time, we skipped it to prevent spamming.', '%d identical back-in-stock notifications were sent to the same customers recently. This time, we skipped them to prevent spamming.', $spam_count, 'woocommerce-back-in-stock-notifications' ), $spam_count );
+		$notice_text = sprintf( _n( '%d identical back-in-stock notification was sent to the same customer recently. This time, we skipped it to prevent spamming.', '%d identical back-in-stock notifications were sent to the same customers recently. This time, we skipped them to prevent spamming.', $spam_count, 'woocommerce' ), $spam_count );
 
 		// Grap current product id based on product or variation save.
 		// phpcs:disable WordPress.Security.NonceVerification
@@ -106,7 +106,7 @@ class WC_BIS_Sync_Tasks {
 		// phpcs:enable WordPress.Security.NonceVerification
 
 		if ( isset( $post_id ) && 0 < $post_id ) {
-			$notice_text .= ' <a href="' . add_query_arg( array( 'wc_bis_force_queue' => implode( ',', $product_ids ) ), admin_url( sprintf( 'post.php?post=%d&action=edit', $post_id ) ) ) . '">' . __( 'Send anyway', 'woocommerce-back-in-stock-notifications' ) . '</a>';
+			$notice_text .= ' <a href="' . add_query_arg( array( 'wc_bis_force_queue' => implode( ',', $product_ids ) ), admin_url( sprintf( 'post.php?post=%d&action=edit', $post_id ) ) ) . '">' . __( 'Send anyway', 'woocommerce' ) . '</a>';
 		}
 
 		$notice_args = array(
@@ -114,7 +114,7 @@ class WC_BIS_Sync_Tasks {
 			'actions' => array(
 				array(
 					'name' => 'last_sent_throttle_force_send',
-					'text' => __( 'Send anyway', 'woocommerce-back-in-stock-notifications' ),
+					'text' => __( 'Send anyway', 'woocommerce' ),
 					'data' => array( 'productIds' => $product_ids ),
 				),
 			),
@@ -172,14 +172,14 @@ class WC_BIS_Sync_Tasks {
 				'actions' => array(
 					array(
 						'name' => 'view_queue',
-						'text' => __( 'View queue', 'woocommerce-back-in-stock-notifications' ),
+						'text' => __( 'View queue', 'woocommerce' ),
 						'url'  => admin_url( 'admin.php?page=bis_notifications&status=queued_bis_notifications' ),
 					),
 				),
 			);
 
 			/* translators: notifications count */
-			WC_BIS_Admin_Notices::add_notice( sprintf( _n( '%2$d back-in-stock notification is now <a href="%1$s">queued for delivery</a> in the next few minutes.', '%2$d back-in-stock notifications are now <a href="%1$s">queued for delivery</a> in the next few minutes.', $last_known_count, 'woocommerce-back-in-stock-notifications' ), admin_url( 'admin.php?page=bis_notifications&status=queued_bis_notifications' ), $last_known_count ), $notice_args, true );
+			WC_BIS_Admin_Notices::add_notice( sprintf( _n( '%2$d back-in-stock notification is now <a href="%1$s">queued for delivery</a> in the next few minutes.', '%2$d back-in-stock notifications are now <a href="%1$s">queued for delivery</a> in the next few minutes.', $last_known_count, 'woocommerce' ), admin_url( 'admin.php?page=bis_notifications&status=queued_bis_notifications' ), $last_known_count ), $notice_args, true );
 		}
 
 		if ( ! WC()->queue()->get_next( 'wc_bis_process_notifications_batch', array( 'args' => $args ), 'wc_bis_notifications' ) ) {

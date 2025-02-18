@@ -14,25 +14,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php WC_BIS_Admin_Menus::render_tabs(); ?>
 
-	<h1 class="wp-heading-inline"><?php esc_html_e( 'Dashboard', 'woocommerce-back-in-stock-notifications' ); ?></h1>
+	<h1 class="wp-heading-inline"><?php esc_html_e( 'Dashboard', 'woocommerce' ); ?></h1>
 
 	<hr class="wp-header-end">
 
 	<div class="wc-bis-dashboard-boxes">
 		<div class="wc-bis-dashboard-box">
-			<h3><?php esc_html_e( 'Notifications', 'woocommerce-back-in-stock-notifications' ); ?></h3>
+			<h3><?php esc_html_e( 'Notifications', 'woocommerce' ); ?></h3>
 			<div class="inner">
 				<div class="counters">
 					<div class="counter">
-						<span class="label"><?php esc_html_e( 'Sent last month', 'woocommerce-back-in-stock-notifications' ); ?></span>
+						<span class="label"><?php esc_html_e( 'Sent last month', 'woocommerce' ); ?></span>
 						<span class="number"><?php echo absint( $counters['delivered_last_month'] ); ?></span>
 					</div>
 					<div class="counter">
-						<span class="label"><?php esc_html_e( 'Sent today', 'woocommerce-back-in-stock-notifications' ); ?></span>
+						<span class="label"><?php esc_html_e( 'Sent today', 'woocommerce' ); ?></span>
 						<span class="number"><?php echo absint( $counters['delivered_today'] ); ?></span>
 					</div>
 					<div class="counter">
-						<span class="label"><?php esc_html_e( 'Queued', 'woocommerce-back-in-stock-notifications' ); ?></span>
+						<span class="label"><?php esc_html_e( 'Queued', 'woocommerce' ); ?></span>
 						<span class="number"><?php echo absint( $counters['in_queue'] ); ?></span>
 					</div>
 				</div>
@@ -40,15 +40,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 		</div>
 		<div class="wc-bis-dashboard-box">
-			<h3><?php esc_html_e( 'Sign-Ups', 'woocommerce-back-in-stock-notifications' ); ?></h3>
+			<h3><?php esc_html_e( 'Sign-Ups', 'woocommerce' ); ?></h3>
 			<div class="inner">
 				<div class="counters">
 					<div class="counter">
-						<span class="label"><?php esc_html_e( 'Signed up last month', 'woocommerce-back-in-stock-notifications' ); ?></span>
+						<span class="label"><?php esc_html_e( 'Signed up last month', 'woocommerce' ); ?></span>
 						<span class="number"><?php echo absint( $counters['registered_last_month'] ); ?></span>
 					</div>
 					<div class="counter">
-						<span class="label"><?php esc_html_e( 'Signed up today', 'woocommerce-back-in-stock-notifications' ); ?></span>
+						<span class="label"><?php esc_html_e( 'Signed up today', 'woocommerce' ); ?></span>
 						<span class="number"><?php echo absint( $counters['registered_today'] ); ?></span>
 					</div>
 				</div>
@@ -57,17 +57,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	</div>
 
-	<h2><?php esc_html_e( 'Product Leaderboards', 'woocommerce-back-in-stock-notifications' ); ?></h2>
+	<h2><?php esc_html_e( 'Product Leaderboards', 'woocommerce' ); ?></h2>
 
 	<div class="wc-bis-learderboards">
 		<table id="wc_bis_most_anticipated">
 			<thead>
 				<tr class="head">
-					<th colspan="2"><?php esc_html_e( 'Most wanted', 'woocommerce-back-in-stock-notifications' ); ?></th>
+					<th colspan="2"><?php esc_html_e( 'Most wanted', 'woocommerce' ); ?></th>
 				</tr>
 				<tr>
-					<th><?php esc_html_e( 'Product', 'woocommerce-back-in-stock-notifications' ); ?></th>
-					<th><?php esc_html_e( 'Customers', 'woocommerce-back-in-stock-notifications' ); ?></th>
+					<th><?php esc_html_e( 'Product', 'woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Customers', 'woocommerce' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -95,7 +95,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php
 					}
 				} else {
-					echo '<tr><td colspan="2" class="empty">' . esc_html__( 'No data recorded.', 'woocommerce-back-in-stock-notifications' ) . '</td></tr>';
+					echo '<tr><td colspan="2" class="empty">' . esc_html__( 'No data recorded.', 'woocommerce' ) . '</td></tr>';
 				}
 				?>
 			</tbody>
@@ -103,11 +103,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<table id="wc_bis_most_delayed">
 			<thead>
 				<tr class="head">
-					<th colspan="2"><?php esc_html_e( 'Most overdue', 'woocommerce-back-in-stock-notifications' ); ?></th>
+					<th colspan="2"><?php esc_html_e( 'Most overdue', 'woocommerce' ); ?></th>
 				</tr>
 				<tr>
-					<th><?php esc_html_e( 'Product', 'woocommerce-back-in-stock-notifications' ); ?></th>
-					<th><?php esc_html_e( 'Days', 'woocommerce-back-in-stock-notifications' ); ?></th>
+					<th><?php esc_html_e( 'Product', 'woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Days', 'woocommerce' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -135,7 +135,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php
 					}
 				} else {
-					echo '<tr><td colspan="2" class="empty">' . esc_html__( 'No data recorded.', 'woocommerce-back-in-stock-notifications' ) . '</td></tr>';
+					echo '<tr><td colspan="2" class="empty">' . esc_html__( 'No data recorded.', 'woocommerce' ) . '</td></tr>';
 				}
 				?>
 			</tbody>
@@ -144,7 +144,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<thead>
 				<tr class="head">
 					<th colspan="2">
-						<?php esc_html_e( 'Most signed-up', 'woocommerce-back-in-stock-notifications' ); ?>
+						<?php esc_html_e( 'Most signed-up', 'woocommerce' ); ?>
 						<div class="date_range">
 							<a href="#" class="date_range--week active" data-range="week">Week</a>
 							<a href="#" class="date_range--month" data-range="month">Month</a>
@@ -153,8 +153,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</th>
 				</tr>
 				<tr>
-					<th><?php esc_html_e( 'Product', 'woocommerce-back-in-stock-notifications' ); ?></th>
-					<th><?php esc_html_e( 'Customers', 'woocommerce-back-in-stock-notifications' ); ?></th>
+					<th><?php esc_html_e( 'Product', 'woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Customers', 'woocommerce' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -182,7 +182,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php
 					}
 				} else {
-					echo '<tr><td colspan="2" class="empty">' . esc_html__( 'No data recorded.', 'woocommerce-back-in-stock-notifications' ) . '</td></tr>';
+					echo '<tr><td colspan="2" class="empty">' . esc_html__( 'No data recorded.', 'woocommerce' ) . '</td></tr>';
 				}
 				?>
 			</tbody>

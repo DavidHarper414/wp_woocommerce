@@ -34,14 +34,14 @@ class WC_BIS_DB {
 	 * Cloning is forbidden.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce-back-in-stock-notifications' ), '1.0.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce' ), '1.0.0' );
 	}
 
 	/**
 	 * Unserializing instances of this class is forbidden.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce-back-in-stock-notifications' ), '1.0.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce' ), '1.0.0' );
 	}
 
 	/**

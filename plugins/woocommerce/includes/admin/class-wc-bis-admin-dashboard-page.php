@@ -118,7 +118,7 @@ class WC_BIS_Admin_Dashboard_Page {
 				var drawGraph  = function() {
 					var series = [
 						{
-							label: "<?php echo esc_js( __( 'Deliveries', 'woocommerce-back-in-stock-notifications' ) ); ?>",
+							label: "<?php echo esc_js( __( 'Deliveries', 'woocommerce' ) ); ?>",
 							data: chart_data,
 							color: '#ddd',
 							bars: { show: true, lineWidth: 0, fillColor: '#ddd', barWidth: 60 * 60 * 16 * 1000, align: 'center' },
@@ -209,7 +209,7 @@ class WC_BIS_Admin_Dashboard_Page {
 					var drawGraph = function() {
 						var series = [
 							{
-								label: "<?php echo esc_js( __( 'Sign-ups', 'woocommerce-back-in-stock-notifications' ) ); ?>",
+								label: "<?php echo esc_js( __( 'Sign-ups', 'woocommerce' ) ); ?>",
 								data: chart_data,
 								color: '#ddd',
 								bars: { show: true, lineWidth: 0, fillColor: '#ddd', barWidth: 60 * 60 * 16 * 1000, align: 'center' },

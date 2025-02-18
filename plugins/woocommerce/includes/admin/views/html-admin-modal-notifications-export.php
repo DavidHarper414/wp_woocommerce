@@ -16,19 +16,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="bis_export_form_inner woocommerce-exporter">
 
 		<section>
-			<p><?php esc_html_e( 'Generate and download a CSV file with notification sign-up data.', 'woocommerce-back-in-stock-notifications' ); ?></p>
+			<p><?php esc_html_e( 'Generate and download a CSV file with notification sign-up data.', 'woocommerce' ); ?></p>
 		</section>
 
 		<section>
 			<table class="form-table woocommerce-exporter-options">
 				<tr>
 					<td colspan="2">
-						<h3 class="subheader"><?php esc_html_e( 'Options', 'woocommerce-back-in-stock-notifications' ); ?></h3>
+						<h3 class="subheader"><?php esc_html_e( 'Options', 'woocommerce' ); ?></h3>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="woocommerce-exporter-filtered"><?php esc_html_e( 'Apply current filters', 'woocommerce-back-in-stock-notifications' ); ?></label>
+						<label for="woocommerce-exporter-filtered"><?php esc_html_e( 'Apply current filters', 'woocommerce' ); ?></label>
 					</th>
 					<td>
 						<input type="checkbox" id="woocommerce-exporter-filtered" value="1">
@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="woocommerce-exporter-meta"><?php esc_html_e( 'Export custom meta', 'woocommerce-back-in-stock-notifications' ); ?></label>
+						<label for="woocommerce-exporter-meta"><?php esc_html_e( 'Export custom meta', 'woocommerce' ); ?></label>
 					</th>
 					<td>
 						<input type="checkbox" id="woocommerce-exporter-meta" value="1">
@@ -47,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<progress class="woocommerce-exporter-progress" max="100" value="0"></progress>
 		</section>
 		<div class="wc-actions">
-			<button type="submit" class="woocommerce-exporter-button button button-primary" value="Generate CSV"><?php esc_html_e( 'Download CSV', 'woocommerce-back-in-stock-notifications' ); ?></button>
+			<button type="submit" class="woocommerce-exporter-button button button-primary" value="Generate CSV"><?php esc_html_e( 'Download CSV', 'woocommerce' ); ?></button>
 		</div>
 	</div>
 </div>

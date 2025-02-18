@@ -22,14 +22,14 @@ class WC_BIS_Notifications_DB {
 	 * Cloning is forbidden.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce-back-in-stock-notifications' ), '1.0.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce' ), '1.0.0' );
 	}
 
 	/**
 	 * Unserializing instances of this class is forbidden.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce-back-in-stock-notifications' ), '1.0.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce' ), '1.0.0' );
 	}
 
 	/**
@@ -475,18 +475,18 @@ class WC_BIS_Notifications_DB {
 
 		if ( ! empty( $args['user_email'] ) && ! filter_var( $args['user_email'], FILTER_VALIDATE_EMAIL ) ) {
 			/* translators: %s: Email input string */
-			throw new Exception( sprintf( __( 'Invalid e-mail: %s.', 'woocommerce-back-in-stock-notifications' ), $args['user_email'] ) );
+			throw new Exception( sprintf( __( 'Invalid e-mail: %s.', 'woocommerce' ), $args['user_email'] ) );
 		}
 
 		// New Sub.
 		if ( ! $notification || ! $notification->get_id() ) {
 
 			if ( empty( $args['product_id'] ) ) {
-				throw new Exception( __( 'Product is empty.', 'woocommerce-back-in-stock-notifications' ) );
+				throw new Exception( __( 'Product is empty.', 'woocommerce' ) );
 			}
 
 			if ( empty( $args['user_id'] ) && empty( $args['user_email'] ) ) {
-				throw new Exception( __( 'Customer is empty.', 'woocommerce-back-in-stock-notifications' ) );
+				throw new Exception( __( 'Customer is empty.', 'woocommerce' ) );
 			}
 
 			// Pre-fill date, if not already filled.

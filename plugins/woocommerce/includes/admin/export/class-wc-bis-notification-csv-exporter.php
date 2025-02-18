@@ -95,19 +95,19 @@ class WC_BIS_Notification_CSV_Exporter extends WC_CSV_Batch_Exporter {
 		return apply_filters(
 			"woocommerce_{$this->export_type}_export_default_columns",
 			array(
-				'id'                 => __( 'ID', 'woocommerce-back-in-stock-notifications' ),
-				'product_id'         => __( 'Product ID', 'woocommerce-back-in-stock-notifications' ),
-				'product_title'      => __( 'Product title', 'woocommerce-back-in-stock-notifications' ),
-				'product_name'       => __( 'Product name', 'woocommerce-back-in-stock-notifications' ),
-				'product_sku'        => __( 'Product SKU', 'woocommerce-back-in-stock-notifications' ),
-				'user_id'            => __( 'User ID', 'woocommerce-back-in-stock-notifications' ),
-				'user_email'         => __( 'User e-mail', 'woocommerce-back-in-stock-notifications' ),
-				'user_firstname'     => __( 'User firstname', 'woocommerce-back-in-stock-notifications' ),
-				'user_lastname'      => __( 'User lastname', 'woocommerce-back-in-stock-notifications' ),
-				'create_date'        => __( 'Sign-up date', 'woocommerce-back-in-stock-notifications' ),
-				'subscribe_date'     => __( 'Activation date', 'woocommerce-back-in-stock-notifications' ),
-				'last_notified_date' => __( 'Notified date', 'woocommerce-back-in-stock-notifications' ),
-				'is_active'          => __( 'Status', 'woocommerce-back-in-stock-notifications' ),
+				'id'                 => __( 'ID', 'woocommerce' ),
+				'product_id'         => __( 'Product ID', 'woocommerce' ),
+				'product_title'      => __( 'Product title', 'woocommerce' ),
+				'product_name'       => __( 'Product name', 'woocommerce' ),
+				'product_sku'        => __( 'Product SKU', 'woocommerce' ),
+				'user_id'            => __( 'User ID', 'woocommerce' ),
+				'user_email'         => __( 'User e-mail', 'woocommerce' ),
+				'user_firstname'     => __( 'User firstname', 'woocommerce' ),
+				'user_lastname'      => __( 'User lastname', 'woocommerce' ),
+				'create_date'        => __( 'Sign-up date', 'woocommerce' ),
+				'subscribe_date'     => __( 'Activation date', 'woocommerce' ),
+				'last_notified_date' => __( 'Notified date', 'woocommerce' ),
+				'is_active'          => __( 'Status', 'woocommerce' ),
 			)
 		);
 	}
@@ -227,7 +227,7 @@ class WC_BIS_Notification_CSV_Exporter extends WC_CSV_Batch_Exporter {
 
 					$column_key = 'meta:' . esc_attr( $key );
 					/* translators: %s: meta data name */
-					$this->column_names[ $column_key ] = sprintf( __( 'Meta: %s', 'woocommerce-back-in-stock-notifications' ), $key );
+					$this->column_names[ $column_key ] = sprintf( __( 'Meta: %s', 'woocommerce' ), $key );
 					$row[ $column_key ]                = $value;
 					++$i;
 				}

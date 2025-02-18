@@ -52,19 +52,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 		do_action( 'woocommerce_bis_email_notification_product_after_title', $product, $notification );
 		?>
 
-		<a href="<?php echo esc_url( $verification_href ); ?>" id="notification__action_button"><?php echo esc_html( apply_filters( 'woocommerce_bis_email_verify_button_text', _x( 'Confirm', 'Verify email notification', 'woocommerce-back-in-stock-notifications' ), $notification ) ); ?></a>
+		<a href="<?php echo esc_url( $verification_href ); ?>" id="notification__action_button"><?php echo esc_html( apply_filters( 'woocommerce_bis_email_verify_button_text', _x( 'Confirm', 'Verify email notification', 'woocommerce' ), $notification ) ); ?></a>
 
 		<div id="notification__verification_expiration">
 			<?php
 			// translators: %$s placeholder is the verification expiration threshold.
-			echo wp_kses_post( sprintf( esc_html__( 'This link will remain active for %s.', 'woocommerce-back-in-stock-notifications' ), $verification_expiration_threshold ) );
+			echo wp_kses_post( sprintf( esc_html__( 'This link will remain active for %s.', 'woocommerce' ), $verification_expiration_threshold ) );
 			?>
 		</div>
 
 	</div>
 
 	<table id="notification__footer"><tr><td>
-		<?php echo esc_html( __( 'You have received this message because your e-mail address was used to sign up for stock notifications on our store. Wasn\'t you? Please get in touch with us if you keep receiving these messages.', 'woocommerce-back-in-stock-notifications' ) ); ?>
+		<?php echo esc_html( __( 'You have received this message because your e-mail address was used to sign up for stock notifications on our store. Wasn\'t you? Please get in touch with us if you keep receiving these messages.', 'woocommerce' ) ); ?>
 		<br><br>
 		<?php
 

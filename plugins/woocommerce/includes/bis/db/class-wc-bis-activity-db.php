@@ -22,14 +22,14 @@ class WC_BIS_Activity_DB {
 	 * Cloning is forbidden.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce-back-in-stock-notifications' ), '1.0.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce' ), '1.0.0' );
 	}
 
 	/**
 	 * Unserializing instances of this class is forbidden.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce-back-in-stock-notifications' ), '1.0.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Foul!', 'woocommerce' ), '1.0.0' );
 	}
 
 	/**
@@ -288,7 +288,7 @@ class WC_BIS_Activity_DB {
 
 		// Empty attributes.
 		if ( empty( $args['type'] ) || empty( $args['notification_id'] ) || empty( $args['product_id'] ) ) {
-			throw new Exception( __( 'Missing activity attributes.', 'woocommerce-back-in-stock-notifications' ) );
+			throw new Exception( __( 'Missing activity attributes.', 'woocommerce' ) );
 		}
 
 		$this->validate( $args );
@@ -350,13 +350,13 @@ class WC_BIS_Activity_DB {
 
 		if ( ! empty( $args['type'] ) ) {
 			if ( ! in_array( $args['type'], array_keys( wc_bis_get_activity_types() ) ) ) {
-				throw new Exception( __( 'Invalid activity type.', 'woocommerce-back-in-stock-notifications' ) );
+				throw new Exception( __( 'Invalid activity type.', 'woocommerce' ) );
 			}
 		}
 
 		if ( ! empty( $args['user_email'] ) && ! filter_var( $args['user_email'], FILTER_VALIDATE_EMAIL ) ) {
 			/* translators: %s email string */
-			throw new Exception( __( sprintf( 'Invalid e-mail: %s.', $args['user_email'] ), 'woocommerce-back-in-stock-notifications' ) );
+			throw new Exception( __( sprintf( 'Invalid e-mail: %s.', $args['user_email'] ), 'woocommerce' ) );
 		}
 
 		// New Νotification.

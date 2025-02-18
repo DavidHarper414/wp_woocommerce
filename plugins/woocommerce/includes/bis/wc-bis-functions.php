@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function wc_bis_get_notification_types() {
 	return array(
-		'one-time' => __( 'One time', 'woocommerce-back-in-stock-notifications' ),
+		'one-time' => __( 'One time', 'woocommerce' ),
 	);
 }
 
@@ -35,17 +35,17 @@ function wc_bis_get_notification_types() {
  */
 function wc_bis_get_activity_types() {
 	return array(
-		'created'                => __( 'Created', 'woocommerce-back-in-stock-notifications' ),
-		'reactivated'            => __( 'Reactivated', 'woocommerce-back-in-stock-notifications' ),
-		'deactivated'            => __( 'Deactivated', 'woocommerce-back-in-stock-notifications' ),
-		'deleted'                => __( 'Deleted', 'woocommerce-back-in-stock-notifications' ),
-		'queued'                 => __( 'Queued', 'woocommerce-back-in-stock-notifications' ),
-		'aborted'                => __( 'Aborted', 'woocommerce-back-in-stock-notifications' ),
-		'delivered'              => __( 'Delivered', 'woocommerce-back-in-stock-notifications' ),
-		'unsubscribed'           => __( 'Unsubscribed', 'woocommerce-back-in-stock-notifications' ),
-		'verification_sent'      => __( 'Verification sent', 'woocommerce-back-in-stock-notifications' ),
-		'verification_cancelled' => __( 'Verification cancelled', 'woocommerce-back-in-stock-notifications' ),
-		'verified'               => __( 'Verified and activated', 'woocommerce-back-in-stock-notifications' ),
+		'created'                => __( 'Created', 'woocommerce' ),
+		'reactivated'            => __( 'Reactivated', 'woocommerce' ),
+		'deactivated'            => __( 'Deactivated', 'woocommerce' ),
+		'deleted'                => __( 'Deleted', 'woocommerce' ),
+		'queued'                 => __( 'Queued', 'woocommerce' ),
+		'aborted'                => __( 'Aborted', 'woocommerce' ),
+		'delivered'              => __( 'Delivered', 'woocommerce' ),
+		'unsubscribed'           => __( 'Unsubscribed', 'woocommerce' ),
+		'verification_sent'      => __( 'Verification sent', 'woocommerce' ),
+		'verification_cancelled' => __( 'Verification cancelled', 'woocommerce' ),
+		'verified'               => __( 'Verified and activated', 'woocommerce' ),
 	);
 }
 

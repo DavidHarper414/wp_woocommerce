@@ -94,7 +94,7 @@ class WC_BIS_Admin_Notifications_Page {
 
 				try {
 					if ( $should_update && WC_BIS()->db->notifications->update( $notification, $update_args ) ) {
-						WC_BIS_Admin_Notices::add_notice( __( 'Notification updated.', 'woocommerce-back-in-stock-notifications' ), 'success', true );
+						WC_BIS_Admin_Notices::add_notice( __( 'Notification updated.', 'woocommerce' ), 'success', true );
 					}
 				} catch ( Exception $e ) {
 					WC_BIS_Admin_Notices::add_notice( $e->getMessage(), 'error', true );
@@ -116,9 +116,9 @@ class WC_BIS_Admin_Notifications_Page {
 						if ( $notification->is_active() && $product->is_in_stock() ) {
 							do_action( 'woocommerce_bis_force_send_notification_to_customer', $notification );
 							/* translators: user email */
-							WC_BIS_Admin_Notices::add_notice( sprintf( __( 'Notification sent to "%s".', 'woocommerce-back-in-stock-notifications' ), $notification->get_user_email() ), 'success', true );
+							WC_BIS_Admin_Notices::add_notice( sprintf( __( 'Notification sent to "%s".', 'woocommerce' ), $notification->get_user_email() ), 'success', true );
 						} else {
-							WC_BIS_Admin_Notices::add_notice( __( 'Failed to send notification. Please make sure that (a) the notification is active, and (b) the listed product is available.', 'woocommerce-back-in-stock-notifications' ), 'error', true );
+							WC_BIS_Admin_Notices::add_notice( __( 'Failed to send notification. Please make sure that (a) the notification is active, and (b) the listed product is available.', 'woocommerce' ), 'error', true );
 						}
 						break;
 
@@ -145,14 +145,14 @@ class WC_BIS_Admin_Notifications_Page {
 						if ( ! $notification->is_verified() ) {
 							do_action( 'woocommerce_bis_verify_notification_to_customer', $notification );
 							/* translators: user email */
-							WC_BIS_Admin_Notices::add_notice( sprintf( __( 'Verification e-mail sent to "%s".', 'woocommerce-back-in-stock-notifications' ), $notification->get_user_email() ), 'success', true );
+							WC_BIS_Admin_Notices::add_notice( sprintf( __( 'Verification e-mail sent to "%s".', 'woocommerce' ), $notification->get_user_email() ), 'success', true );
 						}
 						break;
 				}
 
 				try {
 					if ( $should_update && WC_BIS()->db->notifications->update( $notification, $update_args ) ) {
-						WC_BIS_Admin_Notices::add_notice( __( 'Notification updated.', 'woocommerce-back-in-stock-notifications' ), 'success', true );
+						WC_BIS_Admin_Notices::add_notice( __( 'Notification updated.', 'woocommerce' ), 'success', true );
 					}
 				} catch ( Exception $e ) {
 					WC_BIS_Admin_Notices::add_notice( $e->getMessage(), 'error', true );
@@ -229,7 +229,7 @@ class WC_BIS_Admin_Notifications_Page {
 					$object = current( $notification_exists );
 					if ( is_a( $object, 'WC_BIS_Notification_Data' ) ) {
 						/* translators: %s duplicate notification edit url */
-						WC_BIS_Admin_Notices::add_notice( sprintf( __( 'A <a href="%s">notification</a> for the same product and customer already exists in your database.', 'woocommerce-back-in-stock-notifications' ), admin_url( 'admin.php?page=bis_notifications&section=edit&notification=' . $object->get_id() ) ), 'error', false );
+						WC_BIS_Admin_Notices::add_notice( sprintf( __( 'A <a href="%s">notification</a> for the same product and customer already exists in your database.', 'woocommerce' ), admin_url( 'admin.php?page=bis_notifications&section=edit&notification=' . $object->get_id() ) ), 'error', false );
 					}
 
 					return;
@@ -243,7 +243,7 @@ class WC_BIS_Admin_Notifications_Page {
 					$notification = wc_bis_get_notification( $id );
 					if ( $notification ) {
 						$notification->add_event( 'created', wp_get_current_user() );
-						WC_BIS_Admin_Notices::add_notice( esc_html__( 'Notification created.', 'woocommerce-back-in-stock-notifications' ), 'success', true );
+						WC_BIS_Admin_Notices::add_notice( esc_html__( 'Notification created.', 'woocommerce' ), 'success', true );
 
 						// Redirect.
 						$edit_url = add_query_arg(
@@ -277,7 +277,7 @@ class WC_BIS_Admin_Notifications_Page {
 
 		if ( isset( $notification ) && $notification ) {
 			$notification->delete();
-			WC_BIS_Admin_Notices::add_notice( __( 'Notification deleted.', 'woocommerce-back-in-stock-notifications' ), 'success', true );
+			WC_BIS_Admin_Notices::add_notice( __( 'Notification deleted.', 'woocommerce' ), 'success', true );
 		}
 
 		wp_safe_redirect( admin_url( self::PAGE_URL ) );
@@ -307,7 +307,7 @@ class WC_BIS_Admin_Notifications_Page {
 		}
 
 		if ( ! isset( $notification ) || ! is_a( $notification, 'WC_BIS_Notification_Data' ) ) {
-			WC_BIS_Admin_Notices::add_notice( __( 'Notification not found.', 'woocommerce-back-in-stock-notifications' ), 'error', true );
+			WC_BIS_Admin_Notices::add_notice( __( 'Notification not found.', 'woocommerce' ), 'error', true );
 			wp_safe_redirect( admin_url( self::PAGE_URL ) );
 			exit;
 		}

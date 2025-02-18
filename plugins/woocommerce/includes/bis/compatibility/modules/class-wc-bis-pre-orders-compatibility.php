@@ -48,7 +48,7 @@ class WC_BIS_Pre_Orders_Compatibility {
 		$notification = $email->object;
 		$product      = $notification->get_product();
 		if ( is_a( $product, 'WC_Product' ) && WC_Pre_Orders_Product::product_can_be_pre_ordered( $product ) ) {
-			$subject = apply_filters( 'woocommerce_bis_po_email_subject', _x( '"{product_name}" is now available for pre-order!', 'Pre-Order Email notification', 'woocommerce-back-in-stock-notifications' ), $product );
+			$subject = apply_filters( 'woocommerce_bis_po_email_subject', _x( '"{product_name}" is now available for pre-order!', 'Pre-Order Email notification', 'woocommerce' ), $product );
 			$subject = $email->format_string( $subject );
 		}
 
@@ -66,7 +66,7 @@ class WC_BIS_Pre_Orders_Compatibility {
 		$notification = $email->object;
 		$product      = $notification->get_product();
 		if ( is_a( $product, 'WC_Product' ) && WC_Pre_Orders_Product::product_can_be_pre_ordered( $product ) ) {
-			$heading = apply_filters( 'woocommerce_bis_po_email_heading', _x( 'Now available for pre-order!', 'Pre-Order Email notification', 'woocommerce-back-in-stock-notifications' ), $product );
+			$heading = apply_filters( 'woocommerce_bis_po_email_heading', _x( 'Now available for pre-order!', 'Pre-Order Email notification', 'woocommerce' ), $product );
 			$heading = $email->format_string( $heading );
 		}
 
@@ -86,9 +86,9 @@ class WC_BIS_Pre_Orders_Compatibility {
 		if ( is_a( $product, 'WC_Product' ) && WC_Pre_Orders_Product::product_can_be_pre_ordered( $product ) ) {
 
 			if ( 'bis_notification_received' === $email->id ) {
-				$intro_content = apply_filters( 'woocommerce_bis_po_email_intro_content', _x( 'Great news: You can now pre-order "{product_name}"!', 'Pre-Order Email notification', 'woocommerce-back-in-stock-notifications' ), $product );
+				$intro_content = apply_filters( 'woocommerce_bis_po_email_intro_content', _x( 'Great news: You can now pre-order "{product_name}"!', 'Pre-Order Email notification', 'woocommerce' ), $product );
 			} elseif ( 'bis_notification_confirm' === $email->id ) {
-				$intro_content = apply_filters( 'woocommerce_bis_po_email_confirm_intro_content', _x( 'Thanks for joining the waitlist! You will hear from us again when "{product_name}" is available.', 'Pre-Order Email notification', 'woocommerce-back-in-stock-notifications' ), $product );
+				$intro_content = apply_filters( 'woocommerce_bis_po_email_confirm_intro_content', _x( 'Thanks for joining the waitlist! You will hear from us again when "{product_name}" is available.', 'Pre-Order Email notification', 'woocommerce' ), $product );
 			}
 
 			$intro_content = $email->format_string( $intro_content );
@@ -104,7 +104,7 @@ class WC_BIS_Pre_Orders_Compatibility {
 		$product = $notification->get_product();
 
 		if ( is_a( $product, 'WC_Product' ) && WC_Pre_Orders_Product::product_can_be_pre_ordered( $product ) ) {
-			$text = apply_filters( 'woocommerce_bis_po_email_action_button_text', esc_html_x( 'Pre-Order Now', 'Pre-Order Email notification', 'woocommerce-back-in-stock-notifications' ), $product );
+			$text = apply_filters( 'woocommerce_bis_po_email_action_button_text', esc_html_x( 'Pre-Order Now', 'Pre-Order Email notification', 'woocommerce' ), $product );
 		}
 
 		return $text;

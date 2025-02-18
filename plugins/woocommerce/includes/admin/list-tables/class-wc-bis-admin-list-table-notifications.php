@@ -137,7 +137,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 		?><label class="screen-reader-text" for="cb-select-<?php echo absint( $notification->get_id() ); ?>">
 		<?php
 			/* translators: %s: Notification code */
-			printf( esc_html__( 'Select %s', 'woocommerce-back-in-stock-notifications' ), esc_html( $notification->get_id() ) );
+			printf( esc_html__( 'Select %s', 'woocommerce' ), esc_html( $notification->get_id() ) );
 		?>
 		</label>
 		<input id="cb-select-<?php echo absint( $notification->get_id() ); ?>" type="checkbox" name="notification[]" value="<?php echo absint( $notification->get_id() ); ?>" />
@@ -151,8 +151,8 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 	 */
 	public function column_id( $notification ) {
 		$actions = array(
-			'edit'   => sprintf( '<a href="' . admin_url( 'admin.php?page=bis_notifications&section=edit&notification=%d' ) . '">%s</a>', $notification->get_id(), __( 'Edit', 'woocommerce-back-in-stock-notifications' ) ),
-			'delete' => sprintf( '<a href="' . wp_nonce_url( admin_url( 'admin.php?page=bis_notifications&section=delete&notification=%d' ), 'delete_notification' ) . '">%s</a>', $notification->get_id(), __( 'Delete', 'woocommerce-back-in-stock-notifications' ) ),
+			'edit'   => sprintf( '<a href="' . admin_url( 'admin.php?page=bis_notifications&section=edit&notification=%d' ) . '">%s</a>', $notification->get_id(), __( 'Edit', 'woocommerce' ) ),
+			'delete' => sprintf( '<a href="' . wp_nonce_url( admin_url( 'admin.php?page=bis_notifications&section=delete&notification=%d' ), 'delete_notification' ) . '">%s</a>', $notification->get_id(), __( 'Delete', 'woocommerce' ) ),
 		);
 
 		$title = $notification->get_id();
@@ -161,7 +161,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 			'<a class="row-title" href="%s" aria-label="%s">#%s</a>%s',
 			esc_url( admin_url( 'admin.php?page=bis_notifications&section=edit&notification=' . $notification->get_id() ) ),
 			/* translators: %s: Notification code */
-			sprintf( esc_attr__( '&#8220;%s&#8221; (Edit)', 'woocommerce-back-in-stock-notifications' ), esc_attr( $title ) ),
+			sprintf( esc_attr__( '&#8220;%s&#8221; (Edit)', 'woocommerce' ), esc_attr( $title ) ),
 			esc_html( $title ),
 			wp_kses_post( $this->row_actions( $actions ) )
 		);
@@ -179,17 +179,17 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 
 		if ( ! $notification->is_verified() && $notification->is_pending() ) {
 			$status  = 'cancelled';
-			$label   = __( 'Pending', 'woocommerce-back-in-stock-notifications' );
-			$tooltip = __( 'Awaiting verification', 'woocommerce-back-in-stock-notifications' );
+			$label   = __( 'Pending', 'woocommerce' );
+			$tooltip = __( 'Awaiting verification', 'woocommerce' );
 		} elseif ( $notification->is_queued() ) {
 			$status = 'on-hold';
-			$label  = __( 'Queued', 'woocommerce-back-in-stock-notifications' );
+			$label  = __( 'Queued', 'woocommerce' );
 		} elseif ( ! $notification->is_active() ) {
 			$status = 'cancelled';
-			$label  = __( 'Inactive', 'woocommerce-back-in-stock-notifications' );
+			$label  = __( 'Inactive', 'woocommerce' );
 		} else {
 			$status = 'completed';
-			$label  = __( 'Active', 'woocommerce-back-in-stock-notifications' );
+			$label  = __( 'Active', 'woocommerce' );
 		}
 
 		if ( ! empty( $tooltip ) ) {
@@ -269,10 +269,10 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 	public function column_date_subscribed( $notification ) {
 
 		if ( ! $notification->get_create_date() ) {
-			$t_time = __( 'Unpublished', 'woocommerce-back-in-stock-notifications' );
+			$t_time = __( 'Unpublished', 'woocommerce' );
 			$h_time = $t_time;
 		} else {
-			$t_time = date_i18n( _x( 'Y/m/d g:i:s a', 'list table date hover format', 'woocommerce-back-in-stock-notifications' ), $notification->get_create_date() );
+			$t_time = date_i18n( _x( 'Y/m/d g:i:s a', 'list table date hover format', 'woocommerce' ), $notification->get_create_date() );
 			$h_time = date_i18n( wc_date_format(), $notification->get_create_date() );
 		}
 
@@ -287,11 +287,11 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 	public function column_waiting_since( $notification ) {
 
 		if ( empty( $notification->get_subscribe_date() ) || $notification->is_delivered() || ! $notification->is_active() ) {
-			$t_time    = __( '&mdash;', 'woocommerce-back-in-stock-notifications' );
+			$t_time    = __( '&mdash;', 'woocommerce' );
 			$h_time    = $t_time;
 			$time_diff = 0;
 		} else {
-			$t_time    = date_i18n( _x( 'Y/m/d g:i:s a', 'list table date hover format', 'woocommerce-back-in-stock-notifications' ), $notification->get_subscribe_date() );
+			$t_time    = date_i18n( _x( 'Y/m/d g:i:s a', 'list table date hover format', 'woocommerce' ), $notification->get_subscribe_date() );
 			$time_diff = time() - $notification->get_subscribe_date();
 
 			if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
@@ -313,13 +313,13 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 
 		$columns                    = array();
 		$columns['cb']              = '<input type="checkbox" />';
-		$columns['id']              = _x( 'ID', 'column_name', 'woocommerce-back-in-stock-notifications' );
-		$columns['status']          = _x( 'Status', 'column_name', 'woocommerce-back-in-stock-notifications' );
-		$columns['user']            = _x( 'User/Email', 'column_name', 'woocommerce-back-in-stock-notifications' );
-		$columns['product']         = _x( 'Product', 'column_name', 'woocommerce-back-in-stock-notifications' );
-		$columns['sku']             = _x( 'SKU', 'column_name', 'woocommerce-back-in-stock-notifications' );
-		$columns['date_subscribed'] = _x( 'Signed Up', 'column_name', 'woocommerce-back-in-stock-notifications' );
-		$columns['waiting_since']   = _x( 'Waiting', 'column_name', 'woocommerce-back-in-stock-notifications' );
+		$columns['id']              = _x( 'ID', 'column_name', 'woocommerce' );
+		$columns['status']          = _x( 'Status', 'column_name', 'woocommerce' );
+		$columns['user']            = _x( 'User/Email', 'column_name', 'woocommerce' );
+		$columns['product']         = _x( 'Product', 'column_name', 'woocommerce' );
+		$columns['sku']             = _x( 'SKU', 'column_name', 'woocommerce' );
+		$columns['date_subscribed'] = _x( 'Signed Up', 'column_name', 'woocommerce' );
+		$columns['waiting_since']   = _x( 'Waiting', 'column_name', 'woocommerce' );
 
 		/**
 		 * Filters the columns displayed in the Back In Stock list table.
@@ -349,9 +349,9 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 	 */
 	protected function get_bulk_actions() {
 		$actions            = array();
-		$actions['enable']  = __( 'Activate', 'woocommerce-back-in-stock-notifications' );
-		$actions['disable'] = __( 'Deactivate', 'woocommerce-back-in-stock-notifications' );
-		$actions['delete']  = __( 'Delete permanently', 'woocommerce-back-in-stock-notifications' );
+		$actions['enable']  = __( 'Activate', 'woocommerce' );
+		$actions['disable'] = __( 'Deactivate', 'woocommerce' );
+		$actions['delete']  = __( 'Delete permanently', 'woocommerce' );
 		return $actions;
 	}
 
@@ -386,7 +386,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 					WC_BIS()->db->notifications->update( $id, $args );
 				}
 
-				WC_BIS_Admin_Notices::add_notice( __( 'Notifications updated.', 'woocommerce-back-in-stock-notifications' ), 'success', true );
+				WC_BIS_Admin_Notices::add_notice( __( 'Notifications updated.', 'woocommerce' ), 'success', true );
 
 			} elseif ( 'disable' === $this->current_action() ) {
 
@@ -402,7 +402,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 					WC_BIS()->db->notifications->update( $id, $args );
 				}
 
-				WC_BIS_Admin_Notices::add_notice( __( 'Notifications updated.', 'woocommerce-back-in-stock-notifications' ), 'success', true );
+				WC_BIS_Admin_Notices::add_notice( __( 'Notifications updated.', 'woocommerce' ), 'success', true );
 
 			} elseif ( 'delete' === $this->current_action() ) {
 
@@ -410,7 +410,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 					WC_BIS()->db->notifications->delete( $id );
 				}
 
-				WC_BIS_Admin_Notices::add_notice( __( 'Notifications deleted.', 'woocommerce-back-in-stock-notifications' ), 'success', true );
+				WC_BIS_Admin_Notices::add_notice( __( 'Notifications deleted.', 'woocommerce' ), 'success', true );
 			}
 
 			wp_safe_redirect( admin_url( self::PAGE_URL ) );
@@ -447,7 +447,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 			}
 
 			if ( $aborted === $this->total_queued_items ) {
-				WC_BIS_Admin_Notices::add_notice( __( 'Queued notifications aborted.', 'woocommerce-back-in-stock-notifications' ), 'success', true );
+				WC_BIS_Admin_Notices::add_notice( __( 'Queued notifications aborted.', 'woocommerce' ), 'success', true );
 			}
 
 			wp_safe_redirect( admin_url( 'admin.php?page=bis_notifications' ) );
@@ -585,7 +585,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 	public function no_items() {
 		?>
 		<p class="main">
-			<?php esc_html_e( 'No Notifications found', 'woocommerce-back-in-stock-notifications' ); ?>
+			<?php esc_html_e( 'No Notifications found', 'woocommerce' ); ?>
 		</p>
 		<?php
 	}
@@ -608,7 +608,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 				'All <span class="count">(%s)</span>',
 				$this->total_items,
 				'notifications_status',
-				'woocommerce-back-in-stock-notifications'
+				'woocommerce'
 			),
 			number_format_i18n( $this->total_items )
 		);
@@ -625,7 +625,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 					'Queued <span class="count">(%s)</span>',
 					$this->total_queued_items,
 					'notifications_status',
-					'woocommerce-back-in-stock-notifications'
+					'woocommerce'
 				),
 				number_format_i18n( $this->total_queued_items )
 			);
@@ -642,7 +642,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 				'Active <span class="count">(%s)</span>',
 				$this->total_active_items,
 				'notifications_status',
-				'woocommerce-back-in-stock-notifications'
+				'woocommerce'
 			),
 			number_format_i18n( $this->total_active_items )
 		);
@@ -658,7 +658,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 				'Inactive <span class="count">(%s)</span>',
 				$this->total_inactive_items,
 				'notifications_status',
-				'woocommerce-back-in-stock-notifications'
+				'woocommerce'
 			),
 			number_format_i18n( $this->total_inactive_items )
 		);
@@ -715,10 +715,10 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 			<div class="alignleft actions sw-select2-autoinit">
 				<?php
 				$this->render_filters();
-				submit_button( __( 'Filter', 'woocommerce-back-in-stock-notifications' ), '', 'filter_action', false, array( 'id' => 'post-query-submit' ) );
+				submit_button( __( 'Filter', 'woocommerce' ), '', 'filter_action', false, array( 'id' => 'post-query-submit' ) );
 				if ( 0 < $this->total_queued_items ) {
 					?>
-					<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'bis_clear_queued_items' => 1 ), admin_url( 'admin.php?page=bis_notifications' ) ), 'wc_bis_abort_all_queued_notifications' ) ); ?>" class="button"><?php esc_html_e( 'Abort Queued', 'woocommerce-back-in-stock-notifications' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'bis_clear_queued_items' => 1 ), admin_url( 'admin.php?page=bis_notifications' ) ), 'wc_bis_abort_all_queued_notifications' ) ); ?>" class="button"><?php esc_html_e( 'Abort Queued', 'woocommerce' ); ?></a>
 					<?php
 				}
 				?>
@@ -763,7 +763,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 			}
 		}
 		?>
-		<select class="sw-select2-search--products" name="bis_product_filter" data-placeholder="<?php esc_attr_e( 'Select product&hellip;', 'woocommerce-back-in-stock-notifications' ); ?>" data-allow_clear="true" id="bis_product_filter">
+		<select class="sw-select2-search--products" name="bis_product_filter" data-placeholder="<?php esc_attr_e( 'Select product&hellip;', 'woocommerce' ); ?>" data-allow_clear="true" id="bis_product_filter">
 			<?php if ( $product_string && $product_id ) { ?>
 				<option value="<?php echo esc_attr( $product_id ); ?>" selected="selected"><?php echo wp_kses_post( htmlspecialchars( $product_string, ENT_COMPAT ) ); ?><option>
 			<?php } ?>
@@ -797,7 +797,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 			}
 		}
 		?>
-		<select class="sw-select2-search--customers" name="bis_customer_filter" data-placeholder="<?php esc_attr_e( 'Select customer&hellip;', 'woocommerce-back-in-stock-notifications' ); ?>" data-allow_clear="true" id="bis_customer_filter">
+		<select class="sw-select2-search--customers" name="bis_customer_filter" data-placeholder="<?php esc_attr_e( 'Select customer&hellip;', 'woocommerce' ); ?>" data-allow_clear="true" id="bis_customer_filter">
 			<?php if ( $user_string && $user_id ) { ?>
 				<option value="<?php echo esc_attr( $user_id ); ?>" selected="selected"><?php echo wp_kses_post( htmlspecialchars( $user_string, ENT_COMPAT ) ); ?><option>
 			<?php } ?>
@@ -822,9 +822,9 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 
 		$m = isset( $_GET['m'] ) ? (int) $_GET['m'] : 0;
 		?>
-		<label for="filter-by-date" class="screen-reader-text"><?php esc_html_e( 'Filter by date', 'woocommerce-back-in-stock-notifications' ); ?></label>
+		<label for="filter-by-date" class="screen-reader-text"><?php esc_html_e( 'Filter by date', 'woocommerce' ); ?></label>
 		<select name="m" id="filter-by-date">
-			<option<?php selected( $m, 0 ); ?> value="0"><?php esc_html_e( 'All dates', 'woocommerce-back-in-stock-notifications' ); ?></option>
+			<option<?php selected( $m, 0 ); ?> value="0"><?php esc_html_e( 'All dates', 'woocommerce' ); ?></option>
 			<?php
 			foreach ( $months as $arc_row ) {
 				if ( 0 == $arc_row->year ) {
@@ -839,7 +839,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 					selected( $m, $year . $month, false ),
 					esc_attr( $arc_row->year . $month ),
 					/* translators: %1$s: month %2$s: year */
-					sprintf( esc_html__( '%1$s %2$d', 'woocommerce-back-in-stock-notifications' ), esc_html( $wp_locale->get_month( $month ) ), esc_html( $year ) )
+					sprintf( esc_html__( '%1$s %2$d', 'woocommerce' ), esc_html( $wp_locale->get_month( $month ) ), esc_html( $year ) )
 				);
 			}
 			?>

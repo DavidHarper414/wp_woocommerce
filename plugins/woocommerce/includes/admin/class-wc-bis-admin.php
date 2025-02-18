@@ -158,7 +158,7 @@ class WC_BIS_Admin {
 
 		if ( version_compare( $bundled_version_major, $registered_version_major, '<' ) ) {
 
-			$notice = __( 'The installed version of <strong>Back In Stock</strong> is not compatible with the <code>selectSW</code> library found on your system. Please update Back In Stock to the latest version.', 'woocommerce-back-in-stock-notifications' );
+			$notice = __( 'The installed version of <strong>Back In Stock</strong> is not compatible with the <code>selectSW</code> library found on your system. Please update Back In Stock to the latest version.', 'woocommerce' );
 			WC_BIS_Admin_Notices::add_notice( $notice, 'error' );
 		}
 	}
@@ -201,15 +201,15 @@ class WC_BIS_Admin {
 		$content = '
 			<div class="wp-suggested-text">' .
 				'<p class="privacy-policy-tutorial">' .
-					__( 'WooCommerce Back In Stock Notifications stores the following information when customers sign up to receive back-in-stock notifications:', 'woocommerce-back-in-stock-notifications' ) .
+					__( 'WooCommerce Back In Stock Notifications stores the following information when customers sign up to receive back-in-stock notifications:', 'woocommerce' ) .
 				'</p>' .
 				'<ul class="privacy-policy-tutorial">' .
-					'<li>' . __( 'Customer e-mail.', 'woocommerce-back-in-stock-notifications' ) . '</li>' .
-					'<li>' . __( 'Sign-up date.', 'woocommerce-back-in-stock-notifications' ) . '</li>' .
-					'<li>' . __( 'Notification date.', 'woocommerce-back-in-stock-notifications' ) . '</li>' .
+					'<li>' . __( 'Customer e-mail.', 'woocommerce' ) . '</li>' .
+					'<li>' . __( 'Sign-up date.', 'woocommerce' ) . '</li>' .
+					'<li>' . __( 'Notification date.', 'woocommerce' ) . '</li>' .
 				'</ul>' .
 				'<p class="privacy-policy-tutorial">' .
-					__( 'This information can be used to personally identify customers, and is stored in the database indefinitely.', 'woocommerce-back-in-stock-notifications' ) .
+					__( 'This information can be used to personally identify customers, and is stored in the database indefinitely.', 'woocommerce' ) .
 				'</p>' .
 			'</div>';
 
@@ -246,20 +246,20 @@ class WC_BIS_Admin {
 
 		$params = array(
 			'wc_ajax_url'                               => admin_url( 'admin-ajax.php' ),
-			'i18n_wc_delete_notification_warning'       => __( 'Delete this notification permanently?', 'woocommerce-back-in-stock-notifications' ),
-			'i18n_wc_bulk_delete_notifications_warning' => __( 'Delete the selected notifications permanently?', 'woocommerce-back-in-stock-notifications' ),
+			'i18n_wc_delete_notification_warning'       => __( 'Delete this notification permanently?', 'woocommerce' ),
+			'i18n_wc_bulk_delete_notifications_warning' => __( 'Delete the selected notifications permanently?', 'woocommerce' ),
 			// Export modal.
 			'modal_export_notifications_nonce'          => wp_create_nonce( 'wc-bis-modal-notifications-export' ),
 			'export_notifications_nonce'                => wp_create_nonce( 'wc-bis-notifications-export' ),
 			'new_notification_product_data_nonce'       => wp_create_nonce( 'wc-bis-new-notification-product-data' ),
-			'i18n_export_modal_title'                   => __( 'Export Notifications', 'woocommerce-back-in-stock-notifications' ),
+			'i18n_export_modal_title'                   => __( 'Export Notifications', 'woocommerce' ),
 			// Dashboard.
 			'dashboard_most_subscribed_date_range'      => wp_create_nonce( 'wc-bis-most-subscribed-date-range' ),
-			'i18n_dashboard_table_no_results'           => __( 'No data recorded.', 'woocommerce-back-in-stock-notifications' ),
+			'i18n_dashboard_table_no_results'           => __( 'No data recorded.', 'woocommerce' ),
 			/* translators: notifications count, date */
-			'i18n_dashboard_sign_up_chart_tooltip'      => __( '%notifications% signed up on %date%', 'woocommerce-back-in-stock-notifications' ),
+			'i18n_dashboard_sign_up_chart_tooltip'      => __( '%notifications% signed up on %date%', 'woocommerce' ),
 			/* translators: notifications count, date */
-			'i18n_dashboard_sent_chart_tooltip'         => __( '%notifications% sent on %date%', 'woocommerce-back-in-stock-notifications' ),
+			'i18n_dashboard_sent_chart_tooltip'         => __( '%notifications% sent on %date%', 'woocommerce' ),
 		);
 
 		wp_register_script( 'wc-bis-dashboard', WC()->plugin_url() . '/assets/js/admin/wc-bis-admin-dashboard' . $suffix . '.js', array( 'jquery', 'wc-bis-writepanel' ), $version );
@@ -341,7 +341,7 @@ class WC_BIS_Admin {
 			woocommerce_wp_checkbox(
 				array(
 					'id'            => '_wc_bis_enabled',
-					'label'         => __( 'Stock notifications', 'woocommerce-back-in-stock-notifications' ),
+					'label'         => __( 'Stock notifications', 'woocommerce' ),
 					'value'         => $bis_enabled,
 					'wrapper_class' => implode(
 						' ',
@@ -351,7 +351,7 @@ class WC_BIS_Admin {
 							wc_bis_get_supported_types()
 						)
 					) . ' hide_if_composite',
-					'description'   => __( 'Let customers sign up to be notified when this product is restocked', 'woocommerce-back-in-stock-notifications' ),
+					'description'   => __( 'Let customers sign up to be notified when this product is restocked', 'woocommerce' ),
 				)
 			);
 			return;
@@ -364,7 +364,7 @@ class WC_BIS_Admin {
 			<img class="info-icon" src="<?php echo esc_url( $info_img_url ); ?>" /><p>
 					<?php
 						/* translators: Settings page for Back in Stock Notifications */
-						echo wp_kses_post( sprintf( __( 'Sign-ups for stock notifications are disabled for all products in the store. To control sign-ups for this product, first enable the global <a href="%s">"Allow sign-ups"</a> option.', 'woocommerce-back-in-stock-notifications' ), '/wp-admin/admin.php?page=wc-settings&tab=bis_settings' ) );
+						echo wp_kses_post( sprintf( __( 'Sign-ups for stock notifications are disabled for all products in the store. To control sign-ups for this product, first enable the global <a href="%s">"Allow sign-ups"</a> option.', 'woocommerce' ), '/wp-admin/admin.php?page=wc-settings&tab=bis_settings' ) );
 					?>
 				</p>
 			</div>
@@ -462,7 +462,7 @@ class WC_BIS_Admin {
 					'This product is not published. However, %1$s customer has signed up to be notified when this product is restocked. If you do not intend to publish or restock this product in the future, click <a href="%2$s" class="js_wc_bis_notice_confirm_deactivate">here</a> to deactivate that notification.',
 					'This product is not published. However, %1$s customers have signed up to be notified when this product is restocked. If you do not intend to publish or restock this product in the future, click <a href="%2$s" class="js_wc_bis_notice_confirm_deactivate"> to deactivate those notifications.</a>.',
 					$notifications_count,
-					'woocommerce-back-in-stock-notifications'
+					'woocommerce'
 				),
 				number_format_i18n( $notifications_count ),
 				$bulk_deactivate_url
@@ -478,7 +478,7 @@ class WC_BIS_Admin {
 					'Stock notifications for this product are currently disabled under <strong>Product Data > Inventory > Stock Notifications</strong>. However, %1$s notification is scheduled to be sent when this product is restocked. To deactivate it, click <a href="%2$s" class="js_wc_bis_notice_confirm_deactivate">here</a>.',
 					'Stock notifications for this product are currently disabled under <strong>Product Data > Inventory > Stock Notifications</strong>. However, %1$s notifications are scheduled to be sent when this product is restocked. To deactivate them, click <a href="%2$s" class="js_wc_bis_notice_confirm_deactivate">here</a>.',
 					$notifications_count,
-					'woocommerce-back-in-stock-notifications'
+					'woocommerce'
 				),
 				number_format_i18n( $notifications_count ),
 				$bulk_deactivate_url
@@ -487,7 +487,7 @@ class WC_BIS_Admin {
 			WC_BIS_Admin_Notices::add_notice( $notice, 'warning' );
 		}
 
-		$confirmation = __( 'This action cannot be undone. Continue?', 'woocommerce-back-in-stock-notifications' );
+		$confirmation = __( 'This action cannot be undone. Continue?', 'woocommerce' );
 		?>
 
 		<script type="text/javascript">
@@ -526,7 +526,7 @@ class WC_BIS_Admin {
 					'%1$s notification deactivated.',
 					'%1$s notifications deactivated.',
 					$updated,
-					'woocommerce-back-in-stock-notifications'
+					'woocommerce'
 				),
 				number_format_i18n( $updated )
 			);

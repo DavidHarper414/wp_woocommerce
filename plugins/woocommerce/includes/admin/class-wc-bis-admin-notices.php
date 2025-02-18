@@ -357,7 +357,7 @@ class WC_BIS_Admin_Notices {
 		<p class="sw-welcome-text">
 			<?php
 				/* translators: onboarding url */
-				echo wp_kses_post( sprintf( __( 'Thank you for installing <strong>WooCommerce Back In Stock Notifications</strong>. Please take a minute to <a href="%s">review your settings</a>, and we won\'t bother you again &ndash; ever!', 'woocommerce-back-in-stock-notifications' ), esc_url( admin_url( 'admin.php?page=wc-settings&tab=bis_settings&dismiss_wc_bis_onboarding=1' ) ) ) );
+				echo wp_kses_post( sprintf( __( 'Thank you for installing <strong>WooCommerce Back In Stock Notifications</strong>. Please take a minute to <a href="%s">review your settings</a>, and we won\'t bother you again &ndash; ever!', 'woocommerce' ), esc_url( admin_url( 'admin.php?page=wc-settings&tab=bis_settings&dismiss_wc_bis_onboarding=1' ) ) ) );
 			?>
 		</p>
 		<?php
@@ -432,9 +432,9 @@ class WC_BIS_Admin_Notices {
 						}
 
 						if ( 'success' === response.result ) {
-							notice.html( '" . '<p>' . __( 'Loopback test passed!', 'woocommerce-back-in-stock-notifications' ) . '</p>' . "' ).removeClass( 'notice-warning' ).addClass( 'notice-success' );
+							notice.html( '" . '<p>' . __( 'Loopback test passed!', 'woocommerce' ) . '</p>' . "' ).removeClass( 'notice-warning' ).addClass( 'notice-success' );
 						} else {
-							notice.html( '" . '<p>' . __( 'Loopback test failed!', 'woocommerce-back-in-stock-notifications' ) . '</p>' . "' ).removeClass( 'notice-warning' ).addClass( 'notice-error' );
+							notice.html( '" . '<p>' . __( 'Loopback test failed!', 'woocommerce' ) . '</p>' . "' ).removeClass( 'notice-warning' ).addClass( 'notice-error' );
 						}
 					} );
 				};
@@ -460,8 +460,8 @@ class WC_BIS_Admin_Notices {
 
 		if ( $show_notice ) {
 
-			$notice       = __( 'Back In Stock Notifications ran a quick check-up on your site, and found that loopback requests might be failing to complete. Loopback requests are used by WooCommerce to run scheduled events, such as database upgrades. To keep your site in top shape, please ask the host or administrator of your server to look into this for you.', 'woocommerce-back-in-stock-notifications' );
-			$rerun_prompt = '<p><a href="#trigger_loopback_test" class="button wc-bis-run-again">' . __( 'Repeat test', 'woocommerce-back-in-stock-notifications' ) . '</a><span class="spinner" style="float:none;vertical-align:top"></span></p>';
+			$notice       = __( 'Back In Stock Notifications ran a quick check-up on your site, and found that loopback requests might be failing to complete. Loopback requests are used by WooCommerce to run scheduled events, such as database upgrades. To keep your site in top shape, please ask the host or administrator of your server to look into this for you.', 'woocommerce' );
+			$rerun_prompt = '<p><a href="#trigger_loopback_test" class="button wc-bis-run-again">' . __( 'Repeat test', 'woocommerce' ) . '</a><span class="spinner" style="float:none;vertical-align:top"></span></p>';
 
 			$notice .= $rerun_prompt;
 
@@ -502,7 +502,7 @@ class WC_BIS_Admin_Notices {
 
 		if ( 'yes' === self::get_notice_option( 'queue', 'has_overdue_deliveries', 'no' ) ) {
 
-			$notice = __( 'Back In Stock Notifications ran a quick check-up on your site, and found that the task scheduler built into WooCommerce might be failing to process notifications deliveries in time. To keep your site in top shape, please ask the host or administrator of your server to look into this for you.', 'woocommerce-back-in-stock-notifications' );
+			$notice = __( 'Back In Stock Notifications ran a quick check-up on your site, and found that the task scheduler built into WooCommerce might be failing to process notifications deliveries in time. To keep your site in top shape, please ask the host or administrator of your server to look into this for you.', 'woocommerce' );
 
 			self::add_dismissible_notice(
 				$notice,

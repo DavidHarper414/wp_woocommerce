@@ -52,23 +52,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 		do_action( 'woocommerce_bis_email_notification_product_after_title', $product, $notification );
 		?>
 
-		<a href="<?php echo esc_attr( apply_filters( 'woocommerce_bis_email_received_button_href', $notification->get_product_permalink(), $notification, $product ) ); ?>" id="notification__action_button"><?php echo esc_html( apply_filters( 'woocommerce_bis_email_received_button_text', _x( 'Shop Now', 'Email notification', 'woocommerce-back-in-stock-notifications' ), $notification ) ); ?></a>
+		<a href="<?php echo esc_attr( apply_filters( 'woocommerce_bis_email_received_button_href', $notification->get_product_permalink(), $notification, $product ) ); ?>" id="notification__action_button"><?php echo esc_html( apply_filters( 'woocommerce_bis_email_received_button_text', _x( 'Shop Now', 'Email notification', 'woocommerce' ), $notification ) ); ?></a>
 	</div>
 
 	<table id="notification__footer"><tr><td>
-		<?php echo esc_html( sprintf( __( 'You have received this message because your e-mail address was used to sign up for stock notifications on our store.', 'woocommerce-back-in-stock-notifications' ), $product->get_name() ) ); ?>
+		<?php echo esc_html( sprintf( __( 'You have received this message because your e-mail address was used to sign up for stock notifications on our store.', 'woocommerce' ), $product->get_name() ) ); ?>
 		<?php
 
 		if ( $is_user ) {
 			// translators: %1$s placeholder is the unsubscribe link, %2$s placeholder is the Unsubscribe text link.
-			$unsubscribe_link = sprintf( '<a href="%1$s" id="notification__unsubscribe_link">%2$s</a>', esc_url( $unsubscribe_href ), _x( 'click here', 'unsubscribe all cta for customer', 'woocommerce-back-in-stock-notifications' ) );
+			$unsubscribe_link = sprintf( '<a href="%1$s" id="notification__unsubscribe_link">%2$s</a>', esc_url( $unsubscribe_href ), _x( 'click here', 'unsubscribe all cta for customer', 'woocommerce' ) );
 			// translators: %s placeholder is the text part from above.
-			echo wp_kses_post( sprintf( __( 'To manage your notifications, %s to log in to your account.', 'woocommerce-back-in-stock-notifications' ), $unsubscribe_link ) );
+			echo wp_kses_post( sprintf( __( 'To manage your notifications, %s to log in to your account.', 'woocommerce' ), $unsubscribe_link ) );
 		} else {
 			// translators: %1$s placeholder is the unsubscribe link, %2$s placeholder is the Unsubscribe text link.
-			$unsubscribe_link = sprintf( '<a href="%1$s" id="notification__unsubscribe_link">%2$s</a>', esc_url( $unsubscribe_href ), _x( 'click here', 'unsubscribe all cta for guest', 'woocommerce-back-in-stock-notifications' ) );
+			$unsubscribe_link = sprintf( '<a href="%1$s" id="notification__unsubscribe_link">%2$s</a>', esc_url( $unsubscribe_href ), _x( 'click here', 'unsubscribe all cta for guest', 'woocommerce' ) );
 			// translators: %s placeholder is the text part from above.
-			echo wp_kses_post( sprintf( __( 'To stop receiving these messages, %s to unsubscribe.', 'woocommerce-back-in-stock-notifications' ), $unsubscribe_link ) );
+			echo wp_kses_post( sprintf( __( 'To stop receiving these messages, %s to unsubscribe.', 'woocommerce' ), $unsubscribe_link ) );
 		}
 
 		?>

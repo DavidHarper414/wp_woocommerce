@@ -62,7 +62,7 @@ class WC_BIS_Admin_Exporters {
 		check_ajax_referer( 'wc-bis-notifications-export', 'security' );
 
 		if ( ! $this->export_allowed() ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient privileges to export notifications.', 'woocommerce-back-in-stock-notifications' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Insufficient privileges to export notifications.', 'woocommerce' ) ) );
 		}
 
 		include_once WC_ABSPATH . 'includes/admin/export/class-wc-bis-notification-csv-exporter.php';
