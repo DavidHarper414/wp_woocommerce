@@ -25,6 +25,7 @@ import { createNoticesFromResponse } from '~/lib/notices';
 import { PluginList, PluginListProps } from './PluginList';
 import { PluginProps } from './Plugin';
 import { getPluginSlug } from '../../../utils';
+import { Promo } from './Promo';
 import { TrackedLink } from '~/components/tracked-link/tracked-link';
 
 // We display the list of plugins ordered by this list.
@@ -227,6 +228,7 @@ const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 					} ) }
 				</Card>
 			) }
+			<Promo />
 			<TrackedLink
 				textProps={ {
 					as: 'div',
