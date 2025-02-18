@@ -335,6 +335,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 
 	/**
 	 * Update store's currency and measurement units.
+	 * Requires 'country' code to be passed in the request.
 	 *
 	 * @param  WP_REST_Request $request Request data.
 	 * @return WP_Error|WP_REST_Response
