@@ -24,12 +24,6 @@ jest.mock( '@wordpress/data', () => {
 
 jest.mock( '~/utils/admin-settings', () => ( {
 	...jest.requireActual( '~/utils/admin-settings' ),
-	getAdminSetting: jest.fn().mockReturnValue( {
-		currencySymbols: {
-			EUR: '&euro;',
-			USD: '&#36;',
-		},
-	} ),
 } ) );
 
 jest.mock( '@woocommerce/settings', () => ( {
@@ -84,6 +78,9 @@ describe( 'OrdersPanel', () => {
 			],
 			isError: false,
 			isRequesting: false,
+			currencySymbols: {
+				USD: '&#36;',
+			},
 		} );
 		const { getByText } = render(
 			<OrdersPanel orderStatuses={ [] } unreadOrdersCount={ 1 } />
@@ -103,6 +100,9 @@ describe( 'OrdersPanel', () => {
 			],
 			isError: false,
 			isRequesting: false,
+			currencySymbols: {
+				EUR: '&euro;',
+			},
 		} );
 
 		const { getByText } = render(
@@ -123,6 +123,7 @@ describe( 'OrdersPanel', () => {
 			],
 			isError: false,
 			isRequesting: false,
+			currencySymbols: {},
 		} );
 
 		const { getByText } = render(
