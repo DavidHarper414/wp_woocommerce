@@ -76,14 +76,14 @@ export const Form = ( {
 			query.section = activeSection;
 		}
 
-		const formData = getFormData();
-		formData.save = 'Save changes';
-		formData._wpnonce = settingsData._wpnonce;
-		formData._w_http_referer = '/wp-admin/' + getNewPath( query );
+		const updatedData = getFormData();
+		updatedData.save = 'Save changes';
+		updatedData._wpnonce = settingsData._wpnonce;
+		updatedData._w_http_referer = '/wp-admin/' + getNewPath( query );
 
-		const form = new FormData();
-		for ( const [ key, value ] of Object.entries( formData ) ) {
-			form.append( key, value );
+		const payload = new FormData();
+		for ( const [ key, value ] of Object.entries( updatedData ) ) {
+			payload.append( key, value );
 		}
 
 		const response = await fetch(
@@ -92,7 +92,7 @@ export const Form = ( {
 			).toString() }`,
 			{
 				method: 'POST',
-				body: form,
+				body: payload,
 				credentials: 'same-origin', // Include cookies for nonce validation
 				headers: {
 					'X-WP-Nonce': settingsData._wpnonce,

@@ -53,7 +53,7 @@ const SettingsDataProvider = ( {
 };
 
 const Notices = () => {
-	const notices = useSelect( ( select: any ) => {
+	const notices = useSelect( ( select ) => {
 		const { getNotices } = select( noticesStore );
 		return getNotices();
 	}, [] );
