@@ -1,4 +1,20 @@
-.wc-block-editor-add-to-cart-with-options__skeleton-wrapper {
-	max-width: 300px;
-	margin-bottom: $gap;
+.wp-block-woocommerce-add-to-cart-with-options {
+	&__skeleton-wrapper {
+		max-width: 300px;
+		margin-bottom: $gap;
+	}
+
+	&.block-editor-block-list__block:not(.remove-outline) {
+		&.is-highlighted::after,
+		&.is-hovered:not(.is-selected)::after,
+		&.is-selected::after {
+			outline-color: var(--wp-block-synced-color);
+		}
+
+		&.block-editor-block-list__block:not([contenteditable]):focus {
+			&::after {
+				outline-color: var(--wp-block-synced-color);
+			}
+		}
+	}
 }
