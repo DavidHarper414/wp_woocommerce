@@ -688,13 +688,36 @@ class Checkout extends AbstractCartRoute {
 		if ( ! $this->order instanceof \WC_Order ) {
 			throw new RouteException(
 				'woocommerce_rest_checkout_missing_order',
-				__( 'Unable to create order', 'woocommerce' ),
+				esc_html__( 'Unable to create order', 'woocommerce' ),
 				500
 			);
 		}
 
 		// Store order ID to session.
 		$this->set_draft_order_id( $this->order->get_id() );
+	}
+
+	/**
+	 * Updates a customer address field.
+	 *
+	 * @param \WC_Customer   $customer The customer to update.
+	 * @param string         $key The key of the field to update.
+	 * @param mixed          $value The value to update the field to.
+	 * @param string         $address_type The type of address to update (billing|shipping).
+	 * @param DocumentObject $document_object The document object to check if the field is hidden.
+	 */
+	private function update_customer_address_field( $customer, $key, $value, $address_type, $document_object ) {
+		$callback = "set_{$address_type}_{$key}";
+
+		if ( is_callable( [ $customer, $callback ] ) ) {
+			$customer->$callback( $value );
+			return;
+		}
+
+		if ( $this->additional_fields_controller->is_field( $key ) ) {
+			$is_hidden = $this->additional_fields_controller->is_hidden_field( $key, $document_object, $address_type . '_address' );
+			$this->additional_fields_controller->persist_field_for_customer( $key, $is_hidden ? null : $value, $customer, $address_type );
+		}
 	}
 
 	/**
@@ -707,26 +730,23 @@ class Checkout extends AbstractCartRoute {
 	private function update_customer_from_request( \WP_REST_Request $request ) {
 		$customer = WC()->customer;
 
+		// Create document object to test if fields are hidden.
+		$document_object = $this->get_document_object_from_rest_request( $request );
 		// Billing address is a required field.
-		foreach ( $request['billing_address'] as $key => $value ) {
-			$callback = "set_billing_$key";
-			if ( is_callable( [ $customer, $callback ] ) ) {
-				$customer->$callback( $value );
-			} elseif ( $this->additional_fields_controller->is_field( $key ) ) {
-				$this->additional_fields_controller->persist_field_for_customer( $key, $value, $customer, 'billing' );
-			}
-		}
-
+		$billing_address_values = $request['billing_address'];
 		// If shipping address (optional field) was not provided, set it to the given billing address (required field).
 		$shipping_address_values = $request['shipping_address'] ?? $request['billing_address'];
 
+		if ( ! WC()->cart->needs_shipping() ) {
+			$shipping_address_values = $request['billing_address'];
+		}
+
+		foreach ( $billing_address_values as $key => $value ) {
+			$this->update_customer_address_field( $customer, $key, $value, 'billing', $document_object );
+		}
+
 		foreach ( $shipping_address_values as $key => $value ) {
-			$callback = "set_shipping_$key";
-			if ( is_callable( [ $customer, $callback ] ) ) {
-				$customer->$callback( $value );
-			} elseif ( $this->additional_fields_controller->is_field( $key ) ) {
-				$this->additional_fields_controller->persist_field_for_customer( $key, $value, $customer, 'shipping' );
-			}
+			$this->update_customer_address_field( $customer, $key, $value, 'shipping', $document_object );
 		}
 
 		// Persist contact fields to session.
@@ -735,7 +755,9 @@ class Checkout extends AbstractCartRoute {
 		if ( ! empty( $contact_fields ) ) {
 			foreach ( $contact_fields as $key ) {
 				if ( isset( $request['additional_fields'], $request['additional_fields'][ $key ] ) ) {
-					$this->additional_fields_controller->persist_field_for_customer( $key, $request['additional_fields'][ $key ], $customer );
+					$is_hidden = $this->additional_fields_controller->is_hidden_field( $key, $document_object, 'contact' );
+					$value     = $is_hidden ? null : $request['additional_fields'][ $key ];
+					$this->additional_fields_controller->persist_field_for_customer( $key, $value, $customer );
 				}
 			}
 		}
@@ -769,7 +791,7 @@ class Checkout extends AbstractCartRoute {
 			if ( $requires_payment_method ) {
 				throw new RouteException(
 					'woocommerce_rest_checkout_missing_payment_method',
-					__( 'No payment method provided.', 'woocommerce' ),
+					esc_html__( 'No payment method provided.', 'woocommerce' ),
 					400
 				);
 			}
@@ -783,7 +805,7 @@ class Checkout extends AbstractCartRoute {
 				'woocommerce_rest_checkout_payment_method_disabled',
 				sprintf(
 					// Translators: %s Payment method ID.
-					__( '%s is not available for this order—please choose a different payment method', 'woocommerce' ),
+					esc_html__( '%s is not available for this order—please choose a different payment method', 'woocommerce' ),
 					esc_html( $gateway_title )
 				),
 				400

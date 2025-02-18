@@ -91,23 +91,19 @@ class Validation {
 	 * @return bool
 	 */
 	public static function has_field_schema( $fields ) {
-		$return = false;
-
 		foreach ( $fields as $field ) {
-			if (
-				! empty( $field['rules'] ) && is_array( $field['rules'] ) &&
+			if ( ! empty( $field['rules'] ) && is_array( $field['rules'] ) &&
 				(
 					! empty( $field['rules']['required'] ) ||
 					! empty( $field['rules']['hidden'] ) ||
 					! empty( $field['rules']['validation'] )
 				)
 			) {
-				$return = true;
-				break;
+				return true;
 			}
 		}
 
-		return $return;
+		return false;
 	}
 
 	/**

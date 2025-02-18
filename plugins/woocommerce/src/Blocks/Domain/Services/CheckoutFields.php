@@ -45,7 +45,7 @@ class CheckoutFields {
 	 *
 	 * @var array
 	 */
-	protected $groups = [ 'billing', 'shipping', 'other' ];
+	private $groups = [ 'billing', 'shipping', 'other' ];
 
 	/**
 	 * Instance of the asset data registry.
@@ -262,6 +262,9 @@ class CheckoutFields {
 	 * @return bool
 	 */
 	public function is_hidden_field( $field, $document_object = null, $context = null ) {
+		if ( is_string( $field ) ) {
+			$field = $this->additional_fields[ $field ] ?? [];
+		}
 		if ( $document_object && ! empty( $field['rules']['hidden'] ) ) {
 			$document_object->set_context( $context );
 			return true === Validation::validate_document_object( $document_object, $field['rules']['hidden'] );
@@ -279,7 +282,7 @@ class CheckoutFields {
 		if ( is_string( $field ) ) {
 			$field = $this->additional_fields[ $field ] ?? [];
 		}
-		return ! empty( $field['rules']['required'] ) || ( ! empty( $field['hidden'] ) && is_array( $field['hidden'] ) );
+		return ! empty( $field['rules']['required'] ) || ! empty( $field['rules']['hidden'] );
 	}
 
 	/**
@@ -402,15 +405,7 @@ class CheckoutFields {
 			return false;
 		}
 
-		if ( Features::is_enabled( 'experimental-blocks' ) && ! empty( $options['hidden'] ) && is_array( $options['hidden'] ) ) {
-			$valid = Validation::is_valid_schema( $options['hidden'] );
-
-			if ( is_wp_error( $valid ) ) {
-				$message = sprintf( 'Unable to register field with id: "%s". %s', $options['id'], $valid->get_error_message() );
-				_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
-				return false;
-			}
-		} elseif ( ! empty( $options['hidden'] ) && true === $options['hidden'] ) {
+		if ( ! empty( $options['hidden'] ) && true === $options['hidden'] ) {
 			// Hidden fields are not supported right now. They will be registered with hidden => false.
 			$message = sprintf( 'Registering a field with hidden set to true is not supported. The field "%s" will be registered as visible.', $id );
 			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
@@ -928,13 +923,13 @@ class CheckoutFields {
 	 * @return mixed
 	 */
 	public function update_default_locale_with_fields( $locale ) {
-		foreach ( $this->get_fields_for_location( 'address' ) as $field_id => $additional_field ) {
-			if ( empty( $locale[ $field_id ] ) ) {
+		foreach ( $this->get_fields_for_location( 'address' ) as $field_key => $field ) {
+			if ( empty( $locale[ $field_key ] ) ) {
 				// If the field has conditional rules, we need to set the required property to false so it can be evaluated.
-				if ( ! empty( $additional_field['rules']['required'] ) || ! empty( $additional_field['rules']['hidden'] ) ) {
-					$additional_field['required'] = false;
+				if ( $this->is_conditional_field( $field_key ) ) {
+					$field['required'] = false;
 				}
-				$locale[ $field_id ] = $additional_field;
+				$locale[ $field_key ] = $field;
 			}
 		}
 		return $locale;
@@ -985,10 +980,7 @@ class CheckoutFields {
 	 * @return array An array of fields definitions.
 	 */
 	public function get_fields_for_location( $location ) {
-		if ( 'additional' === $location ) {
-			wc_deprecated_argument( 'location', '8.9.0', 'The "additional" location is deprecated. Use "order" instead.' );
-			$location = 'order';
-		}
+		$location = $this->prepare_location_name( $location );
 
 		if ( in_array( $location, array_keys( $this->fields_locations ), true ) ) {
 			$order_fields_keys = $this->fields_locations[ $location ];
@@ -1013,17 +1005,9 @@ class CheckoutFields {
 	 * @return WP_Error
 	 */
 	public function validate_fields_for_location( $fields, $location, $group = 'other' ) {
-		$errors = new WP_Error();
-
-		if ( 'additional' === $location ) {
-			wc_deprecated_argument( 'location', '8.9.0', 'The "additional" location is deprecated. Use "order" instead.' );
-			$location = 'order';
-		}
-
-		if ( 'additional' === $group ) {
-			wc_deprecated_argument( 'group', '8.9.0', 'The "additional" group is deprecated. Use "other" instead.' );
-			$group = 'other';
-		}
+		$errors   = new WP_Error();
+		$location = $this->prepare_location_name( $location );
+		$group    = $this->prepare_group_name( $group );
 
 		try {
 			wc_do_deprecated_action( '__experimental_woocommerce_blocks_validate_location_' . $location . '_fields', array( $errors, $fields, $group ), '8.9.0', 'woocommerce_blocks_validate_location_' . $location . '_fields', 'This action has been graduated, use woocommerce_blocks_validate_location_' . $location . '_fields instead.' );
@@ -1069,10 +1053,7 @@ class CheckoutFields {
 	 * @return true|WP_Error True if the field is valid, a WP_Error otherwise.
 	 */
 	public function validate_field_for_location( $key, $value, $location ) {
-		if ( 'additional' === $location ) {
-			wc_deprecated_argument( 'location', '8.9.0', 'The "additional" location is deprecated. Use "order" instead.' );
-			$location = 'order';
-		}
+		$location = $this->prepare_location_name( $location );
 
 		if ( ! $this->is_field( $key ) ) {
 			return new WP_Error(
@@ -1108,6 +1089,7 @@ class CheckoutFields {
 	 * @return string[] Field keys.
 	 */
 	public function get_fields_for_group( $group = 'other' ) {
+		$group = $this->prepare_group_name( $group );
 		if ( 'shipping' === $group || 'billing' === $group ) {
 			return $this->get_fields_for_location( 'address' );
 		}
@@ -1153,11 +1135,7 @@ class CheckoutFields {
 	 * @return void
 	 */
 	public function persist_field_for_order( string $key, $value, WC_Order $order, string $group = 'other', bool $set_customer = true ) {
-		if ( 'additional' === $group ) {
-			wc_deprecated_argument( 'group', '8.9.0', 'The "additional" group is deprecated. Use "other" instead.' );
-			$group = 'other';
-		}
-
+		$group = $this->prepare_group_name( $group );
 		$this->set_array_meta( $key, $value, $order, $group );
 		if ( $set_customer && $order->get_customer_id() ) {
 			$customer = new WC_Customer( $order->get_customer_id() );
@@ -1176,11 +1154,7 @@ class CheckoutFields {
 	 * @return void
 	 */
 	public function persist_field_for_customer( string $key, $value, WC_Customer $customer, string $group = 'other' ) {
-		if ( 'additional' === $group ) {
-			wc_deprecated_argument( 'group', '8.9.0', 'The "additional" group is deprecated. Use "other" instead.' );
-			$group = 'other';
-		}
-
+		$group = $this->prepare_group_name( $group );
 		$this->set_array_meta( $key, $value, $customer, $group );
 	}
 
@@ -1212,8 +1186,7 @@ class CheckoutFields {
 		if ( is_bool( $value ) ) {
 			$value = $value ? '1' : '0';
 		}
-		// Replacing all meta using `add_meta_data`. For some reason `update_meta_data` causes duplicate keys.
-		$wc_object->add_meta_data( $meta_key, $value, true );
+		$wc_object->update_meta_data( $meta_key, $value );
 	}
 
 	/**
@@ -1226,14 +1199,9 @@ class CheckoutFields {
 	 * @return mixed The field value.
 	 */
 	public function get_field_from_object( string $key, WC_Data $wc_object, string $group = 'other' ) {
-		if ( 'additional' === $group ) {
-			wc_deprecated_argument( 'group', '8.9.0', 'The "additional" group is deprecated. Use "other" instead.' );
-			$group = 'other';
-		}
-
+		$group    = $this->prepare_group_name( $group );
 		$meta_key = self::get_group_key( $group ) . $key;
-
-		$value = $wc_object->get_meta( $meta_key, true );
+		$value    = $wc_object->get_meta( $meta_key, true );
 
 		if ( ! $value && '0' !== $value ) {
 			/**
@@ -1266,18 +1234,12 @@ class CheckoutFields {
 	 * @param WC_Data $wc_object The object or order to get the fields for.
 	 * @param string  $group The group to get the fields for (shipping|billing|other).
 	 * @param bool    $all Whether to return all fields or only the ones that are still registered. Default false.
-	 *
 	 * @return array An array of fields.
 	 */
 	public function get_all_fields_from_object( WC_Data $wc_object, string $group = 'other', bool $all = false ) {
-		if ( 'additional' === $group ) {
-			wc_deprecated_argument( 'group', '8.9.0', 'The "additional" group is deprecated. Use "other" instead.' );
-			$group = 'other';
-		}
-
 		$meta_data = [];
-
-		$prefix = self::get_group_key( $group );
+		$group     = $this->prepare_group_name( $group );
+		$prefix    = self::get_group_key( $group );
 
 		if ( $wc_object instanceof WC_Data ) {
 			$meta = $wc_object->get_meta_data();
@@ -1359,10 +1321,7 @@ class CheckoutFields {
 	 * @return array The filtered fields.
 	 */
 	public function filter_fields_for_location( array $fields, string $location ) {
-		if ( 'additional' === $location ) {
-			wc_deprecated_argument( 'location', '8.9.0', 'The "additional" location is deprecated. Use "order" instead.' );
-			$location = 'order';
-		}
+		$location = $this->prepare_location_name( $location );
 
 		return array_filter(
 			$fields,
@@ -1407,16 +1366,8 @@ class CheckoutFields {
 			return [];
 		}
 
-		if ( 'additional' === $location ) {
-			wc_deprecated_argument( 'location', '8.9.0', 'The "additional" location is deprecated. Use "order" instead.' );
-			$location = 'order';
-		}
-
-		if ( 'additional' === $group ) {
-			wc_deprecated_argument( 'group', '8.9.0', 'The "additional" group is deprecated. Use "other" instead.' );
-			$group = 'other';
-		}
-
+		$location           = $this->prepare_location_name( $location );
+		$group              = $this->prepare_group_name( $group );
 		$fields             = $this->get_fields_for_location( $location );
 		$fields_with_values = [];
 
@@ -1459,6 +1410,32 @@ class CheckoutFields {
 	}
 
 	/**
+	 * Prepares a group name for use.
+	 *
+	 * @param string $group The group name to prepare.
+	 * @return string The prepared group name.
+	 */
+	private function prepare_group_name( $group ) {
+		if ( ! in_array( $group, $this->groups, true ) ) {
+			$group = 'other';
+		}
+		return $group;
+	}
+
+	/**
+	 * Prepares a location name for use.
+	 *
+	 * @param string $location The location name to prepare.
+	 * @return string The prepared location name.
+	 */
+	private function prepare_location_name( $location ) {
+		if ( 'additional' === $location ) {
+			$location = 'order';
+		}
+		return $location;
+	}
+
+	/**
 	 * Returns a group meta prefix based on its name.
 	 *
 	 * @param string $group_name The group name (billing|shipping|other).
@@ -1469,7 +1446,6 @@ class CheckoutFields {
 			wc_deprecated_argument( 'group_name', '8.9.0', 'The "additional" group is deprecated. Use "other" instead.' );
 			$group_name = 'other';
 		}
-
 		if ( 'billing' === $group_name ) {
 			return self::BILLING_FIELDS_PREFIX;
 		}
@@ -1490,7 +1466,6 @@ class CheckoutFields {
 			wc_deprecated_argument( 'group_key', '8.9.0', 'The "_wc_additional" group key is deprecated. Use "_wc_other" instead.' );
 			$group_key = '_wc_other';
 		}
-
 		if ( 0 === \strpos( self::BILLING_FIELDS_PREFIX, $group_key ) ) {
 			return 'billing';
 		}
