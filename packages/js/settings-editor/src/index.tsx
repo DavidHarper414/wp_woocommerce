@@ -53,6 +53,8 @@ const SettingsDataProvider = ( {
 };
 
 const Notices = () => {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
 	const notices = useSelect( ( select ) => {
 		const { getNotices } = select( noticesStore );
 		return getNotices();
