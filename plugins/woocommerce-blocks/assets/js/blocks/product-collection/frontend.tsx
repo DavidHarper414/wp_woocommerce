@@ -56,36 +56,20 @@ const forcePageReload = ( href: string ) => {
 };
 
 /**
- * Ensures the visibility of the first product in the collection.
- * Scrolls the page to the first product if it's not in the viewport.
+ * Focuses on the first product if it's not in the viewport.
  *
  * @param {string} wpRouterRegionId Unique ID for each Product Collection block on page/post.
  */
-function scrollToFirstProductIfNotVisible( wpRouterRegionId?: string ) {
+function focusOnFirstProductIfNotVisible( wpRouterRegionId?: string ) {
 	if ( ! wpRouterRegionId ) {
 		return;
 	}
 
-	const productSelector = `[data-wp-router-region=${ wpRouterRegionId }] .wc-block-product-template .wc-block-product`;
-	const product = document.querySelector( productSelector );
+	// If the image is not visible, focus on the product link.
+	const productSelector = `[data-wp-router-region=${ wpRouterRegionId }] .wc-block-product-template .wc-block-product a`;
+	const product = document.querySelector( productSelector ) as HTMLElement;
 	if ( product ) {
-		const rect = product.getBoundingClientRect();
-		const isVisible =
-			rect.top >= 0 &&
-			rect.left >= 0 &&
-			rect.bottom <=
-				( window.innerHeight ||
-					document.documentElement.clientHeight ) &&
-			rect.right <=
-				( window.innerWidth || document.documentElement.clientWidth );
-
-		// If the product is not visible, scroll to it.
-		if ( ! isVisible ) {
-			product.scrollIntoView( {
-				behavior: 'smooth',
-				block: 'start',
-			} );
-		}
+		product.focus();
 	}
 }
 
@@ -120,7 +104,7 @@ const productCollectionStore = {
 
 				ctx.isPrefetchNextOrPreviousLink = !! ref.href;
 
-				scrollToFirstProductIfNotVisible( routerRegionId );
+				focusOnFirstProductIfNotVisible( routerRegionId );
 
 				triggerProductListRenderedEvent( {
 					collection: ctx.collection,
