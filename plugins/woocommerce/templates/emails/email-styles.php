@@ -77,7 +77,7 @@ if ( wc_hex_is_light( $body ) ) {
 
 // If email improvements are enabled, always use the base color for links.
 if ( $email_improvements_enabled ) {
-	$link_color   = $base;
+	$link_color = $base;
 }
 
 $border_color    = wc_light_or_dark( $body, 'rgba(0, 0, 0, .2)', 'rgba(255, 255, 255, .2)' );
