@@ -5,6 +5,8 @@
  * Handles requests to save Settings.
  */
 
+declare( strict_types = 1);
+
 namespace Automattic\WooCommerce\Admin\API;
 
 use WC_Admin_Settings;
@@ -71,6 +73,15 @@ class Settings extends \WC_REST_Data_Controller {
 	public function save_settings( $request ) {
 		global $current_section, $current_tab;
 
+		// Verify nonce.
+		if ( ! check_ajax_referer( 'wp_rest', false, false ) ) {
+			return new \WP_Error(
+				'woocommerce_settings_invalid_nonce',
+				__( 'Invalid nonce.', 'woocommerce' ),
+				array( 'status' => 403 )
+			);
+		}
+
 		$params = $request->get_params();
 
 		try {
@@ -82,8 +93,14 @@ class Settings extends \WC_REST_Data_Controller {
 			"woocommerce_save_settings_{$current_tab}" :
 			"woocommerce_save_settings_{$current_tab}_{$current_section}";
 
-			// Save settings if data has been posted
-			if ( apply_filters( $filter_name, ! empty( $_POST['save'] ) ) ) {
+			/**
+			 * Filters whether to save settings.
+			 *
+			 * @since 3.7.0
+			 *
+			 * @param bool $save Whether to save settings.
+			 */
+			if ( apply_filters( $filter_name, ! empty( $_POST['save'] ) ) ) { // WPCS: input var okay, CSRF ok.
 				WC_Admin_Settings::save();
 			}
 
@@ -99,12 +116,18 @@ class Settings extends \WC_REST_Data_Controller {
 		} catch ( \Exception $e ) {
 			return new \WP_Error(
 				'woocommerce_settings_save_error',
+				// translators: %s: error message.
 				sprintf( __( 'Failed to save settings: %s', 'woocommerce' ), $e->getMessage() ),
 				array( 'status' => 500 )
 			);
 		}
 	}
 
+	/**
+	 * Get the schema, conforming to JSON Schema.
+	 *
+	 * @return array
+	 */
 	public function save_items_schema() {
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
