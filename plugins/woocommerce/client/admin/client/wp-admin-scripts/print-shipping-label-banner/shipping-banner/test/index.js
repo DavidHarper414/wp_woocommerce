@@ -90,9 +90,7 @@ describe( 'Tracking clicks in shippingBanner', () => {
 			/>
 		);
 
-		await userEvent.click(
-			getByRole( 'button', { name: actionButtonLabel } )
-		);
+		userEvent.click( getByRole( 'button', { name: actionButtonLabel } ) );
 
 		await waitFor( () =>
 			expect( recordEvent ).toHaveBeenCalledWith(
@@ -197,7 +195,7 @@ describe( 'Create shipping label button', () => {
 			/>
 		);
 
-		await userEvent.click(
+		userEvent.click(
 			getByRole( 'button', {
 				name: actionButtonLabel,
 			} )
@@ -231,7 +229,7 @@ describe( 'Create shipping label button', () => {
 			/>
 		);
 
-		await userEvent.click(
+		userEvent.click(
 			getByRole( 'button', {
 				name: actionButtonLabel,
 			} )
@@ -268,7 +266,7 @@ describe( 'Create shipping label button', () => {
 			/>
 		);
 
-		await userEvent.click(
+		userEvent.click(
 			getByRole( 'button', {
 				name: actionButtonLabel,
 			} )
