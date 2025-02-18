@@ -22,7 +22,8 @@ const mockSelect = jest.fn().mockReturnValue( {
 
 jest.mock( '@wordpress/data', () => ( {
 	...jest.requireActual( '@wordpress/data' ),
-	useSelect: ( callback ) => callback( mockSelect ),
+	useSelect: ( callback: ( select: typeof mockSelect ) => void ) =>
+		callback( mockSelect ),
 	useDispatch: jest.fn().mockReturnValue( {
 		addEntities: jest.fn(),
 		receiveCurrentUser: jest.fn(),
@@ -160,7 +161,7 @@ describe( 'useUserPreferences() hook', () => {
 			hasFinishedResolution: jest.fn().mockReturnValue( true ),
 		} );
 
-		useDispatch.mockReturnValue( {
+		( useDispatch as jest.Mock ).mockReturnValue( {
 			receiveCurrentUser,
 			saveUser,
 		} );
@@ -228,7 +229,7 @@ describe( 'useUserPreferences() hook', () => {
 			hasFinishedResolution: jest.fn().mockReturnValue( true ),
 		} );
 
-		useDispatch.mockReturnValue( {
+		( useDispatch as jest.Mock ).mockReturnValue( {
 			addEntities,
 			receiveCurrentUser,
 			saveEntityRecord,

@@ -111,6 +111,8 @@ export const useUserPreferences = () => {
 	// Get our dispatch methods now - this can't happen inside the callback below.
 	const dispatch = useDispatch( store );
 	const { addEntities, receiveCurrentUser, saveEntityRecord } = dispatch;
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
 	let { saveUser } = dispatch;
 
 	const userData = useSelect( ( select ) => {
