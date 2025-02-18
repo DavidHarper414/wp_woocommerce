@@ -67,9 +67,12 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 								echo '<label for="' . esc_attr( 'quantity-' . $grouped_product_child->get_id() ) . '" class="screen-reader-text">' .
 									sprintf(
 										/* translators: %1$s: Product name. %2$s: Product price. */
-										esc_html__( 'Buy one of %1$s for %2$s', 'woocommerce' ),
+										$grouped_product_child->is_on_sale() ?
+											esc_html__( 'Buy one of %1$s on sale for %2$s, original price was %3$s', 'woocommerce' ) :
+											esc_html__( 'Buy one of %1$s for %2$s', 'woocommerce' ),
 										esc_html( $grouped_product_child->get_name() ),
-										esc_html( wp_strip_all_tags( $grouped_product_child->get_price_html() ) )
+										esc_html( wp_strip_all_tags( wc_price( $grouped_product_child->get_price() ) ) ),
+										$grouped_product_child->is_on_sale() ? esc_html( wp_strip_all_tags( wc_price( $grouped_product_child->get_regular_price() ) ) ) : ''
 									) .
 								'</label>';
 							} else {
