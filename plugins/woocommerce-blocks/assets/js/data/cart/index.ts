@@ -107,8 +107,7 @@ subscribe( () => {
 		diffObjects( previousCart, cartData );
 
 		window.dispatchEvent(
-			// Question: What are the usual names for WooCommerce events?
-			new CustomEvent( 'woocommerce-cart-sync-required', {
+			new CustomEvent( 'wc-blocks_cart_sync_required', {
 				detail: { type: 'from_@wordpress/data', id },
 			} )
 		);
@@ -117,7 +116,7 @@ subscribe( () => {
 }, store );
 
 // Listens to cart sync events from the iAPI store.
-window.addEventListener( 'woocommerce-cart-sync-required', ( event: Event ) => {
+window.addEventListener( 'wc-blocks_cart_sync_required', ( event: Event ) => {
 	const customEvent = event as CustomEvent< {
 		type: string;
 		id: number;
