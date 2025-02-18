@@ -95,7 +95,6 @@ class ProductFilterPriceSlider extends AbstractBlock {
 						<input
 							class="min"
 							type="text"
-							value="<?php echo esc_attr( wp_strip_all_tags( $formatted_min_price ) ); ?>"
 							data-wp-bind--value="woocommerce/product-filter-price::state.formattedMinPrice"
 							data-wp-on--focus="actions.selectInputContent"
 							data-wp-on--input="actions.debounceSetPrice"
@@ -117,7 +116,6 @@ class ProductFilterPriceSlider extends AbstractBlock {
 						class="min"
 						min="<?php echo esc_attr( $min_range ); ?>"
 						max="<?php echo esc_attr( $max_range ); ?>"
-						value="<?php echo esc_attr( $min_price ); ?>"
 						data-wp-bind--value="woocommerce/product-filter-price::state.minPrice"
 						data-wp-bind--min="woocommerce/product-filter-price::context.minRange"
 						data-wp-bind--max="woocommerce/product-filter-price::context.maxRange"
@@ -132,7 +130,6 @@ class ProductFilterPriceSlider extends AbstractBlock {
 						class="max"
 						min="<?php echo esc_attr( $min_range ); ?>"
 						max="<?php echo esc_attr( $max_range ); ?>"
-						value="<?php echo esc_attr( $max_price ); ?>"
 						data-wp-bind--value="woocommerce/product-filter-price::state.maxPrice"
 						data-wp-bind--min="woocommerce/product-filter-price::context.minRange"
 						data-wp-bind--max="woocommerce/product-filter-price::context.maxRange"
@@ -148,7 +145,6 @@ class ProductFilterPriceSlider extends AbstractBlock {
 						<input
 							class="max"
 							type="text"
-							value="<?php echo esc_attr( wp_strip_all_tags( $formatted_max_price ) ); ?>"
 							data-wp-bind--value="woocommerce/product-filter-price::state.formattedMaxPrice"
 							data-wp-on--focus="actions.selectInputContent"
 							data-wp-on--input="actions.debounceSetPrice"
