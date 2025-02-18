@@ -4,11 +4,7 @@
 import { Button } from '@wordpress/components';
 import { EllipsisMenu, Link } from '@woocommerce/components';
 import { useState, useEffect } from '@wordpress/element';
-import {
-	pluginsStore,
-	PAYMENT_GATEWAYS_STORE_NAME,
-	paymentGatewaysStore,
-} from '@woocommerce/data';
+import { pluginsStore, paymentGatewaysStore } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { sanitize } from 'dompurify';

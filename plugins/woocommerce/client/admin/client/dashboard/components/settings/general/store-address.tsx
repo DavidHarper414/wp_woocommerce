@@ -2,12 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	COUNTRIES_STORE_NAME,
-	countriesStore,
-	Country,
-	Locale,
-} from '@woocommerce/data';
+import { countriesStore, Country, Locale } from '@woocommerce/data';
 import { decodeEntities } from '@wordpress/html-entities';
 import { escapeRegExp } from 'lodash';
 import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
