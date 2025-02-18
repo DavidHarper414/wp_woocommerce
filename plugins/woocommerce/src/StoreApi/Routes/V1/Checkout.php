@@ -246,7 +246,7 @@ class Checkout extends AbstractCartRoute {
 		 */
 		$sanitized_request = clone $request;
 		$sanitized_request->sanitize_params();
-		$document_object   = $this->get_document_object_from_rest_request( $sanitized_request );
+
 		$validate_contexts = [
 			'shipping_address' => [
 				'group'    => 'shipping',
@@ -277,9 +277,15 @@ class Checkout extends AbstractCartRoute {
 		$invalid_groups  = [];
 		$invalid_details = [];
 		$is_partial      = in_array( $request->get_method(), [ 'PUT', 'PATCH' ], true );
+		$document_object = $this->get_document_object_from_rest_request( $sanitized_request );
 
 		foreach ( $validate_contexts as $context => $context_data ) {
-			$errors            = new \WP_Error();
+			$errors = new \WP_Error();
+
+			if ( $document_object ) {
+				$document_object->set_context( $context );
+			}
+
 			$additional_fields = $this->additional_fields_controller->get_fields_for_location( $context_data['location'] );
 
 			// These values are used to see if required fields have values.
@@ -289,8 +295,8 @@ class Checkout extends AbstractCartRoute {
 			$sanitized_field_values = (array) $sanitized_request->get_param( $context_data['param'] ) ?? [];
 
 			foreach ( $additional_fields as $field_key => $field ) {
-				$is_hidden   = $this->additional_fields_controller->is_hidden_field( $field, $document_object, $context );
-				$is_required = $this->additional_fields_controller->is_required_field( $field, $document_object, $context );
+				$is_hidden   = $this->additional_fields_controller->is_hidden_field( $field, $document_object );
+				$is_required = $this->additional_fields_controller->is_required_field( $field, $document_object );
 
 				// Skip values that were not posted if the request is partial, the field is not required, or the field is hidden.
 				if ( $is_hidden || ( ! isset( $field_values[ $field_key ] ) && ( $is_partial || ! $is_required ) ) ) {
@@ -317,7 +323,7 @@ class Checkout extends AbstractCartRoute {
 					continue;
 				}
 
-				$valid_check = $this->additional_fields_controller->validate_field( $field_key, $sanitized_field_value, $document_object, $context );
+				$valid_check = $this->additional_fields_controller->validate_field( $field_key, $sanitized_field_value, $document_object );
 
 				if ( is_wp_error( $valid_check ) && $valid_check->has_errors() ) {
 					foreach ( $valid_check->get_error_codes() as $code ) {
@@ -706,7 +712,7 @@ class Checkout extends AbstractCartRoute {
 	 * @param string         $address_type The type of address to update (billing|shipping).
 	 * @param DocumentObject $document_object The document object to check if the field is hidden.
 	 */
-	private function update_customer_address_field( $customer, $key, $value, $address_type, $document_object ) {
+	private function update_customer_address_field( $customer, $key, $value, $address_type, $document_object = null ) {
 		$callback = "set_{$address_type}_{$key}";
 
 		if ( is_callable( [ $customer, $callback ] ) ) {
@@ -715,7 +721,7 @@ class Checkout extends AbstractCartRoute {
 		}
 
 		if ( $this->additional_fields_controller->is_field( $key ) ) {
-			$is_hidden = $this->additional_fields_controller->is_hidden_field( $key, $document_object, $address_type . '_address' );
+			$is_hidden = $this->additional_fields_controller->is_hidden_field( $key, $document_object );
 			$this->additional_fields_controller->persist_field_for_customer( $key, $is_hidden ? null : $value, $customer, $address_type );
 		}
 	}
@@ -730,8 +736,6 @@ class Checkout extends AbstractCartRoute {
 	private function update_customer_from_request( \WP_REST_Request $request ) {
 		$customer = WC()->customer;
 
-		// Create document object to test if fields are hidden.
-		$document_object = $this->get_document_object_from_rest_request( $request );
 		// Billing address is a required field.
 		$billing_address_values = $request['billing_address'];
 		// If shipping address (optional field) was not provided, set it to the given billing address (required field).
@@ -741,8 +745,19 @@ class Checkout extends AbstractCartRoute {
 			$shipping_address_values = $request['billing_address'];
 		}
 
+		// Create document object to test if fields are hidden.
+		$document_object = $this->get_document_object_from_rest_request( $request );
+
+		if ( $document_object ) {
+			$document_object->set_context( 'billing_address' );
+		}
+
 		foreach ( $billing_address_values as $key => $value ) {
 			$this->update_customer_address_field( $customer, $key, $value, 'billing', $document_object );
+		}
+
+		if ( $document_object ) {
+			$document_object->set_context( 'shipping_address' );
 		}
 
 		foreach ( $shipping_address_values as $key => $value ) {
@@ -753,9 +768,13 @@ class Checkout extends AbstractCartRoute {
 		$contact_fields = $this->additional_fields_controller->get_contact_fields_keys();
 
 		if ( ! empty( $contact_fields ) ) {
+			if ( $document_object ) {
+				$document_object->set_context( 'contact' );
+			}
+
 			foreach ( $contact_fields as $key ) {
 				if ( isset( $request['additional_fields'], $request['additional_fields'][ $key ] ) ) {
-					$is_hidden = $this->additional_fields_controller->is_hidden_field( $key, $document_object, 'contact' );
+					$is_hidden = $this->additional_fields_controller->is_hidden_field( $key, $document_object );
 					$value     = $is_hidden ? null : $request['additional_fields'][ $key ];
 					$this->additional_fields_controller->persist_field_for_customer( $key, $value, $customer );
 				}

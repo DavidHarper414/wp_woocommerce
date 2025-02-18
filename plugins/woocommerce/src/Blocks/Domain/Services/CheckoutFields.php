@@ -233,20 +233,18 @@ class CheckoutFields {
 	 *
 	 * @param array|string        $field The field array or field key.
 	 * @param DocumentObject|null $document_object The document object.
-	 * @param string|null         $context The context for the document object.
 	 * @return bool
 	 */
-	public function is_required_field( $field, $document_object = null, $context = null ) {
+	public function is_required_field( $field, $document_object = null ) {
 		if ( is_string( $field ) ) {
 			$field = $this->additional_fields[ $field ] ?? [];
 		}
 		if ( $document_object ) {
 			// Hidden fields cannot be required.
-			if ( $this->is_hidden_field( $field, $document_object, $context ) ) {
+			if ( $this->is_hidden_field( $field, $document_object ) ) {
 				return false;
 			}
 			if ( ! empty( $field['rules']['required'] ) ) {
-				$document_object->set_context( $context );
 				return true === Validation::validate_document_object( $document_object, $field['rules']['required'] );
 			}
 		}
@@ -258,15 +256,13 @@ class CheckoutFields {
 	 *
 	 * @param array|string        $field The field array or field key.
 	 * @param DocumentObject|null $document_object The document object.
-	 * @param string|null         $context The context for the document object.
 	 * @return bool
 	 */
-	public function is_hidden_field( $field, $document_object = null, $context = null ) {
+	public function is_hidden_field( $field, $document_object = null ) {
 		if ( is_string( $field ) ) {
 			$field = $this->additional_fields[ $field ] ?? [];
 		}
 		if ( $document_object && ! empty( $field['rules']['hidden'] ) ) {
-			$document_object->set_context( $context );
 			return true === Validation::validate_document_object( $document_object, $field['rules']['hidden'] );
 		}
 		return false; // `hidden` prop is not supported yet.
@@ -290,13 +286,11 @@ class CheckoutFields {
 	 *
 	 * @param array               $field The field.
 	 * @param DocumentObject|null $document_object The document object.
-	 * @param string|null         $context The context for the document object.
 	 * @return bool|\WP_Error True if the field is valid, a WP_Error otherwise.
 	 */
-	public function is_valid_field( $field, $document_object = null, $context = null ) {
+	public function is_valid_field( $field, $document_object = null ) {
 		if ( $document_object && ! empty( $field['rules']['validation'] ) ) {
-			$document_object->set_context( $context );
-			$field_schema = Validation::get_field_schema_with_context( $field['id'], $field['rules']['validation'], $context );
+			$field_schema = Validation::get_field_schema_with_context( $field['id'], $field['rules']['validation'], $document_object->get_context() );
 			return Validation::validate_document_object( $document_object, $field_schema );
 		}
 		return true;
@@ -852,10 +846,9 @@ class CheckoutFields {
 	 * @param string $field_key    The key of the field.
 	 * @param mixed  $field_value  The value of the field.
 	 * @param array  $document_object The document object.
-	 * @param string $context The context for the document object.
 	 * @return WP_Error
 	 */
-	public function validate_field( $field_key, $field_value, $document_object = null, $context = null ) {
+	public function validate_field( $field_key, $field_value, $document_object = null ) {
 		$errors = new WP_Error();
 
 		try {
@@ -867,7 +860,7 @@ class CheckoutFields {
 			}
 
 			// Evaluate custom validation schema rules on the field.
-			$validate_result = $this->is_valid_field( $field, $document_object, $context );
+			$validate_result = $this->is_valid_field( $field, $document_object );
 
 			if ( is_wp_error( $validate_result ) ) {
 				/* translators: %s: is the field label */
@@ -994,6 +987,31 @@ class CheckoutFields {
 			);
 		}
 		return [];
+	}
+
+	/**
+	 * Returns an array of fields for a given location.
+	 *
+	 * @param array               $fields Array of fields definitions.
+	 * @param DocumentObject|null $document_object The document object.
+	 * @return array An array of fields definitions.
+	 */
+	public function update_fields_from_document_object( $fields, $document_object = null ) {
+		$filtered_fields = [];
+
+		foreach ( $fields as $key => $field ) {
+			if ( $this->is_hidden_field( $key, $document_object ) ) {
+				continue;
+			}
+
+			if ( $this->is_required_field( $key, $document_object ) ) {
+				$field['required'] = true;
+			}
+
+			$filtered_fields[ $key ] = $field;
+		}
+
+		return $filtered_fields;
 	}
 
 	/**
