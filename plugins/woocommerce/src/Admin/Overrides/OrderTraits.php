@@ -55,12 +55,11 @@ trait OrderTraits {
 			return 0;
 		}
 
-		$product_qty               = $item->get_quantity( 'edit' );
-		$order_taxes               = $this->get_taxes();
-		$line_items_shipping       = $this->get_items( 'shipping' );
 		$total_shipping_tax_amount = $shipping_tax_amount ? $shipping_tax_amount : 0;
 
 		if ( null === $shipping_tax_amount ) {
+			$order_taxes         = $this->get_taxes();
+			$line_items_shipping = $this->get_items( 'shipping' );
 			foreach ( $line_items_shipping as $item_id => $shipping_item ) {
 				$tax_data = $shipping_item->get_taxes();
 				if ( $tax_data ) {
@@ -72,6 +71,8 @@ trait OrderTraits {
 				}
 			}
 		}
+
+		$product_qty = $item->get_quantity( 'edit' );
 
 		return $total_shipping_tax_amount / $order_items * $product_qty;
 	}
