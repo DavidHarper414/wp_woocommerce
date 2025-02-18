@@ -1,0 +1,51 @@
+.woocommerce-marketplace__banner {
+	position: sticky;
+	background: #f2edff;
+	top: var(--wp-admin--admin-bar--height, 32px);
+	overflow: hidden;
+	height: 48px;
+
+	.dismiss-button {
+		position: absolute;
+		top: 50%;
+		right: 20px;
+		transform: translateY(-50%);
+		z-index: 1;
+		padding: 0;
+	}
+
+	.carousel-container {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.carousel-slide {
+		position: absolute;
+		opacity: 0;
+		transition: opacity 0.5s ease;
+		text-align: center;
+
+		&.active {
+			opacity: 1;
+		}
+
+		.woocommerce-marketplace__icon-with-text {
+			justify-content: center;
+
+			svg {
+				width: 24px;
+				height: 24px;
+				fill: #873eff;
+			}
+		}
+
+		.woocommerce-marketplace__icon-group-title {
+			font-size: 13px;
+			font-weight: 400;
+		}
+	}
+}
