@@ -37,6 +37,7 @@ jobs:
               id: version
               run: |
                   version=$( cat plugins/woocommerce/woocommerce.php | grep 'Version: ' | head -n1 )
+                  echo $version
                   echo "version=${version/Version: /}" >> $GITHUB_OUTPUT
 
             - name: Setup WooCommerce Monorepo
