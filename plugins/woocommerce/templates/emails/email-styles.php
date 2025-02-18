@@ -177,6 +177,12 @@ body {
 	padding-bottom: 24px;
 }
 
+.email-order-item-meta {
+	color: <?php echo esc_attr( $footer_text ); ?>;
+	font-size: 14px;
+	line-height: 140%;
+}
+
 #body_content table td td.email-additional-content {
 	padding: 32px 0 0;
 }
@@ -299,18 +305,14 @@ body {
 }
 
 #body_content td ul.wc-item-meta {
-	font-size: <?php echo $email_improvements_enabled ? '14px' : 'small'; ?>;
-	margin: <?php echo $email_improvements_enabled ? '0' : '1em 0 0'; ?>;
+	font-size: small;
+	margin: 1em 0 0>;
 	padding: 0;
-	<?php if ( $email_improvements_enabled ) { ?>
-	color: <?php echo esc_attr( $footer_text ); ?>;
-	line-height: 140%;
-	<?php } ?>;
 	list-style: none;
 }
 
 #body_content td ul.wc-item-meta li {
-	margin: <?php echo $email_improvements_enabled ? '0' : '0.5em 0 0'; ?>;
+	margin: 0.5em 0 0;
 	padding: 0;
 }
 
@@ -493,7 +495,7 @@ h2.email-order-detail-heading span {
 			font-size: 12px !important;
 		}
 
-		#body_content td ul.wc-item-meta {
+		.email-order-item-meta {
 			font-size: 12px !important;
 		}
 
