@@ -11,6 +11,7 @@ import { getQuery } from '@woocommerce/navigation';
  */
 import { ALLOW_TRACKING_OPTION_NAME } from '../constants';
 import store from '../store';
+
 interface AdminWindow extends Window {
 	pagenow?: string;
 	adminpage?: string;
