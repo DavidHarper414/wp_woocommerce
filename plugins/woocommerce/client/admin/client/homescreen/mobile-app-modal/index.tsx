@@ -10,7 +10,7 @@ import { addFilter, removeFilter } from '@wordpress/hooks';
 import { getAdminLink } from '@woocommerce/settings';
 import { __ } from '@wordpress/i18n';
 import { useDispatch } from '@wordpress/data';
-import { OPTIONS_STORE_NAME, onboardingStore } from '@woocommerce/data';
+import { optionsStore, onboardingStore } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -26,7 +26,6 @@ import {
 import { EmailSentPage, MobileAppLoginStepperPage } from './pages';
 import './style.scss';
 import { SETUP_TASK_HELP_ITEMS_FILTER } from '../../activity-panel/panels/help';
-import { isNewBranding } from '~/utils/admin-settings';
 
 export const MobileAppModal = () => {
 	const [ guideIsOpen, setGuideIsOpen ] = useState( false );
@@ -34,19 +33,13 @@ export const MobileAppModal = () => {
 		useState( false );
 
 	const { state, jetpackConnectionData } = useJetpackPluginState();
-	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const { updateOptions } = useDispatch( optionsStore );
 
 	const [ pageContent, setPageContent ] = useState< React.ReactNode >();
 	const [ searchParams ] = useSearchParams();
 
 	const { invalidateResolutionForStoreSelector } =
 		useDispatch( onboardingStore );
-
-	if ( isNewBranding() ) {
-		import( './style-new.scss' );
-	} else {
-		import( './style-old.scss' );
-	}
 
 	useEffect( () => {
 		if ( searchParams.get( 'mobileAppModal' ) ) {
