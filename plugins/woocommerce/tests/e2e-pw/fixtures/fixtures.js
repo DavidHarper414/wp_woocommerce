@@ -18,8 +18,7 @@ import { admin } from '../test-data/data';
 
 export const test = baseTest.extend( {
 	api: async ( {}, use ) => {
-		const api = apiClient();
-		await use( api );
+		await use( apiClient() );
 	},
 	wcAdminApi: async ( { baseURL }, use ) => {
 		const wcAdminApi = new wcApi( {
