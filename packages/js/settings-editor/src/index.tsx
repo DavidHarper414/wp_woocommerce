@@ -4,7 +4,9 @@
 import { createElement, createContext, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { getAdminLink } from '@woocommerce/settings';
-import { dispatch } from '@wordpress/data';
+import { dispatch, useSelect } from '@wordpress/data';
+import { SnackbarList } from '@wordpress/components';
+import { store as noticesStore } from '@wordpress/notices';
 /* eslint-disable @woocommerce/dependency-group */
 // @ts-ignore No types for this exist yet.
 import { privateApis as routerPrivateApis } from '@wordpress/router';
@@ -50,6 +52,15 @@ const SettingsDataProvider = ( {
 	);
 };
 
+const Notices = () => {
+	const notices = useSelect( ( select: any ) => {
+		const { getNotices } = select( noticesStore );
+		return getNotices();
+	}, [] );
+
+	return <SnackbarList notices={ notices || [] } onRemove={ () => {} } />;
+};
+
 const App = () => {
 	const { route, settingsPage, tabs, activeSection } = useActiveRoute();
 
@@ -81,6 +92,7 @@ export const SettingsEditor = () => {
 	return (
 		<SettingsDataProvider>
 			<App />
+			<Notices />
 		</SettingsDataProvider>
 	);
 };

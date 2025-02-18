@@ -11,6 +11,7 @@ import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { DataForm } from '@wordpress/dataviews';
 import { getNewPath } from '@woocommerce/navigation';
+import { useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -34,6 +35,7 @@ export const Form = ( {
 	const formRef = useRef< HTMLFormElement >( null );
 	const { setSettingsData } = useContext( SettingsDataContext );
 	const [ isBusy, setIsBusy ] = useState( false );
+	const { createNotice } = useDispatch( 'core/notices' );
 
 	const getFormData = () => {
 		if ( ! formRef.current ) {
@@ -102,8 +104,16 @@ export const Form = ( {
 
 		if ( responseData.status === 'success' ) {
 			setSettingsData( responseData.data.settingsData );
-			setIsBusy( false );
+			createNotice(
+				'success',
+				__( 'Settings saved successfully', 'woocommerce' )
+			);
+		} else {
+			const { message } = responseData;
+			createNotice( __( 'error', 'woocommerce' ), message );
 		}
+
+		setIsBusy( false );
 	};
 
 	return (
