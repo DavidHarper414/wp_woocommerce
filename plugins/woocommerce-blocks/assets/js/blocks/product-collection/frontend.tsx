@@ -28,11 +28,6 @@ const getRouterRegionId = ( ref: HTMLElement ) => {
 	return routerRegionElement?.dataset?.wpRouterRegion;
 };
 
-const getNavDisabled = ( ref: HTMLElement ) => {
-	const routerRegionElement = getRouterRegion( ref );
-	return routerRegionElement?.dataset?.wpNavigationDisabled;
-};
-
 const isValidLink = ( ref: HTMLAnchorElement ) =>
 	ref &&
 	ref instanceof window.HTMLAnchorElement &&
@@ -47,13 +42,6 @@ const isValidEvent = ( event: MouseEvent ) =>
 	! event.altKey && // Download.
 	! event.shiftKey &&
 	! event.defaultPrevented;
-
-const forcePageReload = ( href: string ) => {
-	window.location.assign( href );
-	// It's function called in generator expecting asyncFunc return.
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	return new Promise( () => {} );
-};
 
 /**
  * Focuses on the first product if it's not in the viewport.
@@ -82,12 +70,6 @@ const productCollectionStore = {
 
 			if ( ! ref ) {
 				return;
-			}
-
-			const isNavDisabled = getNavDisabled( ref );
-
-			if ( isNavDisabled ) {
-				yield forcePageReload( ref.href );
 			}
 
 			if ( isValidLink( ref ) && isValidEvent( event ) ) {
@@ -124,12 +106,6 @@ const productCollectionStore = {
 				return;
 			}
 
-			const isNavDisabled = getNavDisabled( ref );
-
-			if ( isNavDisabled ) {
-				return;
-			}
-
 			if ( isValidLink( ref ) ) {
 				const { actions } = yield import(
 					'@wordpress/interactivity-router'
@@ -157,12 +133,6 @@ const productCollectionStore = {
 			};
 
 			if ( ! ref ) {
-				return;
-			}
-
-			const isNavDisabled = getNavDisabled( ref );
-
-			if ( isNavDisabled ) {
 				return;
 			}
 
