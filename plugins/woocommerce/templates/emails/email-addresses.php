@@ -12,7 +12,7 @@
  *
  * @see https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Emails
- * @version 9.7.0
+ * @version 9.8.0
  */
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
@@ -26,7 +26,7 @@ $shipping = $order->get_formatted_shipping_address();
 
 $email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improvements' );
 
-?><table id="addresses" cellspacing="0" cellpadding="0" style="width: 100%; vertical-align: top; margin-bottom: 40px; padding:0;" border="0">
+?><table id="addresses" cellspacing="0" cellpadding="0" style="width: 100%; vertical-align: top; margin-bottom: <?php echo $email_improvements_enabled ? '16px' : '40px'; ?>; padding:0;" border="0">
 	<tr>
 		<td class="font-family text-align-left" style="border:0; padding:0;" valign="top" width="50%">
 			<?php if ( $email_improvements_enabled ) { ?>

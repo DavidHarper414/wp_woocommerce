@@ -177,8 +177,8 @@ body {
 	padding-bottom: 24px;
 }
 
-.email-additional-content {
-	padding-top: 32px;
+#body_content table td td.email-additional-content {
+	padding: 32px 0 0;
 }
 
 .email-additional-content p {
@@ -507,7 +507,7 @@ h2.email-order-detail-heading span {
 		}
 
 		.email-additional-content {
-			padding-top: 0 !important;
+			padding-top: 16px !important;
 		}
 	<?php else : ?>
 		#header_wrapper {
