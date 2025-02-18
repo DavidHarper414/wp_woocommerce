@@ -343,5 +343,17 @@ describe( 'Payment recommendations', () => {
 			expect( queryByText( 'test' ) ).not.toBeInTheDocument();
 			expect( queryByText( 'another' ) ).toBeInTheDocument();
 		} );
+
+		it( 'should navigate to the marketplace when clicking the Official WooCommerce Marketplace link', async () => {
+			const { container, getByText } = render(
+				<PaymentRecommendations />
+			);
+
+			expect( container.firstChild ).not.toBeNull();
+			fireEvent.click( getByText( 'Official WooCommerce Marketplace' ) );
+			expect( mockLocation.href ).toContain(
+				'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways'
+			);
+		} );
 	} );
 } );

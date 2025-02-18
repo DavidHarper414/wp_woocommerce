@@ -25,19 +25,19 @@ describe( 'Shipping', () => {
 		jest.clearAllMocks();
 	} );
 
-	it( 'should trigger event tasklist_shipping_visit_marketplace_click when clicking the Official WooCommerce Marketplace link', () => {
-		const props = {
-			settings: {},
-			shippingPartners: [],
-			activePlugins: [],
-			isJetpackConnected: false,
-			countryCode: 'US',
-			countryName: 'United States',
-			isUpdateSettingsRequesting: false,
-			onComplete: jest.fn(),
-			task: { id: 'shipping' } as TaskType,
-		};
+	const props = {
+		settings: {},
+		shippingPartners: [],
+		activePlugins: [],
+		isJetpackConnected: false,
+		countryCode: 'US',
+		countryName: 'United States',
+		isUpdateSettingsRequesting: false,
+		onComplete: jest.fn(),
+		task: { id: 'shipping' } as TaskType,
+	};
 
+	it( 'should trigger event tasklist_shipping_visit_marketplace_click when clicking the Official WooCommerce Marketplace link', () => {
 		render( <Shipping { ...props } /> );
 
 		fireEvent.click(
@@ -46,6 +46,29 @@ describe( 'Shipping', () => {
 
 		expect( recordEvent ).toHaveBeenCalledWith(
 			'tasklist_shipping_visit_marketplace_click'
+		);
+	} );
+
+	it( 'should navigate to the marketplace when clicking the Official WooCommerce Marketplace link', async () => {
+		let oldLocation: Location;
+		const mockLocation = {
+			href: 'test',
+		} as Location;
+
+		oldLocation = global.window.location;
+		mockLocation.href = 'test';
+		Object.defineProperty( global.window, 'location', {
+			value: mockLocation,
+		} );
+
+		render( <Shipping { ...props } /> );
+
+		fireEvent.click(
+			screen.getByText( 'Official WooCommerce Marketplace' )
+		);
+
+		expect( mockLocation.href ).toContain(
+			'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping'
 		);
 	} );
 } );

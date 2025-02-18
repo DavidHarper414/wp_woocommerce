@@ -156,4 +156,27 @@ describe( 'ShippingRecommendation', () => {
 			'tasklist_shipping_recommendation_visit_marketplace_click'
 		);
 	} );
+
+	test( 'should navigate to the marketplace when clicking the Official WooCommerce Marketplace link', async () => {
+		let oldLocation: Location;
+		const mockLocation = {
+			href: 'test',
+		} as Location;
+
+		oldLocation = global.window.location;
+		mockLocation.href = 'test';
+		Object.defineProperty( global.window, 'location', {
+			value: mockLocation,
+		} );
+
+		render( <ShippingRecommendation /> );
+
+		fireEvent.click(
+			screen.getByText( 'Official WooCommerce Marketplace' )
+		);
+
+		expect( mockLocation.href ).toContain(
+			'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping'
+		);
+	} );
 } );
