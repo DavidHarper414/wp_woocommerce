@@ -20,63 +20,40 @@ export type ProductCollectionStoreContext = {
 	collection: CoreCollectionNames;
 };
 
-const getRouterRegion = ( ref: HTMLElement ) =>
-	ref?.closest( '[data-wp-router-region]' ) as HTMLElement;
+function isValidLink( ref: HTMLElement | null ): ref is HTMLAnchorElement {
+	return (
+		ref !== null &&
+		ref instanceof window.HTMLAnchorElement &&
+		!! ref.href &&
+		( ! ref.target || ref.target === '_self' ) &&
+		ref.origin === window.location.origin
+	);
+}
 
-const getRouterRegionId = ( ref: HTMLElement ) => {
-	const routerRegionElement = getRouterRegion( ref );
-	return routerRegionElement?.dataset?.wpRouterRegion;
-};
-
-const isValidLink = ( ref: HTMLAnchorElement ) =>
-	ref &&
-	ref instanceof window.HTMLAnchorElement &&
-	ref.href &&
-	( ! ref.target || ref.target === '_self' ) &&
-	ref.origin === window.location.origin;
-
-const isValidEvent = ( event: MouseEvent ) =>
-	event.button === 0 && // Left clicks only.
-	! event.metaKey && // Open in new tab (Mac).
-	! event.ctrlKey && // Open in new tab (Windows).
-	! event.altKey && // Download.
-	! event.shiftKey &&
-	! event.defaultPrevented;
-
-/**
- * Focuses on the first product if it's not in the viewport.
- *
- * @param {string} wpRouterRegionId Unique ID for each Product Collection block on page/post.
- */
-function focusOnFirstProductIfNotVisible( wpRouterRegionId?: string ) {
-	if ( ! wpRouterRegionId ) {
-		return;
-	}
-
-	// If the image is not visible, focus on the product link.
-	const productSelector = `[data-wp-router-region=${ wpRouterRegionId }] .wc-block-product-template .wc-block-product a`;
-	const product = document.querySelector( productSelector ) as HTMLElement;
-	if ( product ) {
-		product.focus();
-	}
+function isValidEvent( event: MouseEvent ): boolean {
+	return (
+		event.button === 0 && // Left clicks only.
+		! event.metaKey && // Open in new tab (Mac).
+		! event.ctrlKey && // Open in new tab (Windows).
+		! event.altKey && // Download.
+		! event.shiftKey &&
+		! event.defaultPrevented
+	);
 }
 
 const productCollectionStore = {
 	actions: {
 		*navigate( event: MouseEvent ) {
-			const { ref } = getElement() as unknown as {
-				ref: HTMLAnchorElement;
-			};
-
-			if ( ! ref ) {
-				return;
-			}
+			const { ref } = getElement();
 
 			if ( isValidLink( ref ) && isValidEvent( event ) ) {
 				event.preventDefault();
 
 				const ctx = getContext< ProductCollectionStoreContext >();
-				const routerRegionId = getRouterRegionId( ref );
+
+				const routerRegionId = ref
+					.closest( '[data-wp-router-region]' )
+					?.getAttribute( 'data-wp-router-region' );
 
 				const { actions } = yield import(
 					'@wordpress/interactivity-router'
@@ -86,7 +63,12 @@ const productCollectionStore = {
 
 				ctx.isPrefetchNextOrPreviousLink = !! ref.href;
 
-				focusOnFirstProductIfNotVisible( routerRegionId );
+				// Moves focus to the product link.
+				const product: HTMLAnchorElement | null =
+					document.querySelector(
+						`[data-wp-router-region=${ routerRegionId }] .wc-block-product-template .wc-block-product a`
+					);
+				product?.focus();
 
 				triggerProductListRenderedEvent( {
 					collection: ctx.collection,
@@ -128,17 +110,10 @@ const productCollectionStore = {
 		 * Reduces perceived load times for subsequent page navigations.
 		 */
 		*prefetch() {
-			const { ref } = getElement() as unknown as {
-				ref: HTMLAnchorElement;
-			};
-
-			if ( ! ref ) {
-				return;
-			}
-
+			const { ref } = getElement();
 			const context = getContext< ProductCollectionStoreContext >();
 
-			if ( context?.isPrefetchNextOrPreviousLink && isValidLink( ref ) ) {
+			if ( isValidLink( ref ) && context?.isPrefetchNextOrPreviousLink ) {
 				const { actions } = yield import(
 					'@wordpress/interactivity-router'
 				);
