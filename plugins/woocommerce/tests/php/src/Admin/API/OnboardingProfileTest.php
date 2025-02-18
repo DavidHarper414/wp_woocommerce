@@ -1,9 +1,11 @@
 <?php
 /**
- * Test the API controller class that handles the onboarding plugins REST endpoints.
+ * Test the API controller class that handles the onboarding profile REST endpoints.
  *
  * @package WooCommerce\Admin\Tests\Admin\API
  */
+
+declare(strict_types = 1);
 
 namespace Automattic\WooCommerce\Tests\Admin\API;
 
