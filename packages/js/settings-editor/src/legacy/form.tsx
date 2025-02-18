@@ -1,7 +1,12 @@
 /**
  * External dependencies
  */
-import { createElement, useRef, useContext } from '@wordpress/element';
+import {
+	createElement,
+	useRef,
+	useContext,
+	useState,
+} from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { DataForm } from '@wordpress/dataviews';
@@ -28,6 +33,7 @@ export const Form = ( {
 	const { data, fields, form, updateField } = useSettingsForm( settings );
 	const formRef = useRef< HTMLFormElement >( null );
 	const { setSettingsData } = useContext( SettingsDataContext );
+	const [ isBusy, setIsBusy ] = useState( false );
 
 	const getFormData = () => {
 		if ( ! formRef.current ) {
@@ -56,6 +62,7 @@ export const Form = ( {
 		event: React.FormEvent< HTMLFormElement >
 	) => {
 		event.preventDefault();
+		setIsBusy( true );
 
 		const query: Record< string, string > = {
 			page: 'wc-settings',
@@ -94,9 +101,8 @@ export const Form = ( {
 		const responseData = await response.json();
 
 		if ( responseData.status === 'success' ) {
-			// window.wcSettings.admin.settingsData =
-			// 	responseData.data.settingsData;
 			setSettingsData( responseData.data.settingsData );
+			setIsBusy( false );
 		}
 	};
 
@@ -117,7 +123,7 @@ export const Form = ( {
 				/>
 			</div>
 			<div className="woocommerce-settings-content-footer">
-				<Button variant="primary" type="submit">
+				<Button variant="primary" type="submit" isBusy={ isBusy }>
 					{ __( 'Save', 'woocommerce' ) }
 				</Button>
 			</div>
