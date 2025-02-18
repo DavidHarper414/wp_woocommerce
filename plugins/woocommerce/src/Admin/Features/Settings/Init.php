@@ -193,8 +193,6 @@ class Init {
 		$settings['settingsData']['start']    = $setting_pages[0]->get_custom_view( 'woocommerce_settings_start' );
 		$settings['settingsData']['_wpnonce'] = wp_create_nonce( 'wp_rest' );
 
-		$settings['settingsData']['_wpnonce'] = wp_create_nonce( 'woocommerce-settings' );
-
 		return $settings;
 	}
 
