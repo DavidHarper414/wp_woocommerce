@@ -55,12 +55,12 @@ const SettingsDataProvider = ( {
 const Notices = () => {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
-	const notices = useSelect( ( select ) => {
+	const notices = useSelect( ( select: any ) => {
 		const { getNotices } = select( noticesStore );
 		return getNotices();
 	}, [] );
 
-	return <SnackbarList notices={ notices || [] } onRemove={ () => {} } />;
+	return <SnackbarList notices={ notices } onRemove={ () => {} } />;
 };
 
 const SettingsApp = () => {
