@@ -75,7 +75,6 @@ import { ProfileSpinner } from './components/profile-spinner/profile-spinner';
 import recordTracksActions from './actions/tracks';
 import { ComponentMeta } from './types';
 import { getCountryCode } from '~/dashboard/utils';
-import { getAdminSetting } from '~/utils/admin-settings';
 import { useXStateInspect } from '~/xstate';
 import { useComponentFromXStateService } from '~/utils/xstate/useComponentFromService';
 import {
@@ -434,18 +433,6 @@ const updateBusinessLocation = ( countryAndState: string ) => {
 	} );
 };
 
-const updateStoreCurrencyAndMeasurementUnits = async (
-	countryAndState: string
-) => {
-	return await apiFetch( {
-		path: 'wc-admin/onboarding/profile/update-store-currency-and-measurement-units',
-		method: 'POST',
-		data: {
-			country_code: getCountryCode( countryAndState ),
-		},
-	} );
-};
-
 const assignStoreLocation = assign( {
 	businessInfo: ( {
 		event,
@@ -480,11 +467,13 @@ const updateBusinessInfo = fromPromise(
 			context: CoreProfilerStateMachineContext;
 		};
 	} ) => {
+		const { updateProfileItems, updateStoreCurrencyAndMeasurementUnits } =
+			dispatch( onboardingStore );
 		return Promise.all( [
 			updateStoreCurrencyAndMeasurementUnits(
-				input.payload.storeLocation
+				getCountryCode( input.payload.storeLocation )
 			),
-			dispatch( onboardingStore ).updateProfileItems( {
+			updateProfileItems( {
 				is_store_country_set: true,
 				is_agree_marketing: input.payload.isOptInMarketing,
 				...( input.payload.industry && {
@@ -634,14 +623,16 @@ const skipFlowUpdateBusinessLocation = fromPromise(
 	}: {
 		input: CoreProfilerStateMachineContext;
 	} ) => {
-		const skipped = dispatch( onboardingStore ).updateProfileItems( {
+		const { updateProfileItems, updateStoreCurrencyAndMeasurementUnits } =
+			dispatch( onboardingStore );
+		const skipped = updateProfileItems( {
 			skipped: true,
 		} );
 		const businessLocation = updateBusinessLocation(
 			context.businessInfo.location as string
 		);
 		const currencyUpdate = updateStoreCurrencyAndMeasurementUnits(
-			context.businessInfo.location as string
+			getCountryCode( context.businessInfo.location as string )
 		);
 
 		return Promise.all( [ skipped, businessLocation, currencyUpdate ] );
