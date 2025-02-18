@@ -27,9 +27,6 @@ class WC_BIS_Admin_Ajax {
 		// Notices.
 		add_action( 'wp_ajax_wc_bis_dismiss_notice', array( __CLASS__, 'dismiss_notice' ) );
 
-		// Ajax handler for performing loopback tests.
-		add_action( 'wp_ajax_wc_bis_loopback_test', array( __CLASS__, 'ajax_loopback_test' ) );
-
 		// Render notifications export modal.
 		add_action( 'wp_ajax_wc_bis_modal_export_notifications_html', array( __CLASS__, 'modal_export_notifications_html' ) );
 
@@ -278,60 +275,6 @@ class WC_BIS_Admin_Ajax {
 		wp_send_json( apply_filters( 'woocommerce_json_search_found_products', $products ) );
 	}
 
-	/*
-	|--------------------------------------------------------------------------
-	| Tests.
-	|--------------------------------------------------------------------------
-	*/
-
-	/**
-	 * Checks if loopback requests work.
-	 *
-	 * @return void
-	 */
-	public static function ajax_loopback_test() {
-
-		$failure = array(
-			'result' => 'failure',
-			'reason' => '',
-		);
-
-		if ( ! check_ajax_referer( 'wc_bis_loopback_notice_nonce', 'security', false ) ) {
-			$failure['reason'] = 'nonce';
-			wp_send_json( $failure );
-		}
-
-		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			$failure['reason'] = 'user_role';
-			wp_send_json( $failure );
-		}
-
-		if ( ! class_exists( 'WP_Site_Health' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/class-wp-site-health.php';
-		}
-
-		$site_health = method_exists( 'WP_Site_Health', 'get_instance' ) ? WP_Site_Health::get_instance() : new WP_Site_Health();
-		$result      = $site_health->can_perform_loopback();
-		$passes_test = 'good' === $result->status;
-
-		WC_BIS_Admin_Notices::set_notice_option( 'loopback', 'last_tested', gmdate( 'U' ) );
-		WC_BIS_Admin_Notices::set_notice_option( 'loopback', 'last_result', $passes_test ? 'pass' : 'fail' );
-
-		if ( ! $passes_test ) {
-			$failure['reason']  = 'status';
-			$failure['status']  = $result->status;
-			$failure['message'] = $result->message;
-			wp_send_json( $failure );
-		}
-
-		WC_BIS_Admin_Notices::remove_maintenance_notice( 'loopback' );
-
-		$response = array(
-			'result' => 'success',
-		);
-
-		wp_send_json( $response );
-	}
 }
 
 WC_BIS_Admin_Ajax::init();

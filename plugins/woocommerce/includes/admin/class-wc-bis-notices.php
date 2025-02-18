@@ -114,48 +114,7 @@ class WC_BIS_Notices {
 	 * @return void
 	 */
 	public static function update_notice_data() {
-
-		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			return;
-		}
-
-		self::update_queue_notice_data();
-	}
-
-	/**
-	 * Updates data for the 'queue' notice.
-	 *
-	 * @since  1.0.1
-	 *
-	 * @param bool $force (Optional)
-	 */
-	private static function update_queue_notice_data( $force = false ) {
-
-		if ( ! method_exists( WC(), 'queue' ) ) {
-			return;
-		}
-
-		$now          = gmdate( 'U' );
-		$last_updated = self::get_notice_option( 'queue', 'last_updated', 0 );
-
-		// Time for a check-up?
-		if ( $now - $last_updated > DAY_IN_SECONDS ) {
-
-			$has_overdue_deliveries = self::has_overdue_deliveries();
-
-			self::set_notice_option( 'queue', 'last_updated', $now );
-			self::set_notice_option( 'queue', 'has_overdue_deliveries', $has_overdue_deliveries ? 'yes' : 'no' );
-
-			if ( $has_overdue_deliveries ) {
-
-				if ( ! class_exists( 'WC_BIS_Admin_Notices' ) ) {
-					require_once WC_ABSPATH . 'includes/admin/class-wc-bis-admin-notices.php';
-				}
-
-				// Add maintenance notice.
-				WC_BIS_Admin_Notices::add_maintenance_notice( 'queue' );
-			}
-		}
+		wc_deprecated_function( 'WC_BIS_Notices::update_notice_data', '9.9.0' );
 	}
 
 	/**
@@ -167,28 +126,8 @@ class WC_BIS_Notices {
 	 * @return boolean
 	 */
 	public static function has_overdue_deliveries( $time_overdue = DAY_IN_SECONDS ) {
-
-		$has_overdue_deliveries = false;
-		$pending_deliveries     = WC()->queue()->search(
-			array(
-				'group'  => 'wc_bis_notifications',
-				'status' => ActionScheduler_Store::STATUS_PENDING,
-			)
-		);
-
-		if ( $pending_deliveries ) {
-
-			// Keep pending deliveries that should have been processed a day ago.
-			foreach ( $pending_deliveries as $pending_delivery ) {
-				$pending_delivery_date = $pending_delivery->get_schedule()->get_date();
-				if ( $pending_delivery_date && $pending_delivery_date->format( 'U' ) < ( gmdate( 'U' ) - $time_overdue ) ) {
-					$has_overdue_deliveries = true;
-					break;
-				}
-			}
-		}
-
-		return $has_overdue_deliveries;
+		wc_deprecated_function( 'WC_BIS_Notices::has_overdue_deliveries', '9.9.0' );
+		return false;
 	}
 }
 

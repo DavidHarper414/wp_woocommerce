@@ -219,13 +219,6 @@ class BackInStockNotifications {
 		// Welcome notice on activation.
 		// \WC_BIS_Admin_Notices::add_maintenance_notice( 'welcome' );
 
-		// Run a loopback test after activation. Will only run once if successful.
-		\WC_BIS_Admin_Notices::add_maintenance_notice( 'loopback' );
-
-		// Run an AS test after activation. Will only run once if successful.
-		if ( method_exists( WC(), 'queue' ) ) {
-			\WC_BIS_Admin_Notices::add_maintenance_notice( 'queue' );
-		}
 	}
 
 	public static function handle_add_option( $option, $new_value ) {

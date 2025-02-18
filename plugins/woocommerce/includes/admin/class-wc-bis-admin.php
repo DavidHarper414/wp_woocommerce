@@ -289,12 +289,7 @@ class WC_BIS_Admin {
 	 * @return void
 	 */
 	public static function render_system_status_items() {
-		//TODO: Adapt to core situation. Maybe keep the loopbacks test, but remove the rest.
-		$debug_data = array(
-			'db_version'           => get_option( 'wc_bis_db_version', null ),
-			'loopback_test_result' => WC_BIS_Notices::get_notice_option( 'loopback', 'last_result', '' ),
-		);
-
+		//TODO: Adapt to core situation. Anything to add here?
 		include WC_ABSPATH . 'includes/admin/status/views/html-bis-admin-page-status-report.php';
 	}
 
