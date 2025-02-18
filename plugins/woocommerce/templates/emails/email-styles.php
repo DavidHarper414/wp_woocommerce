@@ -77,7 +77,8 @@ if ( wc_hex_is_light( $body ) ) {
 
 // If email improvements are enabled, always use the base color for links.
 if ( $email_improvements_enabled ) {
-	$link_color = $base;
+	$link_color   = $base;
+	$border_color = wc_light_or_dark( $body, 'rgba(0, 0, 0, .2)', 'rgba(255, 255, 255, .2)' );
 }
 
 $bg_darker_10    = wc_hex_darker( $bg, 10 );
@@ -211,8 +212,7 @@ body {
 #template_footer #credit {
 	border: 0;
 	<?php if ( $email_improvements_enabled ) : ?>
-		border-top: 1px solid #ccc;
-		border-top: 1px solid rgba(0, 0, 0, .2);
+		border-top: 1px solid <?php echo esc_attr( $border_color ); ?>;
 	<?php endif; ?>
 	color: <?php echo esc_attr( $footer_text ); ?>;
 	font-family: <?php echo $safe_font_family; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
@@ -258,8 +258,7 @@ body {
 }
 
 #body_content .email-order-details tbody tr:last-child td {
-	border-bottom: 1px solid #ccc;
-	border-bottom: 1px solid rgba(0, 0, 0, .2);
+	border-bottom: 1px solid <?php echo esc_attr( $border_color ); ?>;
 	padding-bottom: 24px;
 }
 
@@ -292,14 +291,12 @@ body {
 
 #body_content .email-order-details .order-totals-last td,
 #body_content .email-order-details .order-totals-last th {
-	border-bottom: 1px solid #ccc;
-	border-bottom: 1px solid rgba(0, 0, 0, .2);
+	border-bottom: 1px solid <?php echo esc_attr( $border_color ); ?>;
 	padding-bottom: 24px;
 }
 
 #body_content .email-order-details .order-customer-note td {
-	border-bottom: 1px solid #ccc;
-	border-bottom: 1px solid rgba(0, 0, 0, .2);
+	border-bottom: 1px solid <?php echo esc_attr( $border_color ); ?>;
 	padding-bottom: 24px;
 	padding-top: 24px;
 }
