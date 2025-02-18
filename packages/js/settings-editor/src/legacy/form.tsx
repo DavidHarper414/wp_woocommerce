@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { createElement, useRef } from '@wordpress/element';
+import { createElement, useRef, useContext } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { DataForm } from '@wordpress/dataviews';
@@ -12,6 +12,7 @@ import { getNewPath } from '@woocommerce/navigation';
  */
 import { useSettingsForm } from '../hooks/use-settings-form';
 import { CustomView } from '../components/custom-view';
+import { SettingsDataContext } from '../index';
 
 export const Form = ( {
 	settings,
@@ -26,6 +27,7 @@ export const Form = ( {
 } ) => {
 	const { data, fields, form, updateField } = useSettingsForm( settings );
 	const formRef = useRef< HTMLFormElement >( null );
+	const { setSettingsData } = useContext( SettingsDataContext );
 
 	const getFormData = () => {
 		if ( ! formRef.current ) {
@@ -92,11 +94,10 @@ export const Form = ( {
 		const responseData = await response.json();
 
 		if ( responseData.status === 'success' ) {
-			window.wcSettings.admin.settingsData =
-				responseData.data.settingsData;
+			// window.wcSettings.admin.settingsData =
+			// 	responseData.data.settingsData;
+			setSettingsData( responseData.data.settingsData );
 		}
-
-		console.log( responseData.data.settingsData );
 	};
 
 	return (
