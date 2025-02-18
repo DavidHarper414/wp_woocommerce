@@ -2,17 +2,11 @@
  * External dependencies
  */
 import { decodeEntities } from '@wordpress/html-entities';
-import { without } from 'lodash';
 import {
 	OnboardingProductType,
 	OnboardingProductTypes,
 	ProfileItems,
 } from '@woocommerce/data';
-
-/**
- * Internal dependencies
- */
-import { getAdminSetting } from '~/utils/admin-settings';
 
 /**
  * Gets the country code from a country:state value string.

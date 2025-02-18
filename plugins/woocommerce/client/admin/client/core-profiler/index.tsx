@@ -40,7 +40,6 @@ import { initializeExPlat } from '@woocommerce/explat';
 import { CountryStateOption } from '@woocommerce/onboarding';
 import { getAdminLink } from '@woocommerce/settings';
 import { recordEvent } from '@woocommerce/tracks';
-import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
