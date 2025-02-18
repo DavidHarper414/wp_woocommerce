@@ -168,7 +168,12 @@ export const Layout = ( {
 				{ isDashboardShown ? renderColumns() : renderTaskList() }
 				{ shouldShowMobileAppModal && <MobileAppModal /> }
 			</div>
-			<Card className="woocommerce-home-browse-marketplace">
+			<Card
+				className={ clsx( {
+					'woocommerce-home-browse-marketplace': ! twoColumns,
+					'woocommerce-home-browse-marketplace--wide': twoColumns,
+				} ) }
+			>
 				<CardHeader>
 					<Text
 						variant="title.small"
