@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-
+import React from 'react';
 import { decodeEntities } from '@wordpress/html-entities';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
@@ -22,6 +22,8 @@ import {
 } from '~/settings-payments/utils';
 import { DefaultDragHandle } from '~/settings-payments/components/sortable';
 import { StatusBadge } from '~/settings-payments/components/status-badge';
+import { IncentiveStatusBadge } from '~/settings-payments/components/incentive-status-badge';
+import { OfficialBadge } from '~/settings-payments/components/official-badge';
 
 type PaymentExtensionSuggestionListItemProps = {
 	/**
@@ -72,6 +74,14 @@ export const PaymentExtensionSuggestionListItem = ( {
 				'wc_settings_payments__banner'
 			) );
 
+	// Determine the CTA button label based on the extension state.
+	let ctaButtonLabel = __( 'Install', 'woocommerce' );
+	if ( pluginInstalled ) {
+		ctaButtonLabel = __( 'Enable', 'woocommerce' );
+	} else if ( installingPlugin === extension.id ) {
+		ctaButtonLabel = __( 'Installing', 'woocommerce' );
+	}
+
 	return (
 		<div
 			id={ extension.id }
@@ -99,11 +109,10 @@ export const PaymentExtensionSuggestionListItem = ( {
 								<StatusBadge status="recommended" />
 							) }
 						{ incentive && (
-							<StatusBadge
-								status="has_incentive"
-								message={ incentive.badge }
-							/>
+							<IncentiveStatusBadge incentive={ incentive } />
 						) }
+						{ /* All payment extension suggestions are official. */ }
+						<OfficialBadge variant="expanded" />
 					</span>
 					<span
 						className="woocommerce-list__item-content"
@@ -120,8 +129,8 @@ export const PaymentExtensionSuggestionListItem = ( {
 						/>
 					) }
 				</div>
-				<div className="woocommerce-list__item-after">
-					<div className="woocommerce-list__item-after__actions">
+				<div className="woocommerce-list__item-buttons">
+					<div className="woocommerce-list__item-buttons__actions">
 						<Button
 							variant="primary"
 							onClick={ () => {
@@ -139,11 +148,12 @@ export const PaymentExtensionSuggestionListItem = ( {
 							isBusy={ installingPlugin === extension.id }
 							disabled={ !! installingPlugin }
 						>
-							{ pluginInstalled
-								? __( 'Enable', 'woocommerce' )
-								: __( 'Install', 'woocommerce' ) }
+							{ ctaButtonLabel }
 						</Button>
-
+					</div>
+				</div>
+				<div className="woocommerce-list__item-after">
+					<div className="woocommerce-list__item-after__actions">
 						<EllipsisMenu
 							label={ __(
 								'Payment Provider Options',

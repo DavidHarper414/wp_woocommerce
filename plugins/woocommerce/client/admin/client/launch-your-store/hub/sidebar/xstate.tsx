@@ -15,11 +15,12 @@ import React from 'react';
 import clsx from 'clsx';
 import { getQuery, navigateTo } from '@woocommerce/navigation';
 import {
-	OPTIONS_STORE_NAME,
+	optionsStore,
 	PAYMENT_GATEWAYS_STORE_NAME,
-	SETTINGS_STORE_NAME,
+	settingsStore,
 	TaskListType,
 	TaskType,
+	PaymentGateway,
 } from '@woocommerce/data';
 import { dispatch, resolveSelect } from '@wordpress/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -77,7 +78,7 @@ const sidebarQueryParamListener = fromCallback( ( { sendBack } ) => {
 } );
 
 const launchStoreAction = async () => {
-	const results = await dispatch( OPTIONS_STORE_NAME ).updateOptions( {
+	const results = await dispatch( optionsStore ).updateOptions( {
 		woocommerce_coming_soon: 'no',
 	} );
 	if ( results.success ) {
@@ -136,7 +137,7 @@ export const getWooPaymentsStatus = async () => {
 	}
 
 	// Check the gateway is installed
-	const paymentGateways = await resolveSelect(
+	const paymentGateways: PaymentGateway[] = await resolveSelect(
 		PAYMENT_GATEWAYS_STORE_NAME
 	).getPaymentGateways();
 	const enabledPaymentGateways = paymentGateways.filter(
@@ -150,7 +151,7 @@ export const getWooPaymentsStatus = async () => {
 };
 
 export const getSiteCachedStatus = async () => {
-	const settings = await resolveSelect( SETTINGS_STORE_NAME ).getSettings(
+	const settings = await resolveSelect( settingsStore ).getSettings(
 		'wc_admin'
 	);
 

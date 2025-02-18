@@ -40,26 +40,32 @@ jest.mock( '../components/sidebar', () => ( {
 } ) );
 
 const mockSettingsPages = {
-	general: {
-		label: 'General',
-		icon: 'settings',
-		slug: 'general',
-		sections: {
-			default: {
-				label: 'General',
-				settings: [
-					{
-						title: 'Store Address',
-						type: 'title' as const,
-						desc: 'This is where your business is located.',
-						id: 'store_address',
-						value: false,
-					},
-				],
+	pages: {
+		general: {
+			label: 'General',
+			icon: 'settings',
+			slug: 'general',
+			sections: {
+				default: {
+					label: 'General',
+					settings: [
+						{
+							title: 'Store Address',
+							type: 'title' as const,
+							desc: 'This is where your business is located.',
+							id: 'store_address',
+							value: false,
+						},
+					],
+				},
 			},
+			is_modern: false,
+			start: null,
+			end: null,
 		},
-		is_modern: false,
 	},
+	start: null,
+	_wpnonce: 'test-nonce',
 };
 
 describe( 'route.tsx', () => {
@@ -131,13 +137,19 @@ describe( 'route.tsx', () => {
 			window.wcSettings = {
 				admin: {
 					settingsData: {
-						modern: {
-							label: 'Modern',
-							icon: 'published',
-							slug: 'modern',
-							sections: {},
-							is_modern: true,
+						pages: {
+							modern: {
+								label: 'Modern',
+								icon: 'published',
+								slug: 'modern',
+								sections: {},
+								is_modern: true,
+								start: null,
+								end: null,
+							},
 						},
+						start: null,
+						_wpnonce: 'test-nonce',
 					},
 				},
 			};

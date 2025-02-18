@@ -67,11 +67,13 @@ export const EllipsisMenuWrapper = ( {
 						}
 					/>
 				) }
+				focusOnMount={ true }
 			/>
 			{ /* Modal for resetting WooPayments accounts */ }
 			<WooPaymentsResetAccountModal
 				isOpen={ resetAccountModalVisible }
 				onClose={ () => setResetAccountModalVisible( false ) }
+				isTestMode={ provider.onboarding?.state.test_mode }
 			/>
 		</>
 	);

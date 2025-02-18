@@ -14,11 +14,15 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
 	useUserPreferences,
-	NOTES_STORE_NAME,
-	ONBOARDING_STORE_NAME,
-	OPTIONS_STORE_NAME,
+	notesStore,
+	onboardingStore,
+	optionsStore,
 } from '@woocommerce/data';
 import { __ } from '@wordpress/i18n';
+import { getAdminLink } from '@woocommerce/settings';
+import { recordEvent } from '@woocommerce/tracks';
+import { Button, Card, CardHeader, CardFooter } from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -30,17 +34,18 @@ import { Column } from './column';
 import InboxPanel from '../inbox-panel';
 import StatsOverview from './stats-overview';
 import { StoreManagementLinks } from '../store-management-links';
-import {
-	TasksPlaceholder,
-	useActiveSetupTasklist,
-	ProgressTitle,
-} from '../task-lists';
+import { TasksPlaceholder, ProgressTitle } from '../task-lists';
 import { MobileAppModal } from './mobile-app-modal';
 import './style.scss';
 import '../dashboard/style.scss';
 import { getAdminSetting } from '~/utils/admin-settings';
 import { WooHomescreenHeaderBanner } from './header-banner-slot';
 import { WooHomescreenWCPayFeature } from './wcpay-feature-slot';
+
+import {
+	isTaskListVisible,
+	useTaskListsState,
+} from '~/hooks/use-tasklists-state';
 
 const TaskLists = lazy( () =>
 	import( /* webpackChunkName: "tasks" */ '../task-lists' ).then(
@@ -53,13 +58,10 @@ const TaskLists = lazy( () =>
 export const hasTwoColumnLayout = (
 	userPrefLayout,
 	defaultHomescreenLayout,
-	taskListComplete,
-	isTaskListHidden
+	isSetupTaskListActive
 ) => {
 	const hasTwoColumnContent =
-		taskListComplete ||
-		isTaskListHidden ||
-		window.wcAdminFeatures.analytics;
+		! isSetupTaskListActive || window.wcAdminFeatures.analytics;
 
 	return (
 		( userPrefLayout || defaultHomescreenLayout ) === 'two_columns' &&
@@ -70,23 +72,25 @@ export const hasTwoColumnLayout = (
 export const Layout = ( {
 	defaultHomescreenLayout,
 	query,
-	taskListComplete,
 	hasTaskList,
 	showingProgressHeader,
 	isLoadingTaskLists,
-	isTaskListHidden,
 } ) => {
 	const userPrefs = useUserPreferences();
-	const shouldShowStoreLinks = taskListComplete || isTaskListHidden;
-	const shouldShowWCPayFeature = taskListComplete || isTaskListHidden;
-	const isDashboardShown = Object.keys( query ).length > 0 && ! query.task; // ?&task=<x> query param is used to show tasks instead of the homescreen
-	const activeSetupTaskList = useActiveSetupTasklist();
 
+	// Use hook to get setup task list state so when the task list is completed or hidden, the homescreen layout is updated immediately
+	const { setupTaskListActive: isSetupTaskListActive, setupTaskListHidden } =
+		useTaskListsState( {
+			setupTasklist: true,
+			extendedTaskList: false,
+		} );
+
+	const isTaskScreen = Object.keys( query ).length > 0 && !! query.task; // ?&task=<x> query param is used to show tasks instead of the homescreen
+	const isDashboardShown = ! isTaskScreen;
 	const twoColumns = hasTwoColumnLayout(
 		userPrefs.homepage_layout,
 		defaultHomescreenLayout,
-		taskListComplete,
-		isTaskListHidden
+		isSetupTaskListActive
 	);
 
 	const isWideViewport = useRef( true );
@@ -109,9 +113,9 @@ export const Layout = ( {
 	const renderTaskList = () => {
 		return (
 			<Suspense fallback={ <TasksPlaceholder query={ query } /> }>
-				{ activeSetupTaskList && isDashboardShown && (
+				{ ! setupTaskListHidden && isDashboardShown && (
 					<>
-						<ProgressTitle taskListId={ activeSetupTaskList } />
+						<ProgressTitle taskListId="setup" />
 					</>
 				) }
 				<TaskLists query={ query } />
@@ -133,22 +137,22 @@ export const Layout = ( {
 							) }
 						/>
 					) }
-					{ shouldShowWCPayFeature && <WooHomescreenWCPayFeature /> }
-					{ isTaskListHidden && <ActivityPanel /> }
+					{ ! isSetupTaskListActive && <WooHomescreenWCPayFeature /> }
+					{ ! isTaskListVisible( 'setup' ) && <ActivityPanel /> }
 					{ hasTaskList && renderTaskList() }
 					<Promotions format="promo-card" />
 					<InboxPanel />
 				</Column>
 				<Column shouldStick={ shouldStickColumns }>
 					{ window.wcAdminFeatures.analytics && <StatsOverview /> }
-					{ shouldShowStoreLinks && <StoreManagementLinks /> }
+					{ ! isSetupTaskListActive && <StoreManagementLinks /> }
 				</Column>
 			</>
 		);
 	};
 
 	return (
-		<>
+		<div className="woocommerce-homescreen">
 			{ isDashboardShown && (
 				<WooHomescreenHeaderBanner
 					className={ clsx( 'woocommerce-homescreen', {
@@ -164,7 +168,49 @@ export const Layout = ( {
 				{ isDashboardShown ? renderColumns() : renderTaskList() }
 				{ shouldShowMobileAppModal && <MobileAppModal /> }
 			</div>
-		</>
+			<Card
+				className={ clsx( {
+					'woocommerce-home-browse-marketplace': ! twoColumns,
+					'woocommerce-home-browse-marketplace--wide': twoColumns,
+				} ) }
+			>
+				<CardHeader>
+					<Text
+						variant="title.small"
+						as="h2"
+						className="woocommerce-browse-marketplace-card__title"
+					>
+						{ __(
+							'Power up your store with business-critical features',
+							'woocommerce'
+						) }
+					</Text>
+				</CardHeader>
+				<CardFooter>
+					<Text variant="body.small" as="p">
+						{ __(
+							'Visit the Official WooCommerce Marketplace to access hundreds of vetted products and services.',
+							'woocommerce'
+						) }
+					</Text>
+					<Button
+						onClick={ () => {
+							recordEvent(
+								'homescreen_visit_marketplace_click',
+								{}
+							);
+
+							return true;
+						} }
+						href={ getAdminLink(
+							'admin.php?page=wc-admin&path=/extensions'
+						) }
+					>
+						{ __( 'Browse the Marketplace', 'woocommerce' ) }
+					</Button>
+				</CardFooter>
+			</Card>
+		</div>
 	);
 };
 
@@ -193,30 +239,36 @@ Layout.propTypes = {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { isNotesRequesting } = select( NOTES_STORE_NAME );
-		const { getOption } = select( OPTIONS_STORE_NAME );
-		const {
-			getTaskList,
-			getTaskLists,
-			hasFinishedResolution: taskListFinishResolution,
-		} = select( ONBOARDING_STORE_NAME );
-		const taskLists = getTaskLists();
-		const isLoadingTaskLists = ! taskListFinishResolution( 'getTaskLists' );
-
+		const { isNotesRequesting } = select( notesStore );
+		const { getOption } = select( optionsStore );
 		const defaultHomescreenLayout =
 			getOption( 'woocommerce_default_homepage_layout' ) ||
 			'single_column';
+
+		const {
+			getTaskLists,
+			hasFinishedResolution: taskListFinishResolution,
+		} = select( onboardingStore );
+
+		const visibleTaskListIds = getAdminSetting( 'visibleTaskListIds', [] );
+		const hasTaskList = visibleTaskListIds.length > 0;
+
+		// Only fetch task lists if there are any visible task lists to avoid unnecessary API calls
+		let isLoadingTaskLists = false;
+		let taskLists = [];
+		if ( hasTaskList ) {
+			isLoadingTaskLists = ! taskListFinishResolution( 'getTaskLists' );
+			taskLists = getTaskLists();
+		}
 
 		return {
 			defaultHomescreenLayout,
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			isLoadingTaskLists,
-			isTaskListHidden: getTaskList( 'setup' )?.isHidden,
-			hasTaskList: getAdminSetting( 'visibleTaskListIds', [] ).length > 0,
+			hasTaskList,
 			showingProgressHeader: !! taskLists.find(
 				( list ) => list.isVisible && list.displayProgressHeader
 			),
-			taskListComplete: getTaskList( 'setup' )?.isComplete,
 		};
 	} )
 )( Layout );
