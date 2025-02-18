@@ -87,6 +87,7 @@ export default function Discover(): JSX.Element | null {
 					products={ groups.items }
 					groupURL={ groups.url }
 					groupURLText={ groups.url_text }
+					groupURLType={ groups.url_type }
 					type={ groups.itemType }
 				/>
 			) ) }

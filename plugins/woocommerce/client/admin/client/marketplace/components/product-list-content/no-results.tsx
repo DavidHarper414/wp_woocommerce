@@ -114,6 +114,7 @@ export default function NoResults( props: {
 							type={ productGroup.itemType }
 							key={ productGroup.id }
 							groupURLText={ productGroup.url_text }
+							groupURLType={ productGroup.url_type }
 						/>
 					);
 				} ) }

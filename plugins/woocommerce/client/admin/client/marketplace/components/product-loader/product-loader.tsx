@@ -28,6 +28,7 @@ export default function ProductLoader(
 					groupURL={ null }
 					description=""
 					groupURLText={ null }
+					groupURLType={ undefined }
 				/>
 			) }
 			<div className="woocommerce-marketplace__product-list-content">

@@ -13,6 +13,7 @@ interface ProductListProps {
 	groupURL: string;
 	type: ProductType;
 	groupURLText: string | null;
+	groupURLType: 'wc-admin' | 'wp-admin' | 'external' | undefined; // types defined by Link component
 }
 
 export default function ProductList( props: ProductListProps ): JSX.Element {
@@ -24,6 +25,7 @@ export default function ProductList( props: ProductListProps ): JSX.Element {
 		type,
 		productGroup,
 		groupURLText,
+		groupURLType,
 	} = props;
 
 	return (
@@ -33,6 +35,7 @@ export default function ProductList( props: ProductListProps ): JSX.Element {
 				groupURL={ groupURL }
 				groupURLText={ groupURLText }
 				description={ description }
+				groupURLType={ groupURLType }
 			/>
 			<ProductListContent
 				group={ title }

@@ -37,6 +37,7 @@ interface ProductGroup {
 	items: Product[];
 	url: string;
 	url_text: string | null;
+	url_type: 'wc-admin' | 'wp-admin' | 'external' | undefined; // types defined by Link component
 	itemType: ProductType;
 }
 

@@ -16,12 +16,13 @@ interface ProductListHeaderProps {
 	description: string;
 	groupURL: string | null;
 	groupURLText: string | null;
+	groupURLType: 'wc-admin' | 'wp-admin' | 'external' | undefined; // defined in Link component
 }
 
 export default function ProductListHeader(
 	props: ProductListHeaderProps
 ): JSX.Element {
-	const { title, description, groupURL, groupURLText } = props;
+	const { title, description, groupURL, groupURLText, groupURLType } = props;
 	const isLoading = title === '';
 
 	const classNames = clsx( 'woocommerce-marketplace__product-list-header', {
@@ -42,7 +43,10 @@ export default function ProductListHeader(
 				<span className="woocommerce-marketplace__product-list-link">
 					<Link
 						href={ groupURL }
-						target="_blank"
+						type={ groupURLType }
+						target={
+							groupURLType === 'external' ? '_blank' : undefined
+						}
 						onClick={ () => {
 							recordEvent( 'marketplace_see_more_clicked', {
 								group_title: title,
