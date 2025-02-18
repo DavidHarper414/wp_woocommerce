@@ -60,7 +60,7 @@ trait OrderTraits {
 		$line_items_shipping       = $this->get_items( 'shipping' );
 		$total_shipping_tax_amount = $shipping_tax_amount ? $shipping_tax_amount : 0;
 
-		if ( 0 === $total_shipping_tax_amount ) {
+		if ( null === $shipping_tax_amount ) {
 			foreach ( $line_items_shipping as $item_id => $shipping_item ) {
 				$tax_data = $shipping_item->get_taxes();
 				if ( $tax_data ) {
