@@ -29,7 +29,7 @@ const blockEntries = {
 		'./assets/js/blocks/product-filters/inner-blocks/checkbox-list/frontend.ts',
 	'woocommerce/product-filter-chips':
 		'./assets/js/blocks/product-filters/inner-blocks/chips/frontend.ts',
-	'woocommerce/woocommerce/product-filter-price':
+	'woocommerce/product-filter-price':
 		'./assets/js/blocks/product-filters/inner-blocks/price-filter/frontend.ts',
 	'woocommerce/product-filter-price-slider':
 		'./assets/js/blocks/product-filters/inner-blocks/price-slider/frontend.ts',
