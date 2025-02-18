@@ -61,7 +61,7 @@ const Notices = () => {
 	return <SnackbarList notices={ notices || [] } onRemove={ () => {} } />;
 };
 
-const App = () => {
+const SettingsApp = () => {
 	const { route, settingsPage, tabs, activeSection } = useActiveRoute();
 
 	return (
@@ -91,7 +91,7 @@ export const SettingsEditor = () => {
 
 	return (
 		<SettingsDataProvider>
-			<App />
+			<SettingsApp />
 			<Notices />
 		</SettingsDataProvider>
 	);
