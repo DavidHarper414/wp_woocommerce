@@ -15,7 +15,7 @@ import { STORE_KEY } from './constants';
 
 export const PAYMENT_GATEWAYS_STORE_NAME = STORE_KEY;
 
-const store = createReduxStore( STORE_KEY, {
+export const store = createReduxStore( STORE_KEY, {
 	actions,
 	selectors,
 	resolvers,

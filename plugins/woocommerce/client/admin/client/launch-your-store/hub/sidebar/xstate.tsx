@@ -16,7 +16,6 @@ import clsx from 'clsx';
 import { getQuery, navigateTo } from '@woocommerce/navigation';
 import {
 	optionsStore,
-	PAYMENT_GATEWAYS_STORE_NAME,
 	settingsStore,
 	TaskListType,
 	TaskType,
