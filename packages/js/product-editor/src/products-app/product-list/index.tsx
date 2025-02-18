@@ -169,7 +169,9 @@ export default function ProductList( {
 			}
 		} );
 		const orderby =
-			view.sort?.field === 'name' ? 'title' : view.sort?.field;
+			view.sort?.field === 'name'
+				? 'title'
+				: ( view.sort?.field as ProductQuery[ 'orderby' ] );
 
 		return {
 			per_page: view.perPage,
@@ -208,8 +210,10 @@ export default function ProductList( {
 
 	const paginationInfo = useMemo(
 		() => ( {
-			totalItems: totalCount,
-			totalPages: Math.ceil( totalCount / ( view.perPage || PAGE_SIZE ) ),
+			totalItems: totalCount ?? 0,
+			totalPages: Math.ceil(
+				( totalCount ?? 0 ) / ( view.perPage || PAGE_SIZE )
+			),
 		} ),
 		[ totalCount, view.perPage ]
 	);

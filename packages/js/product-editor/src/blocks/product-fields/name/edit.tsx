@@ -60,6 +60,7 @@ export function NameBlockEdit( {
 	const productId = useEntityId( 'postType', 'product' );
 	const product = useSelect(
 		( select ) =>
+			// @ts-expect-error getEditedEntityRecord is not typed correctly because we are overriding the type definition. https://github.com/woocommerce/woocommerce/blob/eeaf58e20064d837412d6c455e69cc5a5e2678b4/packages/js/product-editor/typings/index.d.ts#L15-L35
 			select( coreStore ).getEditedEntityRecord(
 				'postType',
 				'product',
@@ -76,7 +77,6 @@ export function NameBlockEdit( {
 	);
 
 	const { prefix: permalinkPrefix, suffix: permalinkSuffix } =
-		// @ts-expect-error product is not typed
 		getPermalinkParts( product );
 
 	const {

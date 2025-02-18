@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { productsStore } from '@woocommerce/data';
 import { DataForm, isItemValid } from '@wordpress/dataviews';
 import type { Form } from '@wordpress/dataviews';
 import { createElement, useState, useMemo } from '@wordpress/element';
@@ -25,7 +26,6 @@ import { privateApis as editorPrivateApis } from '@wordpress/editor';
  */
 import { unlock } from '../../lock-unlock';
 import { productFields } from '../product-list/fields';
-import { productsStore } from '@woocommerce/data';
 
 const { NavigableRegion } = unlock( editorPrivateApis );
 
@@ -77,13 +77,14 @@ export default function ProductEdit( {
 	}, [ initialEdits, edits ] );
 	const isUpdateDisabled = ! isItemValid(
 		itemWithEdits,
+		// @ts-expect-error productFields is not typed correctly.
 		productFields,
 		form
 	);
 
 	const onSubmit = async ( event: FormEvent ) => {
 		event.preventDefault();
-
+		// @ts-expect-error productFields is not typed correctly.
 		if ( ! isItemValid( itemWithEdits, productFields, form ) ) {
 			return;
 		}
@@ -136,6 +137,7 @@ export default function ProductEdit( {
 					<VStack spacing={ 4 } as="form" onSubmit={ onSubmit }>
 						<DataForm
 							data={ itemWithEdits }
+							// @ts-expect-error productFields is not typed correctly.
 							fields={ productFields }
 							form={ form }
 							onChange={ setEdits }
