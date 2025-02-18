@@ -471,7 +471,7 @@ const updateBusinessInfo = fromPromise(
 			dispatch( onboardingStore );
 		return Promise.all( [
 			updateStoreCurrencyAndMeasurementUnits(
-				getCountryCode( input.payload.storeLocation )
+				getCountryCode( input.payload.storeLocation ) as string
 			),
 			updateProfileItems( {
 				is_store_country_set: true,
@@ -632,7 +632,7 @@ const skipFlowUpdateBusinessLocation = fromPromise(
 			context.businessInfo.location as string
 		);
 		const currencyUpdate = updateStoreCurrencyAndMeasurementUnits(
-			getCountryCode( context.businessInfo.location as string )
+			getCountryCode( context.businessInfo.location ) as string
 		);
 
 		return Promise.all( [ skipped, businessLocation, currencyUpdate ] );
