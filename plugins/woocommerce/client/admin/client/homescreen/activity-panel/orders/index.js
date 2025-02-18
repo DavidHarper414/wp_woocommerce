@@ -308,7 +308,8 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 		if ( storeCurrency && storeCurrency.code === orderCurrencyCode ) {
 			return currencyContext.formatAmount( total );
 		}
-		const symbol = currencySymbols[ orderCurrencyCode ];
+
+		const symbol = currencySymbols[ orderCurrencyCode ] ?? null;
 
 		if ( ! symbol ) {
 			// This should never happen, but if it does, we'll just show the currency code.
