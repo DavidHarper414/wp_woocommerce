@@ -249,7 +249,7 @@ if ( ! $exit && getenv( 'CI' ) ) {
 		},
 		array_keys( $touched_projects )
 	);
-	echo sprintf( "Passed validation: %s", implode( ',', $passed_packages ) ), PHP_EOL;
+	echo sprintf( "Passed validation: %s", implode( ', ', $passed_packages ) ), PHP_EOL;
 }
 
 exit( $exit );

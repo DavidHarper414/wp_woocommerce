@@ -473,7 +473,7 @@ jobs:
     name: 'Validate changelog'
     if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'trunk' && needs.identify-jobs-to-run.outputs.needs-changelog-validation == 'true' }}
     needs: [ 'identify-jobs-to-run' ]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
 
@@ -484,24 +484,21 @@ jobs:
           fetch-depth: '0'
 
       - uses: './.github/actions/setup-woocommerce-monorepo'
-        with:
-          # The package has majority of composer-deps, therefore referencing it
-          pull-package-composer-deps: '@woocommerce/plugin-woocommerce'
 
       - name: 'Validate - missing entries'
-        id: passed_validation
+        id: validate_missing
         run: |
-            passed_validation=$( php tools/monorepo/check-changelogger-use.php --debug "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | tee -a /dev/stderr | grep 'Passed validation' )
-            echo "passed=${passed_validation/Passed validation: /}" >> $GITHUB_OUTPUT
+            passed=$( php tools/monorepo/check-changelogger-use.php --debug "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | tee -a /dev/stderr | grep 'Passed validation' )
+            echo "passed=${passed/Passed validation: /}" >> $GITHUB_OUTPUT
 
       - name: 'Validate - existing entries'
         run: |
-            echo "Validating: ${{ steps.passed_validation.outputs.passed }}"
+            echo "Validating: ${{ steps.validate_missing.outputs.passed }}"
             filter='';
-            for package in $( echo "${{ steps.passed_validation.outputs.passed }}" | tr "," "\n" ); do
+            for package in $( echo "${{ steps.validate_missing.outputs.passed }}" | tr " " "" | tr "," "\n" ); do
                 filter="$filter --filter $package"
             done
-            pnpm --parallel --stream $filter changelog validate
+            pnpm --parallel --workspace-concurrency=10 --stream $filter changelog validate
 
   validate-markdown:
     name: 'Validate markdown'
