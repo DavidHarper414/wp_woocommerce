@@ -52,11 +52,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 	<?php do_action( 'woocommerce_checkout_before_order_review_heading' ); ?>
 
 	<?php
-	/**
-	 * Filter to modify the output of the order review heading.
-	 *
-	 * @param string $output The heading text.
-	 */
+	// Filter to modify the output of the order review heading.
 	$order_review_heading = apply_filters( 'woocommerce_checkout_order_review_heading', __( 'Your order', 'woocommerce' ) );
 	if ( $order_review_heading ) :
 		?>
