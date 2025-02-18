@@ -2936,6 +2936,17 @@ function wc_update_950_tracking_option_autoload() {
 }
 
 /**
+ * Update the base color for emails as part of the WooCommerce rebranding,
+ * but only if the user hasn't specified a custom color.
+ */
+function wc_update_961_migrate_default_email_base_color() {
+	$color = get_option( 'woocommerce_email_base_color' );
+	if ( '#7f54b3' === $color ) {
+		update_option( 'woocommerce_email_base_color', '#720eec' );
+	}
+}
+
+/**
  * Add old refunded order items to the product_lookup_table.
  */
 function wc_update_970_add_old_refunded_order_items_to_product_lookup_table() {
