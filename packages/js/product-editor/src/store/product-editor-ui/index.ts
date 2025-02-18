@@ -15,11 +15,7 @@ import reducer from './reducer';
 
 const store = 'woo/product-editor-ui';
 
-export const wooProductEditorUiStore = createReduxStore<
-	unknown,
-	typeof actions,
-	typeof selectors
->( store, {
+export const wooProductEditorUiStore = createReduxStore( store, {
 	actions,
 	selectors,
 	reducer,
