@@ -4,15 +4,12 @@
 import { Button } from '@wordpress/components';
 import { EllipsisMenu, Link } from '@woocommerce/components';
 import { useState, useEffect } from '@wordpress/element';
-import {
-	PLUGINS_STORE_NAME,
-	PAYMENT_GATEWAYS_STORE_NAME,
-} from '@woocommerce/data';
+import { pluginsStore, PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { sanitize } from 'dompurify';
 import { __ } from '@wordpress/i18n';
-import { WooPaymentMethodsLogos } from '@woocommerce/onboarding';
+import { WooPaymentsMethodsLogos } from '@woocommerce/onboarding';
 
 /**
  * Internal dependencies
@@ -53,16 +50,17 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 	const { gatewayId, pluginSlug, url } = paymentMethod;
 	const [ installing, setInstalling ] = useState( false );
 	const [ isVisible, setIsVisible ] = useState( true );
-	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
+	const { installAndActivatePlugins } = useDispatch( pluginsStore );
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
 	const { gatewayIsActive, paymentGateway } = useSelect( ( select ) => {
 		const { getPaymentGateway } = select( PAYMENT_GATEWAYS_STORE_NAME );
 		const activePlugins: string[] =
-			select( PLUGINS_STORE_NAME ).getActivePlugins();
+			select( pluginsStore ).getActivePlugins();
 		const isActive = activePlugins && activePlugins.includes( pluginSlug );
 		let paymentGatewayData;
 		if ( isActive ) {
+			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 			paymentGatewayData = getPaymentGateway(
 				pluginSlug.replace( /\-/g, '_' )
 			);
@@ -72,7 +70,7 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 			gatewayIsActive: isActive,
 			paymentGateway: paymentGatewayData,
 		};
-	} );
+	}, [] );
 
 	useEffect( () => {
 		if (
@@ -138,7 +136,7 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 								{ gatewayId ===
 									'pre_install_woocommerce_payments_promotion' && (
 									<div className="pre-install-payment-gateway__subtitle">
-										<WooPaymentMethodsLogos
+										<WooPaymentsMethodsLogos
 											maxElements={ 5 }
 											isWooPayEligible={
 												isWooPayEligible
@@ -151,6 +149,7 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 								subTitleContent ? (
 									<div
 										className="pre-install-payment-gateway__subtitle"
+										// eslint-disable-next-line react/no-danger -- innerHTML from the element with class name: gateway-subtitle.
 										dangerouslySetInnerHTML={ sanitizeHTML(
 											subTitleContent
 										) }

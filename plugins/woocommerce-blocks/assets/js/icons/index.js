@@ -25,15 +25,12 @@ export { default as productFilterAttribute } from './library/product-filter-attr
 export { default as productFilterOptions } from './library/product-filter-options';
 export { default as productFilterPrice } from './library/product-filter-price';
 export { default as productFilterRating } from './library/product-filter-rating';
-export { default as productFilterStockStatus } from './library/product-filter-stock-status';
+export { default as productFilterStatus } from './library/product-filter-status';
 export { default as productMeta } from './library/product-meta';
 export { default as removeCart } from './library/remove-cart';
 export { default as sparkles } from './library/sparkles';
 export { default as stacks } from './library/stacks';
 export { default as thumbUp } from './library/thumb-up';
-export { default as thumbnailsPositionBottom } from './library/thumbnails-position-bottom';
-export { default as thumbnailsPositionLeft } from './library/thumbnails-position-left';
-export { default as thumbnailsPositionRight } from './library/thumbnails-position-right';
 export { default as toggle } from './library/toggle';
 export { default as totals } from './library/totals';
 export { default as woo } from './library/woo';

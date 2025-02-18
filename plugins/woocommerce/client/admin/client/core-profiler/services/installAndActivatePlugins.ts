@@ -3,9 +3,9 @@
  */
 import {
 	ExtensionList,
-	ONBOARDING_STORE_NAME,
-	PLUGINS_STORE_NAME,
+	pluginsStore,
 	PluginNames,
+	onboardingStore,
 } from '@woocommerce/data';
 import { dispatch } from '@wordpress/data';
 import {
@@ -25,6 +25,7 @@ import {
 	PluginsInstallationCompletedEvent,
 	PluginsInstallationCompletedWithErrorsEvent,
 } from '../events';
+import { getPluginSlug } from '~/utils/plugins';
 
 export type InstalledPlugin = {
 	plugin: string;
@@ -39,6 +40,7 @@ export type InstallationCompletedResult = {
 export type PluginInstallError = {
 	plugin: string;
 	error: string;
+	errorDetails: Pick< InstallAndActivateErrorResponse, 'data' >;
 };
 
 const createInstallationCompletedWithErrorsEvent = (
@@ -81,6 +83,12 @@ export type PluginInstallerMachineContext = {
 export type InstallAndActivateErrorResponse = {
 	error: string;
 	message: string;
+	data: {
+		code: string | 'woocommerce_rest_cannot_update';
+		data: {
+			status: number;
+		};
+	};
 };
 
 type InstallAndActivateSuccessResponse = {
@@ -109,16 +117,15 @@ export const pluginInstallerMachine = createMachine(
 			>;
 		} ) => {
 			return {
-				selectedPlugins:
-					input?.selectedPlugins || ( [] as PluginNames[] ),
+				selectedPlugins: input?.selectedPlugins || [],
 				pluginsAvailable:
 					input?.pluginsAvailable ||
 					( [] as ExtensionList[ 'plugins' ] | [] ),
-				pluginsInstallationQueue: [] as PluginNames[],
-				installedPlugins: [] as InstalledPlugin[],
+				pluginsInstallationQueue: [],
+				installedPlugins: [],
 				startTime: 0,
 				installationDuration: 0,
-				errors: [] as PluginInstallError[],
+				errors: [],
 			} as PluginInstallerMachineContext;
 		},
 		states: {
@@ -206,7 +213,7 @@ export const pluginInstallerMachine = createMachine(
 				pluginsInstallationQueue: ( { context } ) => {
 					// Sort the plugins by install_priority so that the smaller plugins are installed first
 					// install_priority is set by plugin's size
-					// Lower install_prioirty means the plugin is smaller
+					// Lower install_priority means the plugin is smaller
 					return context.selectedPlugins.slice().sort( ( a, b ) => {
 						const aIndex = context.pluginsAvailable.find(
 							( plugin ) => plugin.key === a
@@ -252,6 +259,9 @@ export const pluginInstallerMachine = createMachine(
 							error: (
 								event as ErrorActorEvent< InstallAndActivateErrorResponse >
 							 ).error.message,
+							errorDetails: (
+								event as ErrorActorEvent< InstallAndActivateErrorResponse >
+							 ).error,
 						},
 					];
 				},
@@ -305,10 +315,8 @@ export const pluginInstallerMachine = createMachine(
 				}: {
 					input: { pluginsInstallationQueue: PluginNames[] };
 				} ) => {
-					return dispatch(
-						PLUGINS_STORE_NAME
-					).installAndActivatePlugins( [
-						pluginsInstallationQueue[ 0 ],
+					return dispatch( pluginsStore ).installAndActivatePlugins( [
+						getPluginSlug( pluginsInstallationQueue[ 0 ] ),
 					] );
 				}
 			),
@@ -319,9 +327,11 @@ export const pluginInstallerMachine = createMachine(
 					input: { pluginsInstallationQueue: PluginNames[] };
 				} ) => {
 					return dispatch(
-						ONBOARDING_STORE_NAME
+						onboardingStore
 					).installAndActivatePluginsAsync(
-						pluginsInstallationQueue
+						pluginsInstallationQueue.map(
+							getPluginSlug
+						) as PluginNames[]
 					);
 				}
 			),

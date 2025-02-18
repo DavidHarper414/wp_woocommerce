@@ -13,6 +13,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { dispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import fastDeepEqual from 'fast-deep-equal/es6';
+import { store as noticesStore } from '@wordpress/notices';
 
 /**
  * Internal dependencies
@@ -67,6 +68,14 @@ export const SettingsProvider = ( {
 				...prevValue,
 				[ field ]: newValue,
 			} ) );
+		},
+		[]
+	);
+
+	const setPickupLocationsState = useCallback(
+		( newLocations: SortablePickupLocation[] ) => {
+			setIsDirty( true );
+			setPickupLocations( newLocations );
 		},
 		[]
 	);
@@ -154,7 +163,7 @@ export const SettingsProvider = ( {
 					data.pickup_locations
 				)
 			) {
-				dispatch( 'core/notices' ).createSuccessNotice(
+				dispatch( noticesStore ).createSuccessNotice(
 					__(
 						'Local Pickup settings have been saved.',
 						'woocommerce'
@@ -169,7 +178,7 @@ export const SettingsProvider = ( {
 		setSettingField,
 		readOnlySettings,
 		pickupLocations,
-		setPickupLocations,
+		setPickupLocations: setPickupLocationsState,
 		toggleLocation,
 		updateLocation,
 		isSaving,

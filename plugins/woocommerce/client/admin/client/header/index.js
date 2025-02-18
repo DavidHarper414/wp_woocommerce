@@ -14,18 +14,23 @@ import {
 } from '@woocommerce/admin-layout';
 import { getSetting } from '@woocommerce/settings';
 import { Text, useSlot } from '@woocommerce/experimental';
-import { getScreenFromPath, isWCAdmin } from '@woocommerce/navigation';
+import { getScreenFromPath, isWCAdmin, getPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
 import useIsScrolled from '../hooks/useIsScrolled';
-import { TasksReminderBar, useActiveSetupTasklist } from '../task-lists';
+import { TasksReminderBar } from '../task-lists';
 import {
 	LaunchYourStoreStatus,
 	useLaunchYourStore,
 } from '../launch-your-store';
+import {
+	OrderAttributionInstallBanner,
+	BANNER_TYPE_HEADER as ORDER_ATTRIBUTION_INSTALL_BANNER_TYPE_HEADER,
+} from '~/order-attribution-install-banner';
+import { isTaskListActive } from '~/hooks/use-tasklists-state';
 
 export const PAGE_TITLE_FILTER = 'woocommerce_admin_header_page_title';
 
@@ -51,7 +56,6 @@ export const getPageTitle = ( sections ) => {
 
 export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const headerElement = useRef( null );
-	const activeSetupList = useActiveSetupTasklist();
 	const siteTitle = getSetting( 'siteTitle', '' );
 	const pageTitle = getPageTitle( sections );
 	const { isScrolled } = useIsScrolled();
@@ -128,12 +132,25 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const showLaunchYourStoreStatus =
 		isHomescreen && launchYourStoreEnabled && ! isLoading;
 
+	const isAnalyticsOverviewScreen =
+		isWCAdmin() && getPath() === '/analytics/overview';
+
+	const isReactifyPaymentsSettingsScreen = Boolean(
+		window.wcAdminFeatures?.[ 'reactify-classic-payments-settings' ] &&
+			query?.page === 'wc-settings' &&
+			query?.tab === 'checkout'
+	);
+
+	const showReminderBar = Boolean(
+		isTaskListActive( 'setup' ) && ! isReactifyPaymentsSettingsScreen
+	);
+
 	return (
 		<div className={ className } ref={ headerElement }>
-			{ activeSetupList && (
+			{ showReminderBar && (
 				<TasksReminderBar
 					updateBodyMargin={ updateBodyMargin }
-					taskListId={ activeSetupList }
+					taskListId="setup"
 				/>
 			) }
 			<div className="woocommerce-layout__header-wrapper">
@@ -161,6 +178,14 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 				</Text>
 
 				{ showLaunchYourStoreStatus && <LaunchYourStoreStatus /> }
+				{ isAnalyticsOverviewScreen && (
+					<OrderAttributionInstallBanner
+						bannerType={
+							ORDER_ATTRIBUTION_INSTALL_BANNER_TYPE_HEADER
+						}
+						eventContext="analytics-overview-header"
+					/>
+				) }
 
 				<WooHeaderItem.Slot fillProps={ { isEmbedded, query } } />
 			</div>
