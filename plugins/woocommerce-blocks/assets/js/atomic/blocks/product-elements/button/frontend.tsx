@@ -51,6 +51,9 @@ interface Store {
 	};
 }
 
+// TS error should be fixed by https://github.com/woocommerce/gutenberg/pull/1
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const { state: wooState } = store< WooStore >( 'woocommerce' );
 
 const { state } = store< Store >(
@@ -139,7 +142,6 @@ const { state } = store< Store >(
 			},
 		},
 		callbacks: {
-			// Todo: switch to a data-wp-run directive with a `useLayoutEffect` hook inside.
 			syncTempQuantityOnLoad() {
 				const context = getContext();
 				// When we instantiate this element, we sync the temporary
