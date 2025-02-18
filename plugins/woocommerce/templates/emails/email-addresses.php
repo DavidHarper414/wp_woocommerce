@@ -30,7 +30,7 @@ $email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improveme
 	<tr>
 		<td class="font-family text-align-left" style="border:0; padding:0;" valign="top" width="50%">
 			<?php if ( $email_improvements_enabled ) { ?>
-				<b><?php esc_html_e( 'Billing address', 'woocommerce' ); ?></b>
+				<b class="address-title"><?php esc_html_e( 'Billing address', 'woocommerce' ); ?></b>
 			<?php } else { ?>
 				<h2><?php esc_html_e( 'Billing address', 'woocommerce' ); ?></h2>
 			<?php } ?>
@@ -61,7 +61,7 @@ $email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improveme
 		<?php if ( ! wc_ship_to_billing_address_only() && $order->needs_shipping_address() && $shipping ) : ?>
 			<td class="font-family text-align-left" style="padding:0;" valign="top" width="50%">
 				<?php if ( $email_improvements_enabled ) { ?>
-					<b><?php esc_html_e( 'Shipping address', 'woocommerce' ); ?></b>
+					<b class="address-title"><?php esc_html_e( 'Shipping address', 'woocommerce' ); ?></b>
 				<?php } else { ?>
 					<h2><?php esc_html_e( 'Shipping address', 'woocommerce' ); ?></h2>
 				<?php } ?>

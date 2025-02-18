@@ -185,6 +185,8 @@ body {
 }
 
 #body_content table td td.email-additional-content {
+	color: <?php echo esc_attr( $text ); ?>;
+	font-family: <?php echo $safe_font_family; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
 	padding: 32px 0 0;
 }
 
@@ -344,6 +346,7 @@ body {
 
 .address {
 	<?php if ( $email_improvements_enabled ) { ?>
+		color: <?php echo esc_attr( $text ); ?>;
 		font-style: normal;
 		padding: 8px 0;
 	<?php } else { ?>
@@ -364,7 +367,9 @@ body {
 	margin: 0 0 12px 0;
 }
 
-.text {
+.text,
+.address-title,
+.order-item-data {
 	color: <?php echo esc_attr( $text ); ?>;
 	font-family: <?php echo $safe_font_family; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
 }
