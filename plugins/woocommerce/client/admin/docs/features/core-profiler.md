@@ -124,6 +124,10 @@ This is used to retrieve the URL that the browser should be redirected to in ord
 
 This is used to indicate to WooCommerce Admin that the Core Profiler has been completed, and this sets the Store's coming-soon mode to true. This hides the store pages from the public until the store is ready.
 
+- `dispatch( onboardingStore ).updateStoreCurrencyAndMeasurementUnits( countryCode );
+
+This is used to update the store's currency and measurement units, which can be found under WooCommerce → Settings → General → Currency Options and WooCommerce → Settings → Products → Measurements.
+
 ### Extensions Installation
 
 The Core Profiler has a loading screen that is shown after the Extensions page. This loading screen is meant to hide the installation of Extensions, while also giving the user a sense of progress. At the same time, some extensions take extremely long to install, and thus we have a 30 second timeout. 
