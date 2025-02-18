@@ -567,7 +567,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 					// Calculate the shipping tax amount to refund from the parent order.
 					$shipping_tax                 = (float) $parent_order->get_shipping_tax();
-					$total_shipping_tax_refunded  = $parent_order->get_total_tax_refunded( false, true );
+					$total_shipping_tax_refunded  = $parent_order->get_total_shipping_tax_refunded();
 					$total_shipping_tax_to_refund = $shipping_tax - $total_shipping_tax_refunded;
 
 					if ( $total_shipping_tax_to_refund > 0 ) {
