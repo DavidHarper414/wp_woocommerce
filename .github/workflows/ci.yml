@@ -495,7 +495,7 @@ jobs:
         run: |
             echo "Validating: ${{ steps.validate_missing.outputs.passed }}"
             filter='';
-            for package in $( echo "${{ steps.validate_missing.outputs.passed }}" | tr " " "" | tr "," "\n" ); do
+            for package in $( echo "${{ steps.validate_missing.outputs.passed }}" | tr -d "[:space:]" | tr "," "\n" ); do
                 filter="$filter --filter $package"
             done
             echo "Populated filter: $filter"
