@@ -131,11 +131,7 @@ test.describe( 'Add product attributes', { tag: tags.GUTENBERG }, () => {
 			// "Update" triggers a lot of requests. Wait for the final one to complete before proceeding.
 			// Otherwise, succeeding steps would be flaky.
 			const finalRequestResolution = page.waitForResponse( ( response ) =>
-				response
-					.url()
-					.includes(
-						'options=woocommerce_task_list_reminder_bar_hidden'
-					)
+				response.url().includes( 'options' )
 			);
 			await page
 				.locator( '#publishing-action' )
