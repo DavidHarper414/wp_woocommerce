@@ -21,6 +21,7 @@ import {
 	TaskListType,
 	TaskType,
 	PaymentGateway,
+	paymentGatewaysStore,
 } from '@woocommerce/data';
 import { dispatch, resolveSelect } from '@wordpress/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -138,7 +139,7 @@ export const getWooPaymentsStatus = async () => {
 
 	// Check the gateway is installed
 	const paymentGateways: PaymentGateway[] = await resolveSelect(
-		PAYMENT_GATEWAYS_STORE_NAME
+		paymentGatewaysStore
 	).getPaymentGateways();
 	const enabledPaymentGateways = paymentGateways.filter(
 		( gateway ) => gateway.enabled
