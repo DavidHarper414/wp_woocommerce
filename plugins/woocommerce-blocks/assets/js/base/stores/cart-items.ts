@@ -56,8 +56,7 @@ function emitSyncEvent() {
 	++eventId;
 
 	window.dispatchEvent(
-		// Question: What are the usual names for WooCommerce events?
-		new CustomEvent( 'woocommerce-cart-sync-required', {
+		new CustomEvent( 'wc-blocks_cart_sync_required', {
 			detail: { type: 'from_iAPI', id: eventId },
 		} )
 	);
@@ -195,7 +194,7 @@ export const { state, actions } = ( store as typeof StoreType )< Store >(
 );
 
 window.addEventListener(
-	'woocommerce-cart-sync-required',
+	'wc-blocks_cart_sync_required',
 	async ( event: Event ) => {
 		const customEvent = event as CustomEvent< {
 			type: string;
