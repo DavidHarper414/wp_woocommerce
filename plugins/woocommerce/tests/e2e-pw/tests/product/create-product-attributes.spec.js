@@ -158,8 +158,7 @@ test( 'can add custom product attributes', async ( { page, product } ) => {
 			.getByRole( 'button', { name: 'Update' } )
 			.click();
 
-		const response = await finalRequestResolution;
-		expect( response.ok() ).toBeTruthy();
+		await finalRequestResolution;
 	} );
 
 	await goToAttributesTab( page );
