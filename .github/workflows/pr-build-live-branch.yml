@@ -47,9 +47,9 @@ jobs:
             - name: Get current version
               id: version
               run: |
-                  current_version=$( cat plugins/woocommerce/woocommerce.php | grep 'Version: ' | head -n1 )
-                  echo "Detected version: ${current_version/Version: /}"
-                  echo "version=${current_version/Version: /}" >> $GITHUB_OUTPUT
+                  current_version=$( cat plugins/woocommerce/woocommerce.php | grep -oP '(?<=Version: )(.+)' | head -n1 )
+                  echo "Detected version: $current_version"
+                  echo "version=$current_version" >> $GITHUB_OUTPUT
 
             - name: Setup WooCommerce Monorepo
               uses: ./.github/actions/setup-woocommerce-monorepo
