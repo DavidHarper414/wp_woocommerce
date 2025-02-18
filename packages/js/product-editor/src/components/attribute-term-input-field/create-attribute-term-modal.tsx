@@ -40,8 +40,9 @@ export const CreateAttributeTermModal: React.FC<
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const [ isCreating, setIsCreating ] = useState( false );
-	const { createProductAttributeTerm, invalidateResolutionForStoreSelector } =
-		useDispatch( experimentalProductAttributeTermsStore );
+	const { createProductAttributeTerm } = useDispatch(
+		experimentalProductAttributeTermsStore
+	);
 
 	const onAdd = async ( attribute: Partial< ProductAttributeTerm > ) => {
 		recordEvent( 'product_attribute_term_add', {
@@ -56,8 +57,6 @@ export const CreateAttributeTermModal: React.FC<
 			recordEvent( 'product_attribute_term_add_success', {
 				source: TRACKS_SOURCE,
 			} );
-			// @ts-expect-error TODO: Investigate - is this correct?
-			invalidateResolutionForStoreSelector( 'getProductAttributes' );
 			setIsCreating( false );
 			onCreated( newAttribute );
 		} catch ( e ) {

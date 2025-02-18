@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { register } from '@wordpress/data';
-
-/**
  * Internal dependencies
  */
 import { STORE_NAME, WC_PRODUCT_TAGS_NAMESPACE } from './constants';
@@ -20,7 +15,5 @@ export const store = createCrudDataStore<
 	pluralResourceName: 'ProductTags',
 	namespace: WC_PRODUCT_TAGS_NAMESPACE,
 } );
-
-register( store );
 
 export const EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME = STORE_NAME;
