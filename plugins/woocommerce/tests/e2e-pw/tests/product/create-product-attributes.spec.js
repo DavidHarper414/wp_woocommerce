@@ -33,7 +33,6 @@ const test = baseTest.extend( {
 		let product = getFakeProduct( { type: 'variable' } );
 
 		await api.post( 'products', product ).then( ( response ) => {
-			console.log( 'Product created:', response.data );
 			product = response.data;
 		} );
 
