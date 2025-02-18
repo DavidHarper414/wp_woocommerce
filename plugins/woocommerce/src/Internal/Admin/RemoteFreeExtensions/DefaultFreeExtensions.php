@@ -606,7 +606,7 @@ class DefaultFreeExtensions {
 				'label'            => __( 'WooCommerce.com Update Manager', 'woocommerce' ),
 				'image_url'        => self::get_woo_logo(),
 				'description'      => __( 'Easily manage updates for WooCommerce.com plugins, ensuring security and access to the latest features.', 'woocommerce' ),
-				'learn_more_link'  => 'https://woocommerce.com/posts/introducing-woo-com-update-manager/',
+				'learn_more_link'  => 'https://woocommerce.com/document/managing-woocommerce-com-subscriptions/#woo-update-manager',
 				'install_priority' => 5,
 			),
 			'mailpoet'                      => array(
