@@ -153,7 +153,7 @@
           "menu_title": "Frequently Asked Questions",
           "tags": "reference",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/faq.md",
-          "hash": "99b5533f684f62498098d55a6ba1e2dba71664cca7cf35d8c4272dd24d6686fa",
+          "hash": "3289920c5224a5c392617620b839df1454431257abf2162744b1fa9040314378",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/faq.md",
           "id": "041787aca25af363a5eff3e710bd669cc8aebc4b",
           "links": {
@@ -804,7 +804,7 @@
           "menu_title": "Implement merchant onboarding",
           "tags": "how-to",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/extension-development/handling-merchant-onboarding.md",
-          "hash": "f53a89603209f12124eff5d21b3abb3edd2f8d07d6819522100c8e0e03c5d5e6",
+          "hash": "b91ddd5c7535716f03dee5e650001eb3e1f63fcdf54c73e41f320041793ffc0d",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/extension-development/handling-merchant-onboarding.md",
           "id": "89fe15dc232379f546852822230c334d3d940b93"
         },
@@ -1525,6 +1525,13 @@
       "categories": []
     },
     {
+      "content": "\n**The Store API provides public Rest API endpoints for the development of customer-facing cart, checkout, and product functionality. It follows many of the patterns used in the [WordPress REST API](https://developer.wordpress.org/rest-api/key-concepts/).**\n\n In contrast to the WooCommerce REST API, the Store API is unauthenticated and does not provide access to sensitive store data or other customer information.\n\nPlease see the [Store API Documentation on GitHub](https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce/src/StoreApi/README.md) for more information.\n",
+      "category_slug": "store-api",
+      "category_title": "Store API",
+      "posts": [],
+      "categories": []
+    },
+    {
       "content": "\nProperly setting up your test environment and writing tests when contributing to WooCommerce core are essential parts of our development pipeline. The links below are also included in our [Contributing Guidelines](https://github.com/woocommerce/woocommerce/blob/trunk/.github/CONTRIBUTING.md) on GitHub.\n\nIf you have any questions about testing please reach out to the developer community in our public channels([Developer Blog](https://developer.woocommerce.com/blog/), [GitHub Discussions](https://github.com/woocommerce/woocommerce/discussions), or [Community Slack](https://woocommerce.com/community-slack/)).\n\n## Unit Testing\n\n[End-to-end tests](https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce/tests/e2e-pw) are powered by `Playwright`. The test site is spun up using `wp-env` ([recommended](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)), but we will continue to support `e2e-environment` in the meantime, and slowly [deprecate](https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce/tests/e2e/README.md) `Puppeteer` testing. \n\n## API Testing\n\n`api-core-tests` is a [package](https://github.com/woocommerce/woocommerce/tree/trunk/packages/js/api-core-tests) that contains automated API tests for WooCommerce, based on `Playwright` and `wp-env`. It supersedes the SuperTest based `api-core-tests` package and `e2e-environment` setup, which we will gradually deprecate.\n\n## Calls for Testing\n\nKeep tabs on calls for testing on our developer blog, and make sure to read our beta testing instructions to help us build new features and enhancements.\n",
       "category_slug": "testing",
       "category_title": "Testing",
@@ -1737,7 +1744,7 @@
           "post_title": "User Experience Guidelines - Payment Button Size and Anatomy",
           "menu_title": "Payment Button Size",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/ux-guidelines-payments/payment-button-size.md",
-          "hash": "b9165eb27a79bb696d7f0fcea1ef8a36f56ffd01501447f4c266c95f515a8ee1",
+          "hash": "0be63cb8f44339510f92b6ce2cd9c39b751f2d468e49a34fbd73a548f1f79c6d",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/ux-guidelines-payments/payment-button-size.md",
           "id": "0920df1611e1b1b3e2f33c810a8f8e8ae09dd67c"
         },
@@ -1745,7 +1752,7 @@
           "post_title": "User Experience Guidelines - Payment Button Layout",
           "menu_title": "Payment Button Layout",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/ux-guidelines-payments/payment-button-layout.md",
-          "hash": "bc518454d8552c5da08d9635799c578d730341b115f7f8a63e9123628242c772",
+          "hash": "662daf80937372a1b8848a58e38417a5ab69c0c0f4fe55a59509d74494561af2",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/ux-guidelines-payments/payment-button-layout.md",
           "id": "96caecc340794e5c80af271e5cc844e0b3d80a04"
         }
@@ -1928,5 +1935,5 @@
       "categories": []
     }
   ],
-  "hash": "ffb2b8739849e1c07de692d4707b5dcf9f224796b26582d93f66394b443cc5f0"
+  "hash": "54e68eead4fab95dd4bc567b3c258922c5de2e2fc488d18217998bf94c3c4184"
 }
