@@ -16,7 +16,7 @@ import { StoreLocation } from './components/store-location';
 import { WCSBanner } from './components/wcs-banner';
 import { TaskProps, ShippingRecommendationProps } from './types';
 import { redirectToWCSSettings } from './utils';
-import { MarketplaceLink } from '~/marketplace/components/marketplace-link/marketplace-link';
+import { TrackedLink } from '~/components/tracked-link/tracked-link';
 
 /**
  * Plugins required to automate shipping.
@@ -141,16 +141,19 @@ export const ShippingRecommendation: React.FC<
 					/>
 				</CardBody>
 			</Card>
-			<MarketplaceLink
-				as="div"
-				className="woocommerce-task-dashboard__container woocommerce-task-marketplace-link"
-				translatedString={ __(
-					// translators: {{sbLink}} is a placeholder for a html element.
-					'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more shipping, delivery, and fulfillment solutions.',
+			<TrackedLink
+				textProps={ {
+					as: 'div',
+					className:
+						'woocommerce-task-dashboard__container woocommerce-task-marketplace-link',
+				} }
+				message={ __(
+					// translators: {{Link}} is a placeholder for a html element.
+					'Visit the {{Link}}Official WooCommerce Marketplace{{/Link}} to find more shipping, delivery, and fulfillment solutions.',
 					'woocommerce'
 				) }
 				eventName="tasklist_shipping_recommendation_visit_marketplace_click"
-				marketplaceUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping-delivery-and-fulfillment"
+				targetUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping-delivery-and-fulfillment"
 			/>
 		</div>
 	);

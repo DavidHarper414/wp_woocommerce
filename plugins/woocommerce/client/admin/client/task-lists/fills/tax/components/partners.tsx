@@ -10,7 +10,7 @@ import clsx from 'clsx';
  * Internal dependencies
  */
 import { TaxChildProps } from '../utils';
-import { MarketplaceLink } from '~/marketplace/components/marketplace-link/marketplace-link';
+import { TrackedLink } from '~/components/tracked-link/tracked-link';
 import './partners.scss';
 
 export const Partners = ( {
@@ -67,16 +67,19 @@ export const Partners = ( {
 					</ul>
 				</CardBody>
 			</Card>
-			<MarketplaceLink
-				as="div"
-				className="woocommerce-task-dashboard__container woocommerce-task-marketplace-link"
-				translatedString={ __(
-					// translators: {{sbLink}} is a placeholder for a html element.
-					'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more tax solutions.',
+			<TrackedLink
+				textProps={ {
+					as: 'div',
+					className:
+						'woocommerce-task-dashboard__container woocommerce-task-marketplace-link',
+				} }
+				message={ __(
+					// translators: {{Link}} is a placeholder for a html element.
+					'Visit the {{Link}}Official WooCommerce Marketplace{{/Link}} to find more tax solutions.',
 					'woocommerce'
 				) }
 				eventName="tasklist_tax_visit_marketplace_click"
-				marketplaceUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=operations"
+				targetUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=operations"
 			/>
 		</>
 	);

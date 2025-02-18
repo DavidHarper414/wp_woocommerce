@@ -22,7 +22,6 @@ import { List, Placeholder as ListPlaceholder } from './components/List';
 import { Setup, Placeholder as SetupPlaceholder } from './components/Setup';
 import { WCPaySuggestion } from './components/WCPay';
 import { WCPayBNPLSuggestion } from './components/WCPayBNPL';
-import { MarketplaceLink } from '~/marketplace/components/marketplace-link/marketplace-link';
 import { getCountryCode } from '~/dashboard/utils';
 import {
 	getEnrichedPaymentGateways,
@@ -34,6 +33,7 @@ import {
 import './plugins/Bacs';
 import './payment-gateway-suggestions.scss';
 import { getPluginSlug } from '~/utils';
+import { TrackedLink } from '~/components/tracked-link/tracked-link';
 
 export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
@@ -267,14 +267,14 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 			paymentGateways={ additionalGateways }
 			markConfigured={ markConfigured }
 			footerLink={
-				<MarketplaceLink
-					translatedString={ __(
-						// translators: {{sbLink}} is a placeholder for a html element.
-						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find additional payment providers.',
+				<TrackedLink
+					message={ __(
+						// translators: {{Link}} is a placeholder for a html element.
+						'Visit the {{Link}}Official WooCommerce Marketplace{{/Link}} to find additional payment providers.',
 						'woocommerce'
 					) }
 					onClickCallback={ trackSeeMore }
-					marketplaceUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways"
+					targetUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways"
 				/>
 			}
 		></List>

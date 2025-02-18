@@ -25,7 +25,7 @@ import './payment-recommendations.scss';
 import { createNoticesFromResponse } from '~/lib/notices';
 import { getPluginSlug } from '~/utils';
 import { isWcPaySupported } from './utils';
-import { MarketplaceLink } from '~/marketplace/components/marketplace-link/marketplace-link';
+import { TrackedLink } from '~/components/tracked-link/tracked-link';
 
 const WcPayPromotionGateway = document.querySelector(
 	'[data-gateway_id="pre_install_woocommerce_payments_promotion"]'
@@ -259,14 +259,14 @@ const PaymentRecommendations: React.FC = () => {
 			</CardHeader>
 			<List items={ pluginsList } />
 			<CardFooter>
-				<MarketplaceLink
-					translatedString={ __(
-						// translators: {{sbLink}} is a placeholder for a html element.
-						'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find additional payment providers.',
+				<TrackedLink
+					message={ __(
+						// translators: {{Link}} is a placeholder for a html element.
+						'Visit the {{Link}}Official WooCommerce Marketplace{{/Link}} to find additional payment providers.',
 						'woocommerce'
 					) }
 					eventName="settings_payment_recommendations_visit_marketplace_click"
-					marketplaceUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways"
+					targetUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways"
 				/>
 			</CardFooter>
 		</Card>

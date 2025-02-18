@@ -21,7 +21,7 @@ import {
 } from '../settings-recommendations/dismissable-list';
 import WooCommerceServicesItem from './woocommerce-services-item';
 import './shipping-recommendations.scss';
-import { MarketplaceLink } from '~/marketplace/components/marketplace-link/marketplace-link';
+import { TrackedLink } from '~/components/tracked-link/tracked-link';
 
 const useInstallPlugin = () => {
 	const [ pluginsBeingSetup, setPluginsBeingSetup ] = useState<
@@ -84,13 +84,13 @@ export const ShippingRecommendationsList = ( {
 			) ) }
 		</ul>
 		<CardFooter>
-			<MarketplaceLink
-				translatedString={ __(
-					// translators: {{sbLink}} is a placeholder for a html element.
-					'Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more shipping, delivery, and fulfillment solutions.',
+			<TrackedLink
+				message={ __(
+					// translators: {{Link}} is a placeholder for a html element.
+					'Visit the {{Link}}Official WooCommerce Marketplace{{/Link}} to find more shipping, delivery, and fulfillment solutions.',
 					'woocommerce'
 				) }
-				marketplaceUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping-delivery-and-fulfillment"
+				targetUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=shipping-delivery-and-fulfillment"
 				eventName="settings_shipping_recommendation_visit_marketplace_click"
 			/>
 		</CardFooter>

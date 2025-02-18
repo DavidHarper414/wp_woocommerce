@@ -7,20 +7,23 @@ import { Link } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/settings';
 import { recordEvent } from '@woocommerce/tracks';
 
-interface MarketplaceLinkProps {
+interface TextProps {
 	/**
-	 * HTML element to use for the Text component
+	 * HTML element to use for the Text component. Uses `span` by default.
 	 */
 	as?: string;
 	className?: string;
-	/**
-	 * The complete translatable string that includes {{sbLink}} and {{/sbLink}} placeholders
-	 * Example: "Visit the {{sbLink}}Official WooCommerce Marketplace{{/sbLink}} to find more tax solutions"
-	 */
-	translatedString: string;
+}
 
+interface TrackedLinkProps {
+	textProps?: TextProps;
+	/**
+	 * The complete translatable string that includes {{Link}} and {{/Link}} placeholders
+	 * Example: "Visit the {{Link}}Official WooCommerce Marketplace{{/Link}} to find more tax solutions"
+	 */
+	message: string;
 	eventName?: string;
-	marketplaceUrl: string;
+	targetUrl: string;
 	/**
 	 * Optional callback function to be called when the link is clicked
 	 * If provided, this will be called instead of the default recordEvent behavior
@@ -29,21 +32,20 @@ interface MarketplaceLinkProps {
 }
 
 /**
- * A component that renders a link to the WooCommerce Marketplace with tracking.
+ * A component that renders a link with tracking capabilities.
  */
-export const MarketplaceLink: React.FC< MarketplaceLinkProps > = ( {
-	as = '',
-	className = '',
-	translatedString,
+export const TrackedLink: React.FC< TrackedLinkProps > = ( {
+	textProps,
+	message,
 	eventName = '',
-	marketplaceUrl,
+	targetUrl,
 	onClickCallback,
 } ) => (
-	<Text as={ as } className={ className }>
+	<Text { ...textProps }>
 		{ interpolateComponents( {
-			mixedString: translatedString,
+			mixedString: message,
 			components: {
-				sbLink: (
+				Link: (
 					<Link
 						onClick={ () => {
 							if ( onClickCallback ) {
@@ -51,8 +53,7 @@ export const MarketplaceLink: React.FC< MarketplaceLinkProps > = ( {
 							} else {
 								recordEvent( eventName );
 							}
-							window.location.href =
-								getAdminLink( marketplaceUrl );
+							window.location.href = getAdminLink( targetUrl );
 							return false;
 						} }
 						href=""
