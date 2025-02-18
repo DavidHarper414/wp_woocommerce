@@ -168,7 +168,7 @@ export const Layout = ( {
 				{ isDashboardShown ? renderColumns() : renderTaskList() }
 				{ shouldShowMobileAppModal && <MobileAppModal /> }
 			</div>
-			<Card className="woocommerce-customize-store-browse-marketplace">
+			<Card className="woocommerce-home-browse-marketplace">
 				<CardHeader>
 					<Text
 						variant="title.small"
