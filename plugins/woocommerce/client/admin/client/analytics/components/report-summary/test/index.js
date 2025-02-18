@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createElement } from '@wordpress/element';
 
@@ -10,9 +10,19 @@ import { createElement } from '@wordpress/element';
  */
 import { ReportSummary } from '../';
 
-// TODO: react-18-upgrade -- For some reason after upgrading the unhover event is not being fired on .unhover(). It seems to work fine in the browser.
-// eslint-disable-next-line jest/no-disabled-tests
-describe.skip( 'ReportSummary', () => {
+const expectTooltipToBeVisible = () =>
+	expect( screen.getByRole( 'tooltip' ) ).toBeVisible();
+
+const expectTooltipToBeHidden = () =>
+	expect( screen.queryByRole( 'tooltip' ) ).not.toBeInTheDocument();
+
+const waitExpectTooltipToShow = async ( timeout = 3000 ) =>
+	await waitFor( expectTooltipToBeVisible, { timeout } );
+
+const waitExpectTooltipToHide = async ( timeout = 3000 ) =>
+	await waitFor( expectTooltipToBeHidden, { timeout } );
+
+describe( 'ReportSummary', () => {
 	function renderChart(
 		type,
 		primaryValue,
@@ -57,15 +67,20 @@ describe.skip( 'ReportSummary', () => {
 		renderChart( 'number', 1000.5, 500.25 );
 
 		expect( screen.getByText( '1,000.5' ) ).toBeInTheDocument();
-
 		const delta = screen.getByText( '100%' );
 		expect( delta ).toBeInTheDocument();
+		expectTooltipToBeHidden();
 
 		userEvent.hover( delta );
+		await waitExpectTooltipToShow();
+
 		const tooltip = await screen.findByText( 'Previous year: 500.25' );
 		expect( tooltip ).toBeInTheDocument();
 
-		userEvent.unhover( delta );
+		// press esc to close the tooltip
+		userEvent.keyboard( '{Escape}' );
+		await waitExpectTooltipToHide();
+
 		expect( screen.queryByText( 'Previous year: 500.25' ) ).toBeNull();
 	} );
 
@@ -76,12 +91,17 @@ describe.skip( 'ReportSummary', () => {
 
 		const delta = screen.getByText( '100%' );
 		expect( delta ).toBeInTheDocument();
+		expectTooltipToBeHidden();
 
 		userEvent.hover( delta );
 		const tooltip = await screen.findByText( 'Previous year: $500.25' );
+
+		expect( tooltip ).toBeInTheDocument();
 		expect( tooltip ).toBeInTheDocument();
 
-		userEvent.unhover( delta );
+		userEvent.keyboard( '{Escape}' );
+		await waitExpectTooltipToHide();
+
 		expect( screen.queryByText( 'Previous year: $500.25' ) ).toBeNull();
 	} );
 
@@ -92,12 +112,15 @@ describe.skip( 'ReportSummary', () => {
 
 		const delta = screen.getByText( '100%' );
 		expect( delta ).toBeInTheDocument();
+		expectTooltipToBeHidden();
 
 		userEvent.hover( delta );
 		const tooltip = await screen.findByText( 'Previous year: 500' );
 		expect( tooltip ).toBeInTheDocument();
 
-		userEvent.unhover( delta );
+		userEvent.keyboard( '{Escape}' );
+		await waitExpectTooltipToHide();
+
 		expect( screen.queryByText( 'Previous year: 500' ) ).toBeNull();
 	} );
 
@@ -108,12 +131,16 @@ describe.skip( 'ReportSummary', () => {
 
 		const delta = screen.getByText( '0%' );
 		expect( delta ).toBeInTheDocument();
+		expectTooltipToBeHidden();
 
 		userEvent.hover( delta );
 		const tooltip = await screen.findByText( 'Previous year: 0' );
+		await waitExpectTooltipToShow();
 		expect( tooltip ).toBeInTheDocument();
 
-		userEvent.unhover( delta );
+		userEvent.keyboard( '{Escape}' );
+		await waitExpectTooltipToHide();
+
 		expect( screen.queryByText( 'Previous year: 0' ) ).toBeNull();
 	} );
 
