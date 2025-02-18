@@ -16,6 +16,7 @@ import { Product, ProductType } from '../product-list/types';
 import { appendURLParams } from '../../utils/functions';
 import { ADMIN_URL, getAdminSetting } from '~/utils/admin-settings';
 import { NoAIBanner } from '~/customize-store/intro/intro-banners';
+import { column } from '@wordpress/icons';
 
 export default function ProductListContent( props: {
 	products: Product[];
@@ -83,7 +84,15 @@ export default function ProductListContent( props: {
 		}
 
 		// Calculate the number of complete rows we can show.
-		const completeRows = Math.floor( props.products.length / columns );
+		let completeRows = Math.floor( props.products.length / columns );
+
+		if ( columns === 1 ) {
+			completeRows = Math.min( completeRows, 4 );
+		}
+
+		if ( columns === 2 ) {
+			completeRows = Math.min( completeRows, 2 );
+		}
 
 		// Slice the products, this will get rid of any rows that are not fully filled.
 		setProductsToShow( props.products.slice( 0, completeRows * columns ) );
