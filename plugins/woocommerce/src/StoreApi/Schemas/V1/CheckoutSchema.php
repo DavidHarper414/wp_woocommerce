@@ -322,13 +322,11 @@ class CheckoutSchema extends AbstractSchema {
 		$additional_fields = array_merge( ...$args );
 		$schema            = [];
 		foreach ( $additional_fields as $key => $field ) {
-			$is_conditionally_required = ! empty( $field['rules']['required'] ) || ! empty( $field['rules']['hidden'] );
-
 			$field_schema = [
 				'description' => $field['label'],
 				'type'        => 'string',
 				'context'     => [ 'view', 'edit' ],
-				'required'    => $is_conditionally_required ? false : $field['required'],
+				'required'    => $this->additional_fields_controller->is_conditional_field( $field ) ? false : $field['required'],
 			];
 
 			if ( 'select' === $field['type'] ) {

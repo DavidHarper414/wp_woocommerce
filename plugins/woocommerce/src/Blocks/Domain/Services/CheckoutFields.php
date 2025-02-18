@@ -270,6 +270,19 @@ class CheckoutFields {
 	}
 
 	/**
+	 * Returns true if the field is conditionally required or rendered.
+	 *
+	 * @param array|string $field The field array or field key.
+	 * @return bool
+	 */
+	public function is_conditional_field( $field ) {
+		if ( is_string( $field ) ) {
+			$field = $this->additional_fields[ $field ] ?? [];
+		}
+		return ! empty( $field['rules']['required'] ) || ( ! empty( $field['hidden'] ) && is_array( $field['hidden'] ) );
+	}
+
+	/**
 	 * Validates a field against the given document object and context.
 	 *
 	 * @param array               $field The field.
@@ -389,8 +402,16 @@ class CheckoutFields {
 			return false;
 		}
 
-		// Hidden fields are not supported right now. They will be registered with hidden => false.
-		if ( ! empty( $options['hidden'] ) && true === $options['hidden'] ) {
+		if ( Features::is_enabled( 'experimental-blocks' ) && ! empty( $options['hidden'] ) && is_array( $options['hidden'] ) ) {
+			$valid = Validation::is_valid_schema( $options['hidden'] );
+
+			if ( is_wp_error( $valid ) ) {
+				$message = sprintf( 'Unable to register field with id: "%s". %s', $options['id'], $valid->get_error_message() );
+				_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
+				return false;
+			}
+		} elseif ( ! empty( $options['hidden'] ) && true === $options['hidden'] ) {
+			// Hidden fields are not supported right now. They will be registered with hidden => false.
 			$message = sprintf( 'Registering a field with hidden set to true is not supported. The field "%s" will be registered as visible.', $id );
 			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
 			// Don't return here unlike the other fields because this is not an issue that will prevent registration.

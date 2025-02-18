@@ -198,6 +198,39 @@ class Checkout extends AbstractCartRoute {
 	}
 
 	/**
+	 * Returns a document object from a REST request.
+	 *
+	 * @param \WP_REST_Request $request The REST request.
+	 * @return DocumentObject|null The document object or null if experimental blocks are not enabled.
+	 */
+	public function get_document_object_from_rest_request( \WP_REST_Request $request ) {
+		if ( ! Features::is_enabled( 'experimental-blocks' ) ) {
+			return null;
+		}
+		return new DocumentObject(
+			[
+				'customer' => [
+					'billing_address'   => $request['billing_address'],
+					'shipping_address'  => $request['shipping_address'],
+					'additional_fields' => array_intersect_key(
+						$request['additional_fields'] ?? [],
+						array_flip( $this->additional_fields_controller->get_contact_fields_keys() )
+					),
+				],
+				'checkout' => [
+					'payment_method'    => $request['payment_method'],
+					'create_account'    => $request['create_account'],
+					'customer_note'     => $request['customer_note'],
+					'additional_fields' => array_intersect_key(
+						$request['additional_fields'] ?? [],
+						array_flip( $this->additional_fields_controller->get_order_fields_keys() )
+					),
+				],
+			]
+		);
+	}
+
+	/**
 	 * Validation callback for the checkout route.
 	 *
 	 * This runs after individual field validation_callbacks have been called.
@@ -213,28 +246,7 @@ class Checkout extends AbstractCartRoute {
 		 */
 		$sanitized_request = clone $request;
 		$sanitized_request->sanitize_params();
-
-		if ( Features::is_enabled( 'experimental-blocks' ) ) {
-			$additional_field_values = $sanitized_request->get_param( 'additional_fields' ) ?? [];
-			$document_object         = new DocumentObject(
-				[
-					'customer' => [
-						'billing_address'   => $sanitized_request->get_param( 'billing_address' ),
-						'shipping_address'  => $sanitized_request->get_param( 'shipping_address' ),
-						'additional_fields' => array_intersect_key( $additional_field_values, array_flip( $this->additional_fields_controller->get_contact_fields_keys() ) ),
-					],
-					'checkout' => [
-						'payment_method'    => $sanitized_request->get_param( 'payment_method' ),
-						'create_account'    => $sanitized_request->get_param( 'create_account' ),
-						'customer_note'     => $sanitized_request->get_param( 'customer_note' ),
-						'additional_fields' => array_intersect_key( $additional_field_values, array_flip( $this->additional_fields_controller->get_order_fields_keys() ) ),
-					],
-				]
-			);
-		} else {
-			$document_object = null;
-		}
-
+		$document_object   = $this->get_document_object_from_rest_request( $sanitized_request );
 		$validate_contexts = [
 			'shipping_address' => [
 				'group'    => 'shipping',
@@ -277,19 +289,11 @@ class Checkout extends AbstractCartRoute {
 			$sanitized_field_values = (array) $sanitized_request->get_param( $context_data['param'] ) ?? [];
 
 			foreach ( $additional_fields as $field_key => $field ) {
-				$is_hidden = $this->additional_fields_controller->is_hidden_field( $field, $document_object, $context );
-
-				// Skip hidden fields from validation logic and ensure they are unset from the main request.
-				if ( $is_hidden ) {
-					$field_values[ $field_key ] = null;
-					$request->set_param( $context_data['param'], $field_values );
-					continue;
-				}
-
+				$is_hidden   = $this->additional_fields_controller->is_hidden_field( $field, $document_object, $context );
 				$is_required = $this->additional_fields_controller->is_required_field( $field, $document_object, $context );
 
-				// Skip optional fields that are not set when the request is partial.
-				if ( ! isset( $field_values[ $field_key ] ) && ( $is_partial || ! $is_required ) ) {
+				// Skip values that were not posted if the request is partial, the field is not required, or the field is hidden.
+				if ( $is_hidden || ( ! isset( $field_values[ $field_key ] ) && ( $is_partial || ! $is_required ) ) ) {
 					continue;
 				}
 
