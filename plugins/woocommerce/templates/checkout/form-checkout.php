@@ -55,7 +55,6 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 	/**
 	 * Filter to modify the output of the order review heading.
 	 *
-	 * @since x.x.x
 	 *
 	 * @param string $output The heading text.
 	 */
