@@ -218,7 +218,14 @@ final class WC_Cart_Session {
 				 */
 				$cart_contents[ $key ] = apply_filters( 'woocommerce_get_cart_item_from_session', $session_data, $values, $key );
 				if ( ! isset( $cart_contents[ $key ]['data'] ) || ! $cart_contents[ $key ]['data'] instanceof WC_Product ) {
-					// If the cart contents is missing the product object after filtering, add it back in.
+					// If the cart contents is missing the product object after filtering, something is wrong.
+					wc_doing_it_wrong(
+						__METHOD__,
+						'When filtering cart items with woocommerce_get_cart_item_from_session, each item must have a data key containing a product object.',
+						'9.8.0'
+					);
+
+					// Add the product back in.
 					$cart_contents[ $key ]['data'] = $product;
 				}
 
