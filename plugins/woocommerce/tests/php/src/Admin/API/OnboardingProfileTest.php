@@ -69,7 +69,7 @@ class OnboardingProfileTest extends WC_REST_Unit_Test_Case {
 	private function request( $endpoint, $body ) {
 		$request = new WP_REST_Request( 'POST', self::ENDPOINT . $endpoint );
 		$request->set_header( 'content-type', 'application/json' );
-		$request->set_body( json_encode( $body ) );
+		$request->set_body( wp_json_encode( $body ) );
 		$response = $this->server->dispatch( $request );
 
 		return $response;
