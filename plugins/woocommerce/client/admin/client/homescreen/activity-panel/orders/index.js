@@ -295,7 +295,7 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 			isRequesting: isRequestingActionable,
 			orderStatuses,
 			customerItems: customers,
-			currencySymbols: getCurrencySymbols(),
+			currencySymbols: getCurrencySymbols() || [],
 		};
 	} );
 
