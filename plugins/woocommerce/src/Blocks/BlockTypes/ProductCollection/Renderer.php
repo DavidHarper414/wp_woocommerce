@@ -246,7 +246,7 @@ class Renderer {
 	private function enable_client_side_navigation( $block_content ) {
 		$p = new \WP_HTML_Tag_Processor( $block_content );
 
-		// Add `data-wp-navigation-id to the product collection block.
+		// Add `data-wp-router-region to the product collection block.
 		if ( $this->is_next_tag_product_collection( $p ) && isset( $this->parsed_block ) ) {
 			$p->set_attribute(
 				'data-wp-router-region',
