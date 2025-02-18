@@ -50,12 +50,10 @@ describe( 'Shipping', () => {
 	} );
 
 	it( 'should navigate to the marketplace when clicking the Official WooCommerce Marketplace link', async () => {
-		let oldLocation: Location;
 		const mockLocation = {
 			href: 'test',
 		} as Location;
 
-		oldLocation = global.window.location;
 		mockLocation.href = 'test';
 		Object.defineProperty( global.window, 'location', {
 			value: mockLocation,
