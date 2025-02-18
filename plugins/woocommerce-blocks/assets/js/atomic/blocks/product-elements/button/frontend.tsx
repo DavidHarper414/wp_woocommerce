@@ -121,7 +121,7 @@ const { state } = store< Store >(
 				const { actions } = ( yield import(
 					'../../../../base/stores/cart-items'
 				) ) as WooStore;
-				actions.refreshCartItems();
+				yield actions.refreshCartItems();
 			},
 			handleAnimationEnd( event: AnimationEvent ) {
 				const context = getContext();

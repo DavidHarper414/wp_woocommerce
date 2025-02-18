@@ -26,8 +26,7 @@ export type Store = {
 	};
 	actions: {
 		addCartItem: ( args: { id: number; quantity: number } ) => void;
-		// Todo: Check why if I switch to an async function here the types of the store stop working.
-		refreshCartItems: () => void;
+		refreshCartItems: () => Promise< void >;
 	};
 };
 
@@ -148,18 +147,18 @@ export const { state, actions } = store< Store >( 'woocommerce', {
 				state.cart.items[ itemIndex ].quantity = previousQuantity || 0;
 			}
 		},
-		*refreshCartItems() {
+		async refreshCartItems() {
 			// Skips if there's a pending request.
 			if ( pendingRefresh ) return;
 
 			pendingRefresh = true;
 
 			try {
-				const res: Response = yield fetch(
+				const res: Response = await fetch(
 					`${ state.restUrl }wc/store/v1/cart/items`,
 					{ headers: { 'Content-Type': 'application/json' } }
 				);
-				const json: CartItemsResponse = yield res.json();
+				const json: CartItemsResponse = await res.json();
 
 				// Checks if the response contains an error.
 				if ( ! isSuccessfulResponse( res, json ) )
