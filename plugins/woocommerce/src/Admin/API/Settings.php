@@ -30,7 +30,7 @@ class Settings extends \WC_REST_Data_Controller {
 	 *
 	 * @var string
 	 */
-	protected $rest_base = 'settings';
+	protected $rest_base = 'legacy-settings';
 
 	/**
 	 * Register routes.

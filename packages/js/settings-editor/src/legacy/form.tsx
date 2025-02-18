@@ -87,7 +87,7 @@ export const Form = ( {
 		}
 
 		const response = await fetch(
-			`/?rest_route=/wc-admin/settings&${ new URLSearchParams(
+			`/?rest_route=/wc-admin/legacy-settings&${ new URLSearchParams(
 				query
 			).toString() }`,
 			{
