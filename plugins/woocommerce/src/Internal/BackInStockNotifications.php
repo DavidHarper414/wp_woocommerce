@@ -36,25 +36,20 @@ class BackInStockNotifications {
 		//TODO: can init run only in some contexts? admin + front end, rest api if it's related to BIS, but it needs to react to changes in stock levels, so can it actually be reduced..?
 		self::$db_utils = wc_get_container()->get( DatabaseUtil::class );
 
-		// Include BIS files
-		include_once WC_ABSPATH . '/includes/bis/class-wc-bis-notifications.php';
+		// Enable/disable events when the feature flag is changed.
+		add_action( 'update_option_wc_feature_woocommerce_bis_notifications_enabled', array( __CLASS__, 'update_events' ), 10, 3 );
+		add_action( 'add_option_wc_feature_woocommerce_bis_notifications_enabled', array( __CLASS__, 'handle_add_option' ), 10, 2 );
+		add_action( 'delete_option_wc_feature_woocommerce_bis_notifications_enabled', array( __CLASS__, 'handle_delete_option' ), 10, 1 );
 
-		// Hook into feature flag changes
-		add_action( 'update_option_wc_feature_woocommerce_bis_notifications_enabled', array( __CLASS__, 'maybe_setup_events' ), 10, 2 );
-		
-		// Hook into WC updates
-		add_action( 'woocommerce_update', array( __CLASS__, 'maybe_setup_events' ) );
-
-		// Check during admin init
+		// Create DB tables if they don't exist. This will be removed in the future to reduce the number of DB calls.
 		if ( is_admin() ) {
-			// Check if events need to be created during admin init.
-			add_action( 'admin_init', array( __CLASS__, 'check_events' ) );
-
-			// Create DB tables if they don't exist. This will be removed in the future to reduce the number of DB calls.
 			if ( ! self::bis_tables_exist() ) {
 				self::create_database_tables();
 			}
 		}
+
+		// Include BIS files.
+		include_once WC_ABSPATH . '/includes/bis/class-wc-bis-notifications.php';
 
 		$wc_bis = wc_get_container()->get( LegacyProxy::class )->call_function( 'WC_BIS' );
 		$wc_bis->initialize_plugin();
@@ -89,16 +84,23 @@ class BackInStockNotifications {
 	 */
 	public static function prepare() {
 
+		// This needs to run after the standalone plugin is deactivated to restore the daily task.
+		add_action( 'deactivate_woocommerce-back-in-stock-notifications/woocommerce-back-in-stock-notifications.php', array( __CLASS__, 'maybe_setup_events' ), 20 );
+		
+		// Cleanup events when WooCommerce is deactivated.
+		add_action( 'deactivate_woocommerce/woocommerce.php', array( __CLASS__, 'cleanup_events' ), 20 );
+
 		if ( ! self::is_enabled() ) {
 			return;
 		}
 
 		if ( function_exists( 'WC_BIS' ) ) {
-			// This skips the initialization of BIS plugin to avoid duplicate code & fatal errors.
-			// BIS plugin is then deactivated during plugins_loaded.10 from \Automattic\WooCommerce\Packages::on_init().
+			// This skips the initialization of BIS plugin to avoid duplicate code & fatal errors 
+			// when standalone BIS plugin is active and WC core with BIS merged is loaded.
+			// BIS plugin is then deactivated during plugins_loaded@10 priority from \Automattic\WooCommerce\Packages::on_init().
 			remove_action( 'plugins_loaded', array( WC_BIS(), 'initialize_plugin' ), 9 );
 
-			// Strictly speaking, it's not necessarily an activation request, but when WC_BIS() is present before
+			// Strictly speaking, it's not an activation request, but when WC_BIS() is present before
 			// loading BIS from core, it will fatal during init(), so init() needs to be skipped.
 			// This should only be triggered once after a plugin update during the reuqest when BIS plugin is deactivated.
 			self::$is_activation_request = true;
@@ -226,40 +228,52 @@ class BackInStockNotifications {
 		}
 	}
 
-	/**
-	 * Check if events need to be created during admin init.
-	 * This catches cases where the option was changed directly in the database.
-	 */
-	public static function check_events() {
-		// Only check occasionally to avoid unnecessary DB calls
-		$last_check = get_option( 'wc_bis_events_last_check', 0 );
-		if ( time() - $last_check < DAY_IN_SECONDS ) {
+	public static function handle_add_option( $option, $new_value ) {
+		if ( $option !== 'wc_feature_woocommerce_bis_notifications_enabled' ) {
 			return;
 		}
 
-		update_option( 'wc_bis_events_last_check', time() );
-		self::maybe_setup_events();
+		self::update_events( null, $new_value, $option );
 	}
 
-	public static function maybe_setup_events( $old_value = null, $new_value = null ) {
+	public static function handle_delete_option( $option ) {
+		if ( $option !== 'wc_feature_woocommerce_bis_notifications_enabled' ) {
+			return;
+		}
+
+		// BIS is enabled by default, so if the option is deleted, it means it's being enabled.
+		self::update_events( null, 'yes', $option );
+	}
+
+	public static function maybe_setup_events() {
+		if ( ! self::is_enabled() ) {
+			return;
+		}
+
+		if ( ! class_exists( 'WC_BIS_Install' ) ) {
+			include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
+		}
+		
+		if ( ! wp_next_scheduled( 'wc_bis_daily' ) ) {
+			wc_get_container()->get( LegacyProxy::class )->call_static( 'WC_BIS_Install', 'create_events' );
+		}
+	}
+
+	public static function update_events( $old_value = null, $new_value = null, $option = null ) {
 		// For option change, check if being disabled
 		if ( isset( $old_value ) && isset( $new_value ) && $new_value === 'no' ) {
 			self::cleanup_events();
 			return;
 		}
 
-		if ( ! self::is_enabled() ) {
-			return;
-		}
-
-		if ( ! wp_next_scheduled( 'wc_bis_daily' ) ) {
-			wc_get_container()->get( LegacyProxy::class )->call_static( 'WC_BIS_Install', 'create_events' );
-		}
+		self::maybe_setup_events();
 	}
 
 	/**
-	 * Clean up scheduled events when WooCommerce is deactivated.
-	 * This should be called from WooCommerce's deactivation hook.
+	 * Clean up scheduled BIS events when WooCommerce is deactivated.
+	 * 
+	 * This should be called from WooCommerce's deactivation hook or 
+	 * when the BIS feature is disabled via the feature flag.
 	 */
 	public static function cleanup_events() {
 		$timestamp = wp_next_scheduled( 'wc_bis_daily' );
