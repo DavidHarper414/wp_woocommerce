@@ -124,17 +124,32 @@ export default function HeaderAccount( {
 							<MenuItem
 								className="woocommerce-marketplace__menu-item"
 								href={ accountOrConnect }
-								onClick={ () =>
-									recordEvent(
-										'header_account_connect_click',
-										{ page }
-									)
-								}
+								onClick={ () => {
+									if ( isConnected ) {
+										recordEvent(
+											'header_account_view_click',
+											{ page }
+										);
+									} else {
+										recordEvent(
+											'header_account_connect_click',
+											{ page }
+										);
+									}
+								} }
 							>
 								{ connectionDetails() }
 							</MenuItem>
-							{ page === 'wc-addons' && (
-								<MenuItem href={ accountURL }>
+							{ page === 'wc-addons' && ! isConnected && (
+								<MenuItem
+									href={ accountURL }
+									onClick={ () =>
+										recordEvent(
+											'header_account_view_click',
+											{ page }
+										)
+									}
+								>
 									<Icon
 										icon={ external }
 										size={ 24 }
@@ -149,7 +164,15 @@ export default function HeaderAccount( {
 						</MenuGroup>
 						{ isConnected && (
 							<MenuGroup className="woocommerce-layout__homescreen-display-options">
-								<MenuItem onClick={ openModal }>
+								<MenuItem
+									onClick={ () => {
+										recordEvent(
+											'header_account_disconnect_click',
+											{ page }
+										);
+										openModal();
+									} }
+								>
 									<Icon
 										icon={ linkOff }
 										size={ 24 }
