@@ -25,7 +25,7 @@ import { createNoticesFromResponse } from '~/lib/notices';
 import { PluginList, PluginListProps } from './PluginList';
 import { PluginProps } from './Plugin';
 import { getPluginSlug } from '../../../utils';
-import { Promo } from './Promo';
+import { TaskPromo } from './TaskPromo';
 import { TrackedLink } from '~/components/tracked-link/tracked-link';
 
 // We display the list of plugins ordered by this list.
@@ -228,7 +228,18 @@ const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 					} ) }
 				</Card>
 			) }
-			<Promo />
+			<TaskPromo
+				title={ __( "Boost your store's potential", 'woocommerce' ) }
+				text={ __(
+					'Discover hand-picked extensions to grow your business in' +
+						' the official WooCommerce marketplace.',
+					'woocommerce'
+				) }
+				buttonHref={
+					'https://woocommerce.com/collection/grow-your-business/?utm_campaign=woocommerceplugin&utm_source=tasklist&utm_medium=product'
+				}
+				buttonText={ __( 'Start growing', 'woocommerce' ) }
+			/>
 			<TrackedLink
 				textProps={ {
 					as: 'div',
