@@ -12,9 +12,9 @@ import { dispatch } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { API_NAMESPACE } from './';
+import { API_NAMESPACE } from './constants';
 // @ts-ignore no types
-import { STORE_KEY as OPTIONS_STORE_NAME } from '../options/data/constants';
+import { STORE_KEY as optionsStore } from '../options/data/constants';
 
 /**
  * Retrieves the options for simulating a WooCommerce JavaScript error.
@@ -48,7 +48,7 @@ const getSimulateErrorOptions = async () => {
  * Deletes the option used for simulating WooCommerce JavaScript errors.
  */
 const deleteSimulateErrorOption = async () => {
-	await dispatch( OPTIONS_STORE_NAME ).deleteOption(
+	await dispatch( optionsStore ).deleteOption(
 		'wc_beta_tester_simulate_woocommerce_js_error'
 	);
 };
