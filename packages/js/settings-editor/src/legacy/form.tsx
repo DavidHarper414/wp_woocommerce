@@ -100,20 +100,27 @@ export const Form = ( {
 			}
 		);
 
-		const responseData = await response.json();
+		try {
+			const responseData = await response.json();
 
-		if ( responseData.status === 'success' ) {
-			setSettingsData( responseData.data.settingsData );
+			if ( responseData.status === 'success' ) {
+				setSettingsData( responseData.data.settingsData );
+				createNotice(
+					'success',
+					__( 'Settings saved successfully', 'woocommerce' )
+				);
+			} else {
+				const { message } = responseData;
+				createNotice( __( 'error', 'woocommerce' ), message );
+			}
+		} catch ( error ) {
 			createNotice(
-				'success',
-				__( 'Settings saved successfully', 'woocommerce' )
+				'error',
+				__( 'Failed to save settings', 'woocommerce' )
 			);
-		} else {
-			const { message } = responseData;
-			createNotice( __( 'error', 'woocommerce' ), message );
+		} finally {
+			setIsBusy( false );
 		}
-
-		setIsBusy( false );
 	};
 
 	return (
@@ -133,7 +140,12 @@ export const Form = ( {
 				/>
 			</div>
 			<div className="woocommerce-settings-content-footer">
-				<Button variant="primary" type="submit" isBusy={ isBusy }>
+				<Button
+					variant="primary"
+					type="submit"
+					isBusy={ isBusy }
+					disabled={ isBusy }
+				>
 					{ __( 'Save', 'woocommerce' ) }
 				</Button>
 			</div>
