@@ -45,7 +45,7 @@ class Settings extends \WC_REST_Data_Controller {
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'save_settings' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'permission_callback' => array( $this, 'save_items_permissions_check' ),
 					'args'                => array(
 						'schema' => array( $this, 'save_items_schema' ),
 					),
@@ -60,7 +60,7 @@ class Settings extends \WC_REST_Data_Controller {
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|boolean
 	 */
-	public function get_items_permissions_check( $request ) {
+	public function save_items_permissions_check( $request ) {
 		return current_user_can( 'manage_woocommerce' );
 	}
 
