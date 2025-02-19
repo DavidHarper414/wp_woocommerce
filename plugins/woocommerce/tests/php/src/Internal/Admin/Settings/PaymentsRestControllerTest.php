@@ -1244,4 +1244,42 @@ class PaymentsRestControllerTest extends WC_REST_Unit_Test_Case {
 				)
 			);
 	}
+
+	/**
+	 * Test getting WooPay eligibility when eligible.
+	 */
+	public function test_get_woopay_eligibility_when_eligible() {
+		// Arrange.
+		$this->mock_service
+			->expects( $this->once() )
+			->method( 'is_woopay_eligible' )
+			->willReturn( true );
+
+		// Act.
+		$request  = new WP_REST_Request( 'GET', self::ENDPOINT . '/woopay-eligibility' );
+		$response = $this->server->dispatch( $request );
+
+		// Assert.
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertTrue( $response->get_data()['is_eligible'] );
+	}
+
+	/**
+	 * Test getting WooPay eligibility when not eligible.
+	 */
+	public function test_get_woopay_eligibility_when_not_eligible() {
+		// Arrange.
+		$this->mock_service
+			->expects( $this->once() )
+			->method( 'is_woopay_eligible' )
+			->willReturn( false );
+
+		// Act.
+		$request  = new WP_REST_Request( 'GET', self::ENDPOINT . '/woopay-eligibility' );
+		$response = $this->server->dispatch( $request );
+
+		// Assert.
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertFalse( $response->get_data()['is_eligible'] );
+	}
 }
