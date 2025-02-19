@@ -60,7 +60,7 @@ export default function ConnectNotice(): JSX.Element | null {
 		short: sprintf(
 			/* translators: %s: store name set from the store settings, if not set, it will be "Your store" */
 			__(
-				'%s is not connected yet to a WooCommerce.com account. Please complete the connection.',
+				'%s is not yet connected to a WooCommerce.com account. Please complete the connection.',
 				'woocommerce'
 			),
 			formattedStoreName
