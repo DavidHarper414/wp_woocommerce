@@ -91,11 +91,11 @@ function getEdit<
 	};
 }
 
-let requiresExperimentalRole = isWpVersion( '6.5', '<=' );
+let requiresExperimentalRole = isWpVersion( '6.7', '<' );
 const adminSettings: { gutenberg_version?: string } = getSetting( 'admin' );
 if ( requiresExperimentalRole && adminSettings.gutenberg_version ) {
 	requiresExperimentalRole =
-		parseFloat( adminSettings?.gutenberg_version ) >= 19.5;
+		parseFloat( adminSettings?.gutenberg_version ) < 19.4;
 }
 
 function augmentAttributes<

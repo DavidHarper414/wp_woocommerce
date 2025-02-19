@@ -221,7 +221,7 @@ class BlockRegistry {
 				);
 				$gutenberg_version = $gutenberg_data['Version'];
 			}
-			return version_compare( $gutenberg_version, '19.5', '>=' );
+			return version_compare( $gutenberg_version, '19.4', '>=' );
 		}
 
 		return false;
