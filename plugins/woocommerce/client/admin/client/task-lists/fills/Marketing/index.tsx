@@ -242,7 +242,7 @@ const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 					} ) }
 				</Card>
 			) }
-			{ window.wcTracks.isEnabled && (
+			{ window?.wcTracks?.isEnabled && (
 				<TaskPromo
 					title={ __(
 						"Boost your store's potential",
