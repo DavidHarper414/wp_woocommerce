@@ -45,7 +45,7 @@ class WC_REST_Data_Currencies_Controller extends WC_REST_Data_Controller {
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 					'args'                => array(
 						'include_extra' => array(
-							'description' => __( 'Include currency position, thousand separator, decimal separator, number of decimals.', 'woocommerce' ),
+							'description' => __( 'Include currency_position, thousand_separator, decimal_separator, and number_of_decimals.', 'woocommerce' ),
 							'type'        => 'boolean',
 							'default'     => false,
 						),
