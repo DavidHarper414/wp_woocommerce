@@ -104,13 +104,13 @@ class Settings extends \WC_REST_Data_Controller {
 				WC_Admin_Settings::save();
 			}
 
-            $setting_pages = \WC_Admin_Settings::get_settings_pages();
+			$setting_pages = \WC_Admin_Settings::get_settings_pages();
 
-            // Reinitialize all setting pages in case behavior is dependent on saved values.
-            foreach ( $setting_pages as $key => $setting_page ) {
-                $class_name = get_class($setting_page);
-                $setting_pages[$key] = new $class_name();
-            }
+			// Reinitialize all setting pages in case behavior is dependent on saved values.
+			foreach ( $setting_pages as $key => $setting_page ) {
+				$class_name            = get_class( $setting_page );
+				$setting_pages[ $key ] = new $class_name();
+			}
 
 			$data = Init::get_page_data( array(), $setting_pages );
 
