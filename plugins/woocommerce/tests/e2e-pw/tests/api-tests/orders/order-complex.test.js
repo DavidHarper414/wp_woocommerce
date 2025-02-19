@@ -108,7 +108,7 @@ test.describe( 'Orders API test', () => {
 		 * If not, fail immediately.
 		 */
 		for ( const name of [ 'Reduced rate', 'Zero rate' ] ) {
-			const response_createTaxClasses = await request.post(
+			const responseCreateTaxClasses = await request.post(
 				'./wp-json/wc/v3/taxes/classes',
 				{
 					data: {
@@ -117,7 +117,7 @@ test.describe( 'Orders API test', () => {
 				}
 			);
 
-			if ( response_createTaxClasses.status() === 400 ) {
+			if ( responseCreateTaxClasses.status() === 400 ) {
 				const expectedCodes = [
 					'woocommerce_rest_tax_class_exists',
 					'woocommerce_rest_tax_class_slug_exists',
@@ -126,14 +126,13 @@ test.describe( 'Orders API test', () => {
 					'Tax class already exists',
 					'Tax class slug already exists',
 				];
-				const { code, message } =
-					await response_createTaxClasses.json();
+				const { code, message } = await responseCreateTaxClasses.json();
 				expect( expectedCodes ).toContain( code );
 				expect( expectedMessages ).toContain( message );
 			}
 
-			if ( response_createTaxClasses.ok() ) {
-				const { slug } = await response_createTaxClasses.json();
+			if ( responseCreateTaxClasses.ok() ) {
+				const { slug } = await responseCreateTaxClasses.json();
 				taxClassSlugsToTearDown.push( slug );
 			}
 		}
