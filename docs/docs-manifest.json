@@ -248,9 +248,12 @@
               "menu_title": "Cart Line Items",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/available-filters/cart-line-items.md",
-              "hash": "593f72b214e9843442f8d064374984d45103fd0495bbb54eef08d6f2751b0f86",
+              "hash": "51d4c16c5c60f5ad6aad52871d9b82f348b9b075f8437a47ba19eb0d1d86faa3",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/available-filters/cart-line-items.md",
-              "id": "97881b973dc1d08a54c54e0a04ecb75ee48dcee2"
+              "id": "97881b973dc1d08a54c54e0a04ecb75ee48dcee2",
+              "links": {
+                "./README.md": "4d56fe70f40a64b52b2970d487e5f0527f7234fb"
+              }
             },
             {
               "post_title": "Cart and Checkout Filters - Inner block types",
@@ -1936,5 +1939,5 @@
       "categories": []
     }
   ],
-  "hash": "cd18c5be8f4f5e5e674993e8918f114e72a8a147cdf65a64f9f535f30d1289af"
+  "hash": "63ed536238ce6e7c709880b4d8372d5101760f09a3f2cca73d955dab6e7be1a1"
 }
