@@ -146,8 +146,6 @@ export const AttributeTermInputField: React.FC<
 				source: TRACKS_SOURCE,
 			} );
 			onChange( [ ...value, newAttribute ] );
-			// @ts-expect-error TODO: Investigate - is this correct?
-			invalidateResolutionForStoreSelector( 'getProductAttributes' );
 			invalidateResolutionForStoreSelector( 'getProductAttributeTerms' );
 			setIsCreatingTerm( false );
 		} catch ( err: unknown ) {
