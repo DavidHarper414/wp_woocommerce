@@ -16,6 +16,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { registerPlugin } from '@wordpress/plugins';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
 import { getNewPath } from '@woocommerce/navigation';
+import { getAdminLink } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -26,7 +27,6 @@ import { PluginList, PluginListProps } from './PluginList';
 import { PluginProps } from './Plugin';
 import { getPluginSlug } from '../../../utils';
 import { TaskPromo } from './TaskPromo';
-import { TrackedLink } from '~/components/tracked-link/tracked-link';
 
 // We display the list of plugins ordered by this list.
 const ALLOWED_PLUGIN_LISTS = [ 'task-list/grow', 'task-list/reach' ];
@@ -167,14 +167,14 @@ const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 
 	useEffect( () => {
 		if ( window.wcTracks.isEnabled ) {
-			recordEvent( 'marketplace_task_promo_shown', {
+			recordEvent( 'task_marketing_marketplace_promo_shown', {
 				task: 'marketing',
 			} );
 		}
 	}, [] );
 
 	const trackPromoButtonClick = () => {
-		recordEvent( 'marketplace_task_promo_button_click', {
+		recordEvent( 'task_marketing_marketplace_promo_clicked', {
 			task: 'marketing',
 		} );
 	};
@@ -253,9 +253,9 @@ const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 							' the official WooCommerce marketplace.',
 						'woocommerce'
 					) }
-					buttonHref={
-						'https://woocommerce.com/collection/grow-your-business/?utm_campaign=woocommerceplugin&utm_source=tasklist&utm_medium=product'
-					}
+					buttonHref={ getAdminLink(
+						'admin.php?page=wc-admin&tab=extensions&path=%2Fextensions&category=marketing-extensions'
+					) }
 					buttonText={ __( 'Start growing', 'woocommerce' ) }
 					onButtonClick={ trackPromoButtonClick }
 				/>
