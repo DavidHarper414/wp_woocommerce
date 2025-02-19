@@ -252,7 +252,6 @@ class Renderer {
 				'data-wp-router-region',
 				'wc-product-collection-' . $this->parsed_block['attrs']['queryId']
 			);
-			$p->set_attribute( 'data-wp-context', '{}' );
 			$block_content = $p->get_updated_html();
 		}
 
