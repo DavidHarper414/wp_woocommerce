@@ -52,7 +52,10 @@ async function checkShippingRateInCart( page, product, checks ) {
 	const total = checks.cost
 		? (
 				parseFloat( product.regular_price ) + parseFloat( checks.cost )
-		  ).toFixed( 2 )
+		  ).toLocaleString( 'en-US', {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2,
+		  } )
 		: product.regular_price;
 
 	await expect( page.locator( 'td[data-title="Total"]' ) ).toContainText(
