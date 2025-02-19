@@ -1,3 +1,33 @@
+diff --git a/lib/build-docker-compose-config.js b/lib/build-docker-compose-config.js
+index a1a4f68256b688efecd0da79282bc7e9f1ed1f1c..b2cc74e4ae897303246226a26de4b1f663035bf4 100644
+--- a/lib/build-docker-compose-config.js
++++ b/lib/build-docker-compose-config.js
+@@ -181,7 +181,7 @@ module.exports = function buildDockerComposeConfig( config ) {
+ 		config.env.tests.phpmyadminPort ?? ''
+ 	}}:80`;
+
+-	return {
++	const generatedConfiguration = {
+ 		services: {
+ 			mysql: {
+ 				image: 'mariadb:lts',
+@@ -303,4 +303,16 @@ module.exports = function buildDockerComposeConfig( config ) {
+ 			'tests-user-home': {},
+ 		},
+ 	};
++
++	if ( process.env.CI || false ) {
++		delete generatedConfiguration.services['mysql'];
++		delete generatedConfiguration.services['wordpress'];
++		delete generatedConfiguration.services['cli'];
++		delete generatedConfiguration.services['phpmyadmin'];
++		delete generatedConfiguration.services['tests-phpmyadmin'];
++		delete generatedConfiguration.volumes['mysql'];
++		delete generatedConfiguration.volumes['wordpress'];
++	}
++
++	return generatedConfiguration;
+ };
 diff --git a/lib/commands/start.js b/lib/commands/start.js
 index db05b82060d2c51381d07463b620c2fb549df027..4405537adc3bf9694bd43c30646d86062f3bf4ba 100644
 --- a/lib/commands/start.js
