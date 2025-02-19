@@ -189,6 +189,11 @@ class WC_Frontend_Scripts {
 		$version = Constants::get_constant( 'WC_VERSION' );
 
 		$register_scripts = array(
+			'ajax-add-to-cart'           => array(
+				'src'     => self::get_asset_url( 'assets/js/frontend/ajax-add-to-cart' . $suffix . '.js' ),
+				'deps'    => array( 'jquery' ),
+				'version' => $version,
+			),
 			'flexslider'                 => array(
 				'src'     => self::get_asset_url( 'assets/js/flexslider/jquery.flexslider' . $suffix . '.js' ),
 				'deps'    => array( 'jquery' ),
@@ -422,6 +427,11 @@ class WC_Frontend_Scripts {
 				add_action( 'wp_footer', 'woocommerce_photoswipe' );
 			}
 			self::enqueue_script( 'wc-single-product' );
+		}
+
+		// Load AJAX add to cart script on single product pages only.
+		if ( is_product() && 'yes' === get_option( 'woocommerce_enable_ajax_add_to_cart' ) ) {
+			self::enqueue_script( 'ajax-add-to-cart' );
 		}
 
 		// Only enqueue the geolocation script if the Default Current Address is set to "Geolocate
