@@ -57,6 +57,7 @@ export default function ProductFeaturedBanner() {
 						className={ `carousel-slide ${
 							index === activeIndex ? 'active' : ''
 						}` }
+						aria-hidden={ index !== activeIndex }
 					>
 						<IconWithText
 							icon={ slide.icon }
