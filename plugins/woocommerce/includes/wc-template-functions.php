@@ -1809,9 +1809,11 @@ if ( ! function_exists( 'woocommerce_template_single_rating' ) ) {
 	 * Output the product rating.
 	 */
 	function woocommerce_template_single_rating() {
-		if ( post_type_supports( 'product', 'comments' ) ) {
-			wc_get_template( 'single-product/rating.php' );
+		if ( ! post_type_supports( 'product', 'comments' ) || ! is_a( $GLOBALS['product'] ?? null, \WC_Product::class ) ) {
+			return;
 		}
+
+		wc_get_template( 'single-product/rating.php' );
 	}
 }
 if ( ! function_exists( 'woocommerce_template_single_price' ) ) {
@@ -1820,6 +1822,10 @@ if ( ! function_exists( 'woocommerce_template_single_price' ) ) {
 	 * Output the product price.
 	 */
 	function woocommerce_template_single_price() {
+		if ( ! is_a( $GLOBALS['product'] ?? null, \WC_Product::class ) ) {
+			return;
+		}
+
 		wc_get_template( 'single-product/price.php' );
 	}
 }
@@ -1829,6 +1835,10 @@ if ( ! function_exists( 'woocommerce_template_single_excerpt' ) ) {
 	 * Output the product short description (excerpt).
 	 */
 	function woocommerce_template_single_excerpt() {
+		if ( ! isset( $GLOBALS['post']->post_excerpt ) ) {
+			return;
+		}
+
 		wc_get_template( 'single-product/short-description.php' );
 	}
 }
@@ -1838,6 +1848,10 @@ if ( ! function_exists( 'woocommerce_template_single_meta' ) ) {
 	 * Output the product meta.
 	 */
 	function woocommerce_template_single_meta() {
+		if ( ! is_a( $GLOBALS['product'] ?? null, \WC_Product::class ) ) {
+			return;
+		}
+
 		wc_get_template( 'single-product/meta.php' );
 	}
 }
@@ -2385,8 +2399,11 @@ if ( ! function_exists( 'woocommerce_cross_sell_display' ) ) {
 		if ( is_checkout() ) {
 			return;
 		}
+
 		// Get visible cross sells then sort them at random.
-		$cross_sells = array_filter( array_map( 'wc_get_product', WC()->cart->get_cross_sells() ), 'wc_products_array_filter_visible' );
+		$cross_sells = isset( WC()->cart )
+			? array_filter( array_map( 'wc_get_product', WC()->cart->get_cross_sells() ), 'wc_products_array_filter_visible' )
+			: array();
 
 		wc_set_loop_prop( 'name', 'cross-sells' );
 		wc_set_loop_prop( 'columns', apply_filters( 'woocommerce_cross_sells_columns', $columns ) );
@@ -3048,6 +3065,18 @@ if ( ! function_exists( 'woocommerce_form_field' ) ) {
 			$args['class'] = array( $args['class'] );
 		}
 
+		if ( is_string( $args['label_class'] ) ) {
+			$args['label_class'] = array( $args['label_class'] );
+		}
+
+		if ( is_null( $value ) ) {
+			$value = $args['default'];
+		}
+
+		// Custom attribute handling.
+		$custom_attributes         = array();
+		$args['custom_attributes'] = array_filter( (array) $args['custom_attributes'], 'strlen' );
+
 		if ( $args['required'] ) {
 			// hidden inputs are the only kind of inputs that don't need an `aria-required` attribute.
 			// checkboxes apply the `custom_attributes` to the label - we need to apply the attribute on the input itself, instead.
@@ -3061,18 +3090,6 @@ if ( ! function_exists( 'woocommerce_form_field' ) ) {
 		} else {
 			$required_indicator = '&nbsp;<span class="optional">(' . esc_html__( 'optional', 'woocommerce' ) . ')</span>';
 		}
-
-		if ( is_string( $args['label_class'] ) ) {
-			$args['label_class'] = array( $args['label_class'] );
-		}
-
-		if ( is_null( $value ) ) {
-			$value = $args['default'];
-		}
-
-		// Custom attribute handling.
-		$custom_attributes         = array();
-		$args['custom_attributes'] = array_filter( (array) $args['custom_attributes'], 'strlen' );
 
 		if ( $args['maxlength'] ) {
 			$args['custom_attributes']['maxlength'] = absint( $args['maxlength'] );

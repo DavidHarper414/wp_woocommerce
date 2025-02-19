@@ -153,7 +153,7 @@
           "menu_title": "Frequently Asked Questions",
           "tags": "reference",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/faq.md",
-          "hash": "99b5533f684f62498098d55a6ba1e2dba71664cca7cf35d8c4272dd24d6686fa",
+          "hash": "3289920c5224a5c392617620b839df1454431257abf2162744b1fa9040314378",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/faq.md",
           "id": "041787aca25af363a5eff3e710bd669cc8aebc4b",
           "links": {
@@ -804,7 +804,7 @@
           "menu_title": "Implement merchant onboarding",
           "tags": "how-to",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/extension-development/handling-merchant-onboarding.md",
-          "hash": "f53a89603209f12124eff5d21b3abb3edd2f8d07d6819522100c8e0e03c5d5e6",
+          "hash": "b91ddd5c7535716f03dee5e650001eb3e1f63fcdf54c73e41f320041793ffc0d",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/extension-development/handling-merchant-onboarding.md",
           "id": "89fe15dc232379f546852822230c334d3d940b93"
         },
@@ -1525,7 +1525,7 @@
       "categories": []
     },
     {
-      "content": "\nThe WooCommerce Store API provides public Rest API endpoints for interacting with products, and the Cart and Checkout process. It follows many of the patterns used in the WordPress REST API and  returns JSON formatted data.\n\n In contrast to the WooCommerce REST API, the Store API is specifically designed for frontend applications. It is unauthenticated and does not provide access to sensitive store data or other customer information.\n\nPlease see the [Store API Documentation on GitHub](https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce/src/StoreApi/README.md) for more information.\n",
+      "content": "\n**The Store API provides public Rest API endpoints for the development of customer-facing cart, checkout, and product functionality. It follows many of the patterns used in the [WordPress REST API](https://developer.wordpress.org/rest-api/key-concepts/).**\n\n In contrast to the WooCommerce REST API, the Store API is unauthenticated and does not provide access to sensitive store data or other customer information.\n\nPlease see the [Store API Documentation on GitHub](https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce/src/StoreApi/README.md) for more information.\n",
       "category_slug": "store-api",
       "category_title": "Store API",
       "posts": [],
@@ -1935,5 +1935,5 @@
       "categories": []
     }
   ],
-  "hash": "eb5d0b58ca6536ffb36d324a3d5716ca340ac2f5356b560109243ce01e8bc5f3"
+  "hash": "54e68eead4fab95dd4bc567b3c258922c5de2e2fc488d18217998bf94c3c4184"
 }

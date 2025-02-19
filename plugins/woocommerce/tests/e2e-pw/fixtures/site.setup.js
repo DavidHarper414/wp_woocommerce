@@ -4,6 +4,7 @@
 import { test as setup } from './fixtures';
 import { ADMIN_STATE_PATH } from '../playwright.config';
 import { setComingSoon } from '../utils/coming-soon';
+import { skipOnboardingWizard } from '../utils/onboarding';
 
 setup.use( { storageState: ADMIN_STATE_PATH } );
 
@@ -105,8 +106,18 @@ setup( 'disable coming soon', async ( { baseURL } ) => {
 	await setComingSoon( { baseURL, enabled: 'no' } );
 } );
 
+setup( 'disable onboarding wizard', async () => {
+	await skipOnboardingWizard();
+} );
+
 setup( 'determine if multisite', async ( { api } ) => {
 	const response = await api.get( 'system_status' );
 	const { environment } = response.data;
-	process.env.IS_MULTISITE = environment.wp_multisite;
+
+	if ( environment.wp_multisite === false ) {
+		delete process.env.IS_MULTISITE;
+	} else {
+		process.env.IS_MULTISITE = environment.wp_multisite;
+		console.log( `IS_MULTISITE: ${ process.env.IS_MULTISITE }` );
+	}
 } );
