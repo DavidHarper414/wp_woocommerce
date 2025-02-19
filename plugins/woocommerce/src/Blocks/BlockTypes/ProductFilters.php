@@ -97,7 +97,7 @@ class ProductFilters extends AbstractBlock {
 
 		$wrapper_attributes = array(
 			'class'                            => $classes,
-			'data-wp-interactive'              => wp_json_encode( array( 'namespace' => $this->get_full_block_name() ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
+			'data-wp-interactive'              => $this->get_full_block_name(),
 			'data-wp-watch--navigation'        => 'callbacks.maybeNavigate',
 			'data-wp-watch--scrolling'         => 'callbacks.scrollLimit',
 			'data-wp-on--keyup'                => 'actions.closeOverlayOnEscape',
@@ -140,7 +140,7 @@ class ProductFilters extends AbstractBlock {
 						>
 							<button
 								class="wc-block-product-filters__apply wp-element-button"
-								data-wp-interactive="<?php echo esc_attr( wp_json_encode( array( 'namespace' => $this->get_full_block_name() ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) ); ?>"
+								data-wp-interactive="<?php echo esc_attr( $this->get_full_block_name() ); ?>"
 								data-wp-on--click="actions.closeOverlay"
 							>
 								<span><?php echo esc_html__( 'Apply', 'woocommerce' ); ?></span>
