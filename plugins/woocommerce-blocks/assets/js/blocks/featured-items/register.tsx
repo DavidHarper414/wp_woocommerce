@@ -55,7 +55,7 @@ export function register(
 			/**
 			 * A more descriptive label for the CTA button that will be announced by screen readers.
 			 */
-			ariaLabel: {
+			buttonAriaLabel: {
 				type: 'string',
 				default: '',
 			},
