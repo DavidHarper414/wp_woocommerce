@@ -3,6 +3,7 @@
  */
 import { TabPanel } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
+import { getQueryArg, addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -15,6 +16,11 @@ import { default as RestAPIFilters } from '../rest-api-filters';
 import RemoteInboxNotifications from '../remote-inbox-notifications';
 import RemoteLogging from '../remote-logging';
 import Payments from '../payments';
+
+// Helper function to validate tab name
+const isValidTab = ( tabName, availableTabs ) => {
+	return availableTabs.some( ( tab ) => tab.name === tabName );
+};
 
 const tabs = applyFilters( 'woocommerce_admin_test_helper_tabs', [
 	{
@@ -60,6 +66,19 @@ const tabs = applyFilters( 'woocommerce_admin_test_helper_tabs', [
 ] );
 
 export function App() {
+	// Get tab from URL or default to first tab
+	const tabFromUrl = getQueryArg( window.location.search, 'tab' );
+	const initialTab = isValidTab( tabFromUrl, tabs )
+		? tabFromUrl
+		: tabs[ 0 ].name;
+
+	// Handle tab selection
+	const handleTabSelect = ( tabName ) => {
+		// Update URL with new tab
+		const newUrl = addQueryArgs( window.location.href, { tab: tabName } );
+		window.history.pushState( {}, '', newUrl );
+	};
+
 	return (
 		<div className="wrap">
 			<h1>WooCommerce Admin Test Helper</h1>
@@ -67,7 +86,8 @@ export function App() {
 				className="woocommerce-admin-test-helper__main-tab-panel"
 				activeClass="active-tab"
 				tabs={ tabs }
-				initialTabName={ tabs[ 0 ].name }
+				initialTabName={ initialTab }
+				onSelect={ handleTabSelect }
 			>
 				{ ( tab ) => (
 					<>
