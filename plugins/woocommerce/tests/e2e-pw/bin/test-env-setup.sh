@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 if [ ! -z ${CI+y} ]; then
-    wp-env run tests-cli "pwd && stat ~/.cache/composer && stat /var/www/html/wp-content/plugins/woocommerce/tests/e2e-pw/bin/test-env-setup.sh"
+    wp-env run tests-cli pwd
+    wp-env run tests-cli stat ~/.cache/composer
+    # wp-env run tests-cli "pwd && stat ~/.cache/composer && stat /var/www/html/wp-content/plugins/woocommerce/tests/e2e-pw/bin/test-env-setup.sh"
 fi
 
 echo -e 'Activate default theme \n'
