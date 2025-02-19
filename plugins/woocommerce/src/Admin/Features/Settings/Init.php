@@ -183,8 +183,22 @@ class Init {
 	 * @return array The settings array.
 	 */
 	public static function get_page_data( $settings, $setting_pages ) {
-		$pages = array();
+		/**
+		 * Filters the settings tabs array.
+		 *
+		 * @since 2.5.0
+		 *
+		 * @param array $available_pages The available pages.
+		 */
+		$available_pages = apply_filters( 'woocommerce_settings_tabs_array', array() );
+		$pages           = array();
+
 		foreach ( $setting_pages as $setting_page ) {
+			// If any page has removed itself from the tabs array, avoid adding this page to the settings editor.
+			if ( ! in_array( $setting_page->get_id(), array_keys( $available_pages ), true ) ) {
+				continue;
+			}
+
 			$pages = $setting_page->add_settings_page_data( $pages );
 		}
 

@@ -188,20 +188,6 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 		 * @return array
 		 */
 		public function add_settings_page_data( $pages ) {
-			/**
-			 * Filters the settings tabs array.
-			 *
-			 * @since 2.5.0
-			 *
-			 * @param array $available_pages The available pages.
-			 */
-			$available_pages = apply_filters( 'woocommerce_settings_tabs_array', array() );
-
-			// If any page has removed itself from the tabs array, avoid adding this page to the settings editor.
-			if ( ! in_array( $this->id, array_keys( $available_pages ), true ) ) {
-				return $pages;
-			}
-
 			$sections      = $this->get_sections();
 			$sections_data = array();
 
