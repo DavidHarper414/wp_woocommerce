@@ -171,7 +171,6 @@ export function registerWooBlockType<
 		return;
 	}
 
-	console.log( 'metadata.name', metadata.name );
 	const augmentedMetadata = {
 		...metadata,
 		attributes: augmentAttributes( metadata.attributes ),
