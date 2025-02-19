@@ -17,10 +17,10 @@ class Renderer {
 	 *
 	 * @var array
 	 */
-	private $render_state = [
+	private $render_state = array(
 		'has_results'          => false,
 		'has_no_results_block' => false,
-	];
+	);
 
 	/**
 	 * The Block with its attributes before it gets rendered
@@ -291,42 +291,30 @@ class Renderer {
 		// Only proceed if the block is a product collection block,
 		// enhanced pagination is enabled and query IDs match.
 		if ( $is_product_collection_block && $is_enhanced_pagination_enabled && $query_id === $parsed_query_id ) {
-			$block_content = $this->process_pagination_links( $block_content );
+			$p = new \WP_HTML_Tag_Processor( $block_content );
+			$p->next_tag( array( 'class_name' => 'wp-block-query-pagination' ) );
+
+			while ( $p->next_tag( 'A' ) ) {
+				if ( $p->has_class( 'wp-block-query-pagination-next' ) || $p->has_class( 'wp-block-query-pagination-previous' ) ) {
+					$p->set_attribute( 'data-wp-on--click', 'woocommerce/product-collection::actions.navigate' );
+					$p->set_attribute(
+						'data-wp-key',
+						$p->has_class( 'wp-block-query-pagination-next' )
+									? 'product-collection-pagination--next'
+						: 'product-collection-pagination--previous'
+					);
+					$p->set_attribute( 'data-wp-watch', 'woocommerce/product-collection::callbacks.prefetch' );
+					$p->set_attribute( 'data-wp-on--mouseenter', 'woocommerce/product-collection::actions.prefetchOnHover' );
+				} elseif ( $p->has_class( 'page-numbers' ) ) {
+					$p->set_attribute( 'data-wp-on--click', 'woocommerce/product-collection::actions.navigate' );
+					$p->set_attribute( 'data-wp-key', 'product-collection-pagination-numbers--' . $p->get_attribute( 'aria-label' ) );
+				}
+			}
+
+			return $p->get_updated_html();
 		}
 
 		return $block_content;
-	}
-
-	/**
-	 * Process pagination links within the block content.
-	 *
-	 * @param string $block_content The block content.
-	 * @return string The updated block content.
-	 */
-	private function process_pagination_links( $block_content ) {
-		if ( ! $block_content ) {
-			return $block_content;
-		}
-
-		$p = new \WP_HTML_Tag_Processor( $block_content );
-		$p->next_tag( array( 'class_name' => 'wp-block-query-pagination' ) );
-
-		while ( $p->next_tag( 'A' ) ) {
-			if ( $p->has_class( 'wp-block-query-pagination-next' ) || $p->has_class( 'wp-block-query-pagination-previous' ) ) {
-				$p->set_attribute( 'data-wp-on--click', 'woocommerce/product-collection::actions.navigate' );
-				$p->set_attribute( 'data-wp-key', $p->has_class( 'wp-block-query-pagination-next' ) 
-					? 'product-collection-pagination--next'
-					: 'product-collection-pagination--previous'
-				);
-				$p->set_attribute( 'data-wp-watch', 'woocommerce/product-collection::callbacks.prefetch' );
-				$p->set_attribute( 'data-wp-on--mouseenter', 'woocommerce/product-collection::actions.prefetchOnHover' );
-			} elseif ( $p->has_class( 'page-numbers' ) ) {
-				$p->set_attribute( 'data-wp-on--click', 'woocommerce/product-collection::actions.navigate' );
-				$p->set_attribute( 'data-wp-key', "product-collection-pagination-numbers--" . $p->get_attribute( 'aria-label' ) );
-			}
-		}
-
-		return $p->get_updated_html();
 	}
 
 	/**
