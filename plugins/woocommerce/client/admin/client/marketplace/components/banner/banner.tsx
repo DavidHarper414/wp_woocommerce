@@ -4,24 +4,29 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { Button, Icon } from '@wordpress/components';
-import { check, commentContent, shield, people } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
 import './banner.scss';
-import IconWithText from '../icon-with-text/icon-with-text';
 import {
 	refundPolicyTitle,
 	supportTitle,
 	paymentTitle,
 } from '../footer/footer';
+import trustProducts from '../../assets/images/trust-products.svg';
+import supportEcosystem from '../../assets/images/support-ecosystem.svg';
+import moneyBack from '../../assets/images/money-back.svg';
+import getHelp from '../../assets/images/get-help.svg';
 
 const SLIDES = [
-	{ icon: check, title: refundPolicyTitle },
-	{ icon: commentContent, title: supportTitle },
-	{ icon: shield, title: paymentTitle },
-	{ icon: people, title: __( 'Support the ecosystem', 'woocommerce' ) },
+	{ imageUrl: moneyBack, title: refundPolicyTitle },
+	{ imageUrl: getHelp, title: supportTitle },
+	{ imageUrl: trustProducts, title: paymentTitle },
+	{
+		imageUrl: supportEcosystem,
+		title: __( 'Support the ecosystem', 'woocommerce' ),
+	},
 ];
 
 export default function ProductFeaturedBanner() {
@@ -59,10 +64,14 @@ export default function ProductFeaturedBanner() {
 						}` }
 						aria-hidden={ index !== activeIndex }
 					>
-						<IconWithText
-							icon={ slide.icon }
-							title={ slide.title }
+						<img
+							src={ slide.imageUrl }
+							alt=""
+							className="woocommerce-marketplace__banner-image"
 						/>
+						<h3 className="woocommerce-marketplace__banner-title">
+							{ slide.title }
+						</h3>
 					</div>
 				) ) }
 			</div>

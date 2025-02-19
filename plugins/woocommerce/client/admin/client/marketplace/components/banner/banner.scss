@@ -29,6 +29,9 @@
 		visibility: hidden;
 		transition: opacity 0.5s ease, visibility 0.5s ease;
 		pointer-events: none;
+		display: flex;
+		gap: 8px;
+		align-items: center;
 
 		&.active {
 			opacity: 1;
@@ -46,7 +49,7 @@
 			}
 		}
 
-		.woocommerce-marketplace__icon-group-title {
+		.woocommerce-marketplace__banner-title {
 			font-size: 13px;
 			font-weight: 400;
 		}
