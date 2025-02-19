@@ -250,7 +250,7 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 		isRequesting,
 		isError,
 		customerItems,
-		currencySymbols,
+		currencies,
 	} = useSelect( ( select ) => {
 		const { getOrders, hasFinishedResolution, getOrdersError } =
 			select( ordersStore );
@@ -280,7 +280,7 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 			};
 		}
 
-		const { getCurrencySymbols } = select( COUNTRIES_STORE_NAME );
+		const { getCurrencies } = select( COUNTRIES_STORE_NAME );
 
 		const customers = getItems( 'customers', {
 			users: actionableOrders
@@ -295,7 +295,7 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 			isRequesting: isRequestingActionable,
 			orderStatuses,
 			customerItems: customers,
-			currencySymbols: getCurrencySymbols() || [],
+			currencies: getCurrencies() || {},
 		};
 	} );
 
@@ -309,9 +309,9 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 			return currencyContext.formatAmount( total );
 		}
 
-		const symbol = currencySymbols[ orderCurrencyCode ] ?? null;
+		const currency = currencies[ orderCurrencyCode ] ?? null;
 
-		if ( ! symbol ) {
+		if ( ! currency ) {
 			// This should never happen, but if it does, we'll just show the currency code.
 			return `${ orderCurrencyCode }${ total }`;
 		}
@@ -319,8 +319,7 @@ function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 		// If the order currency is different from the store currency, we show the currency code and amount in the order currency.
 		return CurrencyFactory( {
 			...storeCurrency,
-			symbol: decodeEntities( symbol ),
-			code: orderCurrencyCode,
+			...currency,
 		} ).formatAmount( total );
 	};
 

@@ -17,7 +17,7 @@ const reducer: Reducer< CountriesState, Action > = (
 		locales: {},
 		countries: [],
 		geolocation: undefined,
-		currencySymbols: {},
+		currencies: {},
 	},
 	action
 ) => {
@@ -67,18 +67,18 @@ const reducer: Reducer< CountriesState, Action > = (
 				},
 			};
 			break;
-		case TYPES.CURRENCY_SYMBOLS_SUCCESS:
+		case TYPES.GET_CURRENCIES_SUCCESS:
 			state = {
 				...state,
-				currencySymbols: action.symbols,
+				currencies: action.currencies,
 			};
 			break;
-		case TYPES.CURRENCY_SYMBOLS_ERROR:
+		case TYPES.GET_CURRENCIES_ERROR:
 			state = {
 				...state,
 				errors: {
 					...state.errors,
-					currencySymbols: action.error,
+					currencies: action.error,
 				},
 			};
 			break;

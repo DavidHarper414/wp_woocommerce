@@ -14,8 +14,8 @@ import {
 	getLocalesError,
 	getCountriesSuccess,
 	getCountriesError,
-	getCurrencySymbolsSuccess,
-	getCurrencySymbolsError,
+	getCurrenciesSuccess,
+	getCurrenciesError,
 } from './actions';
 import { NAMESPACE } from '../constants';
 import { Locales, Country, GeolocationResponse } from './types';
@@ -60,22 +60,46 @@ export function* getCountries() {
 	}
 }
 
-export function* getCurrencySymbols() {
+export function* getCurrencies() {
+	const getPriceFormat = ( symbolPosition: string ) => {
+		switch ( symbolPosition ) {
+			case 'left':
+				return '%1$s%2$s';
+			case 'right':
+				return '%2$s%1$s';
+			case 'left_space':
+				return '%1$s %2$s';
+			case 'right_space':
+				return '%2$s %1$s';
+		}
+
+		return '%1$s%2$s';
+	};
+
 	try {
-		const url = 'wc/v3/data/currencies';
+		const url = 'wc/v3/data/currencies?include_extra=true';
 		const results = yield apiFetch( {
 			path: url,
 			method: 'GET',
 		} );
 
-		return getCurrencySymbolsSuccess(
+		return getCurrenciesSuccess(
 			results.reduce( ( acc, currency ) => {
-				acc[ currency.code ] = currency.symbol;
+				acc[ currency.code ] = {
+					code: currency.code,
+					symbol: currency.symbol,
+					symbolPosition: currency.currency_position,
+					decimalSeparator: currency.number_of_decimals,
+					priceFormat: getPriceFormat( currency.currency_position ),
+					thousandSeparator: currency.thousand_separator,
+					precision: currency.number_of_decimals,
+				};
+
 				return acc;
 			}, {} )
 		);
 	} catch ( error ) {
-		return getCurrencySymbolsError( error );
+		return getCurrenciesError( error );
 	}
 }
 

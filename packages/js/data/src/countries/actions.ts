@@ -46,18 +46,26 @@ export function geolocationError( error: unknown ) {
 	};
 }
 
-export function getCurrencySymbolsSuccess( symbols: {
-	[ key: string ]: string;
+export function getCurrenciesSuccess( currencies: {
+	[ key: string ]: {
+		code: string;
+		symbol: string;
+		symbolPosition?: string;
+		decimalSeparator?: string;
+		priceFormat?: string;
+		thousandSeparator?: string;
+		precision?: number;
+	};
 } ) {
 	return {
-		type: TYPES.CURRENCY_SYMBOLS_SUCCESS as const,
-		symbols,
+		type: TYPES.GET_CURRENCIES_SUCCESS as const,
+		currencies,
 	};
 }
 
-export function getCurrencySymbolsError( error: unknown ) {
+export function getCurrenciesError( error: unknown ) {
 	return {
-		type: TYPES.CURRENCY_SYMBOLS_ERROR as const,
+		type: TYPES.GET_CURRENCIES_ERROR as const,
 		error,
 	};
 }
