@@ -1808,10 +1808,6 @@ class WC_Helper {
 		// Break the by-ref.
 		unset( $subscription );
 
-		if ( ! WC_Helper_Options::get( 'my_subscriptions_tab_loaded' ) ) {
-			WC_Helper_Options::update( 'my_subscriptions_tab_loaded', date('Y-m-d H:i:s') );
-		}
-
 		return $subscriptions;
 	}
 

@@ -125,6 +125,10 @@ class WC_Helper_Subscriptions_API {
 	 * as JSON.
 	 */
 	public static function get_subscriptions() {
+		if ( ! WC_Helper_Options::get( 'my_subscriptions_tab_loaded' ) ) {
+			WC_Helper_Options::update( 'my_subscriptions_tab_loaded', date('Y-m-d H:i:s') );
+		}
+
 		$subscriptions = WC_Helper::get_subscription_list_data();
 		wp_send_json(
 			array_values(
