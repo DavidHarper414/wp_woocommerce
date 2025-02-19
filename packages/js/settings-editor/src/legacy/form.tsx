@@ -18,7 +18,7 @@ import { useDispatch } from '@wordpress/data';
  */
 import { useSettingsForm } from '../hooks/use-settings-form';
 import { CustomView } from '../components/custom-view';
-import { SettingsDataContext } from '../index';
+import { SettingsDataContext } from '../data';
 
 export const Form = ( {
 	settings,

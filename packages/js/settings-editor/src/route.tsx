@@ -29,8 +29,7 @@ import { unlock } from '@wordpress/edit-site/build-module/lock-unlock';
 import { Sidebar } from './components';
 import { Route, Location } from './types';
 import { LegacyContent } from './legacy';
-import { SettingsDataContext } from './index';
-
+import { SettingsDataContext } from './data';
 const { useLocation } = unlock( routerPrivateApis );
 
 const NotFound = () => {
