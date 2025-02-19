@@ -12,6 +12,7 @@ import { __ } from '@wordpress/i18n';
 import { DataForm } from '@wordpress/dataviews';
 import { getNewPath } from '@woocommerce/navigation';
 import { useDispatch } from '@wordpress/data';
+import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
@@ -86,41 +87,43 @@ export const Form = ( {
 			payload.append( key, value );
 		}
 
-		const response = await fetch(
-			`/?rest_route=/wc-admin/legacy-settings&${ new URLSearchParams(
-				query
-			).toString() }`,
-			{
-				method: 'POST',
-				body: payload,
-				credentials: 'same-origin', // Include cookies for nonce validation
-				headers: {
-					'X-WP-Nonce': settingsData._wpnonce,
-				},
-			}
-		);
+		apiFetch( {
+			path: '/wc-admin/legacy-settings',
+			method: 'POST',
+			body: payload,
+		} )
+			.then( ( response ) => {
+				const {
+					data: { settingsData: responseSettingsData },
+					status,
+				} = response as {
+					data: { settingsData: SettingsData };
+					status: string;
+				};
 
-		try {
-			const responseData = await response.json();
-
-			if ( responseData.status === 'success' ) {
-				setSettingsData( responseData.data.settingsData );
+				if ( status === 'success' ) {
+					setSettingsData( responseSettingsData );
+					createNotice(
+						'success',
+						__( 'Settings saved successfully', 'woocommerce' )
+					);
+				} else {
+					createNotice(
+						'error',
+						__( 'Failed to save settings', 'woocommerce' )
+					);
+				}
+			} )
+			.catch( ( error ) => {
 				createNotice(
-					'success',
-					__( 'Settings saved successfully', 'woocommerce' )
+					'error',
+					__( 'Failed to save settings: ', 'woocommerce' ) +
+						error.message
 				);
-			} else {
-				const { message } = responseData;
-				createNotice( __( 'error', 'woocommerce' ), message );
-			}
-		} catch ( error ) {
-			createNotice(
-				'error',
-				__( 'Failed to save settings', 'woocommerce' )
-			);
-		} finally {
-			setIsBusy( false );
-		}
+			} )
+			.finally( () => {
+				setIsBusy( false );
+			} );
 	};
 
 	return (
