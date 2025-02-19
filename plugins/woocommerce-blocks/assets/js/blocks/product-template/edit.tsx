@@ -301,7 +301,7 @@ const ProductTemplateEdit = (
 						}
 					}
 				}
-				query.per_page = loopShopPerPage;
+				query.per_page = perPage || loopShopPerPage;
 
 				const settings = getEditedEntityRecord(
 					'root',
