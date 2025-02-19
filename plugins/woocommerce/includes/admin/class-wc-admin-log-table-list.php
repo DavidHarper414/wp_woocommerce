@@ -316,12 +316,14 @@ class WC_Admin_Log_Table_List extends WP_List_Table {
 			return $sources;
 		}
 
-		$sql     = "
+		$sql = "
 			SELECT DISTINCT source
 			FROM {$wpdb->prefix}woocommerce_log
 			WHERE source != ''
 			ORDER BY source ASC
 		";
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Not necessary.
 		$sources = $wpdb->get_col( $sql );
 
 		// Autoload this option so that the log handler doesn't have to run another query when checking the source list.
@@ -356,6 +358,7 @@ class WC_Admin_Log_Table_List extends WP_List_Table {
 			{$where} {$order} {$limit} {$offset}
 		";
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- The query parts are prepared in their respective methods.
 		$this->items = $wpdb->get_results( $query_items, ARRAY_A );
 		$total_items = $this->get_total_items_count();
 
@@ -392,7 +395,9 @@ class WC_Admin_Log_Table_List extends WP_List_Table {
 			{$where}
 		";
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- The where clause is prepared in a separate method.
 		$count = intval( $wpdb->get_var( $count_query ) );
+
 		if ( $count > 100000 ) {
 			set_transient( $transient_key, $count, 10 * MINUTE_IN_SECONDS );
 		} else {
