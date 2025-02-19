@@ -26,7 +26,6 @@ export { EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME } from './product-tags';
 export { EXPERIMENTAL_PRODUCT_CATEGORIES_STORE_NAME } from './product-categories';
 export { EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME } from './product-attribute-terms';
 export { EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME } from './product-variations';
-export { EXPERIMENTAL_PRODUCT_FORM_STORE_NAME } from './product-form';
 export { EXPERIMENTAL_TAX_CLASSES_STORE_NAME } from './tax-classes';
 export { PaymentGateway } from './payment-gateways/types';
 export {
@@ -68,6 +67,7 @@ export { store as userStore } from './user';
 export { store as productsStore } from './products';
 export { store as countriesStore } from './countries';
 export { store as paymentGatewaysStore } from './payment-gateways';
+export { store as experimentalProductFormStore } from './product-form';
 
 // Export hooks
 export { withSettingsHydration } from './settings/with-settings-hydration';
@@ -178,7 +178,6 @@ import type { EXPERIMENTAL_PRODUCT_SHIPPING_CLASSES_STORE_NAME } from './product
 import type { EXPERIMENTAL_SHIPPING_ZONES_STORE_NAME } from './shipping-zones';
 import type { EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME } from './product-tags';
 import type { EXPERIMENTAL_PRODUCT_CATEGORIES_STORE_NAME } from './product-categories';
-import type { EXPERIMENTAL_PRODUCT_FORM_STORE_NAME } from './product-form';
 import type { EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME } from './product-attribute-terms';
 import type { EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME } from './product-variations';
 import type { EXPERIMENTAL_TAX_CLASSES_STORE_NAME } from './tax-classes';
@@ -206,8 +205,7 @@ export type WCDataStoreName =
 	| typeof EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME
 	| typeof EXPERIMENTAL_PRODUCT_CATEGORIES_STORE_NAME
 	| typeof EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
-	| typeof EXPERIMENTAL_TAX_CLASSES_STORE_NAME
-	| typeof EXPERIMENTAL_PRODUCT_FORM_STORE_NAME;
+	| typeof EXPERIMENTAL_TAX_CLASSES_STORE_NAME;
 
 /**
  * Internal dependencies
@@ -279,8 +277,6 @@ export type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
 	? ShippingZonesSelectors
 	: T extends typeof EXPERIMENTAL_TAX_CLASSES_STORE_NAME
 	? TaxClassSelectors
-	: T extends typeof EXPERIMENTAL_PRODUCT_FORM_STORE_NAME
-	? ProductFormSelectors
 	: never;
 
 export interface WCDataSelector {
