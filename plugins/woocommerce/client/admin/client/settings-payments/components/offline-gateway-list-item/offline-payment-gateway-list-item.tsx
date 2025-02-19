@@ -88,7 +88,7 @@ export const OfflinePaymentGatewayListItem = ( {
 								settingsHref={
 									gateway.management._links.settings.href
 								}
-								installingPlugin={ null }
+								isInstallingPlugin={ false }
 							/>
 						) }
 					</div>
