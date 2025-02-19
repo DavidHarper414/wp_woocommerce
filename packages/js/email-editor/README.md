@@ -9,6 +9,7 @@ You can try the email editor in [the WordPress Playground](https://playground.wo
 You can locate the PHP package here `packages/php/email-editor`
 
 ## Workflow Commands
+
 We use `pnpm` run scripts to run the commands. You can run them using `pnpm run <command>`.
 Please start with `pnpm install`.
 
@@ -42,6 +43,7 @@ The required minimum version of this package is stored in the assets directory.
 If your WordPress installation does not use the Gutenberg plugin or does not include the required version, replace the existing `@wordpress/rich-text` package with the one provided in the assets directory.
 
 ### Email Editor
+
 * Bootstrapped in the plugin in the [email editor controller](https://github.com/mailpoet/mailpoet/blob/13bf305aeb29bbadd0695ee02a3735e62cc4f21f/mailpoet/lib/EmailEditor/Integrations/MailPoet/EmailEditor.php)
 * **Components folder** - basically the whole UI of the editor. Most of Gutenberg’s blocks magic happens in block-editor folder.
 * **Hooks folder** – several custom hooks mostly to help us pass around data and process data from the store or combine them from multiple stores.

@@ -7,6 +7,7 @@ As we are still in an exploration phase, we keep it together with the MailPoet c
 You can locate the JS package here `packages/js/email-editor`
 
 ## Workflow Commands
+
 We use `composer` run scripts to run the commands. You can run them using `composer run <command>`.
 If you don't have `composer` installed globally, you can use the `composer.phar` file in `../mailpoet/tools/vendor`.
 
@@ -17,7 +18,9 @@ composer run integration-test                      # runs all the integrations t
 composer run integration-test -- [path_to_tests]   # run a single integration test or a directory of tests
 composer code-style                                # checks the code style
 ```
+
 Example:
+
 ```bash
 # To run test cases defined in tests/integration/Engine/Theme_Controller_Test.php run
 composer run integration-test -- tests/integration/Engine/Theme_Controller_Test.php
@@ -32,20 +35,24 @@ Anything **MailPoet** specific should be in the `mailpoet/lib/EmailEditor/Integr
 Please avoid using MailPoet-specific services and modules in the Email editor package.
 
 ### Renderer
+
 #### Content Renderer
+
 * Responsible for rendering saved template + email content to HTML or email clients
 * Flow is Preprocessors > BlocksRenderer > Postprocessors
 
 #### Root Renderer.php
+
 * Takes the rendered content html and places it into email HTML template template-canvas.php (We have too many items we call “template” I know 🙁)
 
 ### Integrations
+
 Please locate MailPoet PHP integrations [here](https://github.com/mailpoet/mailpoet/tree/13bf305aeb29bbadd0695ee02a3735e62cc4f21f/mailpoet/lib/EmailEditor/Integrations/MailPoet)
 
 
 ## Known rendering issues
 
-- In some (not all) Outlook versions the width of columns is not respected. The columns will be rendered with the full width.
+* In some (not all) Outlook versions the width of columns is not respected. The columns will be rendered with the full width.
 
 ## Actions and Filters
 
