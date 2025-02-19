@@ -264,9 +264,10 @@ class CheckoutFieldsFrontend {
 	 * @param array       $address Address fields.
 	 * @param WC_Customer $customer Customer object.
 	 */
-	public function save_address_fields( $user_id, $address_type, $address, $customer ) {
+	public function save_address_fields( $user_id, $address_type, $address = [], $customer = null ) {
 		try {
-			$result = $this->update_additional_fields_for_customer( $customer, 'address', $address_type );
+			$customer = $customer ?? new WC_Customer( $user_id );
+			$result   = $this->update_additional_fields_for_customer( $customer, 'address', $address_type );
 
 			if ( is_wp_error( $result ) ) {
 				foreach ( $result->get_error_messages() as $error_message ) {
