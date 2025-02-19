@@ -73,7 +73,6 @@ function emitSyncEvent( {
 	);
 }
 
-// Todo: Remove the type cast once we import from `@wordpress/interactivity`.
 // Question: disable "used before defined" lint rule?
 export const { state, actions } = store< Store >( 'woocommerce', {
 	actions: {
