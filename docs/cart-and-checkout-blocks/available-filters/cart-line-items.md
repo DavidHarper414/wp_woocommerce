@@ -93,7 +93,7 @@ registerCheckoutFilters( 'example-extension', {
 } );
 ```
 
-> Test with the path Filters can be also combined. See [Combined filters](../available-filters/README.md) for an example.
+> Filters can be also combined. See [Combined filters](../available-filters/README.md) for an example.
 
 ### Screenshots <!-- omit in toc -->
 
@@ -249,7 +249,7 @@ registerCheckoutFilters( 'example-extension', {
 } );
 ```
 
-> Test without the path Filters can be also combined. See [Combined filters](../available-filters/README.md) for an example.
+> Filters can be also combined. See [Combined filters](../available-filters/README.md) for an example.
 
 ### Screenshots <!-- omit in toc -->
 
