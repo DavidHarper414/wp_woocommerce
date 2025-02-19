@@ -259,8 +259,8 @@
               "menu_title": "Cart Line Items",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/available-filters/cart-line-items.md",
-              "hash": "74c23b6f9f3712a6ad6f694737d6f5c11faebc6b69886150f5cdae04d58a7f3d",
-              "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/f0b159c78833e6962d5d209e2a027ef93653e883/docs/cart-and-checkout-blocks/available-filters/cart-line-items.md",
+              "hash": "c03170d19a4eea81fa6fd5d29cc22160e27e24e28edbba67c481fbc23947319e",
+              "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/available-filters/cart-line-items.md",
               "id": "97881b973dc1d08a54c54e0a04ecb75ee48dcee2",
               "links": {
                 "../available-filters/README.md": "4d56fe70f40a64b52b2970d487e5f0527f7234fb"
@@ -272,7 +272,7 @@
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/available-filters/additional-cart-checkout-inner-block-types.md",
               "hash": "7b04454d705d7ff896df4fa53195b8b6cafdab85eeba667c78d004d26093a289",
-              "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/f0b159c78833e6962d5d209e2a027ef93653e883/docs/cart-and-checkout-blocks/available-filters/additional-cart-checkout-inner-block-types.md",
+              "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/available-filters/additional-cart-checkout-inner-block-types.md",
               "id": "3167c9602b1bd3b206226a0d4415944a5f647495",
               "links": {
                 "../available-filters/README.md": "4d56fe70f40a64b52b2970d487e5f0527f7234fb"
@@ -1953,5 +1953,5 @@
       "categories": []
     }
   ],
-  "hash": "5410b47c77ef72f41e05330911eefc98be414927ce03414c1b0f896f6a4bec58"
+  "hash": "c65911eef0536e1d618ee58176ebfa0074433a61f7b8b7c8b043b639610f263b"
 }
