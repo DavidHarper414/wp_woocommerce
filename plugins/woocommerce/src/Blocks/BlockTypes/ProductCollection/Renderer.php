@@ -252,21 +252,7 @@ class Renderer {
 				'data-wp-router-region',
 				'wc-product-collection-' . $this->parsed_block['attrs']['queryId']
 			);
-			$current_context = json_decode( $p->get_attribute( 'data-wp-context' ) ?? '{}', true );
-			$p->set_attribute(
-				'data-wp-context',
-				wp_json_encode(
-					array_merge(
-						$current_context,
-						array(
-							// We don't prefetch the links if user haven't clicked on pagination links yet.
-							// This way we avoid prefetching when the page loads.
-							'isPrefetchNextOrPreviousLink' => false,
-						),
-					),
-					JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
-				)
-			);
+			$p->set_attribute( 'data-wp-context', '{}' );
 			$block_content = $p->get_updated_html();
 		}
 
