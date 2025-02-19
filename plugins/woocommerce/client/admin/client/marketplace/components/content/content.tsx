@@ -441,7 +441,7 @@ export default function Content(): JSX.Element {
 			<InstallNewProductModal products={ filteredProducts } />
 			{ selectedTab !== 'business-services' &&
 				selectedTab !== 'my-subscriptions' && <ConnectNotice /> }
-			{ selectedTab !== 'business-services' && <PluginInstallNotice /> }
+			{ selectedTab === 'my-subscriptions' && <PluginInstallNotice /> }
 			{ selectedTab !== 'business-services' && (
 				<SubscriptionsExpiredExpiringNotice type="expired" />
 			) }
