@@ -1374,11 +1374,8 @@ class CartController {
 				continue;
 			}
 
-			$attribute_label           = wc_attribute_label( $attribute['name'] );
-			$lowercase_attribute_label = strtolower( $attribute_label );
-			$variation_attribute_name  = wc_variation_attribute_name( $attribute['name'] );
-
 			// Sanitized attribute (same as the product page) e.g. attribute_size.
+			$variation_attribute_name = wc_variation_attribute_name( $attribute['name'] );
 			if ( isset( $variation_data[ $variation_attribute_name ] ) ) {
 				$return[ $variation_attribute_name ] =
 					$attribute['is_taxonomy']
@@ -1394,6 +1391,8 @@ class CartController {
 			}
 
 			// Attribute labels e.g. Size.
+			$attribute_label           = wc_attribute_label( $attribute['name'] );
+			$lowercase_attribute_label = strtolower( $attribute_label );
 			if ( isset( $variation_data[ $attribute_label ] ) || isset( $variation_data[ $lowercase_attribute_label ] ) ) {
 
 				// Check both the original and lowercase attribute label.
