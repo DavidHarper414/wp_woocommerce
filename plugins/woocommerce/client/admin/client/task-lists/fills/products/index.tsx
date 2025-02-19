@@ -14,7 +14,6 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 import './index.scss';
-import { getAdminSetting } from '~/utils/admin-settings';
 import { getSurfacedProductTypeKeys, getProductTypes } from './utils';
 import useProductTypeListItems from './use-product-types-list-items';
 import Stack from './stack';
