@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
+if [ ! -z ${CI+y} ]; then
+    wp-env run tests-cli "stat wp-content/plugins/woocommerce/tests/e2e-pw/bin/test-env-setup.sh"
+fi
+
 echo -e 'Activate default theme \n'
 wp-env run tests-cli wp theme activate twentytwentythree
 
 echo -e 'Install twentytwenty, twentytwentytwo and storefront themes \n'
-wp-env run tests-cli wp theme install twentytwenty twentytwentytwo storefront
+wp-env run tests-cli wp theme install twentytwenty twentytwentytwo storefront &
 
 echo -e 'Update URL structure \n'
 wp-env run tests-cli wp rewrite structure '/%postname%/' --hard
