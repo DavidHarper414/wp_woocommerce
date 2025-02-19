@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 if [ ! -z ${CI+y} ]; then
-    wp-env run tests-cli pwd
-    wp-env run tests-cli stat wp-content/plugins/woocommerce/tests/e2e-pw/bin/test-env-setup.sh
+    # Inside the container the command executed from /var/www/html path as pwd
+    wp-env run tests-cli 'echo "CI variable: $CI"'
+    # wp-env run tests-cli wp-content/plugins/woocommerce/tests/e2e-pw/bin/test-env-setup.sh
     # wp-env run tests-cli "pwd && stat ~/.cache/composer && stat /var/www/html/wp-content/plugins/woocommerce/tests/e2e-pw/bin/test-env-setup.sh"
 fi
 
