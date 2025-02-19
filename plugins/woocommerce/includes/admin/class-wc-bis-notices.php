@@ -43,12 +43,6 @@ class WC_BIS_Notices {
 		// Save notice options.
 		add_action( 'shutdown', array( __CLASS__, 'save_notice_options' ), 100 );
 
-		// Page cache testing is only available through the WC queing system.
-		if ( function_exists( 'WC' ) && method_exists( WC(), 'queue' ) ) {
-
-			// Schedules the 'page_cache' notice test.
-			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'update_notice_data' ) );
-		}
 	}
 
 	/**
