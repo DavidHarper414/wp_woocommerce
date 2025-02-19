@@ -44,22 +44,22 @@ describe( 'registerWooBlockType', () => {
 					},
 					_templateBlockId: {
 						type: 'string',
-						__experimentalRole: 'content',
+						role: 'content',
 					},
 					_templateBlockOrder: {
 						type: 'integer',
-						__experimentalRole: 'content',
+						role: 'content',
 					},
 					_templateBlockHideConditions: {
 						type: 'array',
-						__experimentalRole: 'content',
+						role: 'content',
 					},
 					_templateBlockDisableConditions: {
-						__experimentalRole: 'content',
+						role: 'content',
 						type: 'array',
 					},
 					disabled: {
-						__experimentalRole: 'content',
+						role: 'content',
 						type: 'boolean',
 					},
 				},
