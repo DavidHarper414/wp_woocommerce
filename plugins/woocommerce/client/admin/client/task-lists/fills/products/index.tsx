@@ -28,6 +28,7 @@ import {
 	PrintfulAdvertProductPlacement,
 } from './constants';
 import { useProfileItems } from '../../hooks/useProfileItems';
+import { TrackedLink } from '~/components/tracked-link/tracked-link';
 
 const ViewControlButton: React.FC< {
 	isExpanded: boolean;
@@ -163,6 +164,18 @@ export const Products = () => {
 					items={ footerStack }
 					showOtherOptions={ false }
 					isTaskListItemClicked={ isRequesting }
+				/>
+				<TrackedLink
+					textProps={ {
+						className: 'woocommerce-products-marketplace-link',
+					} }
+					message={ __(
+						// translators: {{Link}} is a placeholder for a html element.
+						'Visit the {{Link}}Official WooCommerce Marketplace{{/Link}} to enhance your store with additional options such as Subscriptions, Gift Cards, and more.',
+						'woocommerce'
+					) }
+					eventName="tasklist_add_product_visit_marketplace_click"
+					targetUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=merchandising"
 				/>
 			</div>
 			{ isLoadingSampleProducts ? (
