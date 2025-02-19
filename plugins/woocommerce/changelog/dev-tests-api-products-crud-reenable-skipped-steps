@@ -1,0 +1,4 @@
+Significance: patch
+Type: dev
+
+Re-enable previously skipped steps in `products-crud` REST API test.
