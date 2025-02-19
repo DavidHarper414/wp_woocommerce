@@ -9,6 +9,7 @@ const blockPreviewQueue = createQueue();
 
 /**
  * Renders a component at the next idle time.
+ *
  * @param {*} props
  */
 export function Async( { children, placeholder } ) {

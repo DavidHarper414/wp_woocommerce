@@ -15,6 +15,7 @@ const dispatcher = new EventTarget();
 
 /**
  * Record event tracking information
+ *
  * @param {string} name - event name, in format `this_is_an_event`
  * @param          data - extra properties - please use a valid JSON object
  */

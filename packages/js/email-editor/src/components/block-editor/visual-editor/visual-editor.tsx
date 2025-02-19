@@ -47,6 +47,7 @@ const DESIGN_POST_TYPES = [
  *  - removed support for post title
  *  - removed support for zooming
  *  - removed support for resizing
+ *
  * @param root0
  * @param root0.styles
  * @param root0.disableIframe

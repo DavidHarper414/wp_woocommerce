@@ -197,6 +197,7 @@ export function* requestSendingNewsletterPreview( email: string ) {
 /**
  * Revert template modifications to defaults
  * Created based on https://github.com/WordPress/gutenberg/blob/4d225cc2ba6f09822227e7a820b8a555be7c4d48/packages/editor/src/store/private-actions.js#L241
+ *
  * @param template - Template post object
  */
 export function revertAndSaveTemplate( template ) {

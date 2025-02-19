@@ -57,6 +57,7 @@ type Props = {
 /**
  * Component to render the styles preview based on the component from the site editor:
  * https://github.com/WordPress/gutenberg/blob/trunk/packages/edit-site/src/components/global-styles/preview.js
+ *
  * @param root0
  * @param root0.label
  * @param root0.isFocused

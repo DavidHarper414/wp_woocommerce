@@ -31,6 +31,7 @@ const { Tabs } = unlock( componentsPrivateApis );
 
 /**
  * We need the following selectors from core store to fetch block patterns for the email post type.
+ *
  * @param select - select function from the core store.
  */
 const unlockPatternsRelatedSelectorsFromCoreStore = ( select ) => {
@@ -44,6 +45,7 @@ const unlockPatternsRelatedSelectorsFromCoreStore = ( select ) => {
  * Selector getEnabledClientIdsTree for block-editor store is used to find nearest editable block to select on click in
  * useSelectNearestEditableBlock
  * We copied useSelectNearestEditableBlock from Gutenberg.
+ *
  * @param selectHook - useSelect call from the block editor store `useSelect( blockEditorStore ).
  */
 const unlockGetEnabledClientIdsTree = ( selectHook ) => {

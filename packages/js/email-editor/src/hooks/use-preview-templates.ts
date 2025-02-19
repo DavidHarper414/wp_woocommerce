@@ -23,6 +23,7 @@ const EMPTY_ARRAY = [];
 
 /**
  * We need to merge pattern blocks and template blocks for BlockPreview component.
+ *
  * @param templateBlocks - Parsed template blocks
  * @param innerBlocks    - Blocks to be set as content blocks for the template preview
  */

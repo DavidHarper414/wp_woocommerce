@@ -51,6 +51,7 @@ function findReplacementIndex(
 
 /**
  * Find the latest index of the format that matches the element.
+ *
  * @param element
  * @param formats
  */
@@ -154,6 +155,7 @@ const getCursorPosition = (
 
 /**
  * Replace registered personalization tags with HTML comments in content.
+ *
  * @param content string The content to replace the tags in.
  * @param tags    PersonalizationTag[] The tags to replace in the content.
  */

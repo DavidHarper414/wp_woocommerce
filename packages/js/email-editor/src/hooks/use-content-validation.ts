@@ -48,9 +48,9 @@ export const useContentValidation = (): ContentValidationData => {
 
 	const validateContent = useCallback( (): boolean => {
 		let isValid = true;
-		rules.forEach( ( { id, test, message, actions } ) => {
+		rules.forEach( ( { id, testContent, message, actions } ) => {
 			// Check both content and template content for the rule.
-			if ( test( content + templateContent ) ) {
+			if ( testContent( content + templateContent ) ) {
 				addValidationNotice( id, message, actions );
 				isValid = false;
 			} else if ( hasValidationNotice( id ) ) {

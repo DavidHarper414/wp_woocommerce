@@ -19,6 +19,7 @@ const defaultStyleObject = {
  * If merge is true, individual styles will be merged with the heading styles.
  * This should be false in the Editor UI so heading levels state "default" in the tools UI instead of using
  * values from the parent "heading" element.
+ *
  * @param styles
  * @param headingLevel
  * @param merge
