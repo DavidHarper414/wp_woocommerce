@@ -429,7 +429,7 @@ For global attributes, the attribute posted to the API should be the slug of the
 For product specific attributes, the attribute posted to the API can be one of the following:
 
 - the name of the attribute. For example, if you have an attribute named `Size`, the name will be `Size`. This is case-sensitive.
-- the slug of the attribute. For example, if you have an attribute named `Authograph ✏️`, the name will be `attribute_autograph-%e2%9c%8f%ef%b8%8f`. This is case-sensitive. You can get this slug from the related `select` on the product page.
+- the slug of the attribute. For example, if you have an attribute named `Autograph ✏️`, the name will be `attribute_autograph-%e2%9c%8f%ef%b8%8f`. This is case-sensitive. You can get this slug from the related `select` on the product page.
 
 **Example POST body:**
 
