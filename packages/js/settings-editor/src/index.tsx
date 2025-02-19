@@ -31,28 +31,6 @@ dispatch( editSiteStore ).updateSettings( {
 	__experimentalDashboardLink: getAdminLink( 'admin.php?page=wc-admin' ),
 } );
 
-// const initialData = window.wcSettings?.admin?.settingsData;
-// const SettingsDataContext = createContext< {
-// 	settingsData: SettingsData;
-// 	setSettingsData: ( settingsData: SettingsData ) => void;
-// } >( { settingsData: initialData, setSettingsData: () => {} } );
-
-// const SettingsDataProvider = ( {
-// 	children,
-// }: {
-// 	children: React.ReactNode;
-// } ) => {
-// 	const [ settingsData, setSettingsData ] = useState( initialData );
-
-// 	return (
-// 		<SettingsDataContext.Provider
-// 			value={ { settingsData, setSettingsData } }
-// 		>
-// 			{ children }
-// 		</SettingsDataContext.Provider>
-// 	);
-// };
-
 const Notices = () => {
 	const notices: { id: string; content: string }[] = useSelect(
 		( select ) => {
