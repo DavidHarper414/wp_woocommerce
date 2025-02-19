@@ -148,7 +148,7 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 										<WooPaymentsMethodsLogos
 											maxElements={ 5 }
 											isWooPayEligible={
-												isWooPayEligible ?? false
+												isWooPayEligible
 											}
 										/>
 									</div>

@@ -88,12 +88,10 @@ export const Suggestion: React.FC< SuggestionProps > = ( {
 						/>
 					}
 					bannerImage={ <WCPayBannerImageCut /> }
-					isWooPayEligible={ isWooPayEligible ?? false }
+					isWooPayEligible={ isWooPayEligible }
 				/>
-				<WCPayBenefits isWooPayEligible={ isWooPayEligible ?? false } />
-				<WCPayBannerFooter
-					isWooPayEligible={ isWooPayEligible ?? false }
-				/>
+				<WCPayBenefits isWooPayEligible={ isWooPayEligible } />
+				<WCPayBannerFooter isWooPayEligible={ isWooPayEligible } />
 			</WCPayBanner>
 		</div>
 	);

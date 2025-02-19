@@ -53,9 +53,9 @@ const WCPaySettingBanner = () => {
 						{ __( 'Get started', 'woocommerce' ) }
 					</Button>
 				}
-				isWooPayEligible={ isWooPayEligible ?? false }
+				isWooPayEligible={ isWooPayEligible }
 			/>
-			<WCPayBannerFooter isWooPayEligible={ isWooPayEligible ?? false } />
+			<WCPayBannerFooter isWooPayEligible={ isWooPayEligible } />
 		</WCPayBanner>
 	);
 };
