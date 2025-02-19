@@ -286,8 +286,8 @@ class Renderer {
 					$p->set_attribute(
 						'data-wp-key',
 						$p->has_class( 'wp-block-query-pagination-next' )
-									? 'product-collection-pagination--next'
-						: 'product-collection-pagination--previous'
+							? 'product-collection-pagination--next'
+							: 'product-collection-pagination--previous'
 					);
 					$p->set_attribute( 'data-wp-watch', 'woocommerce/product-collection::callbacks.prefetch' );
 					$p->set_attribute( 'data-wp-on--mouseenter', 'woocommerce/product-collection::actions.prefetchOnHover' );
