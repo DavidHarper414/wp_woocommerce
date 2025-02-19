@@ -79,9 +79,12 @@ const test = baseTest.extend( {
 	product: async ( { api }, use ) => {
 		let product;
 
-		await api.post( 'products', getFakeProduct() ).then( ( response ) => {
-			product = response.data;
-		} );
+		// Using dec: 0 to avoid small rounding issues
+		await api
+			.post( 'products', getFakeProduct( { dec: 0 } ) )
+			.then( ( response ) => {
+				product = response.data;
+			} );
 
 		await use( product );
 
@@ -182,6 +185,43 @@ test(
 	'guest can checkout paying with cash on delivery',
 	{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS ] },
 	async ( { page, product, tax } ) => {
+		await addProductToCartAndProceedToCheckout( page, product, 2, tax );
+		const newCustomer = getFakeCustomer();
+
+		// Fill in the billing details
+		await page
+			.getByRole( 'textbox', { name: 'First name' } )
+			.fill( newCustomer.billing.first_name );
+		await page
+			.getByRole( 'textbox', { name: 'Last name' } )
+			.fill( newCustomer.billing.last_name );
+		await page
+			.getByRole( 'textbox', { name: 'Street address' } )
+			.fill( newCustomer.billing.address_1 );
+		await page
+			.getByRole( 'textbox', { name: 'Town / City' } )
+			.fill( newCustomer.billing.city );
+		await page
+			.getByRole( 'textbox', { name: 'ZIP Code' } )
+			.fill( newCustomer.billing.postcode );
+		await page
+			.getByRole( 'textbox', { name: 'Phone' } )
+			.fill( newCustomer.billing.phone );
+		await page
+			.getByRole( 'textbox', { name: 'Email address' } )
+			.fill( newCustomer.billing.email );
+
+		await page.getByText( 'Cash on delivery' ).click();
+		await placeOrder( page );
+	}
+);
+
+test(
+	'guest can create an account at checkout',
+	{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS ] },
+	async ( { page, product, tax } ) => {
+		throw 'Test not implemented';
+
 		await addProductToCartAndProceedToCheckout( page, product, 2, tax );
 		const newCustomer = getFakeCustomer();
 
