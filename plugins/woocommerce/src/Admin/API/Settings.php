@@ -140,14 +140,14 @@ class Settings extends \WC_REST_Data_Controller {
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
-				'tab' => array(
+				'tab'     => array(
 					'type'        => 'string',
 					'description' => __( 'Settings tab.', 'woocommerce' ),
 					'context'     => array( 'view', 'edit' ),
 					'default'     => 'general',
 				),
 				'section' => array(
-					'type'        => 'string', 
+					'type'        => 'string',
 					'description' => __( 'Settings section.', 'woocommerce' ),
 					'context'     => array( 'view', 'edit' ),
 					'default'     => '',
