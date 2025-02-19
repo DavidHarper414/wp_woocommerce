@@ -101,7 +101,7 @@ class ProductFilters extends AbstractBlock {
 			'data-wp-watch--navigation'        => 'callbacks.maybeNavigate',
 			'data-wp-watch--scrolling'         => 'callbacks.scrollLimit',
 			'data-wp-on--keyup'                => 'actions.closeOverlayOnEscape',
-			'data-wp-navigation-id'            => $this->generate_navigation_id( $block ),
+			'data-wp-router-region'            => $this->generate_navigation_id( $block ),
 			'data-wp-context'                  => wp_json_encode( $interactivity_context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
 			'data-wp-class--is-overlay-opened' => 'context.isOverlayOpened',
 			'style'                            => $styles,
