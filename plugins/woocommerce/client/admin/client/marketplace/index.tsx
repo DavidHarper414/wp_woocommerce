@@ -14,7 +14,6 @@ import {
 import Header from './components/header/header';
 import Content from './components/content/content';
 import Footer from './components/footer/footer';
-import Banner from './components/banner/banner';
 
 function MarketplaceComponents() {
 	const { selectedTab } = useContext( MarketplaceContext );
@@ -25,7 +24,6 @@ function MarketplaceComponents() {
 
 	return (
 		<div className={ classNames }>
-			<Banner />
 			<Header />
 			<Content />
 			<Footer />
