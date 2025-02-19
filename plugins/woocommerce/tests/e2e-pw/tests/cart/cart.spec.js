@@ -76,7 +76,7 @@ test.describe( 'Cart page', { tag: [ tags.PAYMENTS, tags.SERVICES ] }, () => {
 	async function goToShopPageAndAddProductToCart( page, prodName ) {
 		await page.goto( 'shop/?orderby=date' );
 		const responsePromise = page.waitForResponse(
-			'**/wp-json/wc/store/v1/batch?**'
+			'**/wp-json/wc/store/v1/items?**'
 		);
 		await page
 			.getByLabel( `Add to cart: “${ prodName }”`, { exact: true } )
