@@ -12,7 +12,7 @@ const reducer = (
 		suggestions: [],
 		suggestionCategories: [],
 		isFetching: false,
-		isWooPayEligible: null,
+		isWooPayEligible: false,
 		errors: {},
 	},
 	payload?: Actions
