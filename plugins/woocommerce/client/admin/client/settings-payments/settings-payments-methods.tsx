@@ -122,7 +122,7 @@ export const SettingsPaymentsMethods = ( {
 		if ( initialPaymentMethodsState !== null && ! isFetching ) {
 			setPaymentMethodsState( initialPaymentMethodsState );
 		}
-	}, [ isFetching, setPaymentMethodsState, initialPaymentMethodsState ] );
+	}, [ isFetching ] );
 
 	return (
 		<div className="settings-payments-methods__container">
