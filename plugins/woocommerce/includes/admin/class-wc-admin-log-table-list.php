@@ -326,9 +326,7 @@ class WC_Admin_Log_Table_List extends WP_List_Table {
 		";
 
 		$this->items = $wpdb->get_results( $query_items, ARRAY_A );
-
-		$query_count = "SELECT COUNT(log_id) FROM {$wpdb->prefix}woocommerce_log {$where}";
-		$total_items = $wpdb->get_var( $query_count );
+		$total_items = $this->get_total_items_count();
 
 		$this->set_pagination_args(
 			array(
@@ -337,6 +335,40 @@ class WC_Admin_Log_Table_List extends WP_List_Table {
 				'total_pages' => ceil( $total_items / $per_page ),
 			)
 		);
+	}
+
+	/**
+	 * Get the total count of log entries in the database.
+	 *
+	 * The query in this method can be slow if there are a large (100k+) rows in the database table, so this
+	 * uses a transient to cache the count for 10 minutes if the count is over that threshold.
+	 *
+	 * @return int
+	 */
+	protected function get_total_items_count() {
+		global $wpdb;
+
+		$where         = $this->get_items_query_where();
+		$transient_key = 'wc-log-total-items-count-' . md5( $where );
+		$count         = get_transient( $transient_key );
+		if ( false !== $count ) {
+			return $count;
+		}
+
+		$count_query = "
+			SELECT COUNT(*)
+			FROM {$wpdb->prefix}woocommerce_log
+			{$where}
+		";
+
+		$count = intval( $wpdb->get_var( $count_query ) );
+		if ( $count > 100000 ) {
+			set_transient( $transient_key, $count, 10 * MINUTE_IN_SECONDS );
+		} else {
+			delete_transient( $transient_key );
+		}
+
+		return $count;
 	}
 
 	/**
