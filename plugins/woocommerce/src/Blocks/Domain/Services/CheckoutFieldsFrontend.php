@@ -115,7 +115,15 @@ class CheckoutFieldsFrontend {
 		}
 
 		$customer = new WC_Customer( get_current_user_id() );
-		$fields   = $this->checkout_fields_controller->get_fields_for_location( 'address' );
+
+		if ( Features::is_enabled( 'experimental-blocks' ) ) {
+			$document_object = new DocumentObject();
+			$document_object->set_customer( $customer );
+			$document_object->set_context( $address_type . '_address' );
+			$fields = $this->checkout_fields_controller->get_contextual_fields_for_location( 'address', $document_object );
+		} else {
+			$fields = $this->checkout_fields_controller->get_fields_for_location( 'address' );
+		}
 
 		if ( ! $fields || ! $customer ) {
 			return;
