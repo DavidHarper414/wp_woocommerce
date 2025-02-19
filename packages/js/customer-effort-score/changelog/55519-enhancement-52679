@@ -1,0 +1,4 @@
+Significance: minor
+Type: enhancement
+
+#52679 - Allow filtering of `comment_row_actions` in Review List Table
