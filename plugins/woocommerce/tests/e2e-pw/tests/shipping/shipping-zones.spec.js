@@ -213,10 +213,6 @@ const test = baseTest.extend( {
 				code: 'US:AL',
 				type: 'state',
 			},
-			{
-				code: '35013',
-				type: 'postcode',
-			},
 		] );
 
 		await api.post( `shipping/zones/${ zone.id }/methods`, {
