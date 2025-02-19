@@ -19,10 +19,10 @@ export type IdQuery =
 	| IdType
 	| {
 			id: IdType;
-			[ key: string ]: unknown;
+			key: IdType;
 	  }
 	| {
-			[ key: string ]: unknown;
+			[ key: string ]: IdType;
 	  };
 
 export type Item = {
@@ -147,7 +147,14 @@ export type MapSelectors< Type, ResourceName, ParamType, ReturnType > = {
 export type MapActions< Type, ResourceName, ParamType, ReturnType > = {
 	[ Property in keyof Type as `${ Lowercase<
 		string & Property
-	> }${ Capitalize< string & ResourceName > }` ]: (
-		x: ParamType
-	) => ReturnType;
+	> }${ Capitalize< string & ResourceName > }` ]: Type[ Property ] extends (
+		...args: infer P
+	) => unknown
+		? (
+				...args: [
+					first: ParamType,
+					...rest: P extends [ unknown, ...infer R ] ? R : []
+				]
+		  ) => ReturnType
+		: never;
 };
