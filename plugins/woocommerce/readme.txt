@@ -173,6 +173,10 @@ WooCommerce comes with some sample data you can use to see how products look; im
 
 **WooCommerce**
 
+* Fix - Fixes a correctness over performance issue with wc_customer_bought_product (regression) [#55132](https://github.com/woocommerce/woocommerce/pull/55132)
+* Fix - Fix potential issue when defining label class as a string via woocommerce_checkout_fields [#55481](https://github.com/woocommerce/woocommerce/pull/55481)
+* Dev - Add experiments for the rollout of the new Payment settings page. [#55493](https://github.com/woocommerce/woocommerce/pull/55493)
+* Dev - Add tracking events for the new Payment settings page. [#55493](https://github.com/woocommerce/woocommerce/pull/55493)
 * Fix - Add To Cart form - tweak CSS to ensure that layout isn't broken when `woocommerce_before_add_to_cart_button` hook is used. [#54980](https://github.com/woocommerce/woocommerce/pull/54980)
 * Fix - Ensure that category slugs with non-latin characters do not cause a redirection loop [#54940](https://github.com/woocommerce/woocommerce/pull/54940)
 * Fix - Ensure that the Mini Cart item count remains visible even when the inherited color has an alpha channel, which would make the item count color transparent. [#55219](https://github.com/woocommerce/woocommerce/pull/55219)
@@ -361,5 +365,6 @@ WooCommerce comes with some sample data you can use to see how products look; im
 * Enhancement - Product Collection: Add support for passing extra attributes like align while registering a custom collection. [#53785](https://github.com/woocommerce/woocommerce/pull/53785)
 * Enhancement - Track woocommerce_allow_tracking_toggled [#53715](https://github.com/woocommerce/woocommerce/pull/53715)
 * Enhancement - Use wp_register_block_metadata_collection() on WordPress 6.7+ to improve block registration performance by reducing filesystem operations. (See https://core.trac.wordpress.org/changeset/59132) [#51184](https://github.com/woocommerce/woocommerce/pull/51184)
+
 
 [See changelog for all versions](https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/changelog.txt).
