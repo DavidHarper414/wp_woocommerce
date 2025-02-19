@@ -52,7 +52,7 @@ export default function ConnectNotice(): JSX.Element | null {
 		long: sprintf(
 			/* translators: %s: store name set from the store settings, if not set, it will be "Your store" */
 			__(
-				'%s might be at risk because it’s running outdated WooCommerce plugins and is not yet connected to a WooCommerce.com account. Please complete the connection.',
+				'%s might be at risk because it’s running outdated WooCommerce plugins and is not yet connected to a WooCommerce.com account. Please complete the connection to get updates and streamlined support.',
 				'woocommerce'
 			),
 			formattedStoreName
@@ -60,7 +60,7 @@ export default function ConnectNotice(): JSX.Element | null {
 		short: sprintf(
 			/* translators: %s: store name set from the store settings, if not set, it will be "Your store" */
 			__(
-				'%s is not yet connected to a WooCommerce.com account. Please complete the connection.',
+				'%s is not yet connected to a WooCommerce.com account. Please complete the connection to get updates and streamlined support.',
 				'woocommerce'
 			),
 			formattedStoreName
