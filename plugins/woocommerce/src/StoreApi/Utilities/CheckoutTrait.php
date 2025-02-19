@@ -209,7 +209,7 @@ trait CheckoutTrait {
 	private function persist_additional_fields_for_order( \WP_REST_Request $request ) {
 		if ( Features::is_enabled( 'experimental-blocks' ) ) {
 			$document_object = $this->get_document_object_from_rest_request( $request );
-			$document_object->set_context( $context );
+			$document_object->set_context( 'order' );
 			$additional_fields = $this->additional_fields_controller->get_contextual_fields_for_location( 'order', $document_object );
 		} else {
 			$additional_fields = $this->additional_fields_controller->get_fields_for_location( 'order' );
