@@ -166,7 +166,7 @@ export type PaymentSettingsState = {
 	suggestionCategories: SuggestedPaymentExtensionCategory[];
 	isFetching: boolean;
 	errors: Record< string, unknown >;
-	isWooPayEligible: boolean | null;
+	isWooPayEligible: boolean;
 };
 
 export type OrderMap = Record< string, number >;
