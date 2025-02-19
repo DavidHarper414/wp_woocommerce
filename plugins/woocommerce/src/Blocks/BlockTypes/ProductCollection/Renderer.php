@@ -126,43 +126,37 @@ class Renderer {
 
 		if ( $is_product_collection_block ) {
 			wp_enqueue_script_module( 'woocommerce/product-collection' );
+
+			$collection                     = $block['attrs']['collection'] ?? '';
+			$is_enhanced_pagination_enabled = ! ( $block['attrs']['forcePageReload'] ?? false );
+
 			$p = new \WP_HTML_Tag_Processor( $block_content );
-			if ( $this->is_next_tag_product_collection( $p ) ) {
-				$this->set_product_collection_namespace( $p );
+			if ( $p->next_tag( array( 'class_name' => 'wp-block-woocommerce-product-collection' ) ) ) {
+				$p->set_attribute( 'data-wp-interactive', 'woocommerce/product-collection' );
+				$p->set_attribute( 'data-wp-init', 'callbacks.onRender' );
+				$p->set_attribute(
+					'data-wp-context',
+					$collection ? wp_json_encode(
+						array( 'collection' => $collection ),
+						JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+					) : '{}'
+				);
+
+				if ( $is_enhanced_pagination_enabled && isset( $this->parsed_block ) ) {
+					$p->set_attribute(
+						'data-wp-router-region',
+						'wc-product-collection-' . $this->parsed_block['attrs']['queryId']
+					);
+				}
 			}
+
 			// Check if dimensions need to be set and handle accordingly.
 			$this->handle_block_dimensions( $p, $block );
+
 			$block_content = $p->get_updated_html();
-
-			$collection    = $block['attrs']['collection'] ?? '';
-			$block_content = $this->add_rendering_callback( $block_content, $collection );
-
-			$is_enhanced_pagination_enabled = ! ( $block['attrs']['forcePageReload'] ?? false );
-			if ( $is_enhanced_pagination_enabled ) {
-				$block_content = $this->enable_client_side_navigation( $block_content );
-			}
 		}
+
 		return $block_content;
-	}
-
-	/**
-	 * Check if next tag is a PC block.
-	 *
-	 * @param WP_HTML_Tag_processor $p Initial tag processor.
-	 *
-	 * @return bool Answer if PC block is available.
-	 */
-	private function is_next_tag_product_collection( $p ) {
-		return $p->next_tag( array( 'class_name' => 'wp-block-woocommerce-product-collection' ) );
-	}
-
-	/**
-	 * Set PC block namespace for Interactivity API.
-	 *
-	 * @param WP_HTML_Tag_processor $p Initial tag processor.
-	 */
-	private function set_product_collection_namespace( $p ) {
-		$p->set_attribute( 'data-wp-interactive', 'woocommerce/product-collection' );
 	}
 
 	/**
@@ -203,59 +197,6 @@ class Renderer {
 				$this->set_fixed_width_style( $p, $block['attrs']['dimensions']['fixedWidth'] );
 			}
 		}
-	}
-
-	/**
-	 * Attach the init directive to Product Collection block to call
-	 * the onRender callback.
-	 *
-	 * @param string $block_content The HTML content of the block.
-	 * @param string $collection Collection type.
-	 *
-	 * @return string Updated HTML content.
-	 */
-	private function add_rendering_callback( $block_content, $collection ) {
-		$p = new \WP_HTML_Tag_Processor( $block_content );
-
-		// Add `data-init to the product collection block so we trigger JS event on render.
-		if ( $this->is_next_tag_product_collection( $p ) ) {
-			$p->set_attribute(
-				'data-wp-init',
-				'callbacks.onRender'
-			);
-			$p->set_attribute(
-				'data-wp-context',
-				$collection ? wp_json_encode(
-					array( 'collection' => $collection ),
-					JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
-				) : '{}'
-			);
-		}
-
-		return $p->get_updated_html();
-	}
-
-	/**
-	 * Attach all the Interactivity API directives responsible
-	 * for client-side navigation.
-	 *
-	 * @param string $block_content The HTML content of the block.
-	 *
-	 * @return string Updated HTML content.
-	 */
-	private function enable_client_side_navigation( $block_content ) {
-		$p = new \WP_HTML_Tag_Processor( $block_content );
-
-		// Add `data-wp-router-region to the product collection block.
-		if ( $this->is_next_tag_product_collection( $p ) && isset( $this->parsed_block ) ) {
-			$p->set_attribute(
-				'data-wp-router-region',
-				'wc-product-collection-' . $this->parsed_block['attrs']['queryId']
-			);
-			$block_content = $p->get_updated_html();
-		}
-
-		return $block_content;
 	}
 
 	/**
