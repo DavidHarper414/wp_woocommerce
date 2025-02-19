@@ -137,9 +137,9 @@ class CheckoutFieldsTest extends WP_UnitTestCase {
 	public function test_get_contextual_fields_for_location_address() {
 		$fields = $this->controller->get_contextual_fields_for_location( 'address' );
 
-		$this->assertIsArray( $fields, 'Fields should be an array. Got: ' . print_r( $fields, true ) );
-		$this->assertArrayHasKey( 'plugin-namespace/gov-id', $fields, print_r( array_keys( $fields ), true ) );
-		$this->assertArrayHasKey( 'namespace/vat-number', $fields, print_r( array_keys( $fields ), true ) );
+		$this->assertIsArray( $fields );
+		$this->assertArrayHasKey( 'plugin-namespace/gov-id', $fields );
+		$this->assertArrayHasKey( 'namespace/vat-number', $fields );
 	}
 
 	/**
@@ -148,8 +148,8 @@ class CheckoutFieldsTest extends WP_UnitTestCase {
 	public function test_get_contextual_fields_for_location_contact() {
 		$fields = $this->controller->get_contextual_fields_for_location( 'contact' );
 
-		$this->assertIsArray( $fields, 'Fields should be an array. Got: ' . print_r( $fields, true ) );
-		$this->assertArrayHasKey( 'plugin-namespace/job-function', $fields, print_r( array_keys( $fields ), true ) );
+		$this->assertIsArray( $fields );
+		$this->assertArrayHasKey( 'plugin-namespace/job-function', $fields );
 	}
 
 	/**
@@ -158,8 +158,8 @@ class CheckoutFieldsTest extends WP_UnitTestCase {
 	public function test_get_contextual_fields_for_location_order() {
 		$fields = $this->controller->get_contextual_fields_for_location( 'order' );
 
-		$this->assertIsArray( $fields, 'Fields should be an array. Got: ' . print_r( $fields, true ) );
-		$this->assertArrayHasKey( 'plugin-namespace/leave-on-porch', $fields, print_r( array_keys( $fields ), true ) );
+		$this->assertIsArray( $fields );
+		$this->assertArrayHasKey( 'plugin-namespace/leave-on-porch', $fields );
 	}
 
 	/**
@@ -177,8 +177,8 @@ class CheckoutFieldsTest extends WP_UnitTestCase {
 		$document_object->set_customer( $customer );
 
 		$fields = $this->controller->get_contextual_fields_for_location( 'address', $document_object );
-		$this->assertArrayHasKey( 'plugin-namespace/gov-id', $fields, print_r( array_keys( $fields ), true ) );
-		$this->assertArrayHasKey( 'namespace/vat-number', $fields, print_r( array_keys( $fields ), true ) );
+		$this->assertArrayHasKey( 'plugin-namespace/gov-id', $fields );
+		$this->assertArrayHasKey( 'namespace/vat-number', $fields );
 
 		// Test VAT field is hidden with US address.
 		$customer->set_shipping_country( 'US' );
@@ -187,7 +187,7 @@ class CheckoutFieldsTest extends WP_UnitTestCase {
 		$document_object->set_customer( $customer );
 
 		$fields = $this->controller->get_contextual_fields_for_location( 'address', $document_object );
-		$this->assertArrayHasKey( 'plugin-namespace/gov-id', $fields, print_r( array_keys( $fields ), true ) );
-		$this->assertArrayNotHasKey( 'namespace/vat-number', $fields, print_r( array_keys( $fields ), true ) );
+		$this->assertArrayHasKey( 'plugin-namespace/gov-id', $fields );
+		$this->assertArrayNotHasKey( 'namespace/vat-number', $fields );
 	}
 }
