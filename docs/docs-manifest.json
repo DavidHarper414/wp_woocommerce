@@ -248,7 +248,7 @@
               "menu_title": "Cart Line Items",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/available-filters/cart-line-items.md",
-              "hash": "13d877d02817506086c7581ccde0861345f661b11234e11a73a363685efcc0a4",
+              "hash": "c03170d19a4eea81fa6fd5d29cc22160e27e24e28edbba67c481fbc23947319e",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/available-filters/cart-line-items.md",
               "id": "97881b973dc1d08a54c54e0a04ecb75ee48dcee2",
               "links": {
@@ -1939,5 +1939,5 @@
       "categories": []
     }
   ],
-  "hash": "88dea46324c20392ff899f1ed5d30de7c06225c87c97abbc5f5428b566796bdc"
+  "hash": "64555b5aa183e974c1d74b17543596c5b839a4543b2701f8d6a0f75bb41c29a0"
 }
