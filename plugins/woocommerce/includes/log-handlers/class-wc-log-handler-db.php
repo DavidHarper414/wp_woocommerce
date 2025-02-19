@@ -38,11 +38,16 @@ class WC_Log_Handler_DB extends WC_Log_Handler {
 	 * @return bool False if value was not handled and true if value was handled.
 	 */
 	public function handle( $timestamp, $level, $message, $context ) {
-
 		if ( isset( $context['source'] ) && $context['source'] ) {
 			$source = $context['source'];
 		} else {
 			$source = $this->get_log_source();
+		}
+
+		// Clear the source cache if this is a new source.
+		$cached_sources = get_option( WC_Admin_Log_Table_List::SOURCE_CACHE_OPTION_KEY, array() );
+		if ( ! in_array( $source, $cached_sources, true ) ) {
+			delete_option( WC_Admin_Log_Table_List::SOURCE_CACHE_OPTION_KEY );
 		}
 
 		return $this->add( $timestamp, $level, $message, $source, $context );
