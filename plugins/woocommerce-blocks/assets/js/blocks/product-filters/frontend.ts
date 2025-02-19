@@ -212,28 +212,14 @@ const productFiltersStore = store( 'woocommerce/product-filters', {
 			const { searchParams } = url;
 
 			for ( const key in context.originalParams ) {
-				if (
-					Object.prototype.hasOwnProperty.call(
-						context.originalParams,
-						key
-					)
-				) {
-					searchParams.delete( key );
-				}
+				searchParams.delete( key );
 			}
 
 			for ( const key in productFiltersStore.state.params ) {
-				if (
-					Object.prototype.hasOwnProperty.call(
-						productFiltersStore.state.params,
-						key
-					)
-				) {
-					searchParams.set(
-						key,
-						productFiltersStore.state.params[ key ]
-					);
-				}
+				searchParams.set(
+					key,
+					productFiltersStore.state.params[ key ]
+				);
 			}
 
 			context.originalParams = { ...productFiltersStore.state.params };
