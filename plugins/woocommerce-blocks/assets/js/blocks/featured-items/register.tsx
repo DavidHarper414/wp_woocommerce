@@ -53,13 +53,6 @@ export function register(
 		attributes: {
 			...metadata.attributes,
 			/**
-			 * A more descriptive label for the CTA button that will be announced by screen readers.
-			 */
-			ariaLabel: {
-				type: 'string',
-				default: '',
-			},
-			/**
 			 * A minimum height for the block.
 			 *
 			 * Note: if padding is increased, this way the inner content will never

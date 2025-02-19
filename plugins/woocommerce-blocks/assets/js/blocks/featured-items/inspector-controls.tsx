@@ -18,7 +18,6 @@ import {
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 	TextareaControl,
-	TextControl,
 	ExternalLink,
 } from '@wordpress/components';
 import { LooselyMustHave, ProductResponseItem } from '@woocommerce/types';
@@ -48,7 +47,6 @@ interface InspectorControlsRequiredAttributes
 		InspectorControlRequiredKeys
 	> {
 	alt: string;
-	ariaLabel: string;
 	backgroundImageSrc: string;
 	contentPanel: JSX.Element | undefined;
 }
@@ -86,7 +84,6 @@ type WithInspectorControlsProps< T extends EditorBlock< T > > =
 
 export const InspectorControls = ( {
 	alt,
-	ariaLabel,
 	backgroundImageSrc,
 	contentPanel,
 	dimRatio,
@@ -113,17 +110,6 @@ export const InspectorControls = ( {
 					label={ __( 'Show description', 'woocommerce' ) }
 					checked={ showDesc }
 					onChange={ () => setAttributes( { showDesc: ! showDesc } ) }
-				/>
-				<TextControl
-					label={ __( 'Button aria-label attribute', 'woocommerce' ) }
-					value={ ariaLabel }
-					onChange={ ( value ) =>
-						setAttributes( { ariaLabel: value } )
-					}
-					help={ __(
-						'Improve accessibility for screen reader users by providing a more descriptive label to the button.',
-						'woocommerce'
-					) }
 				/>
 				{ contentPanel }
 			</PanelBody>
@@ -282,7 +268,6 @@ export const withInspectorControls =
 		const { attributes, name, setAttributes } = props;
 		const {
 			alt,
-			ariaLabel,
 			dimRatio,
 			focalPoint,
 			hasParallax,
@@ -329,7 +314,6 @@ export const withInspectorControls =
 			<>
 				<InspectorControls
 					alt={ alt }
-					ariaLabel={ ariaLabel }
 					backgroundImageSrc={ backgroundImageSrc }
 					contentPanel={ contentPanel }
 					dimRatio={ dimRatio }
