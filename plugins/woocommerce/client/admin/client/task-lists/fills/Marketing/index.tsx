@@ -11,7 +11,7 @@ import {
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
-import { useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { registerPlugin } from '@wordpress/plugins';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
@@ -165,6 +165,20 @@ const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 		actionTask( 'marketing' );
 	};
 
+	useEffect( () => {
+		if ( window.wcTracks.isEnabled ) {
+			recordEvent( 'marketplace_task_promo_shown', {
+				task: 'marketing',
+			} );
+		}
+	}, [] );
+
+	const trackPromoButtonClick = () => {
+		recordEvent( 'marketplace_task_promo_button_click', {
+			task: 'marketing',
+		} );
+	};
+
 	if ( isResolving ) {
 		return <Spinner />;
 	}
@@ -228,32 +242,24 @@ const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 					} ) }
 				</Card>
 			) }
-			<TaskPromo
-				title={ __( "Boost your store's potential", 'woocommerce' ) }
-				text={ __(
-					'Discover hand-picked extensions to grow your business in' +
-						' the official WooCommerce marketplace.',
-					'woocommerce'
-				) }
-				buttonHref={
-					'https://woocommerce.com/collection/grow-your-business/?utm_campaign=woocommerceplugin&utm_source=tasklist&utm_medium=product'
-				}
-				buttonText={ __( 'Start growing', 'woocommerce' ) }
-			/>
-			<TrackedLink
-				textProps={ {
-					as: 'div',
-					className:
-						'woocommerce-task-dashboard__container woocommerce-task-marketplace-link',
-				} }
-				message={ __(
-					// translators: {{Link}} is a placeholder for a html element.
-					'Visit the {{Link}}Official WooCommerce Marketplace{{/Link}} to enhance your store with additional marketing solutions.',
-					'woocommerce'
-				) }
-				eventName="tasklist_marketing_visit_marketplace_click"
-				targetUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=marketing-extensions"
-			/>
+			{ window.wcTracks.isEnabled && (
+				<TaskPromo
+					title={ __(
+						"Boost your store's potential",
+						'woocommerce'
+					) }
+					text={ __(
+						'Discover hand-picked extensions to grow your business in' +
+							' the official WooCommerce marketplace.',
+						'woocommerce'
+					) }
+					buttonHref={
+						'https://woocommerce.com/collection/grow-your-business/?utm_campaign=woocommerceplugin&utm_source=tasklist&utm_medium=product'
+					}
+					buttonText={ __( 'Start growing', 'woocommerce' ) }
+					onButtonClick={ trackPromoButtonClick }
+				/>
+			) }
 		</div>
 	);
 };

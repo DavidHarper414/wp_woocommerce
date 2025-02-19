@@ -15,18 +15,22 @@ export type TaskPromoProps = {
 	title?: string;
 	iconSrc?: string;
 	iconAlt?: string;
+	name?: string;
 	text?: string;
 	buttonHref?: string;
 	buttonText?: string;
+	onButtonClick?: () => void;
 };
 
 export const TaskPromo: React.FC< TaskPromoProps > = ( {
 	title = '',
 	iconSrc = `${ WC_ASSET_URL }images/woo-app-icon.svg`,
 	iconAlt = __( 'Woo icon', 'woocommerce' ),
+	name = __( 'WooCommerce Marketplace', 'woocommerce' ),
 	text = '',
 	buttonHref = '',
 	buttonText = '',
+	onButtonClick,
 } ) => {
 	return (
 		<Card className="woocommerce-task-card woocommerce-task-promo">
@@ -43,13 +47,20 @@ export const TaskPromo: React.FC< TaskPromoProps > = ( {
 			) }
 			<CardBody>
 				<div className="woocommerce-plugin-list__plugin-logo">
-					<img src={ iconSrc } alt={ iconAlt } />
+					<img src={ iconSrc as string } alt={ iconAlt as string } />
 				</div>
 				<div className="woocommerce-plugin-list__plugin-text">
-					<Text>{ text }</Text>
+					<Text variant="subtitle.small" as="h4">
+						{ name }
+					</Text>
+					<Text variant="subtitle.small">{ text }</Text>
 				</div>
 				<div className="woocommerce-plugin-list__plugin-action">
-					<Button isSecondary href={ buttonHref }>
+					<Button
+						isSecondary
+						href={ buttonHref }
+						onClick={ onButtonClick }
+					>
 						{ buttonText }
 					</Button>
 				</div>

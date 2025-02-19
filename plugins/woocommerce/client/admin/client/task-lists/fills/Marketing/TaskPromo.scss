@@ -3,4 +3,10 @@
 		display: flex;
 		padding: $gap-large;
 	}
+
+	h4 {
+		margin-bottom: $gap-small;
+		font-weight: 600;
+		color: $gray-900;
+	}
 }
