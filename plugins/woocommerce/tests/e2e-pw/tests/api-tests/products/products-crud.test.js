@@ -2,9 +2,9 @@ const {
 	test: baseTest,
 	expect,
 } = require( '../../../fixtures/api-tests-fixtures' );
-const { IS_WPCOM, IS_PRESSABLE } = process.env;
+const { BASE_URL } = process.env;
 const { admin } = require( '../../../test-data/data' );
-const shouldSkip = IS_WPCOM || IS_PRESSABLE;
+const shouldSkip = BASE_URL !== undefined;
 
 /**
  * Internal dependencies
@@ -1327,7 +1327,7 @@ test.describe( 'Products API tests: CRUD', () => {
 			);
 			expect( response.status() ).toEqual( 200 );
 
-			// if we're running on CI, then skip -- because objects are cached and they don't disappear instantly.
+			// if we're running against other environments, then skip -- because objects could be cached and they don't disappear instantly.
 			// eslint-disable-next-line playwright/no-conditional-in-test
 			if ( ! shouldSkip ) {
 				// Verify that the product variation can no longer be retrieved.
@@ -1417,7 +1417,7 @@ test.describe( 'Products API tests: CRUD', () => {
 				'35.99'
 			);
 
-			// if we're running on CI, then skip -- because objects are cached and they don't disappear instantly.
+			// if we're running against other environments, then skip -- because objects could be cached and they don't disappear instantly.
 			// eslint-disable-next-line playwright/no-conditional-in-test
 			if ( ! shouldSkip ) {
 				// Verify that the deleted product variation can no longer be retrieved.
