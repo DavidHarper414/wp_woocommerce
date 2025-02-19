@@ -262,39 +262,6 @@ class WC_Settings_Products extends WC_Settings_Page {
 				),
 
 				array(
-					'title'         => __( 'Notifications', 'woocommerce' ),
-					'desc'          => __( 'Enable low stock notifications', 'woocommerce' ),
-					'id'            => 'woocommerce_notify_low_stock',
-					'default'       => 'yes',
-					'type'          => 'checkbox',
-					'checkboxgroup' => 'start',
-					'autoload'      => false,
-					'class'         => 'manage_stock_field',
-				),
-
-				array(
-					'desc'          => __( 'Enable out of stock notifications', 'woocommerce' ),
-					'id'            => 'woocommerce_notify_no_stock',
-					'default'       => 'yes',
-					'type'          => 'checkbox',
-					'checkboxgroup' => 'end',
-					'autoload'      => false,
-					'class'         => 'manage_stock_field',
-				),
-
-				array(
-					'title'    => __( 'Notification recipient(s)', 'woocommerce' ),
-					'desc'     => __( 'Enter recipients (comma separated) that will receive this notification.', 'woocommerce' ),
-					'id'       => 'woocommerce_stock_email_recipient',
-					'type'     => 'text',
-					'default'  => get_option( 'admin_email' ),
-					'css'      => 'width: 250px;',
-					'autoload' => false,
-					'desc_tip' => true,
-					'class'    => 'manage_stock_field',
-				),
-
-				array(
 					'title'             => __( 'Low stock threshold', 'woocommerce' ),
 					'desc'              => __( 'When product stock reaches this amount you will be notified via email.', 'woocommerce' ),
 					'id'                => 'woocommerce_notify_low_stock_amount',
@@ -352,6 +319,62 @@ class WC_Settings_Products extends WC_Settings_Page {
 				array(
 					'type' => 'sectionend',
 					'id'   => 'product_inventory_options',
+				),
+
+				array(
+					'title' => __( 'Notifications', 'woocommerce' ),
+					'type'  => 'title',
+					'desc'  => '',
+					'id'    => 'product_inventory_notifications_options',
+				),
+
+				array(
+					'title'         => __( 'Admin notifications', 'woocommerce' ),
+					'desc'          => __( 'Enable low stock notifications for the admin', 'woocommerce' ),
+					'id'            => 'woocommerce_notify_low_stock',
+					'default'       => 'yes',
+					'type'          => 'checkbox',
+					'checkboxgroup' => 'start',
+					'autoload'      => false,
+					'class'         => 'manage_stock_field',
+				),
+
+				array(
+					'desc'          => __( 'Enable out of stock notifications for the admin', 'woocommerce' ),
+					'id'            => 'woocommerce_notify_no_stock',
+					'default'       => 'yes',
+					'type'          => 'checkbox',
+					'checkboxgroup' => 'end',
+					'autoload'      => false,
+					'class'         => 'manage_stock_field',
+				),
+
+				array(
+					'title'    => __( 'Admin notification recipient(s)', 'woocommerce' ),
+					'desc'     => __( 'Enter recipients (comma separated) that will receive this notification.', 'woocommerce' ),
+					'id'       => 'woocommerce_stock_email_recipient',
+					'type'     => 'text',
+					'default'  => get_option( 'admin_email' ),
+					'css'      => 'width: 250px;',
+					'autoload' => false,
+					'desc_tip' => true,
+					'class'    => 'manage_stock_field',
+				),
+
+				array(
+					'title'         => __( 'Customer notifications', 'woocommerce' ),
+					'desc'          => __( 'Enable back in stock notifications for customers', 'woocommerce' ),
+					'id'            => 'wc_feature_woocommerce_back_in_stock_notifications_enabled', // This is manually synchronized with the option `wc_feature_woocommerce_back_in_stock_notifications_enabled` used by Packages.php. Ugly.
+					'default'       => 'yes',
+					'type'          => 'checkbox',
+					'checkboxgroup' => 'start',
+					'autoload'      => false,
+					'class'         => 'manage_stock_field',
+				),
+
+				array(
+					'type' => 'sectionend',
+					'id'   => 'product_inventory_notifications_options',
 				),
 			);
 
@@ -484,6 +507,8 @@ class WC_Settings_Products extends WC_Settings_Page {
 	 * Save settings and trigger the 'woocommerce_update_options_'.id action.
 	 */
 	public function save() {
+		$previous_bis_setting = get_option( 'wc_feature_woocommerce_back_in_stock_notifications_enabled' );
+		
 		$this->save_settings_for_current_section();
 
 		/*
@@ -493,6 +518,13 @@ class WC_Settings_Products extends WC_Settings_Page {
 		WC()->call_function( 'wc_recount_all_terms' );
 
 		$this->do_update_options_action();
+
+		// Check if back in stock notification setting was changed and reload the page to ensure it's active immediately.
+		$new_bis_setting = get_option( 'wc_feature_woocommerce_back_in_stock_notifications_enabled' );
+		if ( $previous_bis_setting !== $new_bis_setting ) {
+			wp_redirect( add_query_arg( 'reload', '1' ) );
+			exit;
+		}
 	}
 }
 

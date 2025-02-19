@@ -6,6 +6,8 @@
  * @since    1.0.0
  */
 
+use Automattic\WooCommerce\Internal\BackInStockNotifications;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -29,251 +31,278 @@ if ( ! class_exists( 'WC_BIS_Settings' ) ) :
 			$this->id    = 'bis_settings';
 			$this->label = __( 'Stock Notifications', 'woocommerce' );
 
-			// Add settings page.
-			add_filter( 'woocommerce_settings_tabs_array', array( $this, 'add_settings_page' ), 20 );
-			// Output sections.
-			add_action( 'woocommerce_sections_' . $this->id, array( $this, 'output_sections' ) );
-			// Output content.
-			add_action( 'woocommerce_settings_' . $this->id, array( $this, 'output' ) );
-			// Process + save data.
-			add_action( 'woocommerce_settings_save_' . $this->id, array( $this, 'save' ) );
+			// Hook to Products settings.
+			add_filter( 'woocommerce_get_sections_products', array( $this, 'add_bis_section_to_product_settings' ), 100, 1 );
+			add_filter( 'woocommerce_get_settings_products', array( $this, 'add_product_bis_settings' ), 100, 2 );
+
 		}
 
+		public function add_bis_section_to_product_settings( array $products ): array {
+			// Add bis_settings section to products tab after Inventory section.
+			$inventory_index = array_search( 'inventory', array_keys( $products ) );
+			if ( $inventory_index !== false ) {
+				$products = array_slice( $products, 0, $inventory_index + 1, true ) +
+					array( 'bis_settings' => __( 'Customer stock notifications', 'woocommerce' ) ) +
+					array_slice( $products, $inventory_index + 1, null, true );
+			} else {
+				$products['bis_settings'] = __( 'Customer stock notifications', 'woocommerce' );
+			}
+	
+			return $products;
+		}
+
+
 		/**
-		 * Get settings array.
+		 * Handler for 'woocommerce_get_settings_products', adds the settings related to the product attributes lookup table.
 		 *
-		 * @return array
+		 * @param array  $settings Original settings configuration array.
+		 * @param string $section_id Settings section identifier.
+		 * @return array New settings configuration array.
+		 *
+		 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 		 */
-		public function get_settings() {
+		public function add_product_bis_settings( array $settings, string $section_id ): array {
+			if ( 'bis_settings' === $section_id ) {
+				$title_item = array(
+					'title' => __( 'Customer stock notifications', 'woocommerce' ),
+					'type'  => 'title',
+				);
 
-			return apply_filters(
-				'woocommerce_bis_settings',
-				array(
+				if ( ! BackInStockNotifications::is_enabled() || 'yes' !== get_option( 'wc_feature_woocommerce_back_in_stock_notifications_enabled' ) ) {
+					$title_item['desc'] = __( 'These settings are not available when the stock notifications feature is disabled. Enable it in the <a href="' . admin_url( 'admin.php?page=wc-settings&tab=products&section=inventory' ) . '">Inventory</a> section.', 'woocommerce' );
+				}
+	
+				$settings[] = $title_item;
 
-					array(
-						'title' => __( 'General', 'woocommerce' ),
-						'type'  => 'title',
-						'id'    => 'bis_settings_general',
-					),
+				$default_bis_settings = array(
 
-					array(
-						'title'   => __( 'Allow sign-ups', 'woocommerce' ),
-						'desc'    => __( 'Let customers sign up to be notified when products in your store are restocked.', 'woocommerce' ),
-						'id'      => 'wc_bis_allow_signups',
-						'default' => 'yes',
-						'type'    => 'checkbox',
-					),
-
-					array(
-						'title'   => __( 'Require double opt-in to sign up', 'woocommerce' ),
-						'desc'    => __( 'To complete the sign-up process, customers must follow a verification link sent to their e-mail after submitting the sign-up form.', 'woocommerce' ),
-						'id'      => 'wc_bis_double_opt_in_required',
-						'default' => 'no',
-						'type'    => 'checkbox',
-					),
-
-					array(
-						'title'   => __( 'Delete unverified notification sign-ups after (in days)', 'woocommerce' ),
-						'desc'    => __( 'Contols how long the plugin will store unverified notification sign-ups in the database. Enter zero, or leave this field empty if you would like to store expired sign-up requests indefinitey.', 'woocommerce' ),
-						'id'      => 'wc_bis_delete_unverified_days_threshold',
-						'default' => 0,
-						'type'    => 'number',
-						'class'   => 'double_opt_in_required',
-					),
-
-					array(
-						'title'    => __( 'Require account to sign up', 'woocommerce' ),
-						'desc'     => __( 'Customers must be logged in to sign up for stock notifications.', 'woocommerce' ),
-						'id'       => 'wc_bis_account_required',
-						'default'  => 'no',
-						'type'     => 'checkbox',
-						'desc_tip' => __( 'When enabled, guests will be redirected to a login page to complete the sign-up process.', 'woocommerce' ),
-					),
-
-					array(
-						'title'   => __( 'Create account on sign-up', 'woocommerce' ),
-						'desc'    => __( 'Create an account when guests sign up for stock notifications.', 'woocommerce' ),
-						'id'      => 'wc_bis_create_new_account_on_registration',
-						'default' => 'no',
-						'type'    => 'checkbox',
-						'class'   => 'account_required_field',
-					),
-
-					array(
-						'title'             => __( 'Minimum stock quantity', 'woocommerce' ),
-						'desc'              => __( 'Stock quantity required to trigger stock notifications when restocking.', 'woocommerce' ),
-						'id'                => 'wc_bis_stock_threshold',
-						'default'           => 0,
-						'type'              => 'number',
-						'custom_attributes' => array(
-							'min'  => 0,
-							'step' => 1,
+						array(
+							'title'   => __( 'Allow sign-ups', 'woocommerce' ),
+							'desc'    => __( 'Let customers sign up to be notified when products in your store are restocked.', 'woocommerce' ),
+							'id'      => 'wc_bis_allow_signups',
+							'default' => 'yes',
+							'type'    => 'checkbox',
 						),
-					),
 
-					array(
-						'type' => 'sectionend',
-						'id'   => 'bis_settings_general',
-					),
-
-					array(
-						'title' => __( 'Product Page', 'woocommerce' ),
-						'type'  => 'title',
-						'id'    => 'bis_settings_products',
-					),
-
-					array(
-						'title'   => __( 'Display opt-in checkbox', 'woocommerce' ),
-						'desc'    => __( 'Enable this option if you would like guests to provide explicit consent in order to sign up.', 'woocommerce' ),
-						'id'      => 'wc_bis_opt_in_required',
-						'default' => 'no',
-						'type'    => 'checkbox',
-						'class'   => 'account_required_field',
-					),
-
-					array(
-						'title'             => __( 'Opt-in checkbox text', 'woocommerce' ),
-						'id'                => 'wc_bis_create_new_account_optin_text',
-						'placeholder'       => wc_bis_get_form_privacy_default_text(),
-						'default'           => wc_bis_get_form_privacy_default_text(),
-						'type'              => 'textarea',
-						'custom_attributes' => array(
-							'rows' => 5,
+						array(
+							'title'   => __( 'Require double opt-in to sign up', 'woocommerce' ),
+							'desc'    => __( 'To complete the sign-up process, customers must follow a verification link sent to their e-mail after submitting the sign-up form.', 'woocommerce' ),
+							'id'      => 'wc_bis_double_opt_in_required',
+							'default' => 'no',
+							'type'    => 'checkbox',
 						),
-						'class'             => 'opt_in_required',
-					),
 
-					array(
-						'title'    => __( 'Display signed-up customers', 'woocommerce' ),
-						'desc'     => __( 'Let visitors know how many customers have already signed up.', 'woocommerce' ),
-						'id'       => 'wc_bis_show_product_registrations_count',
-						'default'  => 'no',
-						'desc_tip' => __( 'Note: If page caching is enabled on your site, the displayed count may not be accurate at all times.', 'woocommerce' ),
-						'type'     => 'checkbox',
-					),
+						array(
+							'title'   => __( 'Delete unverified notification sign-ups after (in days)', 'woocommerce' ),
+							'desc'    => __( 'Contols how long the plugin will store unverified notification sign-ups in the database. Enter zero, or leave this field empty if you would like to store expired sign-up requests indefinitey.', 'woocommerce' ),
+							'id'      => 'wc_bis_delete_unverified_days_threshold',
+							'default' => 0,
+							'type'    => 'number',
+							'class'   => 'double_opt_in_required',
+						),
 
-					array(
-						'title'       => __( 'Signed-up customers text', 'woocommerce' ),
-						'id'          => 'wc_bis_product_registrations_text',
-						'placeholder' => wc_bis_get_form_signups_count_default_text(),
-						'default'     => wc_bis_get_form_signups_count_default_text(),
-						'desc'        => __( 'Text to use when 1 customer has signed up for a stock notification.', 'woocommerce' ),
-						'type'        => 'text',
-						'class'       => 'product_registrations_text',
-					),
+						array(
+							'title'    => __( 'Require account to sign up', 'woocommerce' ),
+							'desc'     => __( 'Customers must be logged in to sign up for stock notifications.', 'woocommerce' ),
+							'id'       => 'wc_bis_account_required',
+							'default'  => 'no',
+							'type'     => 'checkbox',
+							'desc_tip' => __( 'When enabled, guests will be redirected to a login page to complete the sign-up process.', 'woocommerce' ),
+						),
 
-					array(
-						'title'       => '',
-						'id'          => 'wc_bis_product_registrations_plural_text',
-						/* translators: customers_count */
-						'placeholder' => wc_bis_get_form_signups_count_plural_default_text(),
-						'default'     => wc_bis_get_form_signups_count_plural_default_text(),
-						/* translators: customers_count */
-						'desc'        => __( 'Text to use when multiple customers have signed up for stock notifications. <code>{customers_count}</code> will be substituted by the number of signed-up customers.', 'woocommerce' ),
-						'type'        => 'text',
-						'class'       => 'product_registrations_text',
-					),
+						array(
+							'title'   => __( 'Create account on sign-up', 'woocommerce' ),
+							'desc'    => __( 'Create an account when guests sign up for stock notifications.', 'woocommerce' ),
+							'id'      => 'wc_bis_create_new_account_on_registration',
+							'default' => 'no',
+							'type'    => 'checkbox',
+							'class'   => 'account_required_field',
+						),
 
-					array(
-						'title'       => __( 'Sign-up form text', 'woocommerce' ),
-						'id'          => 'wc_bis_form_header_text',
-						'placeholder' => wc_bis_get_form_header_default_text(),
-						'default'     => wc_bis_get_form_header_default_text(),
-						'type'        => 'text',
-					),
+						array(
+							'title'             => __( 'Minimum stock quantity', 'woocommerce' ),
+							'desc'              => __( 'Stock quantity required to trigger stock notifications when restocking.', 'woocommerce' ),
+							'id'                => 'wc_bis_stock_threshold',
+							'default'           => 0,
+							'type'              => 'number',
+							'custom_attributes' => array(
+								'min'  => 0,
+								'step' => 1,
+							),
+						),
 
-					array(
-						'title'       => __( 'Sign-up form text &mdash; already signed up', 'woocommerce' ),
-						'id'          => 'wc_bis_form_header_signed_up_text',
-						'placeholder' => wc_bis_get_form_header_signed_up_default_text(),
-						'default'     => wc_bis_get_form_header_signed_up_default_text(),
-						'type'        => 'text',
-						'desc'        => __( 'Text to display to logged-in customers who have already signed up, instead of the <strong>Sign-up form text</strong> above. <code>{manage_account_link}</code> will be substituted by the text below and converted into a <strong>My Account > Stock Notifications</strong> page link.', 'woocommerce' ),
-					),
+						array(
+							'type' => 'sectionend',
+							'id'   => 'bis_settings_general',
+						),
 
-					array(
-						'title'       => '',
-						'id'          => 'wc_bis_form_header_signed_up_link_text',
-						'placeholder' => wc_bis_get_form_header_signed_up_link_default_text(),
-						'default'     => wc_bis_get_form_header_signed_up_link_default_text(),
-						'type'        => 'text',
-						'desc'        => __( 'Text substituted into <code>{manage_account_link}</code> above.', 'woocommerce' ),
-					),
+						array(
+							'title' => __( 'Product Page', 'woocommerce' ),
+							'type'  => 'title',
+							'id'    => 'bis_settings_products',
+						),
 
-					array(
-						'title'       => __( 'Sign-up form button text', 'woocommerce' ),
-						'id'          => 'wc_bis_form_button_text',
-						'placeholder' => wc_bis_get_form_button_default_text(),
-						'default'     => wc_bis_get_form_button_default_text(),
-						'type'        => 'text',
-					),
+						array(
+							'title'   => __( 'Display opt-in checkbox', 'woocommerce' ),
+							'desc'    => __( 'Enable this option if you would like guests to provide explicit consent in order to sign up.', 'woocommerce' ),
+							'id'      => 'wc_bis_opt_in_required',
+							'default' => 'no',
+							'type'    => 'checkbox',
+							'class'   => 'account_required_field',
+						),
 
-					array(
-						'type' => 'sectionend',
-						'id'   => 'bis_settings_general',
-					),
+						array(
+							'title'             => __( 'Opt-in checkbox text', 'woocommerce' ),
+							'id'                => 'wc_bis_create_new_account_optin_text',
+							'placeholder'       => wc_bis_get_form_privacy_default_text(),
+							'default'           => wc_bis_get_form_privacy_default_text(),
+							'type'              => 'textarea',
+							'custom_attributes' => array(
+								'rows' => 5,
+							),
+							'class'             => 'opt_in_required',
+						),
 
-					array(
-						'title' => __( 'Catalog', 'woocommerce' ),
-						'type'  => 'title',
-						'id'    => 'bis_settings_catalog',
-					),
+						array(
+							'title'    => __( 'Display signed-up customers', 'woocommerce' ),
+							'desc'     => __( 'Let visitors know how many customers have already signed up.', 'woocommerce' ),
+							'id'       => 'wc_bis_show_product_registrations_count',
+							'default'  => 'no',
+							'desc_tip' => __( 'Note: If page caching is enabled on your site, the displayed count may not be accurate at all times.', 'woocommerce' ),
+							'type'     => 'checkbox',
+						),
 
-					array(
-						'title'   => __( 'Display sign-up prompt in catalog', 'woocommerce' ),
-						'desc'    => __( 'Display a message next to out-of-stock products in catalog pages, prompting customers to sign up for stock notifications.', 'woocommerce' ),
-						'id'      => 'wc_bis_loop_signup_prompt_status',
-						'default' => 'no',
-						'type'    => 'checkbox',
-					),
+						array(
+							'title'       => __( 'Signed-up customers text', 'woocommerce' ),
+							'id'          => 'wc_bis_product_registrations_text',
+							'placeholder' => wc_bis_get_form_signups_count_default_text(),
+							'default'     => wc_bis_get_form_signups_count_default_text(),
+							'desc'        => __( 'Text to use when 1 customer has signed up for a stock notification.', 'woocommerce' ),
+							'type'        => 'text',
+							'class'       => 'product_registrations_text',
+						),
 
-					array(
-						'title'       => __( 'Catalog sign-up prompt text', 'woocommerce' ),
-						'id'          => 'wc_bis_loop_signup_prompt_text',
-						'placeholder' => wc_bis_get_loop_signup_prompt_default_text(),
-						'default'     => wc_bis_get_loop_signup_prompt_default_text(),
-						'desc'        => __( 'Text to display next to out-of-stock products in catalog pages. <code>{prompt_link}</code> will be substituted by the text below and converted into a product page link.', 'woocommerce' ),
-						'type'        => 'text',
-						'class'       => 'loop_signup_prompt_text',
-					),
+						array(
+							'title'       => '',
+							'id'          => 'wc_bis_product_registrations_plural_text',
+							/* translators: customers_count */
+							'placeholder' => wc_bis_get_form_signups_count_plural_default_text(),
+							'default'     => wc_bis_get_form_signups_count_plural_default_text(),
+							/* translators: customers_count */
+							'desc'        => __( 'Text to use when multiple customers have signed up for stock notifications. <code>{customers_count}</code> will be substituted by the number of signed-up customers.', 'woocommerce' ),
+							'type'        => 'text',
+							'class'       => 'product_registrations_text',
+						),
 
-					array(
-						'title'       => '',
-						'id'          => 'wc_bis_loop_signup_prompt_link_text',
-						'placeholder' => wc_bis_get_loop_signup_prompt_link_default_text(),
-						'default'     => wc_bis_get_loop_signup_prompt_link_default_text(),
-						'desc'        => __( 'Text substituted into <code>{prompt_link}</code> above.', 'woocommerce' ),
-						'type'        => 'text',
-						'class'       => 'loop_signup_prompt_text',
-					),
+						array(
+							'title'       => __( 'Sign-up form text', 'woocommerce' ),
+							'id'          => 'wc_bis_form_header_text',
+							'placeholder' => wc_bis_get_form_header_default_text(),
+							'default'     => wc_bis_get_form_header_default_text(),
+							'type'        => 'text',
+						),
 
-					array(
-						'title'       => __( 'Catalog sign-up prompt text &mdash; already signed up', 'woocommerce' ),
-						'id'          => 'wc_bis_loop_signup_prompt_signed_up_text',
-						'placeholder' => wc_bis_get_loop_signup_prompt_signed_up_default_text(),
-						'default'     => wc_bis_get_loop_signup_prompt_signed_up_default_text(),
-						'desc'        => __( 'Text to display next to out-of-stock products in catalog pages to logged-in customers who have already signed up. <code>{prompt_link}</code> will be substituted by the text below and converted into a <strong>My Account > Stock Notifications</strong> page link.', 'woocommerce' ),
-						'type'        => 'text',
-						'class'       => 'loop_signup_prompt_text',
-					),
+						array(
+							'title'       => __( 'Sign-up form text &mdash; already signed up', 'woocommerce' ),
+							'id'          => 'wc_bis_form_header_signed_up_text',
+							'placeholder' => wc_bis_get_form_header_signed_up_default_text(),
+							'default'     => wc_bis_get_form_header_signed_up_default_text(),
+							'type'        => 'text',
+							'desc'        => __( 'Text to display to logged-in customers who have already signed up, instead of the <strong>Sign-up form text</strong> above. <code>{manage_account_link}</code> will be substituted by the text below and converted into a <strong>My Account > Stock Notifications</strong> page link.', 'woocommerce' ),
+						),
 
-					array(
-						'title'       => '',
-						'id'          => 'wc_bis_loop_signup_prompt_signed_up_link_text',
-						'placeholder' => wc_bis_get_loop_signup_prompt_signed_up_link_default_text(),
-						'default'     => wc_bis_get_loop_signup_prompt_signed_up_link_default_text(),
-						'desc'        => __( 'Text substituted into <code>{prompt_link}</code> above.', 'woocommerce' ),
-						'type'        => 'text',
-						'class'       => 'loop_signup_prompt_text',
-					),
+						array(
+							'title'       => '',
+							'id'          => 'wc_bis_form_header_signed_up_link_text',
+							'placeholder' => wc_bis_get_form_header_signed_up_link_default_text(),
+							'default'     => wc_bis_get_form_header_signed_up_link_default_text(),
+							'type'        => 'text',
+							'desc'        => __( 'Text substituted into <code>{manage_account_link}</code> above.', 'woocommerce' ),
+						),
 
-					array(
-						'type' => 'sectionend',
-						'id'   => 'bis_settings_catalog',
-					),
+						array(
+							'title'       => __( 'Sign-up form button text', 'woocommerce' ),
+							'id'          => 'wc_bis_form_button_text',
+							'placeholder' => wc_bis_get_form_button_default_text(),
+							'default'     => wc_bis_get_form_button_default_text(),
+							'type'        => 'text',
+						),
 
-				)
-			);
+						array(
+							'type' => 'sectionend',
+							'id'   => 'bis_settings_general',
+						),
+
+						array(
+							'title' => __( 'Catalog', 'woocommerce' ),
+							'type'  => 'title',
+							'id'    => 'bis_settings_catalog',
+						),
+
+						array(
+							'title'   => __( 'Display sign-up prompt in catalog', 'woocommerce' ),
+							'desc'    => __( 'Display a message next to out-of-stock products in catalog pages, prompting customers to sign up for stock notifications.', 'woocommerce' ),
+							'id'      => 'wc_bis_loop_signup_prompt_status',
+							'default' => 'no',
+							'type'    => 'checkbox',
+						),
+
+						array(
+							'title'       => __( 'Catalog sign-up prompt text', 'woocommerce' ),
+							'id'          => 'wc_bis_loop_signup_prompt_text',
+							'placeholder' => wc_bis_get_loop_signup_prompt_default_text(),
+							'default'     => wc_bis_get_loop_signup_prompt_default_text(),
+							'desc'        => __( 'Text to display next to out-of-stock products in catalog pages. <code>{prompt_link}</code> will be substituted by the text below and converted into a product page link.', 'woocommerce' ),
+							'type'        => 'text',
+							'class'       => 'loop_signup_prompt_text',
+						),
+
+						array(
+							'title'       => '',
+							'id'          => 'wc_bis_loop_signup_prompt_link_text',
+							'placeholder' => wc_bis_get_loop_signup_prompt_link_default_text(),
+							'default'     => wc_bis_get_loop_signup_prompt_link_default_text(),
+							'desc'        => __( 'Text substituted into <code>{prompt_link}</code> above.', 'woocommerce' ),
+							'type'        => 'text',
+							'class'       => 'loop_signup_prompt_text',
+						),
+
+						array(
+							'title'       => __( 'Catalog sign-up prompt text &mdash; already signed up', 'woocommerce' ),
+							'id'          => 'wc_bis_loop_signup_prompt_signed_up_text',
+							'placeholder' => wc_bis_get_loop_signup_prompt_signed_up_default_text(),
+							'default'     => wc_bis_get_loop_signup_prompt_signed_up_default_text(),
+							'desc'        => __( 'Text to display next to out-of-stock products in catalog pages to logged-in customers who have already signed up. <code>{prompt_link}</code> will be substituted by the text below and converted into a <strong>My Account > Stock Notifications</strong> page link.', 'woocommerce' ),
+							'type'        => 'text',
+							'class'       => 'loop_signup_prompt_text',
+						),
+
+						array(
+							'title'       => '',
+							'id'          => 'wc_bis_loop_signup_prompt_signed_up_link_text',
+							'placeholder' => wc_bis_get_loop_signup_prompt_signed_up_link_default_text(),
+							'default'     => wc_bis_get_loop_signup_prompt_signed_up_link_default_text(),
+							'desc'        => __( 'Text substituted into <code>{prompt_link}</code> above.', 'woocommerce' ),
+							'type'        => 'text',
+							'class'       => 'loop_signup_prompt_text',
+						),
+
+						array(
+							'type' => 'sectionend',
+							'id'   => 'bis_settings_catalog',
+						),
+					);
+
+				if ( BackInStockNotifications::is_enabled() && 'yes' === get_option( 'wc_feature_woocommerce_back_in_stock_notifications_enabled' ) ) {
+					$bis_settings = apply_filters( 'woocommerce_bis_settings', $default_bis_settings );
+
+					foreach ( $bis_settings as $setting ) {
+						$settings[] = $setting;
+					}
+				}
+			}
+
+			return $settings;
 		}
 
 		/**

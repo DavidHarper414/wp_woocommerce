@@ -37,9 +37,9 @@ class BackInStockNotifications {
 		self::$db_utils = wc_get_container()->get( DatabaseUtil::class );
 
 		// Enable/disable events when the feature flag is changed.
-		add_action( 'update_option_wc_feature_woocommerce_bis_notifications_enabled', array( __CLASS__, 'update_events' ), 10, 3 );
-		add_action( 'add_option_wc_feature_woocommerce_bis_notifications_enabled', array( __CLASS__, 'handle_add_option' ), 10, 2 );
-		add_action( 'delete_option_wc_feature_woocommerce_bis_notifications_enabled', array( __CLASS__, 'handle_delete_option' ), 10, 1 );
+		add_action( 'update_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'update_events' ), 10, 3 );
+		add_action( 'add_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_add_option' ), 10, 2 );
+		add_action( 'delete_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_delete_option' ), 10, 1 );
 
 		// Create DB tables if they don't exist. This will be removed in the future to reduce the number of DB calls.
 		if ( is_admin() ) {
@@ -63,7 +63,7 @@ class BackInStockNotifications {
 	 * As of WooCommerce 10.0, Back In Stock Notifications will be enabled for 5% of users.
 	 * As of WooCommerce 10.1, Back In Stock Notifications will be enabled for all users.
 	 *
-	 * Feature can be disabled via option `update_option( 'wc_feature_woocommerce_bis_notifications_enabled', 'no' )`,
+	 * Feature can be disabled via option `update_option( 'wc_feature_woocommerce_back_in_stock_notifications_enabled', 'no' )`,
 	 * even when this method returns true.
 	 *
 	 * See also \Automattic\WooCommerce\Packages::get_enabled_packages.
@@ -222,7 +222,7 @@ class BackInStockNotifications {
 	}
 
 	public static function handle_add_option( $option, $new_value ) {
-		if ( $option !== 'wc_feature_woocommerce_bis_notifications_enabled' ) {
+		if ( $option !== 'wc_feature_woocommerce_back_in_stock_notifications_enabled' ) {
 			return;
 		}
 
@@ -230,7 +230,7 @@ class BackInStockNotifications {
 	}
 
 	public static function handle_delete_option( $option ) {
-		if ( $option !== 'wc_feature_woocommerce_bis_notifications_enabled' ) {
+		if ( $option !== 'wc_feature_woocommerce_back_in_stock_notifications_enabled' ) {
 			return;
 		}
 
