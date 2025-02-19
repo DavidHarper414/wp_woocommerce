@@ -239,6 +239,11 @@ class CheckoutFields {
 		if ( is_string( $field ) ) {
 			$field = $this->additional_fields[ $field ] ?? [];
 		}
+
+		if ( empty( $field ) ) {
+			return false;
+		}
+
 		if ( $document_object ) {
 			// Hidden fields cannot be required.
 			if ( $this->is_hidden_field( $field, $document_object ) ) {
@@ -294,6 +299,42 @@ class CheckoutFields {
 			return Validation::validate_document_object( $document_object, $field_schema );
 		}
 		return true;
+	}
+
+	/**
+	 * Returns the validate callback for a given field.
+	 *
+	 * @param array               $field The field.
+	 * @param DocumentObject|null $document_object The document object.
+	 * @return callable The validate callback.
+	 */
+	public function get_validate_callback( $field, $document_object = null ) {
+		if ( is_string( $field ) ) {
+			$field = $this->additional_fields[ $field ] ?? [];
+		}
+		if ( $document_object && ! empty( $field['rules']['validation'] ) ) {
+			return function ( $field_value, $field ) use ( $document_object ) {
+				$errors = new WP_Error();
+
+				// Only validate if we have a field.
+				if ( ! $field ) {
+					return true;
+				}
+
+				// Evaluate custom validation schema rules on the field.
+				$validate_result = $this->is_valid_field( $field, $document_object );
+
+				if ( is_wp_error( $validate_result ) ) {
+					/* translators: %s: is the field label */
+					$error_message = sprintf( __( 'Please provide a valid %s', 'woocommerce' ), $field['label'] );
+					$error_code    = 'woocommerce_invalid_checkout_field';
+					$errors->add( $error_code, $error_message );
+				}
+
+				return $errors->has_errors() ? $errors : true;
+			};
+		}
+		return $field['validate_callback'] ?? null;
 	}
 
 	/**
@@ -839,39 +880,24 @@ class CheckoutFields {
 	}
 
 	/**
-	 * Validate an additional field against any custom validation rules.
+	 * Validate an additional field.
 	 *
 	 * @since 8.6.0
 	 *
-	 * @param string $field_key    The key of the field.
-	 * @param mixed  $field_value  The value of the field.
-	 * @param array  $document_object The document object.
+	 * @param array $field        The field.
+	 * @param mixed $field_value  The value of the field.
 	 * @return WP_Error
 	 */
-	public function validate_field( $field_key, $field_value, $document_object = null ) {
+	public function validate_field( $field, $field_value ) {
 		$errors = new WP_Error();
 
 		try {
-			$field = $this->additional_fields[ $field_key ] ?? null;
-
 			// Only validate if we have a field.
 			if ( ! $field ) {
 				return $errors;
 			}
 
-			// Evaluate custom validation schema rules on the field.
-			$validate_result = $this->is_valid_field( $field, $document_object );
-
-			if ( is_wp_error( $validate_result ) ) {
-				/* translators: %s: is the field label */
-				$error_message = sprintf( __( 'Please provide a valid %s', 'woocommerce' ), $field['label'] );
-				$error_code    = 'woocommerce_invalid_checkout_field';
-				$errors->add( $error_code, $error_message );
-				return $errors;
-			}
-
-			// Run custom validation callbacks.
-			if ( ! empty( $field['validate_callback'] ) ) {
+			if ( ! empty( $field['validate_callback'] ) && is_callable( $field['validate_callback'] ) ) {
 				$validate_callback_result = call_user_func( $field['validate_callback'], $field_value, $field );
 
 				if ( is_wp_error( $validate_callback_result ) ) {
@@ -879,7 +905,7 @@ class CheckoutFields {
 				}
 			}
 
-			wc_do_deprecated_action( '__experimental_woocommerce_blocks_validate_additional_field', array( $errors, $field_key, $field_value ), '8.7.0', 'woocommerce_validate_additional_field', 'This action has been graduated, use woocommerce_validate_additional_field instead.' );
+			wc_do_deprecated_action( '__experimental_woocommerce_blocks_validate_additional_field', array( $errors, $field['id'], $field_value ), '8.7.0', 'woocommerce_validate_additional_field', 'This action has been graduated, use woocommerce_validate_additional_field instead.' );
 
 			/**
 			 * Pass an error object to allow validation of an additional field.
@@ -890,7 +916,7 @@ class CheckoutFields {
 			 *
 			 * @since 8.7.0
 			 */
-			do_action( 'woocommerce_validate_additional_field', $errors, $field_key, $field_value );
+			do_action( 'woocommerce_validate_additional_field', $errors, $field['id'], $field_value );
 
 		} catch ( \Throwable $e ) {
 
@@ -990,28 +1016,25 @@ class CheckoutFields {
 	}
 
 	/**
-	 * Returns an array of fields for a given location.
+	 * Returns an array of fields for a given location and uses context to evaluate hidden and required fields.
 	 *
-	 * @param array               $fields Array of fields definitions.
+	 * @param string              $location The location to get fields for (address|contact|order).
 	 * @param DocumentObject|null $document_object The document object.
 	 * @return array An array of fields definitions.
 	 */
-	public function update_fields_from_document_object( $fields, $document_object = null ) {
-		$filtered_fields = [];
-
-		foreach ( $fields as $key => $field ) {
+	public function get_contextual_fields_for_location( $location, $document_object = null ) {
+		$location_fields = $this->get_fields_for_location( $location );
+		$fields          = [];
+		foreach ( $location_fields as $key => $field ) {
 			if ( $this->is_hidden_field( $key, $document_object ) ) {
 				continue;
 			}
-
-			if ( $this->is_required_field( $key, $document_object ) ) {
-				$field['required'] = true;
-			}
-
-			$filtered_fields[ $key ] = $field;
+			$field['required']          = $this->is_required_field( $field, $document_object );
+			$field['validate_callback'] = $this->get_validate_callback( $field, $document_object );
+			$fields[ $key ]             = $field;
 		}
 
-		return $filtered_fields;
+		return $fields;
 	}
 
 	/**
