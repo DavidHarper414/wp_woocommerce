@@ -3,9 +3,7 @@ const {
 	expect,
 	tags,
 } = require( '../../../fixtures/api-tests-fixtures' );
-const { BASE_URL } = process.env;
 const { admin } = require( '../../../test-data/data' );
-const shouldSkip = BASE_URL !== undefined;
 
 /**
  * Internal dependencies
@@ -1349,17 +1347,13 @@ test.describe( 'Products API tests: CRUD', () => {
 			);
 			expect( response.status() ).toEqual( 200 );
 
-			// if we're running on CI, then skip -- because objects are cached and they don't disappear instantly.
-			// eslint-disable-next-line playwright/no-conditional-in-test
-			if ( ! shouldSkip ) {
-				// Verify that the product variation can no longer be retrieved.
-				const getDeletedProductVariationResponse = await request.get(
-					`wp-json/wc/v3/products/${ variableProductId }/variations/${ productVariationId }`
-				);
-				expect( getDeletedProductVariationResponse.status() ).toEqual(
-					404
-				);
-			}
+			// Verify that the product variation can no longer be retrieved.
+			const getDeletedProductVariationResponse = await request.get(
+				`wp-json/wc/v3/products/${ variableProductId }/variations/${ productVariationId }`
+			);
+			expect( getDeletedProductVariationResponse.status() ).toEqual(
+				404
+			);
 		} );
 
 		test( 'can batch update product variations', async ( { request } ) => {
@@ -1439,18 +1433,14 @@ test.describe( 'Products API tests: CRUD', () => {
 				'35.99'
 			);
 
-			// if we're running on CI, then skip -- because objects are cached and they don't disappear instantly.
-			// eslint-disable-next-line playwright/no-conditional-in-test
-			if ( ! shouldSkip ) {
-				// Verify that the deleted product variation can no longer be retrieved.
-				const getDeletedProductVariationResponse = await request.get(
-					`wp-json/wc/v3/products/${ variableProductId }/variations/${ variation1Id }`
-				);
+			// Verify that the deleted product variation can no longer be retrieved.
+			const getDeletedProductVariationResponse = await request.get(
+				`wp-json/wc/v3/products/${ variableProductId }/variations/${ variation1Id }`
+			);
 
-				expect( getDeletedProductVariationResponse.status() ).toEqual(
-					404
-				);
-			}
+			expect( getDeletedProductVariationResponse.status() ).toEqual(
+				404
+			);
 
 			// Batch delete the created product variations
 			await request.post(
