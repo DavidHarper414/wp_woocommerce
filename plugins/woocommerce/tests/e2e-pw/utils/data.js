@@ -52,7 +52,7 @@ function getFakeProduct( options = {} ) {
 		regular_price: options.regular_price
 			? options.regular_price
 			: faker.commerce.price(),
-		type: 'simple',
+		type: options.type ? options.type : 'simple',
 	};
 }
 
@@ -65,6 +65,7 @@ function getFakeCategory( options = { extraRandomTerm: false } ) {
 }
 
 module.exports = {
+	getFakeUser,
 	getFakeCustomer,
 	getFakeProduct,
 	getFakeCategory,

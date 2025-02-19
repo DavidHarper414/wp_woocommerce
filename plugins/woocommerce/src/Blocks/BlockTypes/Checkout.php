@@ -1,11 +1,12 @@
 <?php
+declare( strict_types = 1);
 namespace Automattic\WooCommerce\Blocks\BlockTypes;
 
 use Automattic\WooCommerce\StoreApi\Utilities\LocalPickupUtils;
 use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
 use Automattic\WooCommerce\Blocks\Package;
 use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
-use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFieldsSchema;
+use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFieldsSchema\Validation;
 use Automattic\WooCommerce\Admin\Features\Features;
 
 /**
@@ -165,10 +166,8 @@ class Checkout extends AbstractBlock {
 
 		if ( Features::is_enabled( 'experimental-blocks' ) ) {
 			$checkout_fields = Package::container()->get( CheckoutFields::class );
-			$checkout_schema = Package::container()->get( CheckoutFieldsSchema::class );
-
 			// Load schema parser asynchronously if we need it.
-			if ( $checkout_schema->has_valid_schema( $checkout_fields->get_additional_fields() ) ) {
+			if ( Validation::has_field_schema( $checkout_fields->get_additional_fields() ) ) {
 				$dependencies[] = 'wc-schema-parser';
 			}
 		}
@@ -451,19 +450,7 @@ class Checkout extends AbstractBlock {
 		$this->asset_data_registry->add( 'localPickupText', $pickup_location_settings['title'] );
 		$this->asset_data_registry->add( 'localPickupCost', $pickup_location_settings['cost'] );
 		$this->asset_data_registry->add( 'collectableMethodIds', $local_pickup_method_ids );
-
-		// Local pickup is included with legacy shipping methods since they do not support shipping zones.
-		$local_pickup_count = count(
-			array_filter(
-				WC()->shipping()->get_shipping_methods(),
-				function ( $method ) {
-					return isset( $method->enabled ) && 'yes' === $method->enabled && ! $method->supports( 'shipping-zones' ) && $method->supports( 'local-pickup' );
-				}
-			)
-		);
-
-		$shipping_methods_count = wc_get_shipping_method_count( true, true ) - $local_pickup_count;
-		$this->asset_data_registry->add( 'shippingMethodsExist', $shipping_methods_count > 0 );
+		$this->asset_data_registry->add( 'shippingMethodsExist', CartCheckoutUtils::shipping_methods_exist() > 0 );
 
 		$is_block_editor = $this->is_block_editor();
 
