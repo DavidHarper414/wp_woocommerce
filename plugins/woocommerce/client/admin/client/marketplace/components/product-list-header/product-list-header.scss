@@ -3,9 +3,14 @@
 .woocommerce-marketplace {
 	&__product-list-header {
 		display: flex;
-		flex-wrap: wrap;
+		flex-direction: column;
 		gap: $small-gap;
 		align-self: stretch;
+
+		@media screen and (min-width: $breakpoint-medium) {
+			flex-direction: row;
+			flex-wrap: wrap;
+		}
 	}
 
 	&__product-list-title {
@@ -30,18 +35,22 @@
 	}
 
 	&__product-list-description {
-		flex: 1;
+		flex: 1 0 100%;
 		margin: 0;
+
+		@media screen and (min-width: $breakpoint-medium) {
+			flex: 1;
+		}
 	}
 
 	&__product-list-link {
 		display: flex;
-		justify-content: center;
-		align-items: flex-end;
+		justify-content: flex-end;
 		gap: 12px;
-		margin-left: auto;
+		margin-left: 0;
 
 		@media screen and (min-width: $breakpoint-medium) {
+			margin-left: auto;
 			align-items: center;
 		}
 	}
