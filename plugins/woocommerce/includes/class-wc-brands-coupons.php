@@ -43,24 +43,25 @@ class WC_Brands_Coupons {
 	 */
 	public function is_coupon_valid( $valid, $coupon, $discounts = null ) {
 		$this->set_brand_settings_on_coupon( $coupon );
-
-		// Only check if coupon has brand restrictions on it.
 		$brand_coupon_settings = WC_Brands_Brand_Settings_Manager::get_brand_settings_on_coupon( $coupon );
 
-		$brand_restrictions = ! empty( $brand_coupon_settings['included_brands'] ) || ! empty( $brand_coupon_settings['excluded_brands'] );
-		if ( ! $brand_restrictions ) {
+		if ( empty( $brand_coupon_settings['included_brands'] ) && empty( $brand_coupon_settings['excluded_brands'] ) ) {
 			return $valid;
 		}
 
 		$included_brands_match   = false;
 		$excluded_brands_matches = 0;
-
-		$items = $discounts->get_items();
+		$items                   = $discounts->get_items();
 
 		foreach ( $items as $item ) {
+			if ( ! $item->product ) {
+				continue;
+			}
+
 			$product_brands = $this->get_product_brands( $this->get_product_id( $item->product ) );
 
-			if ( ! empty( array_intersect( $product_brands, $brand_coupon_settings['included_brands'] ) ) ) {
+			// Check if product meets brand/product restrictions.
+			if ( $this->is_valid_for_restrictions( $item->product, $product_brands, $coupon, $brand_coupon_settings ) ) {
 				$included_brands_match = true;
 			}
 
@@ -69,22 +70,52 @@ class WC_Brands_Coupons {
 			}
 		}
 
-		// 1) Coupon has a brand requirement but no products in the cart have the brand.
-		if ( ! $included_brands_match && ! empty( $brand_coupon_settings['included_brands'] ) ) {
+		// Check if any product matched the restrictions.
+		if ( ! empty( $brand_coupon_settings['included_brands'] ) && ! $included_brands_match ) {
 			throw new Exception( $coupon->get_coupon_error( WC_Coupon::E_WC_COUPON_NOT_APPLICABLE ), WC_Coupon::E_WC_COUPON_NOT_APPLICABLE ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
-		// 2) All products in the cart match brand exclusion rule.
+		// Check exclusions.
 		if ( count( $items ) === $excluded_brands_matches ) {
 			throw new Exception( __( 'Sorry, this coupon is not applicable to the brands of selected products.', 'woocommerce' ), self::E_WC_COUPON_EXCLUDED_BRANDS ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
-		// 3) For a cart discount, there is at least one product in cart that matches exclusion rule.
 		if ( $coupon->is_type( 'fixed_cart' ) && $excluded_brands_matches > 0 ) {
 			throw new Exception( __( 'Sorry, this coupon is not applicable to the brands of selected products.', 'woocommerce' ), self::E_WC_COUPON_EXCLUDED_BRANDS ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		return $valid;
+	}
+
+	/**
+	 * Check if a product is valid for brand and product restrictions
+	 *
+	 * @param WC_Product $product Product to check.
+	 * @param array      $product_brands Product brand IDs.
+	 * @param WC_Coupon  $coupon Coupon object.
+	 * @param array      $brand_coupon_settings Brand settings from coupon.
+	 * @return bool
+	 */
+	private function is_valid_for_restrictions( $product, $product_brands, $coupon, $brand_coupon_settings ) {
+		$has_brand_restrictions   = ! empty( $brand_coupon_settings['included_brands'] );
+		$has_product_restrictions = ! empty( $coupon->get_product_ids() );
+
+		// If both brand and product restrictions exist.
+		if ( $has_brand_restrictions && $has_product_restrictions ) {
+			$valid_brand = ! empty( array_intersect( $product_brands, $brand_coupon_settings['included_brands'] ) );
+
+			$valid_product = in_array( $product->get_id(), $coupon->get_product_ids(), true ) ||
+							in_array( $product->get_parent_id(), $coupon->get_product_ids(), true );
+
+			return $valid_brand || $valid_product;
+		}
+
+		// If only brand restrictions exist.
+		if ( $has_brand_restrictions ) {
+			return ! empty( array_intersect( $product_brands, $brand_coupon_settings['included_brands'] ) );
+		}
+
+		return true;
 	}
 
 	/**
@@ -99,27 +130,28 @@ class WC_Brands_Coupons {
 	 * @return bool       $valid
 	 */
 	public function is_valid_for_product( $valid, $product, $coupon ) {
-
 		if ( ! is_a( $product, 'WC_Product' ) ) {
 			return $valid;
 		}
+
 		$this->set_brand_settings_on_coupon( $coupon );
+		$brand_coupon_settings = WC_Brands_Brand_Settings_Manager::get_brand_settings_on_coupon( $coupon );
+
+		if ( empty( $brand_coupon_settings['included_brands'] ) && empty( $brand_coupon_settings['excluded_brands'] ) ) {
+			return $valid;
+		}
 
 		$product_id     = $this->get_product_id( $product );
 		$product_brands = $this->get_product_brands( $product_id );
 
-		// Check if coupon has a brand requirement and if this product has that brand attached.
-		$brand_coupon_settings = WC_Brands_Brand_Settings_Manager::get_brand_settings_on_coupon( $coupon );
-		if ( ! empty( $brand_coupon_settings['included_brands'] ) && empty( array_intersect( $product_brands, $brand_coupon_settings['included_brands'] ) ) ) {
+		// Check brand exclusions first.
+		if ( ! empty( $brand_coupon_settings['excluded_brands'] ) &&
+			! empty( array_intersect( $product_brands, $brand_coupon_settings['excluded_brands'] ) ) ) {
 			return false;
 		}
 
-		// Check if coupon has a brand exclusion and if this product has that brand attached.
-		if ( ! empty( $brand_coupon_settings['excluded_brands'] ) && ! empty( array_intersect( $product_brands, $brand_coupon_settings['excluded_brands'] ) ) ) {
-			return false;
-		}
-
-		return $valid;
+		// Check if product meets brand/product restrictions.
+		return $this->is_valid_for_restrictions( $product, $product_brands, $coupon, $brand_coupon_settings );
 	}
 
 	/**
