@@ -93,7 +93,7 @@ registerCheckoutFilters( 'example-extension', {
 } );
 ```
 
-> Filters can be also combined. See [Combined filters](./README.md) for an example.
+> Filters can be also combined. See [Combined filters](../available-filters/README.md) for an example.
 
 ### Screenshots <!-- omit in toc -->
 
