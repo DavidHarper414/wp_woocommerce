@@ -123,7 +123,7 @@ class Checkout extends AbstractCartRoute {
 							'type'        => 'object',
 						],
 						'payment_method'    => [
-							'description' => __( 'Seleted payment method for the order.', 'woocommerce' ),
+							'description' => __( 'Selected payment method for the order.', 'woocommerce' ),
 							'type'        => 'string',
 						],
 						'order_notes'       => [
