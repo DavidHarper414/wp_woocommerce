@@ -46,12 +46,14 @@ function getFakeCustomer() {
 }
 
 function getFakeProduct( options = {} ) {
+	const dec = options.dec ?? 2;
+
 	return {
 		name: `${ faker.commerce.productName() }`,
 		description: faker.commerce.productDescription(),
 		regular_price: options.regular_price
 			? options.regular_price
-			: faker.commerce.price(),
+			: faker.commerce.price( { dec } ),
 		type: options.type ? options.type : 'simple',
 	};
 }
