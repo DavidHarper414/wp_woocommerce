@@ -117,12 +117,13 @@ async function checkShippingRateInCart( page, product, checks ) {
 			const allShippingZones = await api.get( 'shipping/zones' );
 			for ( const shippingZone of allShippingZones.data ) {
 				if ( shippingZone.name === name ) {
-					console.log(
-						`Deleting shipping zone ${ shippingZone.id }:${ shippingZone.name }`
-					);
-					await api.delete( `shipping/zones/${ zone.id }`, {
-						force: true,
-					} );
+					await api
+						.delete( `shipping/zones/${ shippingZone.id }`, {
+							force: true,
+						} )
+						.catch( ( error ) => {
+							console.error( error );
+						} );
 				}
 			}
 		},
@@ -207,18 +208,16 @@ const test = baseTest.extend( {
 				zone = response.data;
 			} );
 
-		await api
-			.put( `shipping/zones/${ zone.id }/locations`, [
-				{
-					code: 'US:AL',
-					type: 'state',
-				},
-				{
-					code: '35013',
-					type: 'postcode',
-				},
-			] )
-			.then( ( r ) => console.log( r ) );
+		await api.put( `shipping/zones/${ zone.id }/locations`, [
+			{
+				code: 'US:AL',
+				type: 'state',
+			},
+			{
+				code: '35013',
+				type: 'postcode',
+			},
+		] );
 
 		await api.post( `shipping/zones/${ zone.id }/methods`, {
 			method_id: 'flat_rate',
