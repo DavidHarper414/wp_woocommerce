@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { createElement, createContext, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
 
 const initialData = window.wcSettings?.admin?.settingsData;
 
