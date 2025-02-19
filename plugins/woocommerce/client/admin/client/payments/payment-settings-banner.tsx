@@ -5,6 +5,10 @@ import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { getAdminLink } from '@woocommerce/settings';
 import {
+	PAYMENT_SETTINGS_STORE_NAME,
+	type PaymentSettingsSelectors,
+} from '@woocommerce/data';
+import {
 	WCPayBanner,
 	WCPayBannerBody,
 	WCPayBannerFooter,
@@ -18,8 +22,6 @@ import { useSelect } from '@wordpress/data';
 import './payment-recommendations.scss';
 import { getAdminSetting } from '~/utils/admin-settings';
 import { usePaymentsBanner } from './use-payments-banner';
-import { WOOPAY_ELIGIBILITY_STORE_NAME } from '~/settings-payments/woopay-eligibility-store';
-import type { WooPayEligibilityState } from '~/settings-payments/woopay-eligibility-store/types';
 
 const recordTrack = () => {
 	recordEvent( 'settings_payments_banner_connect_click' );
@@ -32,10 +34,10 @@ const WCPaySettingBanner = () => {
 	);
 
 	const isWooPayEligible = useSelect( ( select ) => {
-		const store = select( WOOPAY_ELIGIBILITY_STORE_NAME ) as {
-			getIsEligible: () => WooPayEligibilityState[ 'isEligible' ];
-		};
-		return store.getIsEligible();
+		const store = select(
+			PAYMENT_SETTINGS_STORE_NAME
+		) as PaymentSettingsSelectors;
+		return store.getIsWooPayEligible();
 	}, [] );
 
 	return (

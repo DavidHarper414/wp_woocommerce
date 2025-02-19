@@ -5,6 +5,10 @@ import { Card, CardBody, Button, CardDivider } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { WooPaymentsMethodsLogos } from '@woocommerce/onboarding';
 import { useSelect } from '@wordpress/data';
+import {
+	PAYMENT_SETTINGS_STORE_NAME,
+	type PaymentSettingsSelectors,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -14,8 +18,6 @@ import sanitizeHTML from '~/lib/sanitize-html';
 import WooPaymentsLogo from './woopayments.svg';
 import ExitSurveyModal from './exit-survey-modal';
 import strings from './strings';
-import { WOOPAY_ELIGIBILITY_STORE_NAME } from '~/settings-payments/woopay-eligibility-store';
-import type { WooPayEligibilityState } from '~/settings-payments/woopay-eligibility-store/types';
 
 interface Props {
 	isSubmitted: boolean;
@@ -32,10 +34,10 @@ const Banner: React.FC< Props > = ( { isSubmitted, handleSetup } ) => {
 	const [ isExitSurveyModalOpen, setExitSurveyModalOpen ] = useState( false );
 
 	const isWooPayEligible = useSelect( ( select ) => {
-		const store = select( WOOPAY_ELIGIBILITY_STORE_NAME ) as {
-			getIsEligible: () => WooPayEligibilityState[ 'isEligible' ];
-		};
-		return store.getIsEligible();
+		const store = select(
+			PAYMENT_SETTINGS_STORE_NAME
+		) as PaymentSettingsSelectors;
+		return store.getIsWooPayEligible();
 	}, [] );
 
 	const handleNoThanks = () => {

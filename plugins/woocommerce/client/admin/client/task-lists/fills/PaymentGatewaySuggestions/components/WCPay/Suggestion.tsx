@@ -11,6 +11,10 @@ import {
 } from '@woocommerce/onboarding';
 import { useDispatch, useSelect } from '@wordpress/data';
 import React from 'react';
+import {
+	PAYMENT_SETTINGS_STORE_NAME,
+	type PaymentSettingsSelectors,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -18,8 +22,6 @@ import React from 'react';
 import { Action } from '../Action';
 import { connectWcpay } from './utils';
 import './suggestion.scss';
-import { WOOPAY_ELIGIBILITY_STORE_NAME } from '~/settings-payments/woopay-eligibility-store';
-import type { WooPayEligibilityState } from '~/settings-payments/woopay-eligibility-store/types';
 
 interface PaymentGateway {
 	id: string;
@@ -46,10 +48,10 @@ export const Suggestion: React.FC< SuggestionProps > = ( {
 	} = paymentGateway;
 
 	const isWooPayEligible = useSelect( ( select ) => {
-		const store = select( WOOPAY_ELIGIBILITY_STORE_NAME ) as {
-			getIsEligible: () => WooPayEligibilityState[ 'isEligible' ];
-		};
-		return store.getIsEligible();
+		const store = select(
+			PAYMENT_SETTINGS_STORE_NAME
+		) as PaymentSettingsSelectors;
+		return store.getIsWooPayEligible();
 	}, [] );
 
 	const { createNotice } = useDispatch( 'core/notices' );

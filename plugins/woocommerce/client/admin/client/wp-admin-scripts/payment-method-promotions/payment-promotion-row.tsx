@@ -7,6 +7,8 @@ import { useState, useEffect } from '@wordpress/element';
 import {
 	PLUGINS_STORE_NAME,
 	PAYMENT_GATEWAYS_STORE_NAME,
+	PAYMENT_SETTINGS_STORE_NAME,
+	type PaymentSettingsSelectors,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -18,8 +20,6 @@ import { WooPaymentsMethodsLogos } from '@woocommerce/onboarding';
  * Internal dependencies
  */
 import './payment-promotion-row.scss';
-import { WOOPAY_ELIGIBILITY_STORE_NAME } from '~/settings-payments/woopay-eligibility-store';
-import type { WooPayEligibilityState } from '~/settings-payments/woopay-eligibility-store/types';
 
 function sanitizeHTML( html: string ) {
 	return {
@@ -78,10 +78,10 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 	}, [] );
 
 	const isWooPayEligible = useSelect( ( select ) => {
-		const store = select( WOOPAY_ELIGIBILITY_STORE_NAME ) as {
-			getIsEligible: () => WooPayEligibilityState[ 'isEligible' ];
-		};
-		return store.getIsEligible();
+		const store = select(
+			PAYMENT_SETTINGS_STORE_NAME
+		) as PaymentSettingsSelectors;
+		return store.getIsWooPayEligible();
 	}, [] );
 
 	useEffect( () => {
