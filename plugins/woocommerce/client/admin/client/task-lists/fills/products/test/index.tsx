@@ -5,6 +5,7 @@ import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { recordEvent } from '@woocommerce/tracks';
 import { removeAllFilters } from '@wordpress/hooks';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -52,7 +53,7 @@ describe( 'Products', () => {
 	} );
 
 	it( 'should render default products types when onboardingData.profile.productType is null', () => {
-		( getAdminSetting as jest.Mock ).mockImplementation( () => ( {
+		( useSelect as jest.Mock ).mockImplementation( () => ( {
 			profile: {
 				product_types: null,
 			},
@@ -67,7 +68,7 @@ describe( 'Products', () => {
 	} );
 
 	it( 'should render digital products type with view more button', () => {
-		( getAdminSetting as jest.Mock ).mockImplementation( () => ( {
+		( useSelect as jest.Mock ).mockImplementation( () => ( {
 			profile: {
 				product_types: [ 'downloads' ],
 			},
@@ -81,7 +82,7 @@ describe( 'Products', () => {
 	} );
 
 	it( 'clicking on suggested product should fire event tasklist_add_product with method: product_template, tasklist_product_template_selection with is_suggested:true and task_completion_time', () => {
-		( getAdminSetting as jest.Mock ).mockImplementation( () => ( {
+		( useSelect as jest.Mock ).mockImplementation( () => ( {
 			profile: {
 				product_types: [ 'downloads' ],
 			},
@@ -112,7 +113,7 @@ describe( 'Products', () => {
 	} );
 
 	it( 'clicking on not-suggested product should fire event tasklist_add_product with method: product_template, tasklist_product_template_selection with is_suggested:false and task_completion_time', async () => {
-		( getAdminSetting as jest.Mock ).mockImplementation( () => ( {
+		( useSelect as jest.Mock ).mockImplementation( () => ( {
 			profile: {
 				product_types: [ 'downloads' ],
 			},
@@ -162,7 +163,7 @@ describe( 'Products', () => {
 	} );
 
 	it( 'should render all products type when clicking view more button', async () => {
-		( getAdminSetting as jest.Mock ).mockImplementation( () => ( {
+		( useSelect as jest.Mock ).mockImplementation( () => ( {
 			profile: {
 				product_types: [ 'downloads' ],
 			},
