@@ -307,15 +307,9 @@ class WC_BIS_Notifications {
 	public function get_screen_ids() {
 		$screens = array();
 
-		if ( version_compare( WC()->version, '7.3.0' ) < 0 ) {
-			$prefix = sanitize_title( __( 'WooCommerce', 'woocommerce' ) );
-		} else {
-			$prefix = 'woocommerce';
-		}
-
-		$screens[] = $prefix . '_page_bis_dashboard';
-		$screens[] = $prefix . '_page_bis_notifications';
-		$screens[] = $prefix . '_page_bis_activity';
+		$screens[] = 'woocommerce_page_bis_dashboard';
+		$screens[] = 'woocommerce_page_bis_notifications';
+		$screens[] = 'woocommerce_page_bis_activity';
 
 		return $screens;
 	}
@@ -330,7 +324,7 @@ class WC_BIS_Notifications {
 		global $current_screen;
 
 		$screen_id = $current_screen ? $current_screen->id : '';
-		if ( wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_dashboard' ) === $screen_id ) {
+		if ( 'woocommerce_page_bis_dashboard' === $screen_id ) {
 			return true;
 		}
 

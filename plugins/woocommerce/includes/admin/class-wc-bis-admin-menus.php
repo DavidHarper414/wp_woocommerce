@@ -96,7 +96,7 @@ class WC_BIS_Admin_Menus {
 			wc_admin_connect_page(
 				array(
 					'id'        => 'woocommerce-bis_notifications',
-					'screen_id' => wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_notifications' ) . '-notifications',
+					'screen_id' => 'woocommerce_page_bis_notifications-notifications',
 					'title'     => __( 'Stock Notifications', 'woocommerce' ),
 					'path'      => add_query_arg(
 						array(
@@ -111,7 +111,7 @@ class WC_BIS_Admin_Menus {
 				array(
 					'id'        => 'woocommerce-bis_dashboard',
 					'parent'    => 'woocommerce-bis_notifications',
-					'screen_id' => wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_dashboard' ),
+					'screen_id' => 'woocommerce_page_bis_dashboard',
 					'title'     => __( 'Dashboard', 'woocommerce' ),
 					'path'      => add_query_arg(
 						array(
@@ -126,7 +126,7 @@ class WC_BIS_Admin_Menus {
 				array(
 					'id'        => 'woocommerce-bis_notifications-create',
 					'parent'    => 'woocommerce-bis_notifications',
-					'screen_id' => wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_notifications' ) . '-notifications-create',
+					'screen_id' => 'woocommerce_page_bis_notifications-notifications-create',
 					'title'     => __( 'Add Notification', 'woocommerce' ),
 					'path'      => add_query_arg(
 						array(
@@ -143,7 +143,7 @@ class WC_BIS_Admin_Menus {
 				array(
 					'id'        => 'woocommerce-bis_notifications-edit',
 					'parent'    => 'woocommerce-bis_notifications',
-					'screen_id' => wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_notifications' ) . '-notifications-edit',
+					'screen_id' => 'woocommerce_page_bis_notifications-notifications-edit',
 					'title'     => __( 'Edit Notification', 'woocommerce' ),
 					'path'      => add_query_arg(
 						array(
@@ -160,7 +160,7 @@ class WC_BIS_Admin_Menus {
 				array(
 					'id'        => 'woocommerce-bis_notifications-activity',
 					'parent'    => 'woocommerce-bis_notifications',
-					'screen_id' => wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_activity' ),
+					'screen_id' => 'woocommerce_page_bis_activity',
 					'title'     => __( 'Activity', 'woocommerce' ),
 					'path'      => add_query_arg(
 						array(
@@ -229,16 +229,16 @@ class WC_BIS_Admin_Menus {
 
 		// Default to Dashboard.
 		if ( ! $current_tab ) {
-			$current_tab = wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_dashboard' );
+			$current_tab = 'woocommerce_page_bis_dashboard';
 		}
 
 		$screen = get_current_screen();
 		if ( $screen ) {
-			if ( in_array( $screen->id, array( wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_dashboard' ) ), true ) ) {
+			if ( in_array( $screen->id, array( 'woocommerce_page_bis_dashboard' ), true ) ) {
 				$current_tab = 'dashboard';
-			} elseif ( in_array( $screen->id, array( wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_notifications' ) ), true ) ) {
+			} elseif ( in_array( $screen->id, array( 'woocommerce_page_bis_notifications' ), true ) ) {
 				$current_tab = 'notifications';
-			} elseif ( in_array( $screen->id, array( wc_bis_get_formatted_screen_id( 'woocommerce_page_bis_activity' ) ), true ) ) {
+			} elseif ( in_array( $screen->id, array( 'woocommerce_page_bis_activity' ), true ) ) {
 				$current_tab = 'activity';
 			}
 		}

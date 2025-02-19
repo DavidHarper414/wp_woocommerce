@@ -267,7 +267,7 @@ class WC_BIS_Admin {
 		/*
 		 * Enqueue specific styles & scripts.
 		 */
-		if ( WC_BIS()->is_current_screen( array( wc_bis_get_formatted_screen_id( 'woocommerce_page_wc-settings' ) ) ) ) {
+		if ( WC_BIS()->is_current_screen( array( 'woocommerce_page_wc-settings' ) ) ) {
 			wp_enqueue_script( 'wc-bis-writepanel' );
 
 			if ( WC_BIS()->is_dashboard() ) {

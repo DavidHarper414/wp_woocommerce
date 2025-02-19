@@ -401,22 +401,13 @@ function wc_bis_notification_hash( $input, $action ) {
  * Get formatted screen id.
  *
  * @since 1.0.1
+ * @deprecated 9.9.0 No longer needed when merged into WC core.
  *
- * @param  string $key
+ * @param  string $screen_id
  * @return string
  */
 function wc_bis_get_formatted_screen_id( $screen_id ) {
-
-	if ( version_compare( WC()->version, '7.3.0' ) < 0 ) {
-		$prefix = sanitize_title( __( 'WooCommerce', 'woocommerce' ) );
-	} else {
-		$prefix = 'woocommerce';
-	}
-
-	if ( 0 === strpos( $screen_id, 'woocommerce_' ) ) {
-		$screen_id = str_replace( 'woocommerce_', $prefix . '_', $screen_id );
-	}
-
+	wc_deprecated_function( __FUNCTION__, '9.9.0' );
 	return $screen_id;
 }
 
