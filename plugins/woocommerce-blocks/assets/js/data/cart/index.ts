@@ -77,7 +77,7 @@ subscribe( () => {
 	) {
 		window.dispatchEvent(
 			// Question: What are the usual names for WooCommerce events?
-			new CustomEvent( 'woocommerce-store-sync-required', {
+			new CustomEvent( 'wc-blocks_store_sync_required', {
 				detail: { type: 'from_@wordpress/data' },
 			} )
 		);
@@ -86,19 +86,16 @@ subscribe( () => {
 }, store );
 
 // Listens to cart sync events from the iAPI store.
-window.addEventListener(
-	'woocommerce-store-sync-required',
-	( event: Event ) => {
-		const customEvent = event as CustomEvent< {
-			type: string;
-			quantityChanges: QuantityChanges;
-		} >;
-		const { type, quantityChanges } = customEvent.detail;
-		if ( type === 'from_iAPI' ) {
-			wpDispatch( store ).syncCartWithIAPIStore( quantityChanges );
-		}
+window.addEventListener( 'wc-blocks_store_sync_required', ( event: Event ) => {
+	const customEvent = event as CustomEvent< {
+		type: string;
+		quantityChanges: QuantityChanges;
+	} >;
+	const { type, quantityChanges } = customEvent.detail;
+	if ( type === 'from_iAPI' ) {
+		wpDispatch( store ).syncCartWithIAPIStore( quantityChanges );
 	}
-);
+} );
 
 // This will skip the debounce and immediately push changes to the server when a field is blurred.
 document.body.addEventListener( 'focusout', ( event: FocusEvent ) => {
