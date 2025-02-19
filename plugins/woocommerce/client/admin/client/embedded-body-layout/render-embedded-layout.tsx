@@ -127,9 +127,11 @@ const registerSlotFills = () => {
 	registerOrderAttributionSlotFill();
 
 	if ( isFeatureEnabled( 'email_improvements' ) ) {
+		registerSettingsEmailPreviewFill( true );
 		registerSettingsEmailColorPaletteFill();
 		registerSettingsEmailImageUrlFill();
-		registerSettingsEmailPreviewFill();
+	} else {
+		registerSettingsEmailPreviewFill( false );
 	}
 };
 
