@@ -1,9 +1,4 @@
 .wp-block-woocommerce-add-to-cart-with-options {
-	&__skeleton-wrapper {
-		max-width: 300px;
-		margin-bottom: $gap;
-	}
-
 	&.block-editor-block-list__block:not(.remove-outline) {
 		&.is-highlighted::after,
 		&.is-hovered:not(.is-selected)::after,
@@ -17,8 +12,19 @@
 			}
 		}
 	}
+}
 
-	&__block-icon {
-		color: $studio-woocommerce-purple-50;
+.wp-block-woocommerce-add-to-cart-with-options__skeleton-wrapper {
+	max-width: 300px;
+	margin-bottom: $gap;
+}
+
+.wp-block-woocommerce-add-to-cart-with-options__block-icon {
+	color: $studio-woocommerce-purple-50;
+}
+
+.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents {
+	.wp-block-woocommerce-add-to-cart-with-options__block-icon {
+		color: inherit;
 	}
 }
