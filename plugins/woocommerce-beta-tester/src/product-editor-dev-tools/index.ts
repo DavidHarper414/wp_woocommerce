@@ -9,10 +9,9 @@ import { registerPlugin } from '@wordpress/plugins';
 import { ProductEditorDevTools } from './product-editor-dev-tools';
 import './index.scss';
 
-function registerProductEditorDevTools() {
+export function registerProductEditorDevTools() {
 	registerPlugin( 'woocommerce-product-editor-dev-tools', {
 		scope: 'woocommerce-product-block-editor',
 		render: ProductEditorDevTools,
 	} );
 }
-registerProductEditorDevTools();

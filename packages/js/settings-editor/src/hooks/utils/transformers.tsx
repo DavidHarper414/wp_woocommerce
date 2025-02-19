@@ -148,7 +148,7 @@ export const transformToField = (
 				type: 'text',
 				label,
 				elements: Object.entries( setting.options || {} ).map(
-					( [ value, _label ] ) => ( {
+					( [ _label, value ] ) => ( {
 						label: _label,
 						value,
 					} )

@@ -486,23 +486,15 @@ const subscribeUrl = ( subscription: Subscription ): string => {
 	] );
 };
 
-// If you need to add support for a different page, make sure to
-// update WC_Helper::get_source_page() in the backend.
-const connectUrl = ( page = 'wc-admin' ): string => {
+const connectUrl = (): string => {
 	const wccomSettings = getAdminSetting( 'wccomHelper', {} );
 
 	if ( ! wccomSettings.connectURL ) {
 		return '';
 	}
 
-	// We have to manipulate `page` from the frontend, since `wccomHelper`
-	// settings remain static when switching pages on the frontend.
-	const updatedHref = new URL( window.location.href );
-	updatedHref.searchParams.set( 'page', page );
-
 	return appendURLParams( wccomSettings.connectURL, [
-		[ 'redirect_admin_url', encodeURIComponent( updatedHref.toString() ) ],
-		[ 'page', page ],
+		[ 'redirect_admin_url', encodeURIComponent( window.location.href ) ],
 	] );
 };
 

@@ -14,8 +14,8 @@ import { cleanForSlug } from '@wordpress/url';
 import { Form, FormErrors } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 import {
+	EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME,
 	ProductAttributeTerm,
-	experimentalProductAttributeTermsStore,
 } from '@woocommerce/data';
 
 /**
@@ -40,9 +40,8 @@ export const CreateAttributeTermModal: React.FC<
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const [ isCreating, setIsCreating ] = useState( false );
-	const { createProductAttributeTerm } = useDispatch(
-		experimentalProductAttributeTermsStore
-	);
+	const { createProductAttributeTerm, invalidateResolutionForStoreSelector } =
+		useDispatch( EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME );
 
 	const onAdd = async ( attribute: Partial< ProductAttributeTerm > ) => {
 		recordEvent( 'product_attribute_term_add', {
@@ -50,13 +49,15 @@ export const CreateAttributeTermModal: React.FC<
 		} );
 		setIsCreating( true );
 		try {
-			const newAttribute = await createProductAttributeTerm( {
-				...attribute,
-				attribute_id: attributeId,
-			} );
+			const newAttribute: ProductAttributeTerm =
+				await createProductAttributeTerm( {
+					...attribute,
+					attribute_id: attributeId,
+				} );
 			recordEvent( 'product_attribute_term_add_success', {
 				source: TRACKS_SOURCE,
 			} );
+			invalidateResolutionForStoreSelector( 'getProductAttributes' );
 			setIsCreating( false );
 			onCreated( newAttribute );
 		} catch ( e ) {

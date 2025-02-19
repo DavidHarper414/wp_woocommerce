@@ -42,7 +42,7 @@ type ReadOnlyProperties = 'id' | 'count';
 
 type MutableProperties = Omit< ProductCategory, ReadOnlyProperties >;
 
-export type ProductCategoryActions = CrudActions<
+type ProductCategoryActions = CrudActions<
 	'ProductCategory',
 	ProductCategory,
 	MutableProperties,

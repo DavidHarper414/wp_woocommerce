@@ -10,7 +10,6 @@
 
 use Automattic\WooCommerce\Enums\ProductStatus;
 use Automattic\WooCommerce\Enums\ProductType;
-use Automattic\WooCommerce\Internal\CostOfGoodsSold\CostOfGoodsSoldController;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -415,11 +414,6 @@ class WC_Meta_Box_Product_Data {
 			)
 		);
 
-		if ( wc_get_container()->get( CostOfGoodsSoldController::class )->feature_is_enabled() ) {
-			$cogs_value = wc_clean( wp_unslash( $_POST['_cogs_value'] ?? null ) );
-			$product->set_cogs_value( is_null( $cogs_value ) ? null : (float) wc_format_decimal( $cogs_value ) );
-		}
-
 		if ( is_wp_error( $errors ) ) {
 			WC_Admin_Meta_Boxes::add_error( $errors->get_error_message() );
 		}
@@ -486,7 +480,6 @@ class WC_Meta_Box_Product_Data {
 				);
 			}
 
-			$cogs_is_enabled = wc_get_container()->get( CostOfGoodsSoldController::class )->feature_is_enabled();
 			for ( $i = 0; $i <= $max_loop; $i++ ) {
 
 				if ( ! isset( $_POST['variable_post_id'][ $i ] ) ) {
@@ -567,14 +560,6 @@ class WC_Meta_Box_Product_Data {
 
 				if ( is_wp_error( $errors ) ) {
 					WC_Admin_Meta_Boxes::add_error( $errors->get_error_message() );
-				}
-
-				if ( $cogs_is_enabled ) {
-					$cogs_value = wc_clean( wp_unslash( $_POST['variable_cost_value'][ $i ] ?? '' ) );
-					if ( '' === $cogs_value ) {
-						$cogs_value = null;
-					}
-					$variation->set_cogs_value( is_null( $cogs_value ) ? null : (float) wc_format_Decimal( $cogs_value ) );
 				}
 
 				/**

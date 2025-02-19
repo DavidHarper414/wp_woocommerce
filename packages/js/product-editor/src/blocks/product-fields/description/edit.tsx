@@ -25,9 +25,9 @@ import {
  * Internal dependencies
  */
 import ModalEditorWelcomeGuide from '../../../components/modal-editor-welcome-guide';
+import { store } from '../../../store/product-editor-ui';
 import type { DescriptionBlockEditComponent } from './types';
 import FullEditorToolbarButton from './components/full-editor-toolbar-button';
-import { wooProductEditorUiStore } from '../../../store/product-editor-ui';
 
 /**
  * Check whether the parsed blocks become from the summary block.
@@ -66,15 +66,12 @@ export function DescriptionBlockEdit( {
 	const { isModalEditorOpen, modalEditorBlocks, hasChanged } = useSelect(
 		( select ) => {
 			return {
-				isModalEditorOpen: select(
-					wooProductEditorUiStore
-				).isModalEditorOpen(),
-				modalEditorBlocks: select(
-					wooProductEditorUiStore
-				).getModalEditorBlocks(),
-				hasChanged: select(
-					wooProductEditorUiStore
-				).getModalEditorContentHasChanged(),
+				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
+				isModalEditorOpen: select( store ).isModalEditorOpen(),
+				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
+				modalEditorBlocks: select( store ).getModalEditorBlocks(),
+				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
+				hasChanged: select( store ).getModalEditorContentHasChanged(),
 			};
 		},
 		[]

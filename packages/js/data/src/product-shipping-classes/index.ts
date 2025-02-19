@@ -3,17 +3,8 @@
  */
 import { STORE_NAME, WC_PRODUCT_SHIPPING_CLASSES_NAMESPACE } from './constants';
 import { createCrudDataStore } from '../crud';
-import {
-	ProductShippingClass,
-	ProductShippingClassActions,
-	ProductShippingClassSelectors,
-} from './types';
 
-export const store = createCrudDataStore<
-	ProductShippingClass,
-	ProductShippingClassActions,
-	ProductShippingClassSelectors
->( {
+createCrudDataStore( {
 	storeName: STORE_NAME,
 	resourceName: 'ProductShippingClass',
 	pluralResourceName: 'ProductShippingClasses',

@@ -1,19 +1,16 @@
 /**
  * External dependencies
  */
-import { createElement, lazy } from '@wordpress/element';
+import { createElement } from '@wordpress/element';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore No types for this exist yet.
+// eslint-disable-next-line @woocommerce/dependency-group
+import { ComplementaryArea } from '@wordpress/interface';
 
 /**
  * Internal dependencies
  */
 import { SIDEBAR_COMPLEMENTARY_AREA_SCOPE } from '../../constants';
-
-const ComplementaryArea = lazy( () =>
-	// @ts-expect-error No types for this exist yet
-	import( '@wordpress/interface' ).then( ( module ) => ( {
-		default: module.ComplementaryArea,
-	} ) )
-);
 
 type PluginSidebarProps = {
 	children: React.ReactNode;
@@ -31,7 +28,6 @@ type PluginSidebarProps = {
 export function PluginSidebar( { className, ...props }: PluginSidebarProps ) {
 	return (
 		<ComplementaryArea
-			// @ts-expect-error No types for this exist yet
 			panelClassName={ className }
 			className="woocommerce-iframe-editor__sidebar"
 			scope={ SIDEBAR_COMPLEMENTARY_AREA_SCOPE }

@@ -15,7 +15,7 @@ import { useDebounce } from '@wordpress/compose';
  * Internal dependencies
  */
 import { IframeEditor } from '../iframe-editor';
-import { wooProductEditorUiStore } from '../../store/product-editor-ui';
+import { store as productEditorUiStore } from '../../store/product-editor-ui';
 
 type ModalEditorProps = {
 	initialBlocks?: BlockInstance[];
@@ -33,7 +33,7 @@ export function ModalEditor( {
 	title,
 	name,
 }: ModalEditorProps ) {
-	const { closeModalEditor } = useDispatch( wooProductEditorUiStore );
+	const { closeModalEditor } = useDispatch( productEditorUiStore );
 
 	const debouncedOnChange = useDebounce( ( blocks: BlockInstance[] ) => {
 		onChange?.( blocks );

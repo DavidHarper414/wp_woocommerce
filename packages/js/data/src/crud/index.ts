@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
+import type { ReduxStoreConfig } from '@wordpress/data/build-types/types';
 
 /**
  * Internal dependencies
@@ -10,48 +11,30 @@ import { createSelectors } from './selectors';
 import { createDispatchActions } from './actions';
 import defaultControls from '../controls';
 import { createResolvers } from './resolvers';
-import { createReducer } from './reducer';
-import { Item } from '../items';
+import { createReducer, ResourceState } from './reducer';
 
-interface CrudStoreParams<
-	ResourceName,
-	ResourceNamePlural,
-	Actions,
-	Selectors,
-	Resolvers,
-	Controls,
-	Reducer
-> {
+type CrudDataStore = {
 	storeName: string;
-	resourceName: ResourceName;
+	resourceName: string;
+	pluralResourceName: string;
 	namespace: string;
-	pluralResourceName: ResourceNamePlural;
-	storeConfig?: {
-		reducer?: Reducer;
-		actions?: Actions;
-		selectors?: Selectors;
-		resolvers?: Resolvers;
-		controls?: Controls;
-	};
-}
+	storeConfig?: Partial<
+		ReduxStoreConfig<
+			ResourceState,
+			ReturnType< typeof createDispatchActions >,
+			ReturnType< typeof createSelectors >
+		>
+	>;
+};
 
-export const createCrudDataStore = <
-	ResourceType extends Item,
-	Actions extends Record< string, ( ...args: unknown[] ) => unknown >,
-	Selectors
->( {
+export const createCrudDataStore = ( {
 	storeName,
 	resourceName,
 	namespace,
 	pluralResourceName,
-	storeConfig,
-}: CrudStoreParams<
-	ResourceName,
-	ResourceNamePlural,
-	Actions,
-	Selectors
-> ) => {
-	const crudActions = createDispatchActions< ResourceName, ResourceType >( {
+	storeConfig = {},
+}: CrudDataStore ) => {
+	const crudActions = createDispatchActions( {
 		resourceName,
 		namespace,
 	} );
@@ -61,7 +44,6 @@ export const createCrudDataStore = <
 		pluralResourceName,
 		namespace,
 	} );
-
 	const crudSelectors = createSelectors( {
 		resourceName,
 		pluralResourceName,
@@ -74,22 +56,16 @@ export const createCrudDataStore = <
 		selectors = {},
 		resolvers = {},
 		controls = {},
-	} = storeConfig || {};
+	} = storeConfig;
 
 	const crudReducer = createReducer( reducer );
 
-	const store = createReduxStore< unknown, Actions, Selectors >( storeName, {
+	const store = createReduxStore( storeName, {
 		reducer: crudReducer,
-		actions: { ...crudActions, ...actions } as Actions,
-		selectors: {
-			...crudSelectors,
-			...selectors,
-		} as Selectors,
+		actions: { ...crudActions, ...actions },
+		selectors: { ...crudSelectors, ...selectors },
 		resolvers: { ...crudResolvers, ...resolvers },
-		controls: {
-			...defaultControls,
-			...controls,
-		},
+		controls: { ...defaultControls, ...controls },
 	} );
 
 	register( store );

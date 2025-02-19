@@ -164,9 +164,6 @@ const ProductCollectionInspectorControls = (
 				{ showInheritQueryControl && (
 					<InheritQueryControl { ...queryControlProps } />
 				) }
-				{ showFilterableControl && (
-					<FilterableControl { ...queryControlProps } />
-				) }
 				{ showCustomOrderControl && (
 					<CustomQueryOrderByControl { ...queryControlProps } />
 				) }
@@ -174,6 +171,9 @@ const ProductCollectionInspectorControls = (
 					<DefaultQueryOrderByControl
 						trackInteraction={ trackInteraction }
 					/>
+				) }
+				{ showFilterableControl && (
+					<FilterableControl { ...queryControlProps } />
 				) }
 				<LayoutOptionsControl { ...displayControlProps } />
 				<WidthOptionsControl { ...dimensionsControlProps } />

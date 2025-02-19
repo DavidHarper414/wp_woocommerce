@@ -3,7 +3,10 @@
  */
 import { useState } from '@wordpress/element';
 import { resolveSelect } from '@wordpress/data';
-import { ProductTag, experimentalProductTagsStore } from '@woocommerce/data';
+import {
+	EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME,
+	ProductTag,
+} from '@woocommerce/data';
 
 /**
  * A hook used to handle all the search logic for the tag search component.
@@ -14,11 +17,12 @@ export const useTagSearch = () => {
 
 	const fetchProductTags = ( search?: string ) => {
 		setIsSearching( true );
-		const query = search !== undefined ? { search } : undefined;
-		resolveSelect( experimentalProductTagsStore )
-			.getProductTags( { ...query } )
-			.then( ( tags ) => {
-				setFetchedTags( tags ?? [] );
+		const query = search !== undefined ? { search } : '';
+		resolveSelect( EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME )
+			// @ts-expect-error TODO react-18-upgrade: query type is not correctly typed and was surfaced by https://github.com/woocommerce/woocommerce/pull/54146
+			.getProductTags( query )
+			.then( ( tags: ProductTag[] ) => {
+				setFetchedTags( tags );
 			} )
 			.finally( () => {
 				setIsSearching( false );

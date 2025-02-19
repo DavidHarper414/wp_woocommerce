@@ -5,7 +5,7 @@ export type BaseQueryParams< Fields = string > = {
 	search?: string;
 	after?: string;
 	before?: string;
-	exclude?: string | number[];
+	exclude?: string;
 	include?: string | number[];
 	offset?: number;
 	order?: 'asc' | 'desc';

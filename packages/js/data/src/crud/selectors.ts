@@ -19,6 +19,12 @@ import { IdQuery, IdType, Item, ItemQuery } from './types';
 import { ResourceState } from './reducer';
 import CRUD_ACTIONS from './crud-actions';
 
+type SelectorOptions = {
+	resourceName: string;
+	pluralResourceName: string;
+	namespace: string;
+};
+
 export const getItemCreateError = (
 	state: ResourceState,
 	query: ItemQuery
@@ -155,11 +161,7 @@ export const createSelectors = ( {
 	resourceName,
 	pluralResourceName,
 	namespace,
-}: {
-	resourceName: string;
-	pluralResourceName: string;
-	namespace: string;
-} ) => {
+}: SelectorOptions ) => {
 	const hasFinishedRequest = (
 		state: ResourceState,
 		action: string,

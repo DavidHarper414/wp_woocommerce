@@ -15,7 +15,6 @@ import {
 import { navigateTo, getNewPath, getQuery } from '@woocommerce/navigation';
 import { useSelect } from '@wordpress/data';
 import { Popover } from '@wordpress/components';
-import InterfaceSkeleton from '@wordpress/interface/build-module/components/interface-skeleton';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore No types for this exist yet.
 // eslint-disable-next-line @woocommerce/dependency-group
@@ -24,6 +23,10 @@ import { EntityProvider } from '@wordpress/core-data';
 // @ts-ignore No types for this exist yet.
 // eslint-disable-next-line @woocommerce/dependency-group
 import { ShortcutProvider } from '@wordpress/keyboard-shortcuts';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore No types for this exist yet.
+// eslint-disable-next-line @woocommerce/dependency-group
+import { InterfaceSkeleton } from '@wordpress/interface';
 
 /**
  * Internal dependencies
@@ -33,7 +36,7 @@ import { BlockEditor } from '../block-editor';
 import { EditorLoadingContext } from '../../contexts/editor-loading-context';
 import { ValidationProvider } from '../../contexts/validation-context';
 import { EditorProps } from './types';
-import { wooProductEditorUiStore } from '../../store/product-editor-ui';
+import { store as productEditorUiStore } from '../../store/product-editor-ui';
 import { PrepublishPanel } from '../prepublish-panel/prepublish-panel';
 
 export function Editor( { productId, postType = 'product' }: EditorProps ) {
@@ -49,9 +52,14 @@ export function Editor( { productId, postType = 'product' }: EditorProps ) {
 	const updatedLayoutContext = useExtendLayout( 'product-block-editor' );
 
 	// Check if the prepublish sidebar is open from the store.
-	const isPrepublishPanelOpen = useSelect( ( select ) => {
-		return select( wooProductEditorUiStore ).isPrepublishPanelOpen();
-	}, [] );
+	const isPrepublishPanelOpen = useSelect(
+		(
+			select: ( key: string ) => { isPrepublishPanelOpen: () => boolean }
+		) => {
+			return select( productEditorUiStore ).isPrepublishPanelOpen();
+		},
+		[]
+	);
 
 	return (
 		<LayoutContextProvider value={ updatedLayoutContext }>

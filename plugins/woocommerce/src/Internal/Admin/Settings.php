@@ -10,6 +10,7 @@ use Automattic\WooCommerce\Admin\PageController;
 use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Automattic\WooCommerce\Internal\BrandingController;
 use WC_Marketplace_Suggestions;
 
 /**
@@ -201,7 +202,9 @@ class Settings {
 		);
 
 		// DO NOT use outside of core, these can be removed without deprecation.
-		$settings['__experimentalFlags'] = array();
+		$settings['__experimentalFlags'] = array(
+			'isNewBranding' => BrandingController::use_new_branding(),
+		);
 
 		// Plugins that depend on changing the translation work on the server but not the client -
 		// WooCommerce Branding is an example of this - so pass through the translation of

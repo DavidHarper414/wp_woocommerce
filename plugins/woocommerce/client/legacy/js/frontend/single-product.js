@@ -283,13 +283,7 @@ jQuery( function( $ ) {
 	 * Init zoom.
 	 */
 	ProductGallery.prototype.initZoom = function() {
-		if (document.readyState === 'complete') {
-			this.initZoomForTarget(this.$images.first());
-		} else {
-			$(window).on('load', () => {
-				this.initZoomForTarget(this.$images.first());
-			});
-		}
+		this.initZoomForTarget( this.$images.first() );
 	};
 
 	/**

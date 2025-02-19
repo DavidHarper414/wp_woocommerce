@@ -188,7 +188,7 @@ export const getRelatedProducts = createSelector(
 export function getSuggestedProducts(
 	state: ProductState,
 	options: GetSuggestedProductsOptions
-): PartialProduct[] | undefined {
+): PartialProduct[] {
 	const key = createIdFromOptions( options );
 	if ( ! state.suggestedProducts[ key ] ) {
 		return [];

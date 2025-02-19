@@ -13,7 +13,10 @@ import {
 	__experimentalSelectTreeControl as SelectTree,
 } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
-import { experimentalProductTagsStore, ProductTag } from '@woocommerce/data';
+import {
+	EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME,
+	ProductTag,
+} from '@woocommerce/data';
 import { useDispatch } from '@wordpress/data';
 import { useDebounce } from '@wordpress/compose';
 
@@ -67,7 +70,7 @@ export const TagField: React.FC< TagFieldProps > = ( {
 		undefined | string
 	>();
 	const { createProductTag, invalidateResolutionForStoreSelector } =
-		useDispatch( experimentalProductTagsStore );
+		useDispatch( EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
 
 	const onInputChange = ( searchString?: string ) => {

@@ -14,7 +14,7 @@ import { __ } from '@wordpress/i18n';
 import { external, closeSmall } from '@wordpress/icons';
 import { useWooBlockProps } from '@woocommerce/block-templates';
 import { CurrencyContext } from '@woocommerce/currency';
-import { productsStore, Product } from '@woocommerce/data';
+import { PRODUCTS_STORE_NAME, Product } from '@woocommerce/data';
 import { getNewPath } from '@woocommerce/navigation';
 import classNames from 'classnames';
 
@@ -61,7 +61,7 @@ export function ProductListBlockEdit( {
 
 			if ( groupedProductIds.length ) {
 				setIsLoading( false );
-				resolveSelect( productsStore )
+				resolveSelect( PRODUCTS_STORE_NAME )
 					.getProducts( {
 						include: groupedProductIds,
 						orderby: 'include',

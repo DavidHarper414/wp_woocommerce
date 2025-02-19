@@ -18,7 +18,6 @@ import { isWpVersion } from '@woocommerce/settings';
 import classnames from 'classnames';
 import { MouseEvent } from 'react';
 import { Button, Popover, ToolbarItem } from '@wordpress/components';
-import PinnedItems from '@wordpress/interface/build-module/components/pinned-items';
 // eslint-disable-next-line @woocommerce/dependency-group
 import {
 	store as preferencesStore,
@@ -32,6 +31,10 @@ import {
 	ToolSelector,
 	BlockToolbar,
 } from '@wordpress/block-editor';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore No types for this exist yet.
+// eslint-disable-next-line @woocommerce/dependency-group
+import { PinnedItems } from '@wordpress/interface';
 
 /**
  * Internal dependencies

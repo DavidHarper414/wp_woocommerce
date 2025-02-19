@@ -3,11 +3,11 @@
  */
 import { sprintf, __ } from '@wordpress/i18n';
 import {
+	EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME,
 	PartialProductVariation,
 	ProductVariation,
 	Product,
 	useUserPreferences,
-	experimentalProductVariationsStore,
 } from '@woocommerce/data';
 import { useWooBlockProps } from '@woocommerce/block-templates';
 import { recordEvent } from '@woocommerce/tracks';
@@ -37,7 +37,7 @@ export function Edit( {
 }: ProductEditorBlockEditProps< VariationOptionsBlockAttributes > ) {
 	const noticeDismissed = useRef( false );
 	const { invalidateResolution } = useDispatch(
-		experimentalProductVariationsStore
+		EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
 	);
 	const productId = useEntityId( 'postType', 'product' );
 	const blockProps = useWooBlockProps( attributes );
@@ -66,8 +66,8 @@ export function Edit( {
 	const totalCountWithoutPriceRequestParams = useMemo(
 		() => ( {
 			product_id: productId,
-			order: 'asc' as const,
-			orderby: 'menu_order' as const,
+			order: 'asc',
+			orderby: 'menu_order',
 			has_price: false,
 		} ),
 		[ productId ]
@@ -76,12 +76,13 @@ export function Edit( {
 	const { totalCountWithoutPrice } = useSelect(
 		( select ) => {
 			const { getProductVariationsTotalCount } = select(
-				experimentalProductVariationsStore
+				EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
 			);
 
 			return {
 				totalCountWithoutPrice: productHasOptions
-					? getProductVariationsTotalCount(
+					? // @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
+					  getProductVariationsTotalCount(
 							totalCountWithoutPriceRequestParams
 					  )
 					: 0,
@@ -139,11 +140,12 @@ export function Edit( {
 			source: TRACKS_SOURCE,
 		} );
 		const productVariationsListPromise = resolveSelect(
-			experimentalProductVariationsStore
+			EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
 		).getProductVariations( {
 			product_id: productId,
-			order: 'asc' as const,
-			orderby: 'menu_order' as const,
+			order: 'asc',
+			// @ts-expect-error TODO react-18-upgrade: getProductVariations type is not correctly typed and was surfaced by https://github.com/woocommerce/woocommerce/pull/54146
+			orderby: 'menu_order',
 			has_price: false,
 			_fields: [ 'id' ],
 			per_page: totalCountWithoutPrice,

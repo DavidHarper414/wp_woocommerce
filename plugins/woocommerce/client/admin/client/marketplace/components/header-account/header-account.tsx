@@ -10,7 +10,6 @@ import {
 } from '@wordpress/components';
 import { Icon, commentAuthorAvatar, external, linkOff } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
-import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -28,19 +27,13 @@ interface MenuItemProps extends ComponentProps< typeof OriginalMenuItem > {
 
 const MenuItem = ( props: MenuItemProps ) => <OriginalMenuItem { ...props } />;
 
-interface HeaderAccountProps {
-	page?: string;
-}
-
-export default function HeaderAccount( {
-	page = 'wc-admin',
-}: HeaderAccountProps ): JSX.Element {
+export default function HeaderAccount(): JSX.Element {
 	const [ isModalOpen, setIsModalOpen ] = useState( false );
 	const openModal = () => setIsModalOpen( true );
 
 	const wccomSettings = getAdminSetting( 'wccomHelper', {} );
 	const isConnected = wccomSettings?.isConnected ?? false;
-	const connectionURL = connectUrl( page );
+	const connectionURL = connectUrl();
 	const userEmail = wccomSettings?.userEmail;
 	const avatarURL = wccomSettings?.userAvatar ?? commentAuthorAvatar;
 
@@ -62,8 +55,8 @@ export default function HeaderAccount( {
 	};
 
 	const connectionStatusText = isConnected
-		? __( 'Connected to WooCommerce.com', 'woocommerce' )
-		: __( 'Connect to WooCommerce.com', 'woocommerce' );
+		? __( 'Connected', 'woocommerce' )
+		: __( 'Not Connected', 'woocommerce' );
 
 	const connectionDetails = () => {
 		if ( isConnected ) {
@@ -103,17 +96,9 @@ export default function HeaderAccount( {
 	return (
 		<>
 			<DropdownMenu
-				className="woocommerce-layout__activity-panel-tab woocommerce-marketplace__user-menu"
+				className="woocommerce-marketplace__user-menu"
 				icon={ avatar() }
 				label={ __( 'User options', 'woocommerce' ) }
-				toggleProps={ {
-					className: 'woocommerce-layout__activity-panel-tab',
-					onClick: () =>
-						recordEvent( 'header_account_click', { page } ),
-				} }
-				popoverProps={ {
-					className: 'woocommerce-layout__activity-panel-popover',
-				} }
 			>
 				{ () => (
 					<>
@@ -124,55 +109,24 @@ export default function HeaderAccount( {
 							<MenuItem
 								className="woocommerce-marketplace__menu-item"
 								href={ accountOrConnect }
-								onClick={ () => {
-									if ( isConnected ) {
-										recordEvent(
-											'header_account_view_click',
-											{ page }
-										);
-									} else {
-										recordEvent(
-											'header_account_connect_click',
-											{ page }
-										);
-									}
-								} }
 							>
 								{ connectionDetails() }
 							</MenuItem>
-							{ page === 'wc-addons' && ! isConnected && (
-								<MenuItem
-									href={ accountURL }
-									onClick={ () =>
-										recordEvent(
-											'header_account_view_click',
-											{ page }
-										)
-									}
-								>
-									<Icon
-										icon={ external }
-										size={ 24 }
-										className="woocommerce-marketplace__menu-icon"
-									/>
-									{ __(
-										'WooCommerce.com account',
-										'woocommerce'
-									) }
-								</MenuItem>
-							) }
+							<MenuItem href={ accountURL }>
+								<Icon
+									icon={ external }
+									size={ 24 }
+									className="woocommerce-marketplace__menu-icon"
+								/>
+								{ __(
+									'WooCommerce.com account',
+									'woocommerce'
+								) }
+							</MenuItem>
 						</MenuGroup>
 						{ isConnected && (
 							<MenuGroup className="woocommerce-layout__homescreen-display-options">
-								<MenuItem
-									onClick={ () => {
-										recordEvent(
-											'header_account_disconnect_click',
-											{ page }
-										);
-										openModal();
-									} }
-								>
+								<MenuItem onClick={ openModal }>
 									<Icon
 										icon={ linkOff }
 										size={ 24 }

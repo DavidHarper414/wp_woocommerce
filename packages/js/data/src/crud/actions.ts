@@ -11,8 +11,8 @@ import CRUD_ACTIONS from './crud-actions';
 import TYPES from './action-types';
 import { IdType, IdQuery, Item, ItemQuery, CrudActionOptions } from './types';
 
-type ResolverOptions< ResourceName extends string > = {
-	resourceName: ResourceName;
+type ResolverOptions = {
+	resourceName: string;
 	namespace: string;
 };
 
@@ -174,22 +174,19 @@ export function updateItemSuccess(
 	};
 }
 
-export const createDispatchActions = <
-	ResourceName extends string,
-	ResourceType extends Item
->( {
+export const createDispatchActions = ( {
 	namespace,
 	resourceName,
-}: ResolverOptions< ResourceName > ) => {
+}: ResolverOptions ) => {
 	const createItem = function* (
 		query: Partial< ItemQuery >,
-		options?: CrudActionOptions
+		options: CrudActionOptions
 	) {
 		yield createItemRequest( query );
 		const urlParameters = getUrlParameters( namespace, query );
 
 		try {
-			const item: ResourceType = yield apiFetch( {
+			const item: Item = yield apiFetch( {
 				path: getRestPath(
 					namespace,
 					cleanQuery( query, namespace ),
@@ -213,7 +210,7 @@ export const createDispatchActions = <
 		yield deleteItemRequest( key, force );
 
 		try {
-			const item: ResourceType = yield apiFetch( {
+			const item: Item = yield apiFetch( {
 				path: getRestPath(
 					`${ namespace }/${ id }`,
 					{ force },
@@ -239,7 +236,7 @@ export const createDispatchActions = <
 		yield updateItemRequest( key, query );
 
 		try {
-			const item: ResourceType = yield apiFetch( {
+			const item: Item = yield apiFetch( {
 				path: getRestPath(
 					`${ namespace }/${ id }`,
 					{},

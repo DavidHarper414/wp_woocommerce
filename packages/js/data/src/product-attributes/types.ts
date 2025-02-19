@@ -24,7 +24,6 @@ export type QueryProductAttribute = {
 	order_by: string;
 	has_archives: boolean;
 	generate_slug: boolean;
-	attribute_id: number;
 };
 
 type Query = {
@@ -38,7 +37,7 @@ type MutableProperties = Partial<
 	Omit< QueryProductAttribute, ReadOnlyProperties >
 >;
 
-export type ProductAttributeActions = CrudActions<
+type ProductAttributeActions = CrudActions<
 	'ProductAttribute',
 	ProductAttribute,
 	MutableProperties

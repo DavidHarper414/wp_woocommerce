@@ -10,13 +10,11 @@ class EnvironmentReporter {
 	}
 
 	async onEnd() {
-		console.log( '::debug::Getting environment details' );
+		console.log( 'Getting environment details' );
 		const { outputFolder } = this.reportOptions;
 
 		if ( ! outputFolder ) {
-			console.error(
-				'Error getting environment info: no output folder specified!'
-			);
+			console.log( 'No output folder specified!' );
 			return;
 		}
 

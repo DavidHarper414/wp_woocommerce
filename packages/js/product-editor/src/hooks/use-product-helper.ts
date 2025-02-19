@@ -9,10 +9,11 @@ import {
 	Product,
 	ProductsStoreActions,
 	ProductStatus,
-	productsStore,
+	PRODUCTS_STORE_NAME,
 	ReadOnlyProperties,
 	productReadOnlyProperties,
-	experimentalProductVariationsStore,
+	EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME,
+	ProductVariation,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { CurrencyContext } from '@woocommerce/currency';
@@ -55,12 +56,20 @@ function getNoticePreviewActions( status: ProductStatus, permalink: string ) {
 
 export function useProductHelper() {
 	const { createProduct, updateProduct, deleteProduct } = useDispatch(
-		productsStore
+		PRODUCTS_STORE_NAME
 	) as ProductsStoreActions;
 	const {
 		batchUpdateProductVariations,
 		invalidateResolutionForStoreSelector,
-	} = useDispatch( experimentalProductVariationsStore );
+	} = useDispatch( EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME ) as {
+		batchUpdateProductVariations< T >(
+			id: Record< string, number >,
+			data: Record< string, unknown >
+		): T;
+		invalidateResolutionForStoreSelector(
+			...args: string[]
+		): Promise< void >;
+	};
 
 	const { createNotice } = useDispatch( 'core/notices' );
 	const [ isDeleting, setIsDeleting ] = useState( false );
@@ -147,7 +156,9 @@ export function useProductHelper() {
 	) {
 		if ( ! variationsOrder ) return undefined;
 
-		return batchUpdateProductVariations(
+		return batchUpdateProductVariations<
+			Promise< { update: ProductVariation[] } >
+		>(
 			{
 				product_id: productId,
 			},
@@ -158,7 +169,7 @@ export function useProductHelper() {
 					.flatMap( Object.entries )
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 					// @ts-ignore
-					.map( ( [ id, menu_order ]: [ number, number ] ) => ( {
+					.map( ( [ id, menu_order ] ) => ( {
 						id,
 						menu_order,
 					} ) ),

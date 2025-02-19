@@ -6,7 +6,10 @@ import { Button, Modal, TextControl } from '@wordpress/components';
 import { useState, createElement } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { experimentalProductTagsStore } from '@woocommerce/data';
+import {
+	EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME,
+	ProductTag,
+} from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -22,7 +25,7 @@ export const CreateTagModal: React.FC< CreateTagModalProps > = ( {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const [ isCreating, setIsCreating ] = useState( false );
 	const { createProductTag, invalidateResolutionForStoreSelector } =
-		useDispatch( experimentalProductTagsStore );
+		useDispatch( EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME );
 	const [ tagName, setTagName ] = useState( initialTagName || '' );
 
 	const onSave = async () => {
@@ -31,7 +34,7 @@ export const CreateTagModal: React.FC< CreateTagModalProps > = ( {
 		} );
 		setIsCreating( true );
 		try {
-			const newTag = await createProductTag( {
+			const newTag: ProductTag = await createProductTag( {
 				name: tagName,
 			} );
 			invalidateResolutionForStoreSelector( 'getProductTags' );

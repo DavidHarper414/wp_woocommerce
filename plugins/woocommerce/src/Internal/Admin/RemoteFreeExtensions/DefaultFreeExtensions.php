@@ -7,6 +7,7 @@ declare( strict_types=1 );
 namespace Automattic\WooCommerce\Internal\Admin\RemoteFreeExtensions;
 
 use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\DefaultPaymentGateways;
+use Automattic\WooCommerce\Internal\BrandingController;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,7 +23,9 @@ class DefaultFreeExtensions {
 	 * @return string
 	 */
 	private static function get_woo_logo() {
-		return plugins_url( '/assets/images/core-profiler/logo-woo.svg', WC_PLUGIN_FILE );
+		return BrandingController::use_new_branding() ?
+			plugins_url( '/assets/images/core-profiler/woo-rebrand-2.svg', WC_PLUGIN_FILE ) :
+			plugins_url( '/assets/images/onboarding/woo.svg', WC_PLUGIN_FILE );
 	}
 
 	/**

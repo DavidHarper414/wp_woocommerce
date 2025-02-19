@@ -8,7 +8,7 @@ import { DispatchFromMap } from '@automattic/data-stores';
  */
 import { CrudActions, CrudSelectors } from '../crud/types';
 
-export type ShippingZone = {
+type ShippingZone = {
 	id: number;
 	name: string;
 	order: number;
@@ -18,7 +18,7 @@ type ReadOnlyProperties = 'id';
 
 type MutableProperties = Omit< ShippingZone, ReadOnlyProperties >;
 
-export type ShippingZonesActions = CrudActions<
+type ShippingZonesActions = CrudActions<
 	'ShippingZone',
 	ShippingZone,
 	MutableProperties,

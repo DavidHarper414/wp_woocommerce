@@ -21,7 +21,7 @@ import {
 } from '@wordpress/data';
 import { cleanForSlug } from '@wordpress/url';
 import {
-	experimentalProductAttributeTermsStore,
+	EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME,
 	type ProductAttributeTerm,
 } from '@woocommerce/data';
 import type { MouseEventHandler } from 'react';
@@ -114,7 +114,7 @@ export const AttributeTableRow: React.FC< AttributeTableRowProps > = ( {
 } ) => {
 	const attributeId = attribute ? attribute.id : undefined;
 	const { createProductAttributeTerm } = useDispatch(
-		experimentalProductAttributeTermsStore
+		EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME
 	);
 	const selectItemsQuery = useMemo(
 		() => ( {
@@ -134,7 +134,7 @@ export const AttributeTableRow: React.FC< AttributeTableRowProps > = ( {
 		// @ts-ignore
 		( select: WCDataSelector ) => {
 			const { getProductAttributeTerms } = select(
-				experimentalProductAttributeTermsStore
+				EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME
 			);
 
 			return attributeId
@@ -290,7 +290,7 @@ export const AttributeTableRow: React.FC< AttributeTableRowProps > = ( {
 		// Create the new terms.
 		const promises = newTokens.map( async ( token ) => {
 			try {
-				const newTerm = await createProductAttributeTerm(
+				const newTerm = ( await createProductAttributeTerm(
 					{
 						name: token.value,
 						slug: token.slug,
@@ -298,11 +298,9 @@ export const AttributeTableRow: React.FC< AttributeTableRowProps > = ( {
 					},
 					{
 						optimisticQueryUpdate: selectItemsQuery,
-						optimisticUrlParameters: attributeId
-							? [ attributeId ]
-							: [],
+						optimisticUrlParameters: [ attributeId ],
 					}
-				);
+				) ) satisfies ProductAttributeTerm;
 
 				return newTerm;
 			} catch ( error ) {
@@ -337,19 +335,17 @@ export const AttributeTableRow: React.FC< AttributeTableRowProps > = ( {
 		 * The optimistic rendering should be implemented in the store.
 		 */
 		const recentTermsList = sel(
-			experimentalProductAttributeTermsStore
+			EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME
+			// @ts-expect-error - TS doesn't know about the `getProductAttributeTerms` selector
 		).getProductAttributeTerms( selectItemsQuery );
 
 		/*
 		 * New selected terms are the ones that are in the recent terms list
 		 * and also in the token field values.
 		 */
-		const newSelectedTerms =
-			recentTermsList?.filter( ( term ) =>
-				tokenFieldValues
-					.map( ( item ) => item.value )
-					.includes( term.name )
-			) ?? [];
+		const newSelectedTerms = recentTermsList.filter( ( term ) =>
+			tokenFieldValues.map( ( item ) => item.value ).includes( term.name )
+		);
 
 		// Call the callback to update the Form terms.
 		onTermsSelect(

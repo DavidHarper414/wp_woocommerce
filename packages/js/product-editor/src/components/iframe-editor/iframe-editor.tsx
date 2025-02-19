@@ -51,7 +51,7 @@ import { ResizableEditor } from './resizable-editor';
 import { SecondarySidebar } from './secondary-sidebar/secondary-sidebar';
 import { SettingsSidebar } from './sidebar/settings-sidebar';
 import { useEditorHistory } from './hooks/use-editor-history';
-import { wooProductEditorUiStore } from '../../store/product-editor-ui';
+import { store as productEditorUiStore } from '../../store/product-editor-ui';
 import { getGutenbergVersion } from '../../utils/get-gutenberg-version';
 import { SIDEBAR_COMPLEMENTARY_AREA_SCOPE } from './constants';
 import {
@@ -119,11 +119,12 @@ export function IframeEditor( {
 
 	// Pick the blocks from the store.
 	const blocks: BlockInstance[] = useSelect( ( select ) => {
-		return select( wooProductEditorUiStore ).getModalEditorBlocks();
+		// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
+		return select( productEditorUiStore ).getModalEditorBlocks();
 	}, [] );
 
 	const { setModalEditorBlocks: setBlocks, setModalEditorContentHasChanged } =
-		useDispatch( wooProductEditorUiStore );
+		useDispatch( productEditorUiStore );
 
 	const {
 		appendEdit: appendToEditorHistory,

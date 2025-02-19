@@ -3,17 +3,8 @@
  */
 import { STORE_NAME, WC_PRODUCT_ATTRIBUTES_NAMESPACE } from './constants';
 import { createCrudDataStore } from '../crud';
-import {
-	ProductAttribute,
-	ProductAttributeSelectors,
-	ProductAttributeActions,
-} from './types';
 
-export const store = createCrudDataStore<
-	ProductAttribute,
-	ProductAttributeActions,
-	ProductAttributeSelectors
->( {
+createCrudDataStore( {
 	storeName: STORE_NAME,
 	resourceName: 'ProductAttribute',
 	pluralResourceName: 'ProductAttributes',

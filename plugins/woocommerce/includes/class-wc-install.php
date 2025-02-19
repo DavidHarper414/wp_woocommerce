@@ -271,9 +271,6 @@ class WC_Install {
 		'9.5.0' => array(
 			'wc_update_950_tracking_option_autoload',
 		),
-		'9.6.1' => array(
-			'wc_update_961_migrate_default_email_base_color',
-		),
 	);
 
 	/**
@@ -2592,7 +2589,7 @@ $hpos_table_schema;
 <p>If you are approved, then your refund will be processed, and a credit will automatically be applied to your credit card or original method of payment, within a certain amount of days.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":3} -->
+<!-- wp:heading -->
 <h3 class="wp-block-heading">Late or missing refunds</h3>
 <!-- /wp:heading -->
 
@@ -2612,7 +2609,7 @@ $hpos_table_schema;
 <p>If you’ve done all of this and you still have not received your refund yet, please contact us at {email address}.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":3} -->
+<!-- wp:heading -->
 <h3 class="wp-block-heading">Sale items</h3>
 <!-- /wp:heading -->
 

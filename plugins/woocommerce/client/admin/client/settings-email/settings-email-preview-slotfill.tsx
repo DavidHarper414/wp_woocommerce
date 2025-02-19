@@ -129,7 +129,7 @@ export const registerSettingsEmailPreviewFill = () => {
 		emailTypes = JSON.parse( emailTypesData || '' );
 	} catch ( e ) {}
 	const settingsIdsData = slotElement.getAttribute(
-		'data-email-setting-ids'
+		'data-email-settings-ids'
 	);
 	let settingsIds: string[] = [];
 	try {

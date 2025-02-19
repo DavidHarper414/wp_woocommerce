@@ -26,6 +26,7 @@ import {
 import { EmailSentPage, MobileAppLoginStepperPage } from './pages';
 import './style.scss';
 import { SETUP_TASK_HELP_ITEMS_FILTER } from '../../activity-panel/panels/help';
+import { isNewBranding } from '~/utils/admin-settings';
 
 export const MobileAppModal = () => {
 	const [ guideIsOpen, setGuideIsOpen ] = useState( false );
@@ -40,6 +41,12 @@ export const MobileAppModal = () => {
 
 	const { invalidateResolutionForStoreSelector } =
 		useDispatch( onboardingStore );
+
+	if ( isNewBranding() ) {
+		import( './style-new.scss' );
+	} else {
+		import( './style-old.scss' );
+	}
 
 	useEffect( () => {
 		if ( searchParams.get( 'mobileAppModal' ) ) {
