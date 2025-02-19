@@ -13,9 +13,7 @@ export const store = createCrudDataStore< TaxClassActions, TaxClassSelectors >(
 		pluralResourceName: 'TaxClasses',
 		namespace: WC_TAX_CLASSES_NAMESPACE,
 		storeConfig: {
-			resolvers: {
-				...resolvers,
-			},
+			resolvers,
 		},
 	}
 );
