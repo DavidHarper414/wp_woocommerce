@@ -1,8 +1,58 @@
 diff --git a/lib/commands/start.js b/lib/commands/start.js
-index e476fd8c2b67b78ac334f2ba866749719577dfd8..aac937bfc6a4a1b2aeb641283a65ee3d16afbaf8 100644
+index db05b82060d2c51381d07463b620c2fb549df027..46053d7397e809e9b17529ee26b61fbfcc61cafd 100644
 --- a/lib/commands/start.js
 +++ b/lib/commands/start.js
-@@ -207,28 +207,32 @@ module.exports = async function start( {
+@@ -136,8 +136,13 @@ module.exports = async function start( {
+ 		spinner.text = 'Downloading sources.';
+ 	}
+ 
++	const isCI               = process.env.CI || false;
++	const targetContainers   = isCI ? [ 'tests-wordpress', 'tests-cli' ] : [ 'wordpress', 'tests-wordpress', 'cli', 'tests-cli' ];
++	const targetDbContainer  = isCI ? 'tests-mysql' : 'mysql';
++	const targetCliContainer = isCI ? 'tests-cli' : 'cli';
++
+ 	await Promise.all( [
+-		dockerCompose.upOne( 'mysql', {
++		dockerCompose.upOne( targetDbContainer, {
+ 			...dockerComposeConfig,
+ 			commandOptions: shouldConfigureWp
+ 				? [ '--build', '--force-recreate' ]
+@@ -171,7 +176,7 @@ module.exports = async function start( {
+ 	spinner.text = 'Starting WordPress.';
+ 
+ 	await dockerCompose.upMany(
+-		[ 'wordpress', 'tests-wordpress', 'cli', 'tests-cli' ],
++		targetContainers,
+ 		{
+ 			...dockerComposeConfig,
+ 			commandOptions: shouldConfigureWp
+@@ -180,7 +185,7 @@ module.exports = async function start( {
+ 		}
+ 	);
+ 
+-	if ( config.env.development.phpmyadminPort ) {
++	if ( ! isCI && config.env.development.phpmyadminPort ) {
+ 		await dockerCompose.upOne( 'phpmyadmin', {
+ 			...dockerComposeConfig,
+ 			commandOptions: shouldConfigureWp
+@@ -189,7 +194,7 @@ module.exports = async function start( {
+ 		} );
+ 	}
+ 
+-	if ( config.env.tests.phpmyadminPort ) {
++	if ( ! isCI && config.env.tests.phpmyadminPort ) {
+ 		await dockerCompose.upOne( 'tests-phpmyadmin', {
+ 			...dockerComposeConfig,
+ 			commandOptions: shouldConfigureWp
+@@ -200,36 +205,42 @@ module.exports = async function start( {
+ 
+ 	// Make sure we've consumed the custom CLI dockerfile.
+ 	if ( shouldConfigureWp ) {
+-		await dockerCompose.buildOne( [ 'cli' ], { ...dockerComposeConfig } );
++		await dockerCompose.buildOne( [ targetCliContainer ], { ...dockerComposeConfig } );
+ 	}
+ 
+ 	// Only run WordPress install/configuration when config has changed.
  	if ( shouldConfigureWp ) {
  		spinner.text = 'Configuring WordPress.';
  
@@ -17,25 +67,34 @@ index e476fd8c2b67b78ac334f2ba866749719577dfd8..aac937bfc6a4a1b2aeb641283a65ee3d
 -
 -			// It takes 3-4 seconds for MySQL to be ready after it starts accepting connections.
 -			await sleep( 4000 );
--		}
 +		const targetEnvironments = {
 +			development: 'cli',
 +			tests: 'tests-cli',
 +		};
 +		for ( const environment in targetEnvironments ) {
 +			const cliContainer = targetEnvironments[environment];
-+			try {
-+				await checkDatabaseConnection( cliContainer, config );
-+			} catch ( error ) {
-+				// Wait 30 seconds for MySQL to accept connections.
-+				await retry( () => checkDatabaseConnection( cliContainer, config ), {
-+					times: 30,
-+					delay: 1000,
-+				} );
++			if ( targetContainers.includes( cliContainer ) ) {
++				try {
++					await checkDatabaseConnection( cliContainer, config );
++				} catch ( error ) {
++					// Wait 30 seconds for MySQL to accept connections.
++					await retry( () => checkDatabaseConnection( cliContainer, config ), {
++						times: 30,
++						delay: 1000,
++					} );
 +
-+				// It takes 3-4 seconds for MySQL to be ready after it starts accepting connections.
-+				await sleep( 4000 );
++					// It takes 3-4 seconds for MySQL to be ready after it starts accepting connections.
++					await sleep( 4000 );
++				}
++
++				// Retry WordPress installation in case MySQL *still* wasn't ready.
++				await Promise.all( [
++					retry( () => configureWordPress( environment, config, spinner ), {
++						times: 2,
++					} ),
++				] );
 +			}
+ 		}
  
 -		// Retry WordPress installation in case MySQL *still* wasn't ready.
 -		await Promise.all( [
@@ -46,18 +105,34 @@ index e476fd8c2b67b78ac334f2ba866749719577dfd8..aac937bfc6a4a1b2aeb641283a65ee3d
 -				times: 2,
 -			} ),
 -		] );
-+			// Retry WordPress installation in case MySQL *still* wasn't ready.
-+			await Promise.all( [
-+				retry( () => configureWordPress( environment, config, spinner ), {
-+					times: 2,
-+				} ),
-+			] );
-+		}
- 
+-
  		// Set the cache key once everything has been configured.
  		await setCache( CONFIG_CACHE_KEY, configHash, {
+ 			workDirectoryPath,
+@@ -268,16 +279,12 @@ module.exports = async function start( {
+ 		: null;
+ 
+ 	spinner.prefixText = [
+-		'WordPress development site started' +
+-			( siteUrl ? ` at ${ siteUrl }` : '.' ),
+-		'WordPress test site started' +
+-			( testsSiteUrl ? ` at ${ testsSiteUrl }` : '.' ),
+-		`MySQL is listening on port ${ mySQLPort }`,
++		! isCI && 'WordPress development site started' + ( siteUrl ? ` at ${ siteUrl }` : '.' ),
++		'WordPress test site started' + ( testsSiteUrl ? ` at ${ testsSiteUrl }` : '.' ),
++		! isCI && `MySQL is listening on port ${ mySQLPort }`,
+ 		`MySQL for automated testing is listening on port ${ testsMySQLPort }`,
+-		phpmyadminPort &&
+-			`phpMyAdmin started at http://localhost:${ phpmyadminPort }`,
+-		testsPhpmyadminPort &&
+-			`phpMyAdmin for automated testing started at http://localhost:${ testsPhpmyadminPort }`,
++		! isCI && phpmyadminPort && `phpMyAdmin started at http://localhost:${ phpmyadminPort }`,
++		! isCI && testsPhpmyadminPort && `phpMyAdmin for automated testing started at http://localhost:${ testsPhpmyadminPort }`,
+ 	]
+ 		.filter( Boolean )
+ 		.join( '\n' );
 diff --git a/lib/wordpress.js b/lib/wordpress.js
-index bd3c4a23f8ff5d54663f0c3df5bff595f3743f67..f3e8fb0d532a0047d9dab20ef37182dc76a4f3d8 100644
+index 8c08fb1f20ec782049aa831d55d911faa2792fb6..55de6e885890477b58314d1a7323a80d31b6a9a6 100644
 --- a/lib/wordpress.js
 +++ b/lib/wordpress.js
 @@ -57,8 +57,8 @@ function isWPMajorMinorVersionLower( version, compareVersion ) {
