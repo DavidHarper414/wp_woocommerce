@@ -391,7 +391,7 @@ class WC_Admin_Log_Table_List extends WP_List_Table {
 		if ( ! empty( $_REQUEST['orderby'] ) && in_array( $_REQUEST['orderby'], $valid_orders ) ) {
 			$by = wc_clean( $_REQUEST['orderby'] );
 		} else {
-			$by = 'timestamp';
+			$by = 'log_id';
 		}
 		$by = esc_sql( $by );
 
@@ -401,7 +401,12 @@ class WC_Admin_Log_Table_List extends WP_List_Table {
 			$order = 'DESC';
 		}
 
-		return "ORDER BY {$by} {$order}, log_id {$order}";
+		$orderby = "ORDER BY {$by} {$order}";
+		if ( 'log_id' !== $by ) {
+			$orderby .= ", log_id {$order}";
+		}
+
+		return $orderby;
 	}
 
 	/**
