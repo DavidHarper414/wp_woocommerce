@@ -163,14 +163,7 @@ class Init {
 
 		// Add the settings data to the settings array.
 		$setting_pages = \WC_Admin_Settings::get_settings_pages();
-		$pages         = array();
-		foreach ( $setting_pages as $setting_page ) {
-			$scripts_before_adding_settings                         = $wp_scripts->queue;
-			$settings_scripts_handles                               = array_diff( $wp_scripts->queue, $scripts_before_adding_settings );
-			$settings['settingsScripts'][ $setting_page->get_id() ] = self::get_script_urls( $settings_scripts_handles );
-		}
-
-		$settings = self::get_page_data( $settings, $setting_pages );
+		$settings      = self::get_page_data( $settings, $setting_pages );
 
 		return $settings;
 	}
@@ -183,6 +176,7 @@ class Init {
 	 * @return array The settings array.
 	 */
 	public static function get_page_data( $settings, $setting_pages ) {
+		global $wp_scripts;
 		/**
 		 * Filters the settings tabs array.
 		 *
@@ -199,7 +193,10 @@ class Init {
 				continue;
 			}
 
-			$pages = $setting_page->add_settings_page_data( $pages );
+			$scripts_before_adding_settings = $wp_scripts->queue;
+			$pages                          = $setting_page->add_settings_page_data( $pages );
+			$settings_scripts_handles       = array_diff( $wp_scripts->queue, $scripts_before_adding_settings );
+			$settings['settingsScripts'][ $setting_page->get_id() ] = self::get_script_urls( $settings_scripts_handles );
 		}
 
 		$transformer                          = new Transformer();
