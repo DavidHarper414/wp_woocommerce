@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 if [ ! -z ${CI+y} ]; then
+	# In CI we want to execute the setup behind single container call, while in dev-environments we use the script as it is.
     # Inside the container the command executed from /var/www/html path as pwd
-    wp-env run tests-cli 'echo "CI variable: $CI"'
-    # wp-env run tests-cli wp-content/plugins/woocommerce/tests/e2e-pw/bin/test-env-setup.sh
-    # wp-env run tests-cli "pwd && stat ~/.cache/composer && stat /var/www/html/wp-content/plugins/woocommerce/tests/e2e-pw/bin/test-env-setup.sh"
+    wp-env run tests-cli "cat wp-content/plugins/woocommerce/tests/e2e-pw/bin/test-env-setup.sh | sed 's/wp-env run tests-cli //' > test-env-setup-ci.sh && bash test-env-setup-ci.sh"
+    exit $?
 fi
 
 echo -e 'Activate default theme \n'
