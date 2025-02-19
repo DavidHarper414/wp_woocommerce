@@ -8,11 +8,7 @@ import { uniqueId, find } from 'lodash';
 import { Icon, help as helpIcon, external } from '@wordpress/icons';
 import { STORE_KEY as CES_STORE_KEY } from '@woocommerce/customer-effort-score';
 import { H, Section } from '@woocommerce/components';
-import {
-	onboardingStore,
-	OPTIONS_STORE_NAME,
-	useUser,
-} from '@woocommerce/data';
+import { onboardingStore, optionsStore, useUser } from '@woocommerce/data';
 import { addHistoryListener } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
 import { useSlot } from '@woocommerce/experimental';
@@ -44,6 +40,7 @@ import { getSegmentsFromPath } from '~/utils/url-helpers';
 import { FeedbackIcon } from '~/products/images/feedback-icon';
 import { useLaunchYourStore } from '~/launch-your-store';
 import { useTaskListsState } from '~/hooks/use-tasklists-state';
+import HeaderAccount from '../marketplace/components/header-account/header-account';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
@@ -164,7 +161,7 @@ export const ActivityPanel = ( { isEmbedded, query } ) => {
 		previewSiteBtnTrackData,
 	} = useSelect(
 		( select ) => {
-			const { getOption } = select( OPTIONS_STORE_NAME );
+			const { getOption } = select( optionsStore );
 
 			return {
 				hasUnreadNotes: checkIfHasUnreadNotes( select ),
@@ -327,6 +324,11 @@ export const ActivityPanel = ( { isEmbedded, query } ) => {
 				! isPerformingSetupTask(),
 		};
 
+		const headerAccount = {
+			component: () => <HeaderAccount page="wc-admin" />,
+			visible: isHomescreen,
+		};
+
 		const previewSite = {
 			name: 'previewSite',
 			title: __( 'Preview site', 'woocommerce' ),
@@ -365,6 +367,7 @@ export const ActivityPanel = ( { isEmbedded, query } ) => {
 			previewSite,
 			previewStore,
 			displayOptions,
+			headerAccount,
 			help,
 		].filter( ( tab ) => tab.visible );
 	};

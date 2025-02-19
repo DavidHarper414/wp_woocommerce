@@ -10,7 +10,7 @@ import {
 	PanelRow,
 	__experimentalText as Text,
 } from '@wordpress/components';
-import { ORDERS_STORE_NAME, PRODUCTS_STORE_NAME } from '@woocommerce/data';
+import { ordersStore, productsStore } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { useEffect } from '@wordpress/element';
 import { snakeCase } from 'lodash';
@@ -41,11 +41,11 @@ export const ActivityPanel = () => {
 		const {
 			getOrdersTotalCount,
 			hasFinishedResolution: hasFinishedOrdersResolution,
-		} = select( ORDERS_STORE_NAME );
+		} = select( ordersStore );
 		const {
 			getProductsTotalCount,
 			hasFinishedResolution: hasFinishedProductsResolution,
-		} = select( PRODUCTS_STORE_NAME );
+		} = select( productsStore );
 		const totalOrderCount = getOrdersTotalCount( ORDERS_QUERY_PARAMS, 0 );
 		const orderStatuses = getOrderStatuses( select );
 		const reviewsEnabled = getAdminSetting( 'reviewsEnabled', 'no' );
