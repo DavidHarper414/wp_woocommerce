@@ -33,7 +33,7 @@ if ( ! empty( $order->get_billing_first_name() ) ) {
 	/* translators: %s: Customer first name */
 	printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) );
 } else {
-	printf( esc_html__( 'Hi,' ) );
+	printf( esc_html__( 'Hi,', 'woocommerce' ) );
 }
 ?>
 </p>
