@@ -46,9 +46,11 @@ export const TaskPromo: React.FC< TaskPromoProps > = ( {
 				</CardHeader>
 			) }
 			<CardBody>
-				<div className="woocommerce-plugin-list__plugin-logo">
-					<img src={ iconSrc as string } alt={ iconAlt as string } />
-				</div>
+				{ iconSrc && iconAlt && (
+					<div className="woocommerce-plugin-list__plugin-logo">
+						<img src={ iconSrc } alt={ iconAlt } />
+					</div>
+				) }
 				<div className="woocommerce-plugin-list__plugin-text">
 					<Text variant="subtitle.small" as="h4">
 						{ name }
