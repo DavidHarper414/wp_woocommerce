@@ -1,17 +1,16 @@
 /**
  * Internal dependencies
  */
-import { getAdminSetting } from '../admin-settings';
+import { getAdminSetting } from '../admin-settings'; // Adjust the import path
 
 describe( 'getAdminSetting', () => {
 	let consoleWarnSpy;
+
 	beforeEach( () => {
 		consoleWarnSpy = jest
 			.spyOn( console, 'warn' )
 			.mockImplementation( () => {} );
-		window.deprecatedWcSettings = {
-			testSetting: 'This setting is deprecated',
-		};
+		window.deprecatedWcSettings = {}; // Reset before each test
 	} );
 
 	afterEach( () => {
@@ -19,16 +18,22 @@ describe( 'getAdminSetting', () => {
 		delete window.deprecatedWcSettings;
 	} );
 
-	it( 'should log a warning if the setting is deprecated', () => {
-		getAdminSetting( 'testSetting' );
+	it( 'should log a warning if the deprecated setting exists under "admin.name"', () => {
+		window.deprecatedWcSettings = {
+			'admin.testSetting': 'This setting is deprecated',
+		};
+
+		getAdminSetting( 'testSetting' ); // Should find 'admin.testSetting'
 
 		expect( consoleWarnSpy ).toHaveBeenCalledWith(
 			'This setting is deprecated'
 		);
 	} );
 
-	it( 'should log a default warning message if deprecated setting has a falsy value', () => {
-		window.deprecatedWcSettings.testSetting = '';
+	it( 'should log a default warning message if "admin.name" exists but is falsy', () => {
+		window.deprecatedWcSettings = {
+			'admin.testSetting': null,
+		};
 
 		getAdminSetting( 'testSetting' );
 
@@ -37,8 +42,18 @@ describe( 'getAdminSetting', () => {
 		);
 	} );
 
-	it( 'should not log a warning if the setting is not listed in deprecatedWcSettings', () => {
-		getAdminSetting( 'nonExistentSetting' ); // A setting that is not in deprecatedWcSettings
+	it( 'should not log a warning if the setting does not exist under "admin.name"', () => {
+		window.deprecatedWcSettings = {
+			testSetting: 'This setting should not trigger a warning', // Wrong key format
+		};
+
+		getAdminSetting( 'testSetting' ); // Does not match 'admin.testSetting'
+
+		expect( consoleWarnSpy ).not.toHaveBeenCalled();
+	} );
+
+	it( 'should not log a warning if deprecatedWcSettings is empty', () => {
+		getAdminSetting( 'testSetting' ); // No settings defined
 
 		expect( consoleWarnSpy ).not.toHaveBeenCalled();
 	} );
