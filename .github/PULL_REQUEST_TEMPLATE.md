@@ -13,7 +13,11 @@
 
 <!-- Describe the changes made to this Pull Request and the reason for such changes. -->
 
-Closes # .
+<!-- For bug fixes: If known, please provide links to help with traceability and escape analysis. -->
+<!-- Please include a link to the issue of the bug being fixed, if one doesn't exist please create it. -->
+<!-- If the PR that introduced the bug is known, please also add its link below. -->
+
+Closes Issue # .
 
 <!-- Begin testing instructions -->
 
