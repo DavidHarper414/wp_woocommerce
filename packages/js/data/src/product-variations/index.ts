@@ -24,12 +24,8 @@ export const store = createCrudDataStore<
 	namespace: WC_PRODUCT_VARIATIONS_NAMESPACE,
 	storeConfig: {
 		reducer: reducer as Reducer< ResourceState >,
-		actions: {
-			...actions,
-		} as ProductVariationActions,
-		selectors: {
-			...selectors,
-		} as ProductVariationSelectors,
+		actions: actions as ProductVariationActions,
+		selectors: selectors as ProductVariationSelectors,
 	},
 } );
 

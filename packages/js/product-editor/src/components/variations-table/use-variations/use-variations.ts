@@ -285,7 +285,6 @@ export function useVariations( { productId }: UseVariationsProps ) {
 
 		return updateProductVariation(
 			{ product_id: productId, id: variationId },
-			// @ts-expect-error not sure that it is necessary
 			variation
 		).then( async ( response ) => {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
