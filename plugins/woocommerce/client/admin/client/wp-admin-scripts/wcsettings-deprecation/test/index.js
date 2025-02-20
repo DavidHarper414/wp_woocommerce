@@ -34,7 +34,7 @@ describe( 'Deprecation Proxy', () => {
 		jest.restoreAllMocks();
 	} );
 
-	test( 'getDeprecationMessage should return correct deprecation message', () => {
+	test( 'getWcSettingsDeprecationMessage should return correct deprecation message', () => {
 		expect( getWcSettingsDeprecationMessage( 'someSetting' ) ).toBe(
 			'Deprecated: someSetting is deprecated.'
 		);
@@ -44,7 +44,7 @@ describe( 'Deprecation Proxy', () => {
 		expect( getWcSettingsDeprecationMessage( 'nonExistent' ) ).toBe( null );
 	} );
 
-	test( 'createDeprecationProxy should warn when accessing deprecated properties', () => {
+	test( 'createWcSettingsDeprecationProxy should warn when accessing deprecated properties', () => {
 		global.wcSettings = createWcSettingsDeprecationProxy(
 			global.wcSettings
 		);
@@ -67,7 +67,7 @@ describe( 'Deprecation Proxy', () => {
 		consoleWarnSpy.mockRestore();
 	} );
 
-	test( 'createDeprecationProxy should not warn for non-deprecated properties', () => {
+	test( 'createWcSettingsDeprecationProxy should not warn for non-deprecated properties', () => {
 		global.wcSettings = createWcSettingsDeprecationProxy(
 			global.wcSettings
 		);
