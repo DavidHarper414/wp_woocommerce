@@ -237,7 +237,7 @@ function refresh_sorted_by_live_region() {
 			sorted_by_live_region.innerHTML = '';
 			sorted_by_live_region.innerHTML = text;
 			clearTimeout( sorted_by_live_region_id );
-		}, 1500 );
+		}, 2000 );
 	}
 }
 
