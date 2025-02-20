@@ -24,23 +24,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_BIS_Admin {
 
 	/**
-	 * Bundled selectSW library version.
-	 *
-	 * @var string
-	 */
-	private static $bundled_selectsw_version = '1.2.3';
-
-	/**
 	 * Setup Admin class.
 	 */
 	public static function init() {
 
 		add_action( 'init', array( __CLASS__, 'admin_init' ) );
-
-		// selectSW scripts.
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'maybe_register_selectsw' ), 0 );
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'maybe_load_selectsw' ), 1 );
-		add_action( 'admin_notices', array( __CLASS__, 'maybe_display_selectsw_notice' ), 1 );
 
 		// Add a message in the WP Privacy Policy Guide page.
 		add_action( 'admin_init', array( __CLASS__, 'add_privacy_policy_guide_content' ) );
@@ -100,22 +88,7 @@ class WC_BIS_Admin {
 	 * @return void
 	 */
 	public static function maybe_register_selectsw() {
-
-		$is_registered      = wp_script_is( 'sw-admin-select-init', 'registered' );
-		$registered_version = $is_registered ? wp_scripts()->registered['sw-admin-select-init']->ver : '';
-		$register           = ! $is_registered || version_compare( self::$bundled_selectsw_version, $registered_version, '>' );
-
-		if ( $register ) {
-
-			if ( $is_registered ) {
-				wp_deregister_script( 'sw-admin-select-init' );
-			}
-
-			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-			// Register own select2 initialization library.
-			wp_register_script( 'sw-admin-select-init', WC()->plugin_url() . '/assets/js/admin/select2-init' . $suffix . '.js', array( 'jquery', 'sw-admin-select' ), self::$bundled_selectsw_version );
-		}
+		wc_deprecated_function( __METHOD__, '9.9.0' );
 	}
 
 	/**
@@ -124,19 +97,7 @@ class WC_BIS_Admin {
 	 * @return void
 	 */
 	public static function maybe_load_selectsw() {
-
-		// Responsible for loading selectsw?
-		if ( self::load_selectsw() ) {
-
-			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-			// Register selectSW library.
-			wp_register_script( 'sw-admin-select', WC()->plugin_url() . '/assets/js/admin/select2' . $suffix . '.js', array( 'jquery' ), self::$bundled_selectsw_version );
-
-			// Enqueue selectSW styles.
-			wp_register_style( 'sw-admin-css-select', WC()->plugin_url() . '/assets/css/admin/select2.css', array(), self::$bundled_selectsw_version );
-			wp_style_add_data( 'sw-admin-css-select', 'rtl', 'replace' );
-		}
+		wc_deprecated_function( __METHOD__, '9.9.0' );
 	}
 
 	/**
@@ -145,39 +106,7 @@ class WC_BIS_Admin {
 	 * @return void
 	 */
 	public static function maybe_display_selectsw_notice() {
-
-		$is_registered = wp_script_is( 'sw-admin-select-init', 'registered' );
-
-		if ( ! $is_registered ) {
-			return;
-		}
-
-		$registered_version       = wp_scripts()->registered['sw-admin-select-init']->ver;
-		$registered_version_major = strstr( $registered_version, '.', true );
-		$bundled_version_major    = strstr( self::$bundled_selectsw_version, '.', true );
-
-		if ( version_compare( $bundled_version_major, $registered_version_major, '<' ) ) {
-
-			$notice = __( 'The installed version of <strong>Back In Stock</strong> is not compatible with the <code>selectSW</code> library found on your system. Please update Back In Stock to the latest version.', 'woocommerce' );
-			WC_BIS_Admin_Notices::add_notice( $notice, 'error' );
-		}
-	}
-
-	/**
-	 * Whether to load own version of select2 library or not.
-	 *
-	 * @return boolean
-	 */
-	private static function load_selectsw() {
-
-		$is_registered = wp_script_is( 'sw-admin-select-init', 'registered' );
-
-		if ( ! $is_registered ) {
-			return false;
-		}
-
-		$load_selectsw_from = wp_scripts()->registered['sw-admin-select-init']->src;
-		return strpos( $load_selectsw_from, WC()->plugin_url() ) === 0;
+		wc_deprecated_function( __METHOD__, '9.9.0' );
 	}
 
 	/**
