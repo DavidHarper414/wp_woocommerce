@@ -18,7 +18,7 @@
 <!-- If the PR that introduced the bug is known, please also add its link below. -->
 
 Closes Issue # .
-Bug introdced in # .
+(For Bug Fixes) Bug introduced in PR # .
 
 <!-- Begin testing instructions -->
 
