@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { getContext, store } from '@wordpress/interactivity';
+import { getContext, store, getServerContext } from '@wordpress/interactivity';
 
 const getSetting = window.wc.wcSettings.getSetting;
 const isBlockTheme = getSetting( 'isBlockTheme' );
@@ -197,12 +197,13 @@ const productFiltersStore = store( 'woocommerce/product-filters', {
 			);
 		},
 		*navigate() {
-			const context = getContext< ProductFiltersContext >();
+			const { originalParams } =
+				getServerContext< ProductFiltersContext >();
 
 			if (
 				isParamsEqual(
 					productFiltersStore.state.params,
-					context.originalParams
+					originalParams
 				)
 			) {
 				return;
@@ -211,7 +212,7 @@ const productFiltersStore = store( 'woocommerce/product-filters', {
 			const url = new URL( window.location.href );
 			const { searchParams } = url;
 
-			for ( const key in context.originalParams ) {
+			for ( const key in originalParams ) {
 				searchParams.delete( key );
 			}
 
@@ -221,8 +222,6 @@ const productFiltersStore = store( 'woocommerce/product-filters', {
 					productFiltersStore.state.params[ key ]
 				);
 			}
-
-			context.originalParams = { ...productFiltersStore.state.params };
 
 			yield navigate( url.href );
 		},
