@@ -172,53 +172,80 @@
 "plugins/Woocommerce/src/Admin/WCAdminHelper.php":
   - team: ghidorah
 
-"plugins/Woocommerce/src/Admin/API/Features/":
+"plugins/Woocommerce/src/Admin/Features/OnboardingTasks/*":
   - team: ghidorah
 
-"plugins/Woocommerce/src/Admin/API/Features/OnboardingTasks/*":
+"plugins/Woocommerce/src/Admin/Features/PaymentGatewaySuggestions/*":
   - team: ghidorah
 
-"plugins/Woocommerce/src/Admin/API/Features/PaymentGatewaySuggestions/*":
+"plugins/Woocommerce/src/Admin/Features/ShippingPartnerSuggestions/*":
   - team: ghidorah
 
-"plugins/Woocommerce/src/Admin/API/Features/ShippingPartnerSuggestions/*":
+"plugins/Woocommerce/src/Admin/Features/LaunchYourStore/*":
   - team: ghidorah
 
-"plugins/Woocommerce/src/Admin/API/Features/LaunchYourStore/*":
+"plugins/Woocommerce/src/Admin/Features/Settings/*":
   - team: ghidorah
 
-"plugins/Woocommerce/src/Admin/API/Features/Settings/*":
+"plugins/Woocommerce/src/Admin/Features/Blueprint/*":
   - team: ghidorah
 
-"plugins/Woocommerce/src/Admin/API/Features/Blueprint/*":
+"plugins/Woocommerce/src/Admin/RemoteInboxNotifications/*":
   - team: ghidorah
 
-"plugins/Woocommerce/src/Admin/API/RemoteInboxNotifications":
+"plugins/Woocommerce/src/Admin/RemoteSpecs/*":
   - team: ghidorah
 
-"plugins/Woocommerce/src/Admin/API/RemoteSpecs":
+"plugins/Woocommerce/src/Admin/API/Notes.php":
   - team: ghidorah
 
-"src/Internal/Admin/Onboarding/*":
+"plugins/Woocommerce/src/Admin/API/Onboarding*.php":
   - team: ghidorah
 
-"src/Internal/Admin/RemoteFreeExtensions/*":
+"plugins/Woocommerce/src/Admin/API/ShippingPartnerSuggestions.php":
   - team: ghidorah
 
-"src/Internal/Admin/MobileAppBanner.php":
+"plugins/Woocommerce/src/Admin/API/Experiments.php":
   - team: ghidorah
 
-"src/Internal/Admin/RemoteInboxNotifications.php":
+"plugins/Woocommerce/src/Admin/API/LaunchYourStore.php":
   - team: ghidorah
 
-"src/Internal/Admin/ComingSoon/*":
+"plugins/Woocommerce/src/Internal/Admin/Onboarding/*":
   - team: ghidorah
 
-"src/Internal/Admin/HomeScreen/*":
+"plugins/Woocommerce/src/Internal/Admin/RemoteFreeExtensions/*":
   - team: ghidorah
 
-"src/Internal/Admin/Settings/*":
+"plugins/Woocommerce/src/Internal/Admin/MobileAppBanner.php":
   - team: ghidorah
 
-"src/Internal/Logging/RemoteLogger.php":
+"plugins/Woocommerce/src/Internal/Admin/RemoteInboxNotifications.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/Homescreen.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/Settings/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/Notes/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/Loader.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/WCAdminAssets.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Logging/RemoteLogger.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/ComingSoon/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/McStats.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/RemoteLogger.php":
   - team: ghidorah
