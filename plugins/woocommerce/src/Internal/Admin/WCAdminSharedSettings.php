@@ -71,9 +71,8 @@ class WCAdminSharedSettings {
 					return apply_filters( 'woocommerce_admin_shared_settings', array() );
 				}
 			);
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_deprecation_scripts' ) );
 		}
-
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_deprecation_scripts' ) );
 	}
 
 	/**
