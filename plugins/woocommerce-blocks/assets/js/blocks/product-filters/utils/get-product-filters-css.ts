@@ -3,7 +3,32 @@
  */
 import { getColorsFromBlockSupports } from '.';
 import type { BlockAttributes } from '../types';
-import { isString, objectHasProp } from './objects';
+
+const isNull = < T >( term: T | null ): term is null => {
+	return term === null;
+};
+
+const isObject = < T extends Record< string, unknown >, U >(
+	term: T | U
+): term is NonNullable< T > => {
+	return (
+		! isNull( term ) &&
+		term instanceof Object &&
+		term.constructor === Object
+	);
+};
+
+const isString = < U >( term: string | U ): term is string => {
+	return typeof term === 'string';
+};
+
+function objectHasProp< P extends PropertyKey >(
+	target: unknown,
+	property: P
+): target is { [ K in P ]: unknown } {
+	// The `in` operator throws a `TypeError` for non-object values.
+	return isObject( target ) && property in target;
+}
 
 function presetToCssVariable( preset: string ) {
 	if ( ! preset.includes( ':' ) || ! preset.includes( '|' ) ) {
