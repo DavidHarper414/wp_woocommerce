@@ -2,9 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { WooOnboardingTask } from '@woocommerce/onboarding';
 import { Text } from '@woocommerce/experimental';
-import { registerPlugin } from '@wordpress/plugins';
 import { useMemo, useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { getAdminLink } from '@woocommerce/settings';
@@ -16,7 +14,6 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 import './index.scss';
-import { getAdminSetting } from '~/utils/admin-settings';
 import { getSurfacedProductTypeKeys, getProductTypes } from './utils';
 import useProductTypeListItems from './use-product-types-list-items';
 import Stack from './stack';
@@ -29,15 +26,8 @@ import {
 	ImportCSVItem,
 	PrintfulAdvertProductPlacement,
 } from './constants';
+import { useProfileItems } from '../../hooks/useProfileItems';
 import { TrackedLink } from '~/components/tracked-link/tracked-link';
-
-const getOnboardingProductType = (): string[] => {
-	const onboardingData = getAdminSetting( 'onboarding' );
-	return (
-		( onboardingData?.profile &&
-			onboardingData?.profile.product_types ) || [ 'physical' ]
-	);
-};
 
 const ViewControlButton: React.FC< {
 	isExpanded: boolean;
@@ -62,8 +52,9 @@ export const Products = () => {
 		setIsConfirmingLoadSampleProducts,
 	] = useState( false );
 
+	const profileItems = useProfileItems();
 	const surfacedProductTypeKeys = getSurfacedProductTypeKeys(
-		getOnboardingProductType()
+		( profileItems && profileItems.product_types ) || [ 'physical' ]
 	);
 
 	const { productTypes, isRequesting } = useProductTypeListItems(
@@ -207,16 +198,3 @@ export const Products = () => {
 		</div>
 	);
 };
-
-const ProductsFill = () => {
-	return (
-		<WooOnboardingTask id="products">
-			<Products />
-		</WooOnboardingTask>
-	);
-};
-
-registerPlugin( 'wc-admin-onboarding-task-products', {
-	scope: 'woocommerce-tasks',
-	render: () => <ProductsFill />,
-} );

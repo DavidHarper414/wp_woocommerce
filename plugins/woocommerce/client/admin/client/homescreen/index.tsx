@@ -4,14 +4,13 @@
 import { compose } from '@wordpress/compose';
 import { withSelect, type select as WCDataSelector } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
-import { onboardingStore, withOnboardingHydration } from '@woocommerce/data';
+import { onboardingStore } from '@woocommerce/data';
 import { getHistory, getNewPath, useQuery } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
 import Layout from './layout';
-import { getAdminSetting } from '~/utils/admin-settings';
 
 type HomescreenProps = ReturnType< typeof withSelectHandler > & {
 	hasFinishedResolution: boolean;
@@ -40,8 +39,6 @@ const Homescreen = ( {
 	return <Layout query={ query } />;
 };
 
-const onboardingData = getAdminSetting( 'onboarding', {} );
-
 const withSelectHandler = ( select: typeof WCDataSelector ) => {
 	const { getProfileItems, hasFinishedResolution } =
 		select( onboardingStore );
@@ -52,9 +49,4 @@ const withSelectHandler = ( select: typeof WCDataSelector ) => {
 	};
 };
 
-export default compose(
-	withOnboardingHydration( {
-		profileItems: onboardingData.profile,
-	} ),
-	withSelect( withSelectHandler )
-)( Homescreen );
+export default compose( withSelect( withSelectHandler ) )( Homescreen );

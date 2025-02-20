@@ -1,8 +1,6 @@
 /**
  * External dependencies
  */
-import { WooOnboardingTask } from '@woocommerce/onboarding';
-import { registerPlugin } from '@wordpress/plugins';
 import { __ } from '@wordpress/i18n';
 import { Icon, chevronUp, chevronDown } from '@wordpress/icons';
 import { Button } from '@wordpress/components';
@@ -107,12 +105,3 @@ export const Products = () => {
 		</div>
 	);
 };
-
-registerPlugin( 'wc-admin-onboarding-task-products', {
-	scope: 'woocommerce-tasks',
-	render: () => (
-		<WooOnboardingTask id="products">
-			<Products />
-		</WooOnboardingTask>
-	),
-} );

@@ -207,11 +207,6 @@ class OnboardingSetupWizard {
 	 * @return array
 	 */
 	public function component_settings( $settings ) {
-		$profile                = (array) get_option( OnboardingProfile::DATA_OPTION, array() );
-		$settings['onboarding'] = array(
-			'profile' => $profile,
-		);
-
 		// Only fetch if the onboarding wizard OR the task list is incomplete or currently shown
 		// or the current page is one of the WooCommerce Admin pages.
 		if (
@@ -223,12 +218,9 @@ class OnboardingSetupWizard {
 			return $settings;
 		}
 
-		include_once WC_ABSPATH . 'includes/admin/helper/class-wc-helper-options.php';
-		$wccom_auth                 = \WC_Helper_Options::get( 'auth' );
-		$profile['wccom_connected'] = empty( $wccom_auth['access_token'] ) ? false : true;
-
 		$settings['onboarding']['currencySymbols'] = get_woocommerce_currency_symbols();
-		$settings['onboarding']['profile']         = $profile;
+		$settings['onboarding']['euCountries']     = WC()->countries->get_european_union_countries();
+		$settings['onboarding']['localeInfo']      = include WC()->plugin_path() . '/i18n/locale-info.php';
 
 		return apply_filters( 'woocommerce_admin_onboarding_preloaded_data', $settings );
 	}
