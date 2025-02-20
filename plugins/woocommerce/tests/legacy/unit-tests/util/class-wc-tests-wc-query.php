@@ -37,7 +37,6 @@ class WC_Tests_WC_Query extends WC_Unit_Test_Case {
 
 		WC()->query->get_errors();
 		$this->assertFalse( wc_has_notice( 'test', 'error' ) );
-
 	}
 
 	/**
@@ -330,6 +329,29 @@ class WC_Tests_WC_Query extends WC_Unit_Test_Case {
 	}
 
 	/**
+	 * Test the get_catalog_ordering_args method with $_GET param.
+	 */
+	public function test_get_catalog_ordering_args_when_GET_is_array() {
+		$_GET['orderby'] = array(
+			'popularity',
+			'price-desc',
+			'date',
+		);
+
+		// phpcs:disable WordPress.DB.SlowDBQuery
+		$expected = array(
+			'orderby'  => 'popularity',
+			'order'    => 'ASC',
+			'meta_key' => '',
+		);
+		// phpcs:enable WordPress.DB.SlowDBQuery
+
+		$this->assertEquals( $expected, WC()->query->get_catalog_ordering_args() );
+
+		unset( $_GET['orderby'] );
+	}
+
+	/**
 	 * Test the get_main_query method.
 	 */
 	public function test_get_main_query() {
@@ -360,7 +382,7 @@ class WC_Tests_WC_Query extends WC_Unit_Test_Case {
 		$matching_tax_data = current(
 			array_filter(
 				$tax_queries,
-				function( $tax ) {
+				function ( $tax ) {
 					return 'product_tag' === $tax['taxonomy'];
 				}
 			)
