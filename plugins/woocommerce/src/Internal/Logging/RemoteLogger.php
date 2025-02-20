@@ -183,7 +183,7 @@ class RemoteLogger extends \WC_Log_Handler {
 		}
 
 		// Record fatal error stats.
-		if ( WC_Log_Levels::get_level_severity( $level ) === WC_Log_Levels::get_level_severity( WC_Log_Levels::CRITICAL ) ) {
+		if ( WC_Log_Levels::get_level_severity( $level ) >= WC_Log_Levels::get_level_severity( WC_Log_Levels::CRITICAL ) ) {
 			try {
 				$mc_stats = wc_get_container()->get( McStats::class );
 				$mc_stats->add( 'error', 'critical-errors' );
