@@ -226,6 +226,9 @@ class WC_Tracker {
 		$data['woocommerce_allow_tracking_last_modified'] = get_option( 'woocommerce_allow_tracking_last_modified', 'unknown' );
 		$data['woocommerce_allow_tracking_first_optin']   = get_option( 'woocommerce_allow_tracking_first_optin', 'unknown' );
 
+		// Email improvements tracking data.
+		$data['email_improvements'] = self::get_email_improvements_info();
+
 		/**
 		 * Filter the data that's sent with the tracker.
 		 *
@@ -1432,6 +1435,24 @@ class WC_Tracker {
 		return array(
 			'first_20_orders' => $first_20,
 			'last_20_orders'  => $last_20,
+		);
+	}
+
+	/**
+	 * Get email improvements tracking data.
+	 *
+	 * @return array Email improvements tracking data.
+	 */
+	private static function get_email_improvements_info() {
+		return array(
+			'enabled'           => get_option( 'woocommerce_feature_email_improvements_enabled', 'no' ),
+			'default_enabled'   => get_option( 'woocommerce_email_improvements_default_enabled', 'no' ),
+			'first_enabled_at'  => get_option( 'woocommerce_email_improvements_first_enabled_at', null ),
+			'last_enabled_at'   => get_option( 'woocommerce_email_improvements_last_enabled_at', null ),
+			'enabled_count'     => get_option( 'woocommerce_email_improvements_enabled_count', 0 ),
+			'first_disabled_at' => get_option( 'woocommerce_email_improvements_first_disabled_at', null ),
+			'last_disabled_at'  => get_option( 'woocommerce_email_improvements_last_disabled_at', null ),
+			'disabled_count'    => get_option( 'woocommerce_email_improvements_disabled_count', 0 ),
 		);
 	}
 }
