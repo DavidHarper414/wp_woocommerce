@@ -20,6 +20,15 @@ class AddToCartWithOptionsGroupedProductSelectorItemTemplate extends AbstractBlo
 	protected $block_name = 'add-to-cart-with-options-grouped-product-selector-item';
 
 	/**
+	 * Get the frontend style handle for this block type.
+	 *
+	 * @return null
+	 */
+	protected function get_block_type_style() {
+		return null;
+	}
+
+	/**
 	 * Get product row HTML.
 	 *
 	 * @param string   $product_id Product ID.
@@ -65,15 +74,7 @@ class AddToCartWithOptionsGroupedProductSelectorItemTemplate extends AbstractBlo
 	 * @return string Rendered block output.
 	 */
 	protected function render( $attributes, $content, $block ): string {
-		if ( ! isset( $block->context['postId'] ) ) {
-			return '';
-		}
-
-		$product = wc_get_product( $block->context['postId'] );
-
-		if ( ! $product instanceof \WC_Product || ! $product->is_type( 'grouped' ) ) {
-			return '';
-		}
+		global $product;
 
 		$content = '';
 

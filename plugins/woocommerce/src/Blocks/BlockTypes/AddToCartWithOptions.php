@@ -21,38 +21,6 @@ class AddToCartWithOptions extends AbstractBlock {
 	protected $block_name = 'add-to-cart-with-options';
 
 	/**
-	 * Initializes the AddToCartWithOptions block and hooks into the `wc_add_to_cart_message_html` filter
-	 * to prevent displaying the Cart Notice when the block is inside the Single Product block
-	 * and the Add to Cart button is clicked.
-	 *
-	 * It also hooks into the `woocommerce_add_to_cart_redirect` filter to prevent redirecting
-	 * to another page when the block is inside the Single Product block and the Add to Cart button
-	 * is clicked.
-	 *
-	 * @return void
-	 */
-	protected function initialize() {
-		parent::initialize();
-		add_filter( 'wc_add_to_cart_message_html', array( $this, 'add_to_cart_message_html_filter' ), 10, 2 );
-		add_filter( 'woocommerce_add_to_cart_redirect', array( $this, 'add_to_cart_redirect_filter' ), 10, 1 );
-	}
-
-	/**
-	 * Get the block's attributes.
-	 *
-	 * @param array $attributes Block attributes. Default empty array.
-	 * @return array  Block attributes merged with defaults.
-	 */
-	private function parse_attributes( $attributes ) {
-		// These should match what's set in JS `registerBlockType`.
-		$defaults = array(
-			'isDescendentOfSingleProductBlock' => false,
-		);
-
-		return wp_parse_args( $attributes, $defaults );
-	}
-
-	/**
 	 * Extra data passed through from server to client for block.
 	 *
 	 * @param array $attributes  Any attributes that currently are available from the block.
@@ -133,11 +101,103 @@ class AddToCartWithOptions extends AbstractBlock {
 				)
 			);
 
+			$hooks_before = '';
+			$hooks_after  = '';
+
+			/**
+			* Filter to disable the compatibility layer for the blockified templates.
+			*
+			* This hook allows to disable the compatibility layer for the blockified.
+			*
+			* @since 7.6.0
+			* @param boolean.
+			*/
+			$is_disabled_compatibility_layer = apply_filters( 'woocommerce_disable_compatibility_layer', false );
+
+			if ( ! $is_disabled_compatibility_layer ) {
+				ob_start();
+				if ( ProductType::SIMPLE === $product_type ) {
+					/**
+					 * Hook: woocommerce_before_add_to_cart_quantity.
+					 *
+					 * @since 2.7.0
+					 */
+					do_action( 'woocommerce_before_add_to_cart_quantity' );
+					/**
+					 * Hook: woocommerce_before_add_to_cart_button.
+					 *
+					 * @since 1.5.0
+					 */
+					do_action( 'woocommerce_before_add_to_cart_button' );
+				} elseif ( ProductType::EXTERNAL === $product_type ) {
+					/**
+					 * Hook: woocommerce_before_add_to_cart_button.
+					 *
+					 * @since 1.5.0
+					 */
+					do_action( 'woocommerce_before_add_to_cart_button' );
+				} elseif ( ProductType::GROUPED === $product_type ) {
+					/**
+					 * Hook: woocommerce_before_add_to_cart_button.
+					 *
+					 * @since 1.5.0
+					 */
+					do_action( 'woocommerce_before_add_to_cart_button' );
+				} elseif ( ProductType::VARIABLE === $product_type ) {
+					/**
+					 * Hook: woocommerce_before_variations_form.
+					 *
+					 * @since 2.4.0
+					 */
+					do_action( 'woocommerce_before_variations_form' );
+				}
+				$hooks_before = ob_get_clean();
+
+				ob_start();
+				if ( ProductType::SIMPLE === $product_type ) {
+					/**
+					 * Hook: woocommerce_after_add_to_cart_quantity.
+					 *
+					 * @since 2.7.0
+					 */
+					do_action( 'woocommerce_after_add_to_cart_quantity' );
+					/**
+					 * Hook: woocommerce_after_add_to_cart_button.
+					 *
+					 * @since 1.5.0
+					 */
+					do_action( 'woocommerce_after_add_to_cart_button' );
+				} elseif ( ProductType::EXTERNAL === $product_type ) {
+					/**
+					 * Hook: woocommerce_after_add_to_cart_button.
+					 *
+					 * @since 1.5.0
+					 */
+					do_action( 'woocommerce_after_add_to_cart_button' );
+				} elseif ( ProductType::GROUPED === $product_type ) {
+					/**
+					 * Hook: woocommerce_after_add_to_cart_button.
+					 *
+					 * @since 1.5.0
+					 */
+					do_action( 'woocommerce_after_add_to_cart_button' );
+				} elseif ( ProductType::VARIABLE === $product_type ) {
+					/**
+					 * Hook: woocommerce_after_variations_form.
+					 *
+					 * @since 2.4.0
+					 */
+					do_action( 'woocommerce_after_variations_form' );
+				}
+				$hooks_after = ob_get_clean();
+			}
+
 			$form_html = sprintf(
-				'<form %1$s %2$s>%3$s</form>',
+				'<form %1$s>%2$s%3$s%4$s</form>',
 				$wrapper_attributes,
-				'',
-				$template_part_contents
+				$hooks_before,
+				$template_part_contents,
+				$hooks_after,
 			);
 
 			$product = $previous_product;
@@ -155,65 +215,5 @@ class AddToCartWithOptions extends AbstractBlock {
 		}
 
 		return $form_html;
-	}
-
-	/**
-	 * Add a hidden input to the Add to Cart form to indicate that it is a descendent of a Single Product block.
-	 *
-	 * @param string $product_html The Add to Cart Form HTML.
-	 * @param string $is_descendent_of_single_product_block Indicates if block is descendent of Single Product block.
-	 *
-	 * @return string The Add to Cart Form HTML with the hidden input.
-	 */
-	protected function add_is_descendent_of_single_product_block_hidden_input_to_product_form( $product_html, $is_descendent_of_single_product_block ) {
-		$hidden_is_descendent_of_single_product_block_input = sprintf(
-			'<input type="hidden" name="is-descendent-of-single-product-block" value="%1$s">',
-			$is_descendent_of_single_product_block ? 'true' : 'false'
-		);
-		$regex_pattern                                      = '/<button\s+type="submit"[^>]*>.*?<\/button>/i';
-
-		preg_match( $regex_pattern, $product_html, $input_matches );
-
-		if ( ! empty( $input_matches ) ) {
-			$product_html = preg_replace( $regex_pattern, $hidden_is_descendent_of_single_product_block_input . $input_matches[0], $product_html );
-		}
-
-		return $product_html;
-	}
-
-	/**
-	 * Filter the add to cart message to prevent the Notice from being displayed when the Add to Cart form is a descendent of a Single Product block
-	 * and the Add to Cart button is clicked.
-	 *
-	 * @param string $message Message to be displayed when product is added to the cart.
-	 */
-	public function add_to_cart_message_html_filter( $message ) {
-		// phpcs:ignore
-		if ( isset( $_POST['is-descendent-of-single-product-block'] ) && 'true' === $_POST['is-descendent-of-single-product-block'] ) {
-			return false;
-		}
-		return $message;
-	}
-
-	/**
-	 * Hooks into the `woocommerce_add_to_cart_redirect` filter to prevent redirecting
-	 * to another page when the block is inside the Single Product block and the Add to Cart button
-	 * is clicked.
-	 *
-	 * @param string $url The URL to redirect to after the product is added to the cart.
-	 * @return string The filtered redirect URL.
-	 */
-	public function add_to_cart_redirect_filter( $url ) {
-		// phpcs:ignore
-		if ( isset( $_POST['is-descendent-of-single-product-block'] ) && 'true' == $_POST['is-descendent-of-single-product-block'] ) {
-
-			if ( 'yes' === get_option( 'woocommerce_cart_redirect_after_add' ) ) {
-				return wc_get_cart_url();
-			}
-
-			return wp_validate_redirect( wp_get_referer(), $url );
-		}
-
-		return $url;
 	}
 }

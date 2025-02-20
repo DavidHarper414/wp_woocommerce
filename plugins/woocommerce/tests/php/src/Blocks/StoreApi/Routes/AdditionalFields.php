@@ -10,6 +10,7 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
 use Automattic\WooCommerce\Blocks\Package;
 use WC_Gateway_BACS;
+use Automattic\WooCommerce\Enums\ProductStockStatus;
 
 /**
  * AdditionalFields Controller Tests.
@@ -44,6 +45,7 @@ class AdditionalFields extends MockeryTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
+		add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
 
 		global $wp_rest_server;
 		$wp_rest_server = new \Spy_REST_Server();
@@ -59,7 +61,7 @@ class AdditionalFields extends MockeryTestCase {
 			$fixtures->get_simple_product(
 				array(
 					'name'          => 'Test Product 1',
-					'stock_status'  => 'instock',
+					'stock_status'  => ProductStockStatus::IN_STOCK,
 					'regular_price' => 10,
 					'weight'        => 10,
 				)
@@ -67,7 +69,7 @@ class AdditionalFields extends MockeryTestCase {
 			$fixtures->get_simple_product(
 				array(
 					'name'          => 'Test Product 2',
-					'stock_status'  => 'instock',
+					'stock_status'  => ProductStockStatus::IN_STOCK,
 					'regular_price' => 10,
 					'weight'        => 10,
 				)
@@ -75,7 +77,7 @@ class AdditionalFields extends MockeryTestCase {
 			$fixtures->get_simple_product(
 				array(
 					'name'          => 'Virtual Test Product 3',
-					'stock_status'  => 'instock',
+					'stock_status'  => ProductStockStatus::IN_STOCK,
 					'regular_price' => 10,
 					'weight'        => 10,
 					'virtual'       => true,
@@ -84,7 +86,7 @@ class AdditionalFields extends MockeryTestCase {
 			$fixtures->get_simple_product(
 				array(
 					'name'          => 'Downloadable Test Product 4',
-					'stock_status'  => 'instock',
+					'stock_status'  => ProductStockStatus::IN_STOCK,
 					'regular_price' => 10,
 					'weight'        => 10,
 					'downloadable'  => true,
@@ -105,6 +107,7 @@ class AdditionalFields extends MockeryTestCase {
 		WC()->session->destroy_session();
 		remove_all_filters( 'woocommerce_get_country_locale' );
 		remove_all_actions( 'doing_it_wrong_run' );
+		remove_filter( 'doing_it_wrong_trigger_error', '__return_false' );
 		$this->unregister_fields();
 		parent::tearDown();
 	}
@@ -1045,15 +1048,15 @@ class AdditionalFields extends MockeryTestCase {
 	}
 
 	/**
-	 * Ensure an error is triggered when a checkbox is registered as required.
+	 * Ensure an error is triggered when a checkbox is registered with invalid required property.
 	 */
 	public function test_invalid_required_prop_checkbox() {
-		$id                    = 'plugin-namespace/checkbox-only-optional';
+		$id                    = 'plugin-namespace/checkbox-bad-required-value';
 		$doing_it_wrong_mocker = \Mockery::mock( 'ActionCallback' );
 		$doing_it_wrong_mocker->shouldReceive( 'doing_it_wrong_run' )->withArgs(
 			array(
 				'woocommerce_register_additional_checkout_field',
-				\esc_html( sprintf( 'Registering checkbox fields as required is not supported. "%s" will be registered as optional.', $id ) ),
+				\esc_html( sprintf( 'The required property for field with id: "%s" must be a boolean, you passed string. The field will not be registered.', $id ) ),
 			)
 		)->once();
 
@@ -1070,7 +1073,60 @@ class AdditionalFields extends MockeryTestCase {
 		\woocommerce_register_additional_checkout_field(
 			array(
 				'id'       => $id,
-				'label'    => 'Checkbox Only Optional',
+				'label'    => 'Checkbox Bad Required Value',
+				'location' => 'order',
+				'type'     => 'checkbox',
+				'required' => 'string',
+			)
+		);
+
+		\remove_action(
+			'doing_it_wrong_run',
+			array(
+				$doing_it_wrong_mocker,
+				'doing_it_wrong_run',
+			)
+		);
+
+		// Fields should not be registered.
+		$request  = new \WP_REST_Request( 'OPTIONS', '/wc/store/v1/checkout' );
+		$response = rest_get_server()->dispatch( $request );
+
+		$data = $response->get_data();
+
+		$this->assertArrayNotHasKey(
+			$id,
+			$data['schema']['properties']['additional_fields']['properties']
+		);
+
+		\__internal_woocommerce_blocks_deregister_checkout_field( $id );
+
+		// Ensures the field isn't registered.
+		$this->assertFalse( $this->controller->is_field( $id ), \sprintf( '%s is still registered', $id ) );
+	}
+
+	/**
+	 * Ensure no error is triggered when a checkbox is registered with required property that is not boolean, but can be filtered to one.
+	 */
+	public function test_valid_required_prop_checkbox() {
+		$id                    = 'plugin-namespace/checkbox-good-required-value';
+		$doing_it_wrong_mocker = \Mockery::mock( 'ActionCallback' );
+		$doing_it_wrong_mocker->shouldReceive( 'doing_it_wrong_run' )->never();
+
+		add_action(
+			'doing_it_wrong_run',
+			array(
+				$doing_it_wrong_mocker,
+				'doing_it_wrong_run',
+			),
+			10,
+			2
+		);
+
+		\woocommerce_register_additional_checkout_field(
+			array(
+				'id'       => $id,
+				'label'    => 'Checkbox Bad Required Value',
 				'location' => 'order',
 				'type'     => 'checkbox',
 				'required' => true,
@@ -1085,16 +1141,200 @@ class AdditionalFields extends MockeryTestCase {
 			)
 		);
 
-		// Fields should still be registered regardless of the error, but with required as optional.
+		// Fields should not be registered.
 		$request  = new \WP_REST_Request( 'OPTIONS', '/wc/store/v1/checkout' );
 		$response = rest_get_server()->dispatch( $request );
 
 		$data = $response->get_data();
 
 		$this->assertEquals(
+			true,
+			$data['schema']['properties']['additional_fields']['properties'][ $id ]['required']
+		);
+
+		\__internal_woocommerce_blocks_deregister_checkout_field( $id );
+
+		// Ensures the field isn't registered.
+		$this->assertFalse( $this->controller->is_field( $id ), \sprintf( '%s is still registered', $id ) );
+	}
+
+	/**
+	 * Ensure a warning is triggered when a checkbox is registered with an error_message, but it is not required.
+	 */
+	public function test_error_message_non_required_checkbox() {
+		$id                    = 'plugin-namespace/checkbox-non-required-error-message';
+		$doing_it_wrong_mocker = \Mockery::mock( 'ActionCallback' );
+		$doing_it_wrong_mocker->shouldReceive( 'doing_it_wrong_run' )->withArgs(
+			array(
+				'woocommerce_register_additional_checkout_field',
+				\esc_html( sprintf( 'Passing an error message to a non-required checkbox "%s" will have no effect. The error message has been removed from the field.', $id ) ),
+			)
+		)->once();
+
+		add_action(
+			'doing_it_wrong_run',
+			array(
+				$doing_it_wrong_mocker,
+				'doing_it_wrong_run',
+			),
+			10,
+			2
+		);
+
+		\woocommerce_register_additional_checkout_field(
+			array(
+				'id'            => $id,
+				'label'         => 'Checkbox Non Required Error message',
+				'location'      => 'order',
+				'type'          => 'checkbox',
+				'required'      => false,
+				'error_message' => 'This field is required.',
+			)
+		);
+
+		\remove_action(
+			'doing_it_wrong_run',
+			array(
+				$doing_it_wrong_mocker,
+				'doing_it_wrong_run',
+			)
+		);
+
+		// Fields should not be registered.
+		$request  = new \WP_REST_Request( 'OPTIONS', '/wc/store/v1/checkout' );
+		$response = rest_get_server()->dispatch( $request );
+
+		$data = $response->get_data();
+
+		$this->assertArrayNotHasKey(
+			'error_message',
+			$data['schema']['properties']['additional_fields']['properties'][ $id ]
+		);
+		$this->assertEquals(
 			false,
-			$data['schema']['properties']['additional_fields']['properties'][ $id ]['required'],
-			print_r( $data['schema']['properties']['additional_fields']['properties'][ $id ], true )
+			$data['schema']['properties']['additional_fields']['properties'][ $id ]['required']
+		);
+
+		\__internal_woocommerce_blocks_deregister_checkout_field( $id );
+
+		// Ensures the field isn't registered.
+		$this->assertFalse( $this->controller->is_field( $id ), \sprintf( '%s is still registered', $id ) );
+	}
+
+	/**
+	 * Ensure a warning is triggered when a checkbox is registered with an invalid required prop.
+	 */
+	public function test_error_message_bad_required_value_checkbox() {
+		$id                    = 'plugin-namespace/checkbox-non-required-error-message';
+		$doing_it_wrong_mocker = \Mockery::mock( 'ActionCallback' );
+		$doing_it_wrong_mocker->shouldReceive( 'doing_it_wrong_run' )->withArgs(
+			array(
+				'woocommerce_register_additional_checkout_field',
+				\esc_html( sprintf( 'The required property for field with id: "%s" must be a boolean, you passed string. The field will not be registered.', $id ) ),
+			)
+		)->once();
+
+		add_action(
+			'doing_it_wrong_run',
+			array(
+				$doing_it_wrong_mocker,
+				'doing_it_wrong_run',
+			),
+			10,
+			2
+		);
+
+		\woocommerce_register_additional_checkout_field(
+			array(
+				'id'            => $id,
+				'label'         => 'Checkbox Non Required Error message',
+				'location'      => 'order',
+				'type'          => 'checkbox',
+				'required'      => 'false',
+				'error_message' => 'This field is required.',
+			)
+		);
+
+		\remove_action(
+			'doing_it_wrong_run',
+			array(
+				$doing_it_wrong_mocker,
+				'doing_it_wrong_run',
+			)
+		);
+
+		// Fields should not be registered.
+		$request  = new \WP_REST_Request( 'OPTIONS', '/wc/store/v1/checkout' );
+		$response = rest_get_server()->dispatch( $request );
+
+		$data = $response->get_data();
+
+		$this->assertArrayNotHasKey(
+			$id,
+			$data['schema']['properties']['additional_fields']['properties']
+		);
+
+		\__internal_woocommerce_blocks_deregister_checkout_field( $id );
+
+		// Ensures the field isn't registered.
+		$this->assertFalse( $this->controller->is_field( $id ), \sprintf( '%s is still registered', $id ) );
+	}
+
+	/**
+	 * Ensure a warning is triggered when a checkbox is registered with a non-string error_message.
+	 */
+	public function test_non_string_error_message_checkbox() {
+		$id                    = 'plugin-namespace/checkbox-non-string-error-message';
+		$doing_it_wrong_mocker = \Mockery::mock( 'ActionCallback' );
+		$doing_it_wrong_mocker->shouldReceive( 'doing_it_wrong_run' )->withArgs(
+			array(
+				'woocommerce_register_additional_checkout_field',
+				\esc_html( sprintf( 'The error_message property for field with id: "%s" must be a string, you passed boolean. A default message will be shown.', $id ) ),
+			)
+		)->once();
+
+		add_action(
+			'doing_it_wrong_run',
+			array(
+				$doing_it_wrong_mocker,
+				'doing_it_wrong_run',
+			),
+			10,
+			2
+		);
+
+		\woocommerce_register_additional_checkout_field(
+			array(
+				'id'            => $id,
+				'label'         => 'Checkbox Non Required Error message',
+				'location'      => 'order',
+				'type'          => 'checkbox',
+				'required'      => true,
+				'error_message' => false,
+			)
+		);
+
+		\remove_action(
+			'doing_it_wrong_run',
+			array(
+				$doing_it_wrong_mocker,
+				'doing_it_wrong_run',
+			)
+		);
+
+		// Fields should not be registered.
+		$request  = new \WP_REST_Request( 'OPTIONS', '/wc/store/v1/checkout' );
+		$response = rest_get_server()->dispatch( $request );
+
+		$data = $response->get_data();
+
+		$this->assertArrayNotHasKey(
+			'error_message',
+			$data['schema']['properties']['additional_fields']['properties'][ $id ]
+		);
+		$this->assertEquals(
+			true,
+			$data['schema']['properties']['additional_fields']['properties'][ $id ]['required']
 		);
 
 		\__internal_woocommerce_blocks_deregister_checkout_field( $id );
@@ -1651,7 +1891,7 @@ class AdditionalFields extends MockeryTestCase {
 		$data     = $response->get_data();
 
 		$this->assertEquals( 400, $response->get_status(), print_r( $data, true ) );
-		$this->assertEquals( \sprintf( 'There was a problem with the provided shipping address: %s is required', $label ), $data['message'], print_r( $data, true ) );
+		$this->assertEquals( \sprintf( 'There was a problem with the provided shipping address: %s is required', $label ), $data['data']['details']['shipping_address']['message'], print_r( $data, true ) );
 
 		$request = new \WP_REST_Request( 'POST', '/wc/store/v1/checkout' );
 		$request->set_header( 'Nonce', wp_create_nonce( 'wc_store_api' ) );
@@ -1785,7 +2025,7 @@ class AdditionalFields extends MockeryTestCase {
 
 		// The product is downloadable, but not virtual, so should still require a shipping address.
 		$this->assertEquals( 400, $response->get_status(), print_r( $data, true ) );
-		$this->assertEquals( 'There was a problem with the provided shipping address: Government ID is required', $data['message'], print_r( $data, true ) );
+		$this->assertEquals( 'There was a problem with the provided shipping address: Government ID is required', $data['data']['details']['shipping_address']['message'], print_r( $data, true ) );
 	}
 
 	/**

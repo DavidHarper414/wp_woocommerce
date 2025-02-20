@@ -72,7 +72,7 @@ class EmailPreviewTest extends WC_Unit_Test_Case {
 	public function test_it_returns_order_email_preview_under_feature_flag() {
 		$message       = $this->sut->render();
 		$order_title   = 'Thank you for your order';
-		$order_content = "Just to let you know — we've received your order #12345, and it is now being processed:";
+		$order_content = 'We’ve received your order and will let you know when it’s on its way to you!';
 		$order_product = 'Dummy Product';
 		$this->assertStringContainsString( $order_title, $message );
 		$this->assertStringContainsString( $order_content, $message );
@@ -252,9 +252,9 @@ class EmailPreviewTest extends WC_Unit_Test_Case {
 	 * Test that transient values are applied in email preview
 	 */
 	public function test_transient_values_in_preview() {
-		$original_value = get_option( EmailPreview::get_email_style_settings_ids()[0] );
-		update_option( EmailPreview::get_email_style_settings_ids()[0], 'option_value' );
-		set_transient( EmailPreview::get_email_style_settings_ids()[0], 'transient_value', HOUR_IN_SECONDS );
+		$original_value = get_option( EmailPreview::get_email_style_setting_ids()[0] );
+		update_option( EmailPreview::get_email_style_setting_ids()[0], 'option_value' );
+		set_transient( EmailPreview::get_email_style_setting_ids()[0], 'transient_value', HOUR_IN_SECONDS );
 
 		$this->sut->set_email_type( EmailPreview::DEFAULT_EMAIL_TYPE );
 		$content = $this->sut->render();
@@ -262,8 +262,8 @@ class EmailPreviewTest extends WC_Unit_Test_Case {
 		$this->assertStringNotContainsString( 'option_value', $content );
 		$this->assertStringContainsString( 'transient_value', $content );
 
-		update_option( EmailPreview::get_email_style_settings_ids()[0], $original_value );
-		delete_transient( EmailPreview::get_email_style_settings_ids()[0] );
+		update_option( EmailPreview::get_email_style_setting_ids()[0], $original_value );
+		delete_transient( EmailPreview::get_email_style_setting_ids()[0] );
 	}
 
 	/**

@@ -6,6 +6,7 @@ use Automattic\WooCommerce\StoreApi\SchemaController;
 use Automattic\WooCommerce\StoreApi\Schemas\ExtendSchema;
 use Automattic\WooCommerce\StoreApi\Utilities\QuantityLimits;
 use Automattic\WooCommerce\Blocks\Utils\ProductAvailabilityUtils;
+use Automattic\WooCommerce\Enums\ProductStockStatus;
 
 /**
  * ProductSchema class.
@@ -361,6 +362,17 @@ class ProductSchema extends AbstractSchema {
 					],
 				],
 			],
+			'grouped_products'    => [
+				'description' => __( 'List of grouped product IDs, if applicable.', 'woocommerce' ),
+				'type'        => 'array',
+				'context'     => [ 'view', 'edit' ],
+				'items'       => [
+					'description' => __( 'List of grouped product ids.', 'woocommerce' ),
+					'type'        => 'integer',
+					'context'     => [ 'view', 'edit' ],
+					'readonly'    => true,
+				],
+			],
 			'has_options'         => [
 				'description' => __( 'Does the product have additional options before it can be added to the cart?', 'woocommerce' ),
 				'type'        => 'boolean',
@@ -495,10 +507,11 @@ class ProductSchema extends AbstractSchema {
 			'tags'                => $this->get_term_list( $product, 'product_tag' ),
 			'attributes'          => $this->get_attributes( $product ),
 			'variations'          => $this->get_variations( $product ),
+			'grouped_products'    => $this->get_grouped_products( $product ),
 			'has_options'         => $product->has_options(),
 			'is_purchasable'      => $product->is_purchasable(),
 			'is_in_stock'         => $product->is_in_stock(),
-			'is_on_backorder'     => 'onbackorder' === $product->get_stock_status(),
+			'is_on_backorder'     => ProductStockStatus::ON_BACKORDER === $product->get_stock_status(),
 			'low_stock_remaining' => $this->get_low_stock_remaining( $product ),
 			'stock_availability'  => (object) array(
 				'text'  => $availability['availability'] ?? '',
@@ -688,6 +701,24 @@ class ProductSchema extends AbstractSchema {
 	}
 
 	/**
+	 * Get grouped product IDs.
+	 *
+	 * @param \WC_Product $product Product instance.
+	 * @return array
+	 */
+	protected function get_grouped_products( \WC_Product $product ) {
+		if ( $product->is_type( ProductType::GROUPED ) ) {
+			return array_map(
+				function ( $child ) {
+					return $child->get_id();
+				},
+				$product->get_visible_children(),
+			);
+		}
+		return [];
+	}
+
+	/**
 	 * Get list of product attributes and attribute terms.
 	 *
 	 * @param \WC_Product $product Product instance.
@@ -825,7 +856,7 @@ class ProductSchema extends AbstractSchema {
 		}
 
 		if ( $product->is_type( ProductType::GROUPED ) ) {
-			$children       = array_filter( array_map( 'wc_get_product', $product->get_children() ), 'wc_products_array_filter_visible_grouped' );
+			$children       = $product->get_visible_children();
 			$price_function = 'incl' === $tax_display_mode ? 'wc_get_price_including_tax' : 'wc_get_price_excluding_tax';
 
 			foreach ( $children as $child ) {

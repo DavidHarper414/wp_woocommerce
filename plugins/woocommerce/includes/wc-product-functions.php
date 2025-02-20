@@ -10,6 +10,7 @@
 
 use Automattic\Jetpack\Constants;
 use Automattic\WooCommerce\Enums\ProductStatus;
+use Automattic\WooCommerce\Enums\ProductStockStatus;
 use Automattic\WooCommerce\Enums\ProductType;
 use Automattic\WooCommerce\Enums\CatalogVisibility;
 use Automattic\WooCommerce\Proxies\LegacyProxy;
@@ -305,6 +306,7 @@ function wc_product_canonical_redirect(): void {
 
 	// In the event we are dealing with ugly permalinks, this will be empty.
 	$specified_category_slug = get_query_var( 'product_cat' );
+	$specified_category_slug = urldecode( $specified_category_slug );
 
 	if ( ! is_string( $specified_category_slug ) || strlen( $specified_category_slug ) < 1 ) {
 		return;
@@ -313,6 +315,7 @@ function wc_product_canonical_redirect(): void {
 	// What category slug did we expect? Normally this maps back to the first assigned product_cat
 	// term. However, this is filterable so we use the relevant helper function to figure this out.
 	$expected_category_slug = wc_product_post_type_link( '%product_cat%', get_post( get_the_ID() ) );
+	$expected_category_slug = urldecode( $expected_category_slug );
 
 	if ( $specified_category_slug === $expected_category_slug ) {
 		return;
@@ -994,9 +997,9 @@ function wc_get_product_stock_status_options() {
 	return apply_filters(
 		'woocommerce_product_stock_status_options',
 		array(
-			'instock'     => __( 'In stock', 'woocommerce' ),
-			'outofstock'  => __( 'Out of stock', 'woocommerce' ),
-			'onbackorder' => __( 'On backorder', 'woocommerce' ),
+			ProductStockStatus::IN_STOCK     => __( 'In stock', 'woocommerce' ),
+			ProductStockStatus::OUT_OF_STOCK => __( 'Out of stock', 'woocommerce' ),
+			ProductStockStatus::ON_BACKORDER => __( 'On backorder', 'woocommerce' ),
 		)
 	);
 }

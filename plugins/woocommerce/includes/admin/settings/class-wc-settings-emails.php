@@ -7,7 +7,6 @@
  */
 
 use Automattic\WooCommerce\Internal\Admin\EmailPreview\EmailPreview;
-use Automattic\WooCommerce\Internal\BrandingController;
 use Automattic\WooCommerce\Internal\Email\EmailFont;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
@@ -422,7 +421,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 	 * Get default colors for emails.
 	 */
 	private function get_email_default_colors() {
-		$base_color_default        = BrandingController::get_default_email_base_color();
+		$base_color_default        = '#720eec';
 		$bg_color_default          = '#f7f7f7';
 		$body_bg_color_default     = '#ffffff';
 		$body_text_color_default   = '#3c3c3c';
@@ -584,12 +583,35 @@ class WC_Settings_Emails extends WC_Settings_Page {
 										echo '<td class="wc-email-settings-table-' . esc_attr( $key ) . '">
 										<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=email&section=' . strtolower( $email_key ) ) ) . '">' . esc_html( $email->get_title() ) . '</a>
 										' . wc_help_tip( $email->get_description() ) . '
-									</td>';
+										</td>';
 										break;
 									case 'recipient':
-										echo '<td class="wc-email-settings-table-' . esc_attr( $key ) . '">
-										' . esc_html( $email->is_customer_email() ? __( 'Customer', 'woocommerce' ) : $email->get_recipient() ) . '
-									</td>';
+										$to  = $email->is_customer_email() ? __( 'Customer', 'woocommerce' ) : $email->get_recipient();
+										$cc  = false;
+										$bcc = false;
+										if ( FeaturesUtil::feature_is_enabled( 'email_improvements' ) ) {
+											$ccs  = $email->get_cc_recipient();
+											$bccs = $email->get_bcc_recipient();
+											// Translators: %s: comma-separated email addresses to which the email is cc-ed.
+											$cc = $ccs ? sprintf( __( '<b>Cc</b>: %s', 'woocommerce' ), $ccs ) : false;
+											// Translators: %s: comma-separated email addresses to which the email is bcc-ed.
+											$bcc = $bccs ? sprintf( __( '<b>Bcc</b>: %s', 'woocommerce' ), $bccs ) : false;
+											if ( $cc || $bcc ) {
+												// Translators: %s: comma-separated email addresses to which the email is sent.
+												$to = sprintf( __( '<b>To</b>: %s', 'woocommerce' ), $to );
+											}
+										}
+										$allowed_tags = array( 'b' => array() );
+
+										echo '<td class="wc-email-settings-table-' . esc_attr( $key ) . '">';
+										echo wp_kses( $to, $allowed_tags );
+										if ( $cc ) {
+											echo '<br>' . wp_kses( $cc, $allowed_tags );
+										}
+										if ( $bcc ) {
+											echo '<br>' . wp_kses( $bcc, $allowed_tags );
+										}
+										echo '</td>';
 										break;
 									case 'status':
 										echo '<td class="wc-email-settings-table-' . esc_attr( $key ) . '">';
@@ -607,12 +629,12 @@ class WC_Settings_Emails extends WC_Settings_Page {
 									case 'email_type':
 										echo '<td class="wc-email-settings-table-' . esc_attr( $key ) . '">
 										' . esc_html( $email->get_content_type() ) . '
-									</td>';
+										</td>';
 										break;
 									case 'actions':
 										echo '<td class="wc-email-settings-table-' . esc_attr( $key ) . '">
 										<a class="button alignright" href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=email&section=' . strtolower( $email_key ) ) ) . '">' . esc_html__( 'Manage', 'woocommerce' ) . '</a>
-									</td>';
+										</td>';
 										break;
 									default:
 										do_action( 'woocommerce_email_setting_column_' . $key, $email );
@@ -648,7 +670,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 			id="wc_settings_email_preview_slotfill"
 			data-preview-url="<?php echo esc_url( wp_nonce_url( admin_url( '?preview_woocommerce_mail=true' ), 'preview-mail' ) ); ?>"
 			data-email-types="<?php echo esc_attr( wp_json_encode( $email_types ) ); ?>"
-			data-email-settings-ids="<?php echo esc_attr( wp_json_encode( EmailPreview::get_email_style_settings_ids() ) ); ?>"
+			data-email-setting-ids="<?php echo esc_attr( wp_json_encode( EmailPreview::get_email_style_setting_ids() ) ); ?>"
 		></div>
 		<?php
 	}
@@ -676,7 +698,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 				id="wc_settings_email_preview_slotfill"
 				data-preview-url="<?php echo esc_url( wp_nonce_url( admin_url( '?preview_woocommerce_mail=true' ), 'preview-mail' ) ); ?>"
 				data-email-types="<?php echo esc_attr( wp_json_encode( $email_types ) ); ?>"
-				data-email-settings-ids="<?php echo esc_attr( wp_json_encode( EmailPreview::get_email_content_settings_ids( $email->id ) ) ); ?>"
+				data-email-setting-ids="<?php echo esc_attr( wp_json_encode( EmailPreview::get_email_content_setting_ids( $email->id ) ) ); ?>"
 			></div>
 			<input type="hidden" id="woocommerce_email_from_name" value="<?php echo esc_attr( get_option( 'woocommerce_email_from_name' ) ); ?>" />
 			<input type="hidden" id="woocommerce_email_from_address" value="<?php echo esc_attr( get_option( 'woocommerce_email_from_address' ) ); ?>" />
@@ -689,7 +711,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 	 * prevent conflicts where the preview would show values from previous session.
 	 */
 	private function delete_transient_email_settings() {
-		$setting_ids = EmailPreview::get_all_email_settings_ids();
+		$setting_ids = EmailPreview::get_all_email_setting_ids();
 		foreach ( $setting_ids as $id ) {
 			delete_transient( $id );
 		}
