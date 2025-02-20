@@ -11,7 +11,7 @@ import {
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useMemo, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { registerPlugin } from '@wordpress/plugins';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
@@ -164,14 +164,6 @@ const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 	const onManage = () => {
 		actionTask( 'marketing' );
 	};
-
-	useEffect( () => {
-		if ( window.wcTracks.isEnabled ) {
-			recordEvent( 'task_marketing_marketplace_promo_shown', {
-				task: 'marketing',
-			} );
-		}
-	}, [] );
 
 	const trackPromoButtonClick = () => {
 		recordEvent( 'task_marketing_marketplace_promo_clicked', {

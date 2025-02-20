@@ -4,6 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { Text } from '@woocommerce/experimental';
+import { useEffect } from '@wordpress/element';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -32,6 +34,12 @@ export const TaskPromo: React.FC< TaskPromoProps > = ( {
 	buttonText = '',
 	onButtonClick,
 } ) => {
+	useEffect( () => {
+		recordEvent( 'task_marketing_marketplace_promo_shown', {
+			task: 'marketing',
+		} );
+	}, [] );
+
 	return (
 		<Card className="woocommerce-task-card woocommerce-task-promo">
 			{ title && (
