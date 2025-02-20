@@ -37,6 +37,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 			add_action( 'woocommerce_email_settings_after', array( $this, 'email_preview_single' ) );
 			add_filter( 'woocommerce_admin_settings_sanitize_option_woocommerce_email_header_image', array( $this, 'sanitize_email_header_image' ), 10, 3 );
 		}
+		add_filter( 'woocommerce_tracks_event_properties', array( $this, 'append_feature_email_improvements_to_tracks' ), 10, 2 );
 		parent::__construct();
 	}
 
@@ -852,6 +853,21 @@ class WC_Settings_Emails extends WC_Settings_Page {
 		></div>
 		<table class="form-table">
 		<?php
+	}
+
+	/**
+	 * Append email improvements prop to Tracks globally.
+	 *
+	 * @param array $event_properties Event properties array.
+	 *
+	 * @return array
+	 */
+	public function append_feature_email_improvements_to_tracks( $event_properties ) {
+		if ( is_array( $event_properties ) ) {
+			$is_email_improvements_enabled                  = FeaturesUtil::feature_is_enabled( 'email_improvements' );
+			$event_properties['feature_email_improvements'] = $is_email_improvements_enabled ? 'enabled' : 'disabled';
+		}
+		return $event_properties;
 	}
 }
 
