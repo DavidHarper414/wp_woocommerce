@@ -9,12 +9,23 @@ import { faker } from '@faker-js/faker';
  */
 import { expect, tags, test as baseTest } from '../../fixtures/fixtures';
 import { getFakeCustomer, getFakeProduct } from '../../utils/data';
+import {
+	createBlocksCheckoutPage,
+	BLOCKS_CHECKOUT_PAGE,
+} from '../../utils/pages';
 import { logInFromMyAccount } from '../../utils/login';
 
 //todo handle other countries and states than the default (US, CA) when filling the addresses
 
+const checkoutPages = [
+	{ name: 'classic checkout', slug: 'checkout' },
+	BLOCKS_CHECKOUT_PAGE,
+];
+
 const test = baseTest.extend( {
 	page: async ( { page, api }, use ) => {
+		await createBlocksCheckoutPage( page.context().browser() );
+
 		// get the current value of woocommerce_enable_checkout_login_reminder
 		const loginAtCheckoutResponse = await api.get(
 			'settings/account/woocommerce_enable_checkout_login_reminder'
@@ -192,9 +203,15 @@ async function checkOrderDetails( page, product, qty, tax ) {
 	);
 }
 
-async function addProductToCartAndProceedToCheckout( page, product, qty, tax ) {
+async function addProductToCartAndProceedToCheckout(
+	pageSlug,
+	page,
+	product,
+	qty,
+	tax
+) {
 	await addAProductToCart( page, product.id, qty );
-	await page.goto( 'checkout/' );
+	await page.goto( pageSlug );
 	await checkOrderDetails( page, product, qty, tax );
 }
 
@@ -232,25 +249,39 @@ async function fillBillingDetails( page, data, createAccount ) {
 	}
 }
 
-test(
-	'guest can checkout paying with cash on delivery',
-	{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS ] },
-	async ( { page, product, tax } ) => {
-		await addProductToCartAndProceedToCheckout( page, product, 2, tax );
-		const newCustomer = getFakeCustomer();
-		await fillBillingDetails( page, newCustomer.billing, false );
-		await page.getByText( 'Cash on delivery' ).click();
-		await placeOrder( page );
-		await page.goto( 'my-account/' );
-		await expect( page.locator( '#username' ) ).toBeVisible();
-	}
-);
+checkoutPages.forEach( ( { name, slug } ) => {
+	test(
+		`guest can checkout paying with cash on delivery on ${ name }`,
+		{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS ] },
+		async ( { page, product, tax } ) => {
+			await addProductToCartAndProceedToCheckout(
+				slug,
+				page,
+				product,
+				2,
+				tax
+			);
+			const newCustomer = getFakeCustomer();
+			await fillBillingDetails( page, newCustomer.billing, false );
+			await page.getByText( 'Cash on delivery' ).click();
+			await placeOrder( page );
+			await page.goto( 'my-account/' );
+			await expect( page.locator( '#username' ) ).toBeVisible();
+		}
+	);
+} );
 
 test(
 	'guest can create an account at checkout',
 	{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS ] },
 	async ( { page, product, tax } ) => {
-		await addProductToCartAndProceedToCheckout( page, product, 2, tax );
+		await addProductToCartAndProceedToCheckout(
+			'checkout',
+			page,
+			product,
+			2,
+			tax
+		);
 		const newCustomer = getFakeCustomer();
 		await fillBillingDetails( page, newCustomer.billing, true );
 		await page.getByText( 'Direct bank transfer' ).click();
@@ -270,7 +301,13 @@ test(
 	async ( { page, product, customer, tax } ) => {
 		await page.goto( 'my-account/' );
 		await logInFromMyAccount( page, customer.email, customer.password );
-		await addProductToCartAndProceedToCheckout( page, product, 2, tax );
+		await addProductToCartAndProceedToCheckout(
+			'checkout',
+			page,
+			product,
+			2,
+			tax
+		);
 		await page.getByText( 'Direct bank transfer' ).click();
 		await placeOrder( page );
 	}
@@ -281,7 +318,13 @@ test(
 	{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS ] },
 	async ( { page, product, tax, customer } ) => {
 		const qty = 3;
-		await addProductToCartAndProceedToCheckout( page, product, qty, tax );
+		await addProductToCartAndProceedToCheckout(
+			'checkout',
+			page,
+			product,
+			qty,
+			tax
+		);
 		await page.getByText( 'Click here to login' ).click();
 		await logInFromMyAccount(
 			page,
@@ -325,7 +368,12 @@ test(
 	{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS ] },
 	async ( { page, product, tax, customer } ) => {
 		await page.goto( 'my-account/' );
-		await logInFromMyAccount( page, customer.email, customer.password );
+		await logInFromMyAccount(
+			'checkout',
+			page,
+			customer.email,
+			customer.password
+		);
 		await addProductToCartAndProceedToCheckout( page, product, 1, tax );
 
 		const billingAddress = {
