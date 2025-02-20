@@ -1,0 +1,4 @@
+Significance: major
+Type: enhancement
+
+Now the Add to cart functionality in single product page will happen through ajax instead of page reload. Also, the mini cart drawer will open after adding to cart.
