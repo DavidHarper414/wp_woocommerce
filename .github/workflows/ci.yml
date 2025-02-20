@@ -305,7 +305,7 @@ jobs:
         name: 'Checkout'
         with:
           sparse-checkout: |
-              .github/actions/scripts
+              .github/workflows/scripts
 
       - name: 'Evaluation'
         env:
