@@ -263,7 +263,7 @@ class WC_Privacy extends WC_Abstract_Privacy {
 		if ( empty( $option['number'] ) ) {
 			return 0;
 		}
-		
+
 		return self::anonymize_orders_query(
 			/**
 			 * Filter to modify the query arguments for anonymizing refunded orders.
@@ -274,7 +274,7 @@ class WC_Privacy extends WC_Abstract_Privacy {
 			 * @param int    $limit The maximum number of orders to process in each batch.
 			 * @param string $status The status of the orders to be anonymized.
 			 * @param string $type The type of orders to be anonymized.
-			 */			
+			 */
 			apply_filters(
 				'woocommerce_anonymize_refunded_orders_query_args',
 				array(
