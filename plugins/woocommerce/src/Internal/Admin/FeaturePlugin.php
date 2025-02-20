@@ -178,9 +178,6 @@ class FeaturePlugin {
 		new InstallJPAndWCSPlugins();
 		new SellingOnlineCourses();
 		new MagentoMigration();
-
-		// Initialize MerchantEmailNotifications.
-		MerchantEmailNotifications::init();
 	}
 
 	/**

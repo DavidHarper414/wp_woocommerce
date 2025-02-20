@@ -130,7 +130,6 @@ class Note extends \WC_Data {
 			self::E_WC_ADMIN_NOTE_INFORMATIONAL,
 			self::E_WC_ADMIN_NOTE_MARKETING,
 			self::E_WC_ADMIN_NOTE_SURVEY,
-			self::E_WC_ADMIN_NOTE_EMAIL,
 		);
 
 		return apply_filters( 'woocommerce_note_types', $allowed_types );
