@@ -129,8 +129,11 @@ jobs:
               body: |
                   Hi ${{ env.REVIEWERS }} ${{ env.TEAMS }},
                   
-                  Apart from reviewing the code changes, please make sure to review the testing instructions and verify that relevant tests (E2E, Unit, Integration, etc.) have been added or updated as needed.
+                  Apart from reviewing the code changes, please make sure to **review the testing instructions** ([Guide](https://github.com/woocommerce/woocommerce/wiki/Writing-high-quality-testing-instructions)) and verify that relevant tests (E2E, Unit, Integration, etc.) have been added or updated as needed.
                   
-                  You can follow this guide to find out what good testing instructions should look like:
-                  https://github.com/woocommerce/woocommerce/wiki/Writing-high-quality-testing-instructions
+                  **Reminder:** PR reviewers are required to document testing performed. This includes:
+                  - 🖼️ **Screenshots or screen recordings** (for visual changes).
+                  - 📝 **List of functionality tested / steps followed.**
+                  - 🌐 **Site details** (environment attributes such as hosting type, plugins, theme, store size, store age, and relevant settings).
+                  - 🔍 **Any analysis performed**, such as assessing potential impacts on environment attributes and other plugins, conducting performance profiling, or using LLM/AI-based analysis.         
               edit-mode: replace
