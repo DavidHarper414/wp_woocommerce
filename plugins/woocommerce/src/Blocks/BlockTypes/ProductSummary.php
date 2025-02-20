@@ -85,10 +85,10 @@ class ProductSummary extends AbstractBlock {
 		$description = $product->get_description();
 
 		if ( $show_description_if_empty && $description ) {
-			$short_description = wp_kses_post( $short_description );
-			$description       = $GLOBALS['wp_embed']->run_shortcode( $description );
-			$description       = shortcode_unautop( $description );
-			$description       = do_shortcode( $description );
+			$description = wp_kses_post( $description );
+			$description = $GLOBALS['wp_embed']->run_shortcode( $description );
+			$description = shortcode_unautop( $description );
+			$description = do_shortcode( $description );
 			return $description;
 		}
 
