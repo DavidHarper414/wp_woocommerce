@@ -373,15 +373,6 @@ class DefaultFreeExtensions {
 				),
 				'is_visible'     => array(
 					self::get_rules_for_wcservices_tax_countries(),
-					array(
-						'type'    => 'not',
-						'operand' => array(
-							array(
-								'type'    => 'plugins_activated',
-								'plugins' => array( 'woocommerce-services' ),
-							),
-						),
-					),
 				),
 				'is_built_by_wc' => true,
 			),
