@@ -75,12 +75,12 @@ test.describe( 'Cart page', { tag: [ tags.PAYMENTS, tags.SERVICES ] }, () => {
 
 	async function goToShopPageAndAddProductToCart( page, prodName ) {
 		await page.goto( 'shop/?orderby=date' );
-		const responsePromise = page.waitForResponse( ( response ) =>
-			response.url().includes( 'cart/items' )
-		);
 		await page
 			.getByLabel( `Add to cart: “${ prodName }”`, { exact: true } )
 			.click();
+		const responsePromise = page.waitForResponse( ( response ) =>
+			response.url().includes( 'cart/items' )
+		);
 		await responsePromise;
 	}
 
