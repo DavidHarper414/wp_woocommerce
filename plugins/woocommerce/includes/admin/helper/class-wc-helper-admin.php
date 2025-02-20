@@ -66,7 +66,7 @@ class WC_Helper_Admin {
 		);
 
 		$woo_connect_notice_type = WC_Helper_Updater::get_woo_connect_notice_type();
-		$blog_name = get_bloginfo( 'name' );
+		$blog_name               = get_bloginfo( 'name' );
 
 		$settings['wccomHelper'] = array(
 			'isConnected'                => WC_Helper::is_site_connected(),
