@@ -1,5 +1,5 @@
 {
-	"name": "@woocommerce/email-editor-js",
+	"name": "@woocommerce/email-editor",
 	"private": true,
 	"sideEffects": [
 		"build-style/**",
