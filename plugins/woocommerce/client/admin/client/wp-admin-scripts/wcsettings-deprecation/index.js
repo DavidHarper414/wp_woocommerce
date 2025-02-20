@@ -1,4 +1,8 @@
-if ( window.wcSettings && window.deprecatedWcSettings ) {
+if (
+	window.wcSettings &&
+	window.deprecatedWcSettings &&
+	Object.keys( window.deprecatedWcSettings ).length > 0
+) {
 	// Function to check if a property or any of its parents is deprecated
 	function getDeprecationMessage( fullPath ) {
 		const parts = fullPath.split( '.' );
