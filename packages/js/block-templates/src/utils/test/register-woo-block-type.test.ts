@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { registerBlockType } from '@wordpress/blocks';
-
 /**
  * Internal dependencies
  */
@@ -10,6 +9,11 @@ import { registerWooBlockType } from '../register-woo-block-type';
 
 jest.mock( '@wordpress/blocks', () => ( {
 	registerBlockType: jest.fn(),
+} ) );
+
+jest.mock( '@woocommerce/settings', () => ( {
+	isWpVersion: jest.fn().mockReturnValue( false ),
+	getSetting: jest.fn().mockReturnValue( {} ),
 } ) );
 
 describe( 'registerWooBlockType', () => {
@@ -21,6 +25,7 @@ describe( 'registerWooBlockType', () => {
 					foo: {
 						type: 'boolean',
 						default: false,
+						role: 'content',
 					},
 				},
 			},
@@ -41,6 +46,7 @@ describe( 'registerWooBlockType', () => {
 					foo: {
 						type: 'boolean',
 						default: false,
+						role: 'content',
 					},
 					_templateBlockId: {
 						type: 'string',
