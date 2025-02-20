@@ -44,6 +44,7 @@ export {
 	EnableGatewayResponse,
 	PaymentGatewayLink,
 	RecommendedPaymentMethod,
+	PluginData,
 } from './payment-settings/types';
 export { ShippingMethod } from './shipping-methods/types';
 
@@ -65,6 +66,9 @@ export { store as ordersStore } from './orders';
 export { store as pluginsStore } from './plugins';
 export { store as optionsStore } from './options';
 export { store as userStore } from './user';
+export { store as productsStore } from './products';
+export { store as countriesStore } from './countries';
+export { store as paymentGatewaysStore } from './payment-gateways';
 
 // Export hooks
 export { withSettingsHydration } from './settings/with-settings-hydration';
