@@ -37,6 +37,7 @@ function getFakeUser( role ) {
 			state: 'CA',
 			postcode: '94103',
 			country: 'US',
+			phone: '(555) 555-5555',
 		},
 	};
 }

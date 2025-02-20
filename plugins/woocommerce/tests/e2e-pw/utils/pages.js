@@ -15,7 +15,7 @@ import apiClient from './api-client';
 import { ADMIN_STATE_PATH } from '../playwright.config';
 
 export const BLOCKS_CHECKOUT_PAGE = {
-	name: 'Checkout Blocks',
+	name: 'blocks checkout',
 	slug: 'checkout-blocks',
 };
 
