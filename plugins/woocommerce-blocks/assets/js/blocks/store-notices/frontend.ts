@@ -7,11 +7,6 @@ import {
 	store,
 } from '@wordpress/interactivity';
 
-/**
- * Internal dependencies
- */
-import './style.scss';
-
 type Notice = {
 	notice: string;
 	type: 'error' | 'success' | 'notice';

@@ -59,7 +59,7 @@ class Renderer {
 		);
 		add_filter( 'render_block_core/query-pagination', array( $this, 'add_navigation_link_directives' ), 10, 3 );
 
-		// // Provide location context into block's context.
+		// Provide location context into block's context.
 		add_filter( 'render_block_context', array( $this, 'provide_location_context_for_inner_blocks' ), 11, 1 );
 	}
 
@@ -141,6 +141,8 @@ class Renderer {
 			if ( $is_enhanced_pagination_enabled ) {
 				$block_content = $this->enable_client_side_navigation( $block_content );
 			}
+
+			$block_content = $this->add_store_notices_fallback( $block_content );
 		}
 		return $block_content;
 	}
@@ -293,12 +295,80 @@ class Renderer {
 					data-wp-text="context.accessibilityMessage">
 				</div>
 			';
+
 		return substr_replace(
 			$block_content,
 			$accessibility_and_animation_html,
 			$last_tag_position,
 			0
 		);
+	}
+
+	/**
+	 * Add a fallback store notices div to the block content.
+	 *
+	 * @param string $block_content The block content.
+	 * @return string The updated block content.
+	 */
+	private function add_store_notices_fallback( $block_content ) {
+		return $this->render_interactivity_notices_region() . $block_content;
+	}
+
+	/**
+	 * Render interactivity API powered notices that can be added client-side. This reuses classes
+	 * from the woocommerce/store-notices block to ensure style consistency.
+	 *
+	 * @return string The rendered store notices HTML.
+	 */
+	protected function render_interactivity_notices_region() {
+		wp_enqueue_script_module( 'woocommerce/store-notices' );
+
+		wp_interactivity_state(
+			'woocommerce/store-notices',
+			array(
+				'notices' => array(),
+			)
+		);
+
+		ob_start();
+		?>
+		<div class="wc-block-store-notices woocommerce alignwide wp-block-woocommerce-store-notices">
+			<div data-wp-interactive="woocommerce/store-notices" class="woocommerce-notices-wrapper">
+				<template
+					data-wp-each--notice="state.notices"
+					data-wp-each-key="context.notice.id"
+				>
+					<div
+						class="wc-block-components-notice-banner"
+						data-wp-init="callbacks.scrollIntoView"
+						data-wp-class--is-error="state.isError"
+						data-wp-class--is-success ="state.isSuccess"
+						data-wp-class--is-info="state.isInfo"
+						data-wp-bind--role="state.role"
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+							<path data-wp-bind--d="state.iconPath"></path>
+						</svg>
+						<div class="wc-block-components-notice-banner__content">
+							<span data-wp-init="callbacks.renderNoticeContent"></span>
+						</div>
+						<button
+							data-wp-bind--hidden="!context.notice.dismissible"
+							class="wc-block-components-button wp-element-button wc-block-components-notice-banner__dismiss contained"
+							aria-label="<?php esc_attr_e( 'Dismiss this notice', 'woocommerce' ); ?>"
+							data-wp-on--click="actions.removeNotice"
+							hidden
+						>
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+								<path d="M13 11.8l6.1-6.3-1-1-6.1 6.2-6.1-6.2-1 1 6.1 6.3-6.5 6.7 1 1 6.5-6.6 6.5 6.6 1-1z" />
+							</svg>	
+						</button>
+					</div>
+				</template>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
 	}
 
 	/**
