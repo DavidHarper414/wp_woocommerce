@@ -4,6 +4,7 @@
 import { test as setup } from './fixtures';
 import { ADMIN_STATE_PATH } from '../playwright.config';
 import { setComingSoon } from '../utils/coming-soon';
+import { skipOnboardingWizard } from '../utils/onboarding';
 
 setup.use( { storageState: ADMIN_STATE_PATH } );
 
@@ -105,6 +106,10 @@ setup( 'disable coming soon', async ( { baseURL } ) => {
 	await setComingSoon( { baseURL, enabled: 'no' } );
 } );
 
+setup( 'disable onboarding wizard', async () => {
+	await skipOnboardingWizard();
+} );
+
 setup( 'determine if multisite', async ( { api } ) => {
 	const response = await api.get( 'system_status' );
 	const { environment } = response.data;
@@ -115,4 +120,22 @@ setup( 'determine if multisite', async ( { api } ) => {
 		process.env.IS_MULTISITE = environment.wp_multisite;
 		console.log( `IS_MULTISITE: ${ process.env.IS_MULTISITE }` );
 	}
+} );
+
+setup( 'general settings', async ( { api } ) => {
+	await api.put( 'settings/general/woocommerce_allowed_countries', {
+		value: 'all',
+	} );
+	await api.put( 'settings/general/woocommerce_currency', {
+		value: 'USD',
+	} );
+	await api.put( 'settings/general/woocommerce_price_thousand_sep', {
+		value: ',',
+	} );
+	await api.put( 'settings/general/woocommerce_price_decimal_sep', {
+		value: '.',
+	} );
+	await api.put( 'settings/general/woocommerce_price_num_decimals', {
+		value: '2',
+	} );
 } );
