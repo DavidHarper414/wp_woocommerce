@@ -37,16 +37,9 @@ class BackInStockNotifications {
 		self::$db_utils = wc_get_container()->get( DatabaseUtil::class );
 
 		// Enable/disable events when the feature flag is changed.
-		add_action( 'update_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'update_events' ), 10, 3 );
+		add_action( 'update_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'maybe_update_bis_infrastructure' ), 10, 3 );
 		add_action( 'add_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_add_option' ), 10, 2 );
 		add_action( 'delete_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_delete_option' ), 10, 1 );
-
-		// Create DB tables if they don't exist. This will be removed in the future to reduce the number of DB calls.
-		if ( is_admin() ) {
-			if ( ! self::bis_tables_exist() ) {
-				self::create_database_tables();
-			}
-		}
 
 		// Include BIS files.
 		include_once WC_ABSPATH . '/includes/bis/class-wc-bis-notifications.php';
@@ -144,6 +137,11 @@ class BackInStockNotifications {
 		}
 	}
 
+	/**
+	 * Get BIS db schema.
+	 * 
+	 * @return string
+	 */
 	public static function get_bis_db_schema() : string {
 		if ( ! self::is_enabled() ) {
 			return '';
@@ -203,41 +201,59 @@ class BackInStockNotifications {
 		return $success;
 	}
 
-	//TODO: decide what to do with this.
 	/**
-	 * Run this on option update, i.e. not on each request, preferably?
-	 *
-	 * @return void
+	 * Create BIS db tables when feature is enabled after WC installation has run.
+	 * 
+	 * This should be called from the feature flag change hook.
 	 */
-	public static function activate_bis() {
+	public static function maybe_create_database_tables() {
 		if ( ! self::is_enabled() ) {
 			return;
 		}
 
-		// Activate notices.
+		if ( self::bis_tables_exist() ) {
+			return;
+		}
 
-		// Welcome notice on activation.
-		// \WC_BIS_Admin_Notices::add_maintenance_notice( 'welcome' );
-
+		return self::create_database_tables();
 	}
 
+	/**
+	 * Handle the addition of the feature flag option.
+	 * 
+	 * This should be called from the feature flag change hook.
+	 * 
+	 * @param string $option The option name.
+	 */
 	public static function handle_add_option( $option, $new_value ) {
 		if ( $option !== 'wc_feature_woocommerce_back_in_stock_notifications_enabled' ) {
 			return;
 		}
 
-		self::update_events( null, $new_value, $option );
+		self::maybe_update_bis_infrastructure( null, $new_value, $option );
 	}
 
+	/**
+	 * Handle the deletion of the feature flag option.
+	 * 
+	 * This should be called from the feature flag change hook.
+	 * 
+	 * @param string $option The option name.
+	 */
 	public static function handle_delete_option( $option ) {
 		if ( $option !== 'wc_feature_woocommerce_back_in_stock_notifications_enabled' ) {
 			return;
 		}
 
 		// BIS is enabled by default, so if the option is deleted, it means it's being enabled.
-		self::update_events( null, 'yes', $option );
+		self::maybe_update_bis_infrastructure( null, 'yes', $option );
 	}
 
+	/**
+	 * Setup BIS events when the feature flag is enabled.
+	 * 
+	 * This should be called from the feature flag change hook.
+	 */
 	public static function maybe_setup_events() {
 		if ( ! self::is_enabled() ) {
 			return;
@@ -252,14 +268,25 @@ class BackInStockNotifications {
 		}
 	}
 
-	public static function update_events( $old_value = null, $new_value = null, $option = null ) {
+	/**
+	 * Update BIS infrastructure when the feature flag is changed.
+	 * 
+	 * This should be called from the feature flag change hook.
+	 * 
+	 * @param string|null $old_value The old value of the option.
+	 * @param string|null $new_value The new value of the option.
+	 * @param string|null $option The option name.
+	 */
+	public static function maybe_update_bis_infrastructure( $old_value = null, $new_value = null, $option = null ) {
 		// For option change, check if being disabled
 		if ( isset( $old_value ) && isset( $new_value ) && $new_value === 'no' ) {
 			self::cleanup_events();
+			// Not cleaning up database tables to retain the data.
 			return;
 		}
 
 		self::maybe_setup_events();
+		self::maybe_create_database_tables();
 	}
 
 	/**
