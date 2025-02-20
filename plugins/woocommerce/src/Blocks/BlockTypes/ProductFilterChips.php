@@ -81,7 +81,6 @@ final class ProductFilterChips extends AbstractBlock {
 						aria-label="<?php echo esc_attr( $aria_label ); ?>"
 						data-wp-on--click--parent-action="<?php echo esc_attr( $parent . '::actions.toggleFilter' ); ?>"
 						value="<?php echo esc_attr( $item['value'] ); ?>"
-						aria-checked="<?php echo $item['selected'] ? 'true' : 'false'; ?>"
 						data-wp-bind--aria-checked="<?php echo esc_attr( $parent . '::state.isItemSelected' ); ?>"
 						data-filter-item="<?php echo esc_attr( wp_json_encode( $item, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) ); ?>"
 						<?php if ( ! $item['selected'] ) : ?>

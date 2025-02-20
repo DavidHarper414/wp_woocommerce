@@ -96,7 +96,6 @@ final class ProductFilterCheckboxList extends AbstractBlock {
 									aria-label="<?php echo esc_attr( $aria_label ); ?>"
 									data-wp-on--change--parent-action="<?php echo esc_attr( $parent . '::actions.toggleFilter' ); ?>"
 									value="<?php echo esc_attr( $item['value'] ); ?>"
-									<?php checked( $item['selected'], 1 ); ?>
 									data-wp-bind--checked="<?php echo esc_attr( $parent . '::state.isItemSelected' ); ?>"
 									data-filter-item="<?php echo esc_attr( wp_json_encode( $item, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) ); ?>"
 								>
