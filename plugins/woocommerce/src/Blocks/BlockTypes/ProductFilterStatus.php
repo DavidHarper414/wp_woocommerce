@@ -151,7 +151,7 @@ final class ProductFilterStatus extends AbstractBlock {
 		);
 
 		$wrapper_attributes = array(
-			'data-wp-interactive'  => wp_json_encode( array( 'namespace' => $this->get_full_block_name() ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
+			'data-wp-interactive'  => $this->get_full_block_name(),
 			'data-wp-context'      => wp_json_encode(
 				array(
 					'hasFilterOptions'    => ! empty( $filter_options ),
