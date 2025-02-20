@@ -1444,15 +1444,49 @@ class WC_Tracker {
 	 * @return array Email improvements tracking data.
 	 */
 	private static function get_email_improvements_info() {
+		$core_email_counts = self::get_core_email_status_counts();
+
 		return array(
-			'enabled'           => get_option( 'woocommerce_feature_email_improvements_enabled', 'no' ),
-			'default_enabled'   => get_option( 'woocommerce_email_improvements_default_enabled', 'no' ),
-			'first_enabled_at'  => get_option( 'woocommerce_email_improvements_first_enabled_at', null ),
-			'last_enabled_at'   => get_option( 'woocommerce_email_improvements_last_enabled_at', null ),
-			'enabled_count'     => get_option( 'woocommerce_email_improvements_enabled_count', 0 ),
-			'first_disabled_at' => get_option( 'woocommerce_email_improvements_first_disabled_at', null ),
-			'last_disabled_at'  => get_option( 'woocommerce_email_improvements_last_disabled_at', null ),
-			'disabled_count'    => get_option( 'woocommerce_email_improvements_disabled_count', 0 ),
+			'enabled'                    => get_option( 'woocommerce_feature_email_improvements_enabled', 'no' ),
+			'default_enabled'            => get_option( 'woocommerce_email_improvements_default_enabled', 'no' ),
+			'first_enabled_at'           => get_option( 'woocommerce_email_improvements_first_enabled_at', null ),
+			'last_enabled_at'            => get_option( 'woocommerce_email_improvements_last_enabled_at', null ),
+			'enabled_count'              => get_option( 'woocommerce_email_improvements_enabled_count', 0 ),
+			'first_disabled_at'          => get_option( 'woocommerce_email_improvements_first_disabled_at', null ),
+			'last_disabled_at'           => get_option( 'woocommerce_email_improvements_last_disabled_at', null ),
+			'disabled_count'             => get_option( 'woocommerce_email_improvements_disabled_count', 0 ),
+			'core_emails_enabled_count'  => $core_email_counts['enabled'],
+			'core_emails_disabled_count' => $core_email_counts['disabled'],
+		);
+	}
+
+	/**
+	 * Get counts of enabled and disabled core emails.
+	 *
+	 * @return array Array with counts of enabled and disabled emails.
+	 */
+	private static function get_core_email_status_counts() {
+		$core_emails = array_filter(
+			WC()->mailer()->get_emails(),
+			function ( $email ) {
+				return strpos( get_class( $email ), 'WC_Email_' ) === 0;
+			}
+		);
+
+		$enabled  = 0;
+		$disabled = 0;
+
+		foreach ( $core_emails as $email ) {
+			if ( $email->is_enabled() ) {
+				++$enabled;
+			} else {
+				++$disabled;
+			}
+		}
+
+		return array(
+			'enabled'  => $enabled,
+			'disabled' => $disabled,
 		);
 	}
 }
