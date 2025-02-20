@@ -60,9 +60,15 @@ if ( process.env.CI ) {
 
 export const setupProjects = [
 	{
+		name: 'install wc',
+		testDir: `${ TESTS_ROOT_PATH }/fixtures`,
+		testMatch: 'install-wc.setup.js',
+	},
+	{
 		name: 'global authentication',
 		testDir: `${ TESTS_ROOT_PATH }/fixtures`,
 		testMatch: 'auth.setup.js',
+		dependencies: [ 'install wc' ],
 	},
 	{
 		name: 'consumer token setup',
@@ -117,6 +123,7 @@ export default defineConfig( {
 			name: 'e2e',
 			testIgnore: '**/api-tests/**',
 			dependencies: [ 'site setup' ],
+			fullyParallel: true,
 		},
 		{
 			name: 'api',
