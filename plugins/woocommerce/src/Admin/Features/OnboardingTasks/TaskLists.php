@@ -476,6 +476,6 @@ class TaskLists {
 	 */
 	public static function all_hidden() {
 		$hidden_lists = get_option( TaskList::HIDDEN_OPTION, array() );
-		return count( $hidden_lists ) === count( self::$lists );
+		return count( $hidden_lists ) === count( self::get_lists() );
 	}
 }
