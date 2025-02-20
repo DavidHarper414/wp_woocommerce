@@ -188,11 +188,14 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 		 * @return array
 		 */
 		public function add_settings_page_data( $pages ) {
+			global $current_section;
+
 			$sections      = $this->get_sections();
 			$sections_data = array();
 
 			// Loop through each section and get the settings for that section.
 			foreach ( $sections as $section_id => $section_label ) {
+				$current_section = $section_id;
 				$section_settings_data = $this->get_section_settings_data( $section_id, $sections );
 
 				// Replace empty string section ids with 'default'.
