@@ -153,10 +153,11 @@
           "menu_title": "Frequently Asked Questions",
           "tags": "reference",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/faq.md",
-          "hash": "99b5533f684f62498098d55a6ba1e2dba71664cca7cf35d8c4272dd24d6686fa",
+          "hash": "31bfbf216252c709466e293c6b2159858db994e9cdb530d8f13ffc327ab07ea7",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/faq.md",
           "id": "041787aca25af363a5eff3e710bd669cc8aebc4b",
           "links": {
+            "./slot-fills.md": "e388101586765dd9aca752d66d667d74951a1504",
             "./removing-checkout-fields.md": "030247059754260bce6285cfb352a4a733f1f677"
           }
         },
@@ -195,7 +196,7 @@
           "menu_title": "Additional Checkout Fields",
           "tags": "reference",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/additional-checkout-fields.md",
-          "hash": "8336fc88a08df2b41ec20234f7475ddc94b8605fdd7db9577e96c93dad716fee",
+          "hash": "5b27bc3fa44a5c548a6cd1d1530f49108e960e858b607c69a981ccdd5ea9ab4e",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/additional-checkout-fields.md",
           "id": "cb5dd8d59043a4e53929121b45da7b33b1661ab8"
         }
@@ -211,54 +212,72 @@
               "menu_title": "Totals Footer Item",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/available-filters/totals-footer-item.md",
-              "hash": "5868d840f3c60a2ca33db3f6f7e1182a50da9be6a93a80469e4f4322c432e295",
+              "hash": "71c7e2fcfa20530c6c0251912dcd1cbbd87191d795d7b3bdb53420f2caa89ddf",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/available-filters/totals-footer-item.md",
-              "id": "90a9b8df374082f1713866a58b810303adb4d3da"
+              "id": "90a9b8df374082f1713866a58b810303adb4d3da",
+              "links": {
+                "../available-filters/README.md": "4d56fe70f40a64b52b2970d487e5f0527f7234fb"
+              }
             },
             {
               "post_title": "Cart and Checkout Filters - Order summary items",
               "menu_title": "Order Summary Items",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/available-filters/order-summary-items.md",
-              "hash": "3af0250666a92fe13bed7b4867b82954777dec01c28ba7f28f829126ffa3ae86",
+              "hash": "d736a1951e885445e2d4e1b35dae62071e879c5df3d3eeabe27e2eea04eddfc9",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/available-filters/order-summary-items.md",
-              "id": "78eb3b135f82a3624a49979e3e93334295abd060"
+              "id": "78eb3b135f82a3624a49979e3e93334295abd060",
+              "links": {
+                "../available-filters/README.md": "4d56fe70f40a64b52b2970d487e5f0527f7234fb"
+              }
             },
             {
               "post_title": "Cart and Checkout Filters - Coupons",
               "menu_title": "Coupons",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/available-filters/coupons.md",
-              "hash": "7bf1e0d29203102e9c8c34150a78f8af35dbc47ad2c2ebcc7663354063c0cc98",
+              "hash": "1dbb6637376fb86a633270edb2aa6665b8216a9f673dd00f79edff5d43c3485f",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/available-filters/coupons.md",
-              "id": "5a022617f3d0267c9b771374f28970e779a6e99d"
+              "id": "5a022617f3d0267c9b771374f28970e779a6e99d",
+              "links": {
+                "../available-filters/README.md": "4d56fe70f40a64b52b2970d487e5f0527f7234fb"
+              }
             },
             {
               "post_title": "Cart and Checkout Filters - Checkout and place order button",
               "menu_title": "Checkout and Place Order Button",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/available-filters/checkout-and-place-order-button.md",
-              "hash": "1b4eab1657ce3a82b492fe418b76078789779061b5ff8ffd9b1af939e49f342a",
+              "hash": "a5a8419038d538339422690c5609f13a9f8837f359d5d97af479f4c960b8011d",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/available-filters/checkout-and-place-order-button.md",
-              "id": "c97ca710c2e8107bf90915e038a34c8a1016c63a"
+              "id": "c97ca710c2e8107bf90915e038a34c8a1016c63a",
+              "links": {
+                "../available-filters/README.md": "4d56fe70f40a64b52b2970d487e5f0527f7234fb"
+              }
             },
             {
               "post_title": "Cart and Checkout Filters - Cart line items",
               "menu_title": "Cart Line Items",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/available-filters/cart-line-items.md",
-              "hash": "f88dd38ed6a603704ae57863fac80ff8f10722fad91c2cc6d5bab443dd3293c5",
+              "hash": "c03170d19a4eea81fa6fd5d29cc22160e27e24e28edbba67c481fbc23947319e",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/available-filters/cart-line-items.md",
-              "id": "97881b973dc1d08a54c54e0a04ecb75ee48dcee2"
+              "id": "97881b973dc1d08a54c54e0a04ecb75ee48dcee2",
+              "links": {
+                "../available-filters/README.md": "4d56fe70f40a64b52b2970d487e5f0527f7234fb"
+              }
             },
             {
               "post_title": "Cart and Checkout Filters - Inner block types",
               "menu_title": "Inner Block Types",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/available-filters/additional-cart-checkout-inner-block-types.md",
-              "hash": "dadef9b92c330c905273831abeee4b02e02741686557e3866f90778e7109311a",
+              "hash": "7b04454d705d7ff896df4fa53195b8b6cafdab85eeba667c78d004d26093a289",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/available-filters/additional-cart-checkout-inner-block-types.md",
-              "id": "3167c9602b1bd3b206226a0d4415944a5f647495"
+              "id": "3167c9602b1bd3b206226a0d4415944a5f647495",
+              "links": {
+                "../available-filters/README.md": "4d56fe70f40a64b52b2970d487e5f0527f7234fb"
+              }
             }
           ],
           "categories": []
@@ -804,7 +823,7 @@
           "menu_title": "Implement merchant onboarding",
           "tags": "how-to",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/extension-development/handling-merchant-onboarding.md",
-          "hash": "f53a89603209f12124eff5d21b3abb3edd2f8d07d6819522100c8e0e03c5d5e6",
+          "hash": "b91ddd5c7535716f03dee5e650001eb3e1f63fcdf54c73e41f320041793ffc0d",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/extension-development/handling-merchant-onboarding.md",
           "id": "89fe15dc232379f546852822230c334d3d940b93"
         },
@@ -1231,7 +1250,7 @@
             {
               "post_title": "Extending the product form with custom fields",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/product-editor-development/how-to-guides/custom-field-tutorial.md",
-              "hash": "dfa00ed71af6eda1f539684657d5c880850ececea4c07bd11e89a605fab77ec7",
+              "hash": "75a6f3c40384262c44c3c4ae71fdf7f26e6c7c5561c5b0f88661e1f6d63fc2a2",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/product-editor-development/how-to-guides/custom-field-tutorial.md",
               "id": "fed80efbb225df9054fadd6e1fc45c2cd03e7f99"
             }
@@ -1525,7 +1544,7 @@
       "categories": []
     },
     {
-      "content": "\nThe WooCommerce Store API provides public Rest API endpoints for interacting with products, and the Cart and Checkout process. It follows many of the patterns used in the WordPress REST API and  returns JSON formatted data.\n\n In contrast to the WooCommerce REST API, the Store API is specifically designed for frontend applications. It is unauthenticated and does not provide access to sensitive store data or other customer information.\n\nPlease see the [Store API Documentation on GitHub](https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce/src/StoreApi/README.md) for more information.\n",
+      "content": "\n**The Store API provides public Rest API endpoints for the development of customer-facing cart, checkout, and product functionality. It follows many of the patterns used in the [WordPress REST API](https://developer.wordpress.org/rest-api/key-concepts/).**\n\n In contrast to the WooCommerce REST API, the Store API is unauthenticated and does not provide access to sensitive store data or other customer information.\n\nPlease see the [Store API Documentation on GitHub](https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce/src/StoreApi/README.md) for more information.\n",
       "category_slug": "store-api",
       "category_title": "Store API",
       "posts": [],
@@ -1935,5 +1954,5 @@
       "categories": []
     }
   ],
-  "hash": "eb5d0b58ca6536ffb36d324a3d5716ca340ac2f5356b560109243ce01e8bc5f3"
+  "hash": "fe9444e7bad4c3d1311becc4382f47065c79a7ecb526356ea3c79e5d13df149b"
 }
