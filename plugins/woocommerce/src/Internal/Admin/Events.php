@@ -21,7 +21,6 @@ use Automattic\WooCommerce\Internal\Admin\Notes\LaunchChecklist;
 use Automattic\WooCommerce\Internal\Admin\Notes\MagentoMigration;
 use Automattic\WooCommerce\Internal\Admin\Notes\ManageOrdersOnTheGo;
 use Automattic\WooCommerce\Internal\Admin\Notes\MarketingJetpack;
-use Automattic\WooCommerce\Internal\Admin\Notes\MerchantEmailNotifications;
 use Automattic\WooCommerce\Internal\Admin\Notes\MigrateFromShopify;
 use Automattic\WooCommerce\Internal\Admin\Notes\MobileApp;
 use Automattic\WooCommerce\Internal\Admin\Notes\NewSalesRecord;
