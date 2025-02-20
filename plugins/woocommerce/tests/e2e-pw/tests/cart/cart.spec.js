@@ -73,15 +73,33 @@ test.describe( 'Cart page', { tag: [ tags.PAYMENTS, tags.SERVICES ] }, () => {
 		} );
 	} );
 
-	async function goToShopPageAndAddProductToCart( page, prodName ) {
-		await page.goto( 'shop/?orderby=date' );
+	async function addProductToCart( page, prodName ) {
 		await page
 			.getByLabel( `Add to cart: “${ prodName }”`, { exact: true } )
 			.click();
-		const responsePromise = page.waitForResponse( ( response ) =>
-			response.url().includes( 'cart/items' )
+		return page.waitForResponse( ( response ) => {
+			const methodIsPostOrPut =
+				response.request().method() === 'POST' ||
+				response.request().method() === 'PUT';
+			const urlIncludesCartItems = response
+				.url()
+				.includes( 'cart/items' );
+			return methodIsPostOrPut && urlIncludesCartItems;
+		} );
+	}
+
+	async function goToShopPage( page ) {
+		await page.goto( 'shop/?orderby=date' );
+		await page.waitForResponse(
+			( response ) =>
+				response.request().method() === 'GET' &&
+				response.url().includes( 'cart/items' )
 		);
-		await responsePromise;
+	}
+
+	async function goToShopPageAndAddProductToCart( page, prodName ) {
+		await goToShopPage( page );
+		await addProductToCart( page, prodName );
 	}
 
 	test(
@@ -113,8 +131,9 @@ test.describe( 'Cart page', { tag: [ tags.PAYMENTS, tags.SERVICES ] }, () => {
 		{ tag: [ tags.COULD_BE_LOWER_LEVEL_TEST ] },
 		async ( { page } ) => {
 			let qty = 2;
+			await goToShopPage( page );
 			while ( qty-- ) {
-				await goToShopPageAndAddProductToCart( page, productName );
+				await addProductToCart( page, productName );
 			}
 
 			await page.goto( 'cart/' );
