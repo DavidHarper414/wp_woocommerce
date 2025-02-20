@@ -302,6 +302,9 @@ jobs:
     steps:
       - uses: 'actions/checkout@v4'
         name: 'Checkout'
+        with:
+          sparse-checkout: |
+              .github/actions/scripts
 
       - name: 'Evaluation'
         env:
@@ -356,6 +359,7 @@ jobs:
     if: ${{ !cancelled() && github.repository == 'woocommerce/woocommerce' && ( github.event_name != 'pull_request' || ( needs.identify-jobs-to-run.outputs.needs-code-validation == 'true' && ! github.event.pull_request.head.repo.fork ) ) && needs.project-jobs.outputs.report-jobs != '[]' }}
     strategy:
       fail-fast: false
+      max-parallel: 2
       matrix:
         report: ${{ fromJSON( needs.project-jobs.outputs.report-jobs ) }}
     runs-on: ubuntu-latest
@@ -418,6 +422,9 @@ jobs:
     steps:
       - uses: 'actions/checkout@v4'
         name: 'Checkout'
+        with:
+          sparse-checkout: |
+              .github/actions/report-flaky-tests
 
       - uses: 'actions/download-artifact@v4'
         name: 'Download artifacts'
