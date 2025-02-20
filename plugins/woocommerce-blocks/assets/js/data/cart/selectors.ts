@@ -8,8 +8,11 @@ import type {
 	CartItem,
 	CartShippingRate,
 	ApiErrorResponse,
+	CartShippingAddress,
+	CartBillingAddress,
 } from '@woocommerce/types';
 import { BillingAddress, ShippingAddress } from '@woocommerce/settings';
+import { decodeEntities } from '@wordpress/html-entities';
 
 /**
  * Internal dependencies
@@ -32,9 +35,26 @@ export const getCustomerData = (
 	shippingAddress: ShippingAddress;
 	billingAddress: BillingAddress;
 } => {
+	const decodedShippingAddress = {} as ShippingAddress;
+	const decodedBillingAddress = {} as BillingAddress;
+	Object.keys( state.cartData.shippingAddress ).forEach( ( key ) => {
+		decodedShippingAddress[ key as keyof CartShippingAddress ] =
+			decodeEntities(
+				state.cartData.shippingAddress[
+					key as keyof CartShippingAddress
+				]
+			);
+	} );
+	Object.keys( state.cartData.billingAddress ).forEach( ( key ) => {
+		decodedBillingAddress[ key as keyof CartBillingAddress ] =
+			decodeEntities(
+				state.cartData.billingAddress[ key as keyof CartBillingAddress ]
+			);
+	} );
+
 	return {
-		shippingAddress: state.cartData.shippingAddress,
-		billingAddress: state.cartData.billingAddress,
+		shippingAddress: decodedShippingAddress,
+		billingAddress: decodedBillingAddress,
 	};
 };
 
