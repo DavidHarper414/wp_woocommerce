@@ -117,3 +117,108 @@
 
 '**/package.json':
   - team: flux
+
+"php/blueprint":
+  - team: ghidorah
+
+"php/remote-specs-validation":
+  - team: ghidorah
+
+"plugins/woocommerce-beta-tester":
+  - team: ghidorah
+
+"plugins/Woocommerce":
+  - team: ghidorah
+
+"plugins/Woocommerce/includes/admin/class-wc-admin-setup-wizard":
+  - team: ghidorah
+
+"plugins/Woocommerce/includes/admin/notes/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/includes/react-admin/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/patterns/coming-soon-*.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/patterns/page-coming-soon-*.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/Notes/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/DataSourcePoller.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/DeprecatedClassFacade.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/FeaturePlugin.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/Loader.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/PageController.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/PluginsHelper.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/PluginsInstaller.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/WCAdminHelper.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/Features/":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/Features/OnboardingTasks/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/Features/PaymentGatewaySuggestions/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/Features/ShippingPartnerSuggestions/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/Features/LaunchYourStore/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/Features/Settings/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/Features/Blueprint/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/RemoteInboxNotifications":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/RemoteSpecs":
+  - team: ghidorah
+
+"src/Internal/Admin/Onboarding/*":
+  - team: ghidorah
+
+"src/Internal/Admin/RemoteFreeExtensions/*":
+  - team: ghidorah
+
+"src/Internal/Admin/MobileAppBanner.php":
+  - team: ghidorah
+
+"src/Internal/Admin/RemoteInboxNotifications.php":
+  - team: ghidorah
+
+"src/Internal/Admin/ComingSoon/*":
+  - team: ghidorah
+
+"src/Internal/Admin/HomeScreen/*":
+  - team: ghidorah
+
+"src/Internal/Admin/Settings/*":
+  - team: ghidorah
+
+"src/Internal/Logging/RemoteLogger.php":
+  - team: ghidorah
