@@ -38,6 +38,14 @@ export function getAdminSetting(
 	fallback = false,
 	filter = ( val ) => val
 ) {
+	if ( window.deprecatedWcSettings && name in window.deprecatedWcSettings ) {
+		console.warn(
+			window.deprecatedWcSettings[ name ]
+				? window.deprecatedWcSettings[ name ]
+				: `Deprecated: ${ name } has been deprecated. This value will be removed soon.`
+		);
+	}
+
 	if ( mutableSources.includes( name ) ) {
 		throw new Error(
 			__(
