@@ -7,7 +7,6 @@ declare( strict_types=1 );
 namespace Automattic\WooCommerce\Internal\Admin\RemoteFreeExtensions;
 
 use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\DefaultPaymentGateways;
-use Automattic\WooCommerce\Internal\BrandingController;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,9 +22,7 @@ class DefaultFreeExtensions {
 	 * @return string
 	 */
 	private static function get_woo_logo() {
-		return BrandingController::use_new_branding() ?
-			plugins_url( '/assets/images/core-profiler/woo-rebrand-2.svg', WC_PLUGIN_FILE ) :
-			plugins_url( '/assets/images/onboarding/woo.svg', WC_PLUGIN_FILE );
+		return plugins_url( '/assets/images/core-profiler/logo-woo.svg', WC_PLUGIN_FILE );
 	}
 
 	/**
@@ -60,8 +57,10 @@ class DefaultFreeExtensions {
 				'title'   => __( 'Reach out to customers', 'woocommerce' ),
 				'plugins' => array(
 					self::get_plugin( 'mailpoet:alt' ),
+					// IMPORTANT: Klaviyo needs to be above Mailchimp as per partnership agreement.
+					// P2 for context: pdibGW-3XM-p2.
+					self::get_plugin( 'klaviyo:alt' ),
 					self::get_plugin( 'mailchimp-for-woocommerce' ),
-					self::get_plugin( 'klaviyo' ),
 				),
 			),
 			array(
@@ -230,6 +229,13 @@ class DefaultFreeExtensions {
 						'operation'   => 'range',
 					),
 				),
+				'is_built_by_wc' => false,
+			),
+			'klaviyo:alt'                   => array(
+				'name'           => __( 'Klaviyo', 'woocommerce' ),
+				'description'    => __( 'Grow and retain customers with intelligent, impactful email and SMS marketing automation and a consolidated view of customer interactions.', 'woocommerce' ),
+				'image_url'      => plugins_url( '/assets/images/onboarding/klaviyo.png', WC_PLUGIN_FILE ),
+				'manage_url'     => 'admin.php?page=klaviyo_settings',
 				'is_built_by_wc' => false,
 			),
 			'woocommerce-payments'          => array(

@@ -4,9 +4,9 @@
 import { useSelect } from '@wordpress/data';
 
 import {
-	PLUGINS_STORE_NAME,
-	SETTINGS_STORE_NAME,
-	ONBOARDING_STORE_NAME,
+	pluginsStore,
+	settingsStore,
+	onboardingStore,
 } from '@woocommerce/data';
 
 /**
@@ -25,20 +25,16 @@ const ShippingRecommendations: React.FC = () => {
 		countryCode,
 		isSellingDigitalProductsOnly,
 	} = useSelect( ( select ) => {
-		// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-		const settings = select( SETTINGS_STORE_NAME ).getSettings( 'general' );
+		const settings = select( settingsStore ).getSettings( 'general' );
 
 		const { getActivePlugins, getInstalledPlugins } =
-			select( PLUGINS_STORE_NAME );
+			select( pluginsStore );
 
-		// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-		const profileItems = select( ONBOARDING_STORE_NAME ).getProfileItems()
-			.product_types;
+		const profileItems =
+			select( onboardingStore ).getProfileItems().product_types;
 
 		return {
-			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 			activePlugins: getActivePlugins(),
-			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 			installedPlugins: getInstalledPlugins(),
 			countryCode: getCountryCode(
 				settings.general?.woocommerce_default_country
