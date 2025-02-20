@@ -572,6 +572,7 @@ class ReviewsListTable extends WP_List_Table {
 		/**
 		 * Filters the action links displayed for each review in the Reviews list table.
 		 *
+		 * @since 9.8.0
 		 * @param string[]   $actions An array of comment actions. Default actions include:
 		 *                            'Approve', 'Unapprove', 'Edit', 'Reply', 'Spam',
 		 *                            'Delete', and 'Trash'.
