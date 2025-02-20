@@ -89,7 +89,7 @@ export function* getCurrencies() {
 					code: currency.code,
 					symbol: currency.symbol,
 					symbolPosition: currency.currency_position,
-					decimalSeparator: currency.number_of_decimals,
+					decimalSeparator: currency.decimal_separator,
 					priceFormat: getPriceFormat( currency.currency_position ),
 					thousandSeparator: currency.thousand_separator,
 					precision: currency.number_of_decimals,
