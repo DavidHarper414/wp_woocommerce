@@ -29,7 +29,7 @@ if ( $product->is_in_stock() ) : ?>
 
 	<?php do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 
-	<form class="cart" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype='multipart/form-data'>
+	<form class="cart" id="ajax_add_to_cart_form" data-product_id="<?php echo esc_attr( $product->get_id() ); ?>">
 		<?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
 
 		<?php
@@ -46,7 +46,9 @@ if ( $product->is_in_stock() ) : ?>
 		do_action( 'woocommerce_after_add_to_cart_quantity' );
 		?>
 
-		<button type="submit" name="add-to-cart" value="<?php echo esc_attr( $product->get_id() ); ?>" class="single_add_to_cart_button button alt<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>"><?php echo esc_html( $product->single_add_to_cart_text() ); ?></button>
+		<button type="button" class="single_add_to_cart_button button alt<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>" id="ajax_add_to_cart_button">
+			<?php echo esc_html( $product->single_add_to_cart_text() ); ?>
+		</button>
 
 		<?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
 	</form>
@@ -54,3 +56,46 @@ if ( $product->is_in_stock() ) : ?>
 	<?php do_action( 'woocommerce_after_add_to_cart_form' ); ?>
 
 <?php endif; ?>
+
+<script>
+jQuery(document).ready(function($) {
+	$('#ajax_add_to_cart_button').on('click', function(e) {
+		e.preventDefault();
+		var form = $('#ajax_add_to_cart_form');
+		var product_id = form.data('product_id');
+		var quantity = form.find('input[name="quantity"]').val();
+		let currentNonce = '';
+		const storedNonceValue = window.localStorage.getItem( 'storeApiNonce' );
+		const storedNonce = storedNonceValue ? JSON.parse( storedNonceValue ) : {};
+		currentNonce = storedNonce?.nonce || '';
+		$.ajax({
+			type: 'POST',
+			url: window.location.origin+'/index.php?rest_route=/wc/store/v1/batch&_locale=site',
+			data: {
+				requests: [
+					{
+						"path": "/wc/store/v1/cart/add-item",
+						"method": "POST",
+						"cache": "no-store",
+						"body": {
+							"id": product_id,
+							"quantity": quantity
+						},
+						"headers": {
+							"Nonce": currentNonce
+						}
+					}
+				]
+			},
+			beforeSend: () => {
+				$( document.body ).trigger( 'adding_to_cart' );
+				$("#ajax_add_to_cart_button").addClass("loading");
+			},
+			success: () => {
+				$( document.body ).trigger( 'added_to_cart' );
+				$("#ajax_add_to_cart_button").removeClass("loading");
+			}
+		});
+	});
+});
+</script>

@@ -119,6 +119,21 @@
 				margin-top: 0;
 				margin-bottom: 0;
 				vertical-align: middle;
+
+				&.loading {
+					opacity: 0.25;
+				}
+		
+				&.loading::after {
+					font-family: WooCommerce; /* stylelint-disable-line */
+					content: "\e031";
+					animation: spin 2s linear infinite;
+					margin-right: 0;
+					margin-left: 0.5em;
+					display: inline-block;
+					width: auto;
+					height: auto;
+				}
 			}
 		}
 
