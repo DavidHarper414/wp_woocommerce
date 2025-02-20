@@ -145,9 +145,9 @@
 						paged_rates = _.toArray( rates ).slice( first_index, last_index ),
 						view        = this;
 
-					if (paged_rates.length) {
+					if ( paged_rates.length ) {
 						// Populate $tbody with the current page of results.
-						this.el.innerHTML = paged_rates.map(rowData => view.rowTemplate(rowData)).join('');
+						this.el.innerHTML = paged_rates.map( rowData => view.rowTemplate( rowData ) ).join( '' );
 					} else {
 						this.el.innerHTML = rowTemplateEmpty();
 					}
