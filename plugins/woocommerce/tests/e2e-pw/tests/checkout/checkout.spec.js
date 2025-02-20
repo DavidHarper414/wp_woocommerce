@@ -16,15 +16,31 @@ import { logInFromMyAccount } from '../../utils/login';
 const test = baseTest.extend( {
 	page: async ( { page, api }, use ) => {
 		// get the current value of woocommerce_enable_checkout_login_reminder
-		const response = await api.get(
+		const loginAtCheckoutResponse = await api.get(
 			'settings/account/woocommerce_enable_checkout_login_reminder'
 		);
 
 		// enable the setting if it is not already enabled
-		const initialValue = response.data.value;
-		if ( initialValue !== 'yes' ) {
+		const loginAtCheckoutInitialValue = loginAtCheckoutResponse.data.value;
+		if ( loginAtCheckoutInitialValue !== 'yes' ) {
 			await api.put(
 				'settings/account/woocommerce_enable_checkout_login_reminder',
+				{
+					value: 'yes',
+				}
+			);
+		}
+
+		// get the current value of woocommerce_enable_checkout_login_reminder
+		const signUpResponse = await api.get(
+			'settings/account/woocommerce_enable_signup_and_login_from_checkout'
+		);
+
+		// enable the setting if it is not already enabled
+		const signUpInitialValue = signUpResponse.data.value;
+		if ( signUpInitialValue !== 'yes' ) {
+			await api.put(
+				'settings/account/woocommerce_enable_signup_and_login_from_checkout',
 				{
 					value: 'yes',
 				}
@@ -54,12 +70,21 @@ const test = baseTest.extend( {
 		await page.context().clearCookies();
 		await use( page );
 
-		// revert the setting to its original value
-		if ( initialValue !== 'yes' ) {
+		// revert the settings to initial state
+		if ( loginAtCheckoutInitialValue !== 'yes' ) {
 			await api.put(
 				'settings/account/woocommerce_enable_checkout_login_reminder',
 				{
-					value: initialValue,
+					value: loginAtCheckoutInitialValue,
+				}
+			);
+		}
+
+		if ( signUpInitialValue !== 'yes' ) {
+			await api.put(
+				'settings/account/woocommerce_enable_signup_and_login_from_checkout',
+				{
+					value: signUpInitialValue,
 				}
 			);
 		}
@@ -181,38 +206,43 @@ async function placeOrder( page ) {
 	).toBeVisible();
 }
 
+async function fillBillingDetails( page, data, createAccount ) {
+	await page
+		.getByRole( 'textbox', { name: 'First name' } )
+		.fill( data.first_name );
+	await page
+		.getByRole( 'textbox', { name: 'Last name' } )
+		.fill( data.last_name );
+	await page
+		.getByRole( 'textbox', { name: 'Street address' } )
+		.fill( data.address_1 );
+	await page
+		.getByRole( 'textbox', { name: 'Town / City' } )
+		.fill( data.city );
+	await page
+		.getByRole( 'textbox', { name: 'ZIP Code' } )
+		.fill( data.postcode );
+	await page.getByRole( 'textbox', { name: 'Phone' } ).fill( data.phone );
+	await page
+		.getByRole( 'textbox', { name: 'Email address' } )
+		.fill( data.email );
+
+	if ( createAccount ) {
+		await page.getByText( 'Create an account?' ).check();
+	}
+}
+
 test(
 	'guest can checkout paying with cash on delivery',
 	{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS ] },
 	async ( { page, product, tax } ) => {
 		await addProductToCartAndProceedToCheckout( page, product, 2, tax );
 		const newCustomer = getFakeCustomer();
-
-		// Fill in the billing details
-		await page
-			.getByRole( 'textbox', { name: 'First name' } )
-			.fill( newCustomer.billing.first_name );
-		await page
-			.getByRole( 'textbox', { name: 'Last name' } )
-			.fill( newCustomer.billing.last_name );
-		await page
-			.getByRole( 'textbox', { name: 'Street address' } )
-			.fill( newCustomer.billing.address_1 );
-		await page
-			.getByRole( 'textbox', { name: 'Town / City' } )
-			.fill( newCustomer.billing.city );
-		await page
-			.getByRole( 'textbox', { name: 'ZIP Code' } )
-			.fill( newCustomer.billing.postcode );
-		await page
-			.getByRole( 'textbox', { name: 'Phone' } )
-			.fill( newCustomer.billing.phone );
-		await page
-			.getByRole( 'textbox', { name: 'Email address' } )
-			.fill( newCustomer.billing.email );
-
+		await fillBillingDetails( page, newCustomer.billing, false );
 		await page.getByText( 'Cash on delivery' ).click();
 		await placeOrder( page );
+		await page.goto( 'my-account/' );
+		await expect( page.locator( '#username' ) ).toBeVisible();
 	}
 );
 
@@ -220,36 +250,17 @@ test(
 	'guest can create an account at checkout',
 	{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS ] },
 	async ( { page, product, tax } ) => {
-		throw 'Test not implemented';
-
 		await addProductToCartAndProceedToCheckout( page, product, 2, tax );
 		const newCustomer = getFakeCustomer();
-
-		// Fill in the billing details
-		await page
-			.getByRole( 'textbox', { name: 'First name' } )
-			.fill( newCustomer.billing.first_name );
-		await page
-			.getByRole( 'textbox', { name: 'Last name' } )
-			.fill( newCustomer.billing.last_name );
-		await page
-			.getByRole( 'textbox', { name: 'Street address' } )
-			.fill( newCustomer.billing.address_1 );
-		await page
-			.getByRole( 'textbox', { name: 'Town / City' } )
-			.fill( newCustomer.billing.city );
-		await page
-			.getByRole( 'textbox', { name: 'ZIP Code' } )
-			.fill( newCustomer.billing.postcode );
-		await page
-			.getByRole( 'textbox', { name: 'Phone' } )
-			.fill( newCustomer.billing.phone );
-		await page
-			.getByRole( 'textbox', { name: 'Email address' } )
-			.fill( newCustomer.billing.email );
-
-		await page.getByText( 'Cash on delivery' ).click();
+		await fillBillingDetails( page, newCustomer.billing, true );
+		await page.getByText( 'Direct bank transfer' ).click();
 		await placeOrder( page );
+		await page.goto( 'my-account/' );
+		await expect(
+			page
+				.getByLabel( 'Account pages' )
+				.getByRole( 'link', { name: 'Log out' } )
+		).toBeVisible();
 	}
 );
 
