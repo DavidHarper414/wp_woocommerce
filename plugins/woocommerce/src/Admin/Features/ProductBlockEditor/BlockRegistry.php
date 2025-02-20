@@ -168,23 +168,23 @@ class BlockRegistry {
 			$attributes,
 			array(
 				'_templateBlockId'                => array(
-					'type'               => 'string',
+					'type' => 'string',
 					'role' => 'content',
 				),
 				'_templateBlockOrder'             => array(
-					'type'               => 'integer',
+					'type' => 'integer',
 					'role' => 'content',
 				),
 				'_templateBlockHideConditions'    => array(
-					'type'               => 'array',
+					'type' => 'array',
 					'role' => 'content',
 				),
 				'_templateBlockDisableConditions' => array(
-					'type'               => 'array',
+					'type' => 'array',
 					'role' => 'content',
 				),
 				'disabled'                        => isset( $attributes['disabled'] ) ? $attributes['disabled'] : array(
-					'type'               => 'boolean',
+					'type' => 'boolean',
 					'role' => 'content',
 				),
 			)
