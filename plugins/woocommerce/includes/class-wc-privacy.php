@@ -253,7 +253,7 @@ class WC_Privacy extends WC_Abstract_Privacy {
 	/**
 	 * Find and Anonymize refunded orders.
 	 *
-	 * @since 9.7.0
+	 * @since 9.8.0
 	 * @param  int $limit Limit orders to process per batch.
 	 * @return int Number of orders processed.
 	 */
@@ -264,6 +264,16 @@ class WC_Privacy extends WC_Abstract_Privacy {
 			return 0;
 		}
 
+		/**
+		 * Filter to modify the query arguments for anonymizing refunded orders.
+		 *
+		 * @since 9.8.0
+		 *
+		 * @param string $date_created The date before which orders should be anonymized.
+		 * @param int    $limit The maximum number of orders to process in each batch.
+		 * @param string $status The status of the orders to be anonymized.
+		 * @param string $type The type of orders to be anonymized.
+		 */
 		return self::anonymize_orders_query(
 			apply_filters(
 				'woocommerce_anonymize_refunded_orders_query_args',
