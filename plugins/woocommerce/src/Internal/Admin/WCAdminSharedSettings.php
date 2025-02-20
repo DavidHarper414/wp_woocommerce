@@ -86,7 +86,6 @@ class WCAdminSharedSettings {
 	protected function get_deprecated_properties() {
 		return array(
 			'admin.onboarding' => null,
-			'admin.visibleTaskListIds' => null,
 		);
 	}
 
