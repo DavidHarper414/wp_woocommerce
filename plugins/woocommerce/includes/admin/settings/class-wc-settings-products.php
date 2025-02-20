@@ -364,7 +364,7 @@ class WC_Settings_Products extends WC_Settings_Page {
 				array(
 					'title'         => __( 'Customer notifications', 'woocommerce' ),
 					'desc'          => __( 'Enable back in stock notifications for customers', 'woocommerce' ),
-					'id'            => 'wc_feature_woocommerce_back_in_stock_notifications_enabled', // This is manually synchronized with the option `wc_feature_woocommerce_back_in_stock_notifications_enabled` used by Packages.php. Ugly.
+					'id'            => 'wc_feature_woocommerce_back_in_stock_notifications_enabled',
 					'default'       => 'yes',
 					'type'          => 'checkbox',
 					'checkboxgroup' => 'start',
