@@ -148,10 +148,12 @@ export const setIsCustomerDataDirty = debounce(
 );
 
 /**
- * Controls whether to ignore sync events.
+ * Sets whether it should trigger the event to sync with the Interactivity API
+ * store. It's used to prevent emiting the `wc-blocks_store_sync_required`
+ * event and causing an infinite loop.
  */
-let ignoreSync = false;
-export const setIgnoreSync = ( value: boolean ) => {
-	ignoreSync = value;
+let triggerStoreSyncEvent = true;
+export const setTriggerStoreSyncEvent = ( value: boolean ) => {
+	triggerStoreSyncEvent = value;
 };
-export const getIgnoreSync = () => ignoreSync;
+export const getTriggerStoreSyncEvent = () => triggerStoreSyncEvent;

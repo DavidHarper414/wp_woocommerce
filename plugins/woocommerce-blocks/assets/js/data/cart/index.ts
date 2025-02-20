@@ -29,7 +29,8 @@ import {
 	isAddingToCart,
 } from './persistence-layer';
 import { defaultCartState } from './default-state';
-import { getIgnoreSync } from './utils';
+import { getTriggerStoreSyncEvent } from './utils';
+import type { QuantityChanges } from './notify-quantity-changes';
 
 export const config = {
 	reducer,
@@ -65,50 +66,19 @@ window.addEventListener( 'load', () => {
 // Pushes changes whenever the store is updated.
 subscribe( pushChanges, store );
 
-// Todo: remove
-function diffObjects(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	obj1: Record< string, any > | null,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	obj2: Record< string, any > | null,
-	path: string[] = []
-) {
-	if ( ! obj1 || ! obj2 ) return;
-	const allKeys = new Set( [
-		...Object.keys( obj1 ),
-		...Object.keys( obj2 ),
-	] );
-
-	for ( const key of allKeys ) {
-		const val1 = obj1[ key ];
-		const val2 = obj2[ key ];
-		const currentPath = [ ...path, key ];
-
-		if ( val1 === val2 ) continue; // Values are identical, nothing to log
-
-		if ( typeof val1 === 'object' && typeof val2 === 'object' ) {
-			diffObjects( val1, val2, currentPath ); // Recurse for nested objects
-		}
-	}
-}
-
-let previousCart: object | null = null;
-let id = 0;
-
 // Emmits event to sync iAPI store.
+let previousCart: object | null = null;
 subscribe( () => {
 	const cartData = select( STORE_KEY ).getCartData();
 	if (
-		! getIgnoreSync() &&
+		getTriggerStoreSyncEvent() === true &&
 		previousCart !== null &&
 		previousCart !== cartData
 	) {
-		// Todo: check why there are multiple updates of the cart on page load.
-		diffObjects( previousCart, cartData );
-
 		window.dispatchEvent(
-			new CustomEvent( 'wc-blocks_cart_sync_required', {
-				detail: { type: 'from_@wordpress/data', id },
+			// Question: What are the usual names for WooCommerce events?
+			new CustomEvent( 'wc-blocks_store_sync_required', {
+				detail: { type: 'from_@wordpress/data' },
 			} )
 		);
 	}
@@ -116,14 +86,14 @@ subscribe( () => {
 }, store );
 
 // Listens to cart sync events from the iAPI store.
-window.addEventListener( 'wc-blocks_cart_sync_required', ( event: Event ) => {
+window.addEventListener( 'wc-blocks_store_sync_required', ( event: Event ) => {
 	const customEvent = event as CustomEvent< {
 		type: string;
-		id: number;
+		quantityChanges: QuantityChanges;
 	} >;
-	if ( customEvent.detail.type === 'from_iAPI' ) {
-		// Todo: investigate how to avoid infinite loops without causing racing conditions.
-		wpDispatch( store ).syncCartWithIAPIStore();
+	const { type, quantityChanges } = customEvent.detail;
+	if ( type === 'from_iAPI' ) {
+		wpDispatch( store ).syncCartWithIAPIStore( quantityChanges );
 	}
 } );
 
