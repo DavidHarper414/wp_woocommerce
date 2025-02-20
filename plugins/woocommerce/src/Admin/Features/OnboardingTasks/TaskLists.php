@@ -463,7 +463,7 @@ class TaskLists {
 	 * @return array
 	 */
 	public static function task_list_preloaded_settings( $settings ) {
-		$settings['visibleTaskListIds'] = self::all_hidden() ? [] : array_keys(self::get_visible());
+		$settings['visibleTaskListIds']   = self::all_hidden() ? array() : array_keys( self::get_visible() );
 		$settings['completedTaskListIds'] = get_option( TaskList::COMPLETED_OPTION, array() );
 
 		return $settings;
