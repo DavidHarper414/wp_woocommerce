@@ -98,7 +98,6 @@ class ProductFilters extends AbstractBlock {
 		$wrapper_attributes = array(
 			'class'                            => $classes,
 			'data-wp-interactive'              => $this->get_full_block_name(),
-			'data-wp-watch--navigation'        => 'callbacks.maybeNavigate',
 			'data-wp-watch--scrolling'         => 'callbacks.scrollLimit',
 			'data-wp-on--keyup'                => 'actions.closeOverlayOnEscape',
 			'data-wp-router-region'            => $this->generate_navigation_id( $block ),
