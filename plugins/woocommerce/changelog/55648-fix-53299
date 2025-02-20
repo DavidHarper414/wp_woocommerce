@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Update coupon validation to correctly handle coupons with both brand and product restrictions.
