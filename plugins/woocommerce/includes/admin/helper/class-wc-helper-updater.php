@@ -731,7 +731,8 @@ class WC_Helper_Updater {
 
 	/**
 	 * Get the type of woo connect notice to be shown in the WC Settings and Marketplace pages.
-	 * - If a store is connected to woocommerce.com or has no installed woo plugins, return 'none'.
+	 * - If a store is connected to woocommerce.com return 'none'.
+	 * - If a store has no installed woo plugins, return 'new'.
 	 * - If a store has installed woo plugins but no updates, return 'short'.
 	 * - If a store has an installed woo plugin with update, return 'long'.
 	 *
@@ -745,7 +746,7 @@ class WC_Helper_Updater {
 		$woo_plugins = WC_Helper::get_local_woo_plugins();
 
 		if ( empty( $woo_plugins ) ) {
-			return 'none';
+			return 'new';
 		}
 
 		$update_data = self::get_update_data();

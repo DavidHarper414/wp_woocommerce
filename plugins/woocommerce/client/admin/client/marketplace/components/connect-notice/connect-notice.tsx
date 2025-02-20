@@ -65,6 +65,14 @@ export default function ConnectNotice(): JSX.Element | null {
 			),
 			formattedStoreName
 		),
+		new: sprintf(
+			/* translators: %s: store name set from the store settings, if not set, it will be "Your store" */
+			__(
+				'%s is not yet connected to a WooCommerce.com account. Please complete the connection to manage your subscriptions, install extensions, and get streamlined support.',
+				'woocommerce'
+			),
+			formattedStoreName
+		),
 	};
 
 	const description = noticeText[ noticeType ];
