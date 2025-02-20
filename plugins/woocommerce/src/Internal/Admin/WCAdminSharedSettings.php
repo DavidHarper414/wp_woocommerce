@@ -81,6 +81,8 @@ class WCAdminSharedSettings {
 	 *
 	 * Set value to null to use the default message or provide a custom message.
 	 *
+	 * Nested properties can be defined using dot notation.
+	 *
 	 * @return array
 	 */
 	protected function get_deprecated_properties() {
