@@ -318,15 +318,6 @@ class DefaultFreeExtensions {
 						'operation' => '=',
 					),
 					array(
-						'type'    => 'not',
-						'operand' => array(
-							array(
-								'type'    => 'plugins_activated',
-								'plugins' => array( 'woocommerce-shipping' ),
-							),
-						),
-					),
-					array(
 						'type'     => 'or',
 						'operands' => array(
 							array(
