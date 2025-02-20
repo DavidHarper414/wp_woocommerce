@@ -323,16 +323,17 @@ class RemoteLogger extends \WC_Log_Handler {
 			return false;
 		}
 
+		$wc_plugin_dir = StringUtil::normalize_local_path_slashes( WC_ABSPATH );
+
+		// Check if the error message contains the WooCommerce plugin directory.
+		if ( str_contains( $message, $wc_plugin_dir ) ) {
+			return false;
+		}
+
 		// Without a backtrace, it's impossible to ascertain if the error is third-party. To avoid logging numerous irrelevant errors, we'll consider it a third-party error and ignore it.
 		if ( isset( $context['backtrace'] ) && is_array( $context['backtrace'] ) ) {
-			$wc_plugin_dir   = StringUtil::normalize_local_path_slashes( WC_ABSPATH );
 			$wp_includes_dir = StringUtil::normalize_local_path_slashes( ABSPATH . WPINC );
 			$wp_admin_dir    = StringUtil::normalize_local_path_slashes( ABSPATH . 'wp-admin' );
-
-			// Check if the error message contains the WooCommerce plugin directory.
-			if ( str_contains( $message, $wc_plugin_dir ) ) {
-				return false;
-			}
 
 			// Find the first relevant frame that is not from WordPress core and not empty.
 			$relevant_frame = null;
