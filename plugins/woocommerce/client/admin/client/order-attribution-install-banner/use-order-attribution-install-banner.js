@@ -68,7 +68,7 @@ const shouldPromoteOrderAttribution = (
  * A utility hook designed specifically for the order attribution install banner,
  * which determines if the banner should be displayed, checks if it has been dismissed, and provides a function to dismiss it.
  */
-export const useOrderAttributionInstallBanner = () => {
+export const useOrderAttributionInstallBanner = ( { isInstalling } ) => {
 	const { updateOptions } = useDispatch( optionsStore );
 	const { currentUserCan } = useUser();
 
@@ -157,6 +157,10 @@ export const useOrderAttributionInstallBanner = () => {
 			return false;
 		}
 
+		if ( isInstalling ) {
+			return true;
+		}
+
 		const isPluginInstalled = [ 'installed', 'activated' ].includes(
 			orderAttributionInstallState
 		);
@@ -175,6 +179,7 @@ export const useOrderAttributionInstallBanner = () => {
 		orderAttributionInstallState,
 		remoteVariantAssignment,
 		percentages,
+		isInstalling,
 	] );
 
 	return {

@@ -59,9 +59,9 @@ export const OrderAttributionInstallBanner = ( {
 	description = '',
 	buttonText = '',
 } ) => {
-	const { isDismissed, dismiss, shouldShowBanner } =
-		useOrderAttributionInstallBanner();
 	const [ isInstalling, setIsInstalling ] = useState( false );
+	const { isDismissed, dismiss, shouldShowBanner } =
+		useOrderAttributionInstallBanner( { isInstalling } );
 	const { installAndActivatePlugins } = useDispatch( pluginsStore );
 
 	const onButtonClick = () => {
@@ -73,9 +73,8 @@ export const OrderAttributionInstallBanner = ( {
 
 		installAndActivatePlugins( [ WC_ANALYTICS_PLUGIN_SLUG ] )
 			.then( ( response ) => {
-				createNoticesFromResponse( response );
 				window.location.href = WC_ANALYTICS_ORDER_ATTRIBUTION_ADMIN_URL;
-				setIsInstalling( false );
+				createNoticesFromResponse( response );
 			} )
 			.catch( ( error ) => {
 				createNoticesFromResponse( error );
