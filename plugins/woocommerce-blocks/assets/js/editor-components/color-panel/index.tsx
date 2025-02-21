@@ -4,6 +4,7 @@
  */
 import { useMemo, RefObject } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
+import { getElementBackgroundColor } from '@woocommerce/utils';
 import {
 	store as blockEditorStore,
 	getColorClassName,
@@ -110,26 +111,6 @@ const createSettings = (
 	);
 };
 
-// @TODO Move this to a shared utility if it's needed in more places
-const getBackgroundColor = ( element: HTMLElement ): string => {
-	while ( element ) {
-		const bgColor = window.getComputedStyle( element ).backgroundColor;
-
-		if (
-			bgColor &&
-			bgColor !== 'rgba(0, 0, 0, 0)' &&
-			bgColor !== 'transparent'
-		) {
-			return bgColor;
-		}
-
-		element = element.parentElement as HTMLElement;
-	}
-
-	// White as default background color
-	return 'rgb(255, 255, 255)';
-};
-
 export const ColorPanel = ( {
 	colorTypes,
 	miniCartButtonRef,
@@ -184,9 +165,9 @@ export const ColorPanel = ( {
 				return;
 			}
 
-			const bgColor = getBackgroundColor( miniCartButtonRef.current );
-			// @TODO Calling a component directly is not recommended.
-			// But how to know if it will return null before rendering it?
+			const bgColor = getElementBackgroundColor(
+				miniCartButtonRef.current
+			);
 			const message = ContrastChecker( {
 				backgroundColor: bgColor,
 				textColor: setting.colorValue,
