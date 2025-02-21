@@ -71,34 +71,11 @@ class WCAdminSharedSettings {
 					return apply_filters( 'woocommerce_admin_shared_settings', array() );
 				}
 			);
-			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_deprecation_scripts' ) );
-		}
-	}
 
-	/**
-	 * Return the deprecated wcSettings properties.
-	 *
-	 * Set value to null to use the default message or provide a custom message.
-	 *
-	 * Nested properties can be defined using dot notation.
-	 *
-	 * @return array
-	 */
-	protected function get_deprecated_properties() {
-		return array(
-			'admin.onboarding' => null,
-		);
-	}
-
-	/**
-	 * Enqueue deprecation scripts (client/wp-admin-scripts/wcsettings-deprecation/index.js)
-	 */
-	public function enqueue_deprecation_scripts() {
-		$deprecated_properties = $this->get_deprecated_properties();
-		if ( empty( $deprecated_properties ) ) {
-			return;
+			add_action( 'admin_enqueue_scripts', function() {
+				// Enqueue deprecation scripts (client/wp-admin-scripts/wcsettings-deprecation/index.js).
+				WCAdminAssets::register_script( 'wp-admin-scripts', 'wcsettings-deprecation', true );
+			} );
 		}
-		WCAdminAssets::register_script( 'wp-admin-scripts', 'wcsettings-deprecation', true );
-		wp_add_inline_script( 'wc-admin-wcsettings-deprecation', 'var deprecatedWcSettings = ' . wp_json_encode( $deprecated_properties ) . ';', 'before' );
 	}
 }
