@@ -119,7 +119,7 @@ jobs:
           with:
               issue-number: ${{ github.event.pull_request.number }}
               comment-author: 'github-actions[bot]'
-              body-includes: please make sure to review the testing instructions
+              body-includes: Apart from reviewing the code changes
 
         - name: Create or update PR comment asking for reviewers to review the testing instructions and test coverage
           uses: peter-evans/create-or-update-comment@67dcc547d311b736a8e6c5c236542148a47adc3d
@@ -133,8 +133,8 @@ jobs:
                   Apart from reviewing the code changes, please make sure to **review the testing instructions** ([Guide](https://github.com/woocommerce/woocommerce/wiki/Writing-high-quality-testing-instructions)) and verify that relevant tests (E2E, Unit, Integration, etc.) have been added or updated as needed.
                   
                   **Reminder:** PR reviewers are required to document testing performed. This includes:
-                  - 🖼️ **Screenshots or screen recordings** (for visual changes).
-                  - 📝 **List of functionality tested / steps followed.**
+                  - 🖼️ **Screenshots or screen recordings**.
+                  - 📝 **List of functionality tested / steps followed**.
                   - 🌐 **Site details** (environment attributes such as hosting type, plugins, theme, store size, store age, and relevant settings).
                   - 🔍 **Any analysis performed**, such as assessing potential impacts on environment attributes and other plugins, conducting performance profiling, or using LLM/AI-based analysis.         
               edit-mode: replace
