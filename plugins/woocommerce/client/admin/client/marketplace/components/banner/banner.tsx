@@ -4,6 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { Button, Icon } from '@wordpress/components';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -49,6 +50,10 @@ export default function ProductFeaturedBanner() {
 	const handleDismiss = () => {
 		localStorage.setItem( 'wc_featuredBannerDismissed', 'true' );
 		setIsDismissed( true );
+
+		recordEvent( 'marketplace_features_banner_dismissed', {
+			active_slide: activeIndex,
+		} );
 	};
 
 	if ( isDismissed ) return null;
