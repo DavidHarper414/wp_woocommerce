@@ -24,7 +24,7 @@ Closes Issue # .
 ## Screenshots or screen recordings:
 
 <!-- If this PR includes UI changes, please provide screenshots or a screen recording for clarity. -->
-<!-- This section can be removed if not applicable. -->
+<!-- This section can be removed if not applicable.  -->
 
 | Before | After |
 | ------ | ----- |
