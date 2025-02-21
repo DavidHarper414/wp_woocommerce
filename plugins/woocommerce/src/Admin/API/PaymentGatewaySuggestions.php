@@ -90,7 +90,7 @@ class PaymentGatewaySuggestions extends \WC_REST_Data_Controller {
 	 *
 	 * @return \WP_Error|boolean
 	 */
-	private function user_can_manage_woocommerce() {
+	public function user_can_manage_woocommerce() {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			return new \WP_Error( 'woocommerce_rest_invalid_user', __( 'You are not allowed to make this request.', 'woocommerce' ), array( 'status' => rest_authorization_required_code() ) );
 		}
