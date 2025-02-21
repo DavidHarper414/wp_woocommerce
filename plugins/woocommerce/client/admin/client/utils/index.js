@@ -138,6 +138,7 @@ export const useFullScreen = ( classes ) => {
  * {
  *  prop1: {
  *   prop2: 'Deprecation message'
+ *  }
  * }
  *
  * Once proxied, when you access obj.prop1.prop2, you will see a warning in the console.
