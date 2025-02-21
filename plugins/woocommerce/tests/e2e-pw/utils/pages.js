@@ -16,7 +16,7 @@ import { ADMIN_STATE_PATH } from '../playwright.config';
 
 export const BLOCKS_CHECKOUT_PAGE = {
 	name: 'blocks checkout',
-	slug: 'checkout-blocks',
+	slug: 'blocks-checkout',
 };
 
 export async function existsBlocksCheckoutPage() {
