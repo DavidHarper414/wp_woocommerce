@@ -22,6 +22,7 @@ export function createWcSettingsDeprecationProxy( obj, path = '' ) {
 
 			const warningMessage = getWcSettingsDeprecationMessage( fullPath );
 			if ( warningMessage ) {
+				// eslint-disable-next-line no-console
 				console.warn( warningMessage );
 			}
 

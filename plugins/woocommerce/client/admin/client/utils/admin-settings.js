@@ -44,7 +44,7 @@ export function getAdminSetting(
 			const warningMessage = window.deprecatedWcSettings[ key ]
 				? window.deprecatedWcSettings[ key ]
 				: `Deprecated: ${ name } has been deprecated. This value will be removed soon.`;
-
+			// eslint-disable-next-line no-console
 			console.warn( warningMessage );
 		}
 	}
