@@ -8,6 +8,7 @@ use MailPoet\EmailEditor\Engine\Settings_Controller;
 use MailPoet\EmailEditor\Engine\Theme_Controller;
 use MailPoet\EmailEditor\Engine\User_Theme;
 use MailPoet\EmailEditor\EmailEditorContainer;
+use Automattic\WooCommerce\Internal\Admin\WCAdminAssets;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -32,19 +33,40 @@ class PageRenderer {
 			return;
 		}
 
+		// Load the email editor assets
+		$this->load_editor_assets($post);
+
+		// Load CSS from Post Editor
+		wp_enqueue_style('wp-edit-post');
+		// Load CSS for the format library - used for example in popover
+		wp_enqueue_style('wp-format-library');
+
+		// Enqueue media library scripts
+		wp_enqueue_media();
+
+		$this->preload_rest_api_data($post);
+
+		require_once ABSPATH . 'wp-admin/admin-header.php';
+		echo '<div id="mailpoet-email-editor" class="block-editor block-editor__container hide-if-no-js"></div>';
+	}
+
+	private function load_editor_assets(\WP_Post $post): void {
+		// Load the email editor integration script
+		// located in plugins/woocommerce/client/admin/client/wp-admin-scripts/email-editor-integration/index.ts
+		WCAdminAssets::register_script( 'wp-admin-scripts', 'email-editor-integration', true );
+
 		$emailEditorAssetsPath = WC_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'email-editor/';
 		$emailEditorAssetsUrl = WC()->plugin_url() . '/' . WC_ADMIN_DIST_JS_FOLDER . 'email-editor/';
 
-
 		// Email editor rich text JS - Because the Personalization Tags depend on Gutenberg 19.8.0 and higher
 		// the following code replaces used Rich Text for the version containing the necessary changes.
-		$assetsParams = require $emailEditorAssetsPath . 'rich-text.asset.php';
+		$richTextAssetsParams = require $emailEditorAssetsPath . 'rich-text.asset.php';
 		wp_deregister_script('wp-rich-text');
 		wp_enqueue_script(
 			'wp-rich-text',
 			$emailEditorAssetsUrl . 'rich-text.js',
-			$assetsParams['dependencies'],
-			$assetsParams['version'],
+			$richTextAssetsParams['dependencies'],
+			$richTextAssetsParams['version'],
 			true
 		);
 		// End of replacing Rich Text package.
@@ -71,7 +93,7 @@ class PageRenderer {
 			'mailpoet_email_editor',
 			'MailPoetEmailEditor',
 			[
-				'current_post_type' => esc_js($currentPostType),
+				'current_post_type' => esc_js($post->post_type),
 				'current_post_id' => $post->ID,
 				'current_wp_user_email' => esc_js($currentUserEmail),
 				'editor_settings' => $this->settingsController->get_settings(),
@@ -83,19 +105,6 @@ class PageRenderer {
 				],
 			]
 		);
-
-		// Load CSS from Post Editor
-		wp_enqueue_style('wp-edit-post');
-		// Load CSS for the format library - used for example in popover
-		wp_enqueue_style('wp-format-library');
-
-		// Enqueue media library scripts
-		wp_enqueue_media();
-
-		$this->preload_rest_api_data($post);
-
-		require_once ABSPATH . 'wp-admin/admin-header.php';
-		echo '<div id="mailpoet-email-editor" class="block-editor block-editor__container hide-if-no-js"></div>';
 	}
 
 	private function preload_rest_api_data(\WP_Post $post): void {

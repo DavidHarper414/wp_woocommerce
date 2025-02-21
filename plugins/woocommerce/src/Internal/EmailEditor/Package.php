@@ -8,6 +8,12 @@ use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * This class is used to initialize the email editor package.
+ *
+ * It is a wrapper around the MailPoet\EmailEditor\Package class and
+ * ensures that the email editor package is only initialized if the block editor feature flag is enabled.
+ */
 class Package {
 	/**
 	 * Version.
