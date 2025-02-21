@@ -4,7 +4,7 @@
 import { Button, Card, CardBody } from '@wordpress/components';
 import { useDispatch } from '@wordpress/data';
 import { useEffect, useCallback, useState } from '@wordpress/element';
-import { plugins, external } from '@wordpress/icons';
+import { plugins } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { Text } from '@woocommerce/experimental';
 import { recordEvent } from '@woocommerce/tracks';
@@ -187,7 +187,6 @@ export const OrderAttributionInstallBanner = ( {
 							className={ isSmallBanner ? 'small' : '' }
 							variant={ isSmallBanner ? 'secondary' : 'primary' }
 							onClick={ onButtonClick }
-							icon={ isSmallBanner ? external : null }
 							iconPosition={ isSmallBanner ? 'right' : null }
 							isBusy={ isInstalling }
 							disabled={ isInstalling }
