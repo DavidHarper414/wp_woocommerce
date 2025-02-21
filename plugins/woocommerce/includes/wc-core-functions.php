@@ -1212,11 +1212,31 @@ function wc_fix_rewrite_rules( $rules ) {
 
 	// Fix the rewrite rules when the product permalink have %product_cat% flag.
 	if ( preg_match( '`/(.+)(/%product_cat%)`', $permalinks['product_rewrite_slug'], $matches ) ) {
+		$new_rules = array();
+		
 		foreach ( $rules as $rule => $rewrite ) {
-			if ( preg_match( '`^' . preg_quote( $matches[1], '`' ) . '/\(`', $rule ) && preg_match( '/^(index\.php\?product_cat)(?!(.*product))/', $rewrite ) ) {
-				unset( $rules[ $rule ] );
+			// Add our new rule for numeric slugs before the general product rule
+			if ( strpos( $rule, '/([^/]+)(?:/([0-9]+))?/?$' ) !== false && 
+				 strpos( $rewrite, '?product_cat=' ) !== false ) {
+				// Add specific rule for numeric product slugs that won't be interpreted as pagination
+				$numeric_rule = str_replace(
+					'/([^/]+)(?:/([0-9]+))?/?$',
+					'/([0-9]+)/?$',
+					$rule
+				);
+				$numeric_rewrite = str_replace(
+					'&page=$matches[2]',
+					'',
+					$rewrite
+				);
+				$new_rules[$numeric_rule] = $numeric_rewrite;
 			}
+			
+			// Keep the original rule
+			$new_rules[$rule] = $rewrite;
 		}
+		
+		$rules = $new_rules;
 	}
 
 	// If the shop page is used as the base, we need to handle shop page subpages to avoid 404s.
@@ -1225,24 +1245,26 @@ function wc_fix_rewrite_rules( $rules ) {
 	}
 
 	$shop_page_id = wc_get_page_id( 'shop' );
-	if ( $shop_page_id ) {
-		$page_rewrite_rules = array();
-		$subpages           = wc_get_page_children( $shop_page_id );
-
-		// Subpage rules.
-		foreach ( $subpages as $subpage ) {
-			$uri                                = get_page_uri( $subpage );
-			$page_rewrite_rules[ $uri . '/?$' ] = 'index.php?pagename=' . $uri;
-			$wp_generated_rewrite_rules         = $wp_rewrite->generate_rewrite_rules( $uri, EP_PAGES, true, true, false, false );
-			foreach ( $wp_generated_rewrite_rules as $key => $value ) {
-				$wp_generated_rewrite_rules[ $key ] = $value . '&pagename=' . $uri;
-			}
-			$page_rewrite_rules = array_merge( $page_rewrite_rules, $wp_generated_rewrite_rules );
-		}
-
-		// Merge with rules.
-		$rules = array_merge( $page_rewrite_rules, $rules );
+	if ( ! $shop_page_id ) {
+		return $rules;
 	}
+
+	$page_rewrite_rules = array();
+	$subpages           = wc_get_page_children( $shop_page_id );
+
+	// Subpage rules.
+	foreach ( $subpages as $subpage ) {
+		$uri                                = get_page_uri( $subpage );
+		$page_rewrite_rules[ $uri . '/?$' ] = 'index.php?pagename=' . $uri;
+		$wp_generated_rewrite_rules         = $wp_rewrite->generate_rewrite_rules( $uri, EP_PAGES, true, true, false, false );
+		foreach ( $wp_generated_rewrite_rules as $key => $value ) {
+			$wp_generated_rewrite_rules[ $key ] = $value . '&pagename=' . $uri;
+		}
+		$page_rewrite_rules = array_merge( $page_rewrite_rules, $wp_generated_rewrite_rules );
+	}
+
+	// Merge with rules.
+	$rules = array_merge( $page_rewrite_rules, $rules );
 
 	return $rules;
 }
@@ -2686,3 +2708,4 @@ function wc_cache_get_multiple( $keys, $group = '', $force = false ) {
 	}
 	return $values;
 }
+
