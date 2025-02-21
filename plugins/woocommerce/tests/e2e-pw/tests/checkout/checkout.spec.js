@@ -26,41 +26,45 @@ const checkoutPages = [
 	BLOCKS_CHECKOUT_PAGE,
 ];
 
+async function updateValue( api, path, desiredValue ) {
+	await api.put( path, { value: desiredValue } );
+}
+
+async function updateIfNeeded( api, path, desiredValue ) {
+	const initialValue = await api.get( path ).data.value;
+	if ( initialValue !== desiredValue ) {
+		await updateValue( api, path, desiredValue );
+	}
+	return { initial: initialValue, updated: desiredValue };
+}
+
+async function resetValue( api, path, values ) {
+	if ( values.initial !== values.updated ) {
+		await updateValue( api, path, values.initial );
+	}
+}
+
 const test = baseTest.extend( {
 	page: async ( { page, api }, use ) => {
 		await createBlocksCheckoutPage( page.context().browser() );
 
-		// get the current value of woocommerce_enable_checkout_login_reminder
-		const loginAtCheckoutResponse = await api.get(
-			'settings/account/woocommerce_enable_checkout_login_reminder'
+		const calcTaxesState = await updateIfNeeded(
+			api,
+			'settings/general/woocommerce_calc_taxes',
+			'yes'
 		);
 
-		// enable the setting if it is not already enabled
-		const loginAtCheckoutInitialValue = loginAtCheckoutResponse.data.value;
-		if ( loginAtCheckoutInitialValue !== 'yes' ) {
-			await api.put(
-				'settings/account/woocommerce_enable_checkout_login_reminder',
-				{
-					value: 'yes',
-				}
-			);
-		}
-
-		// get the current value of woocommerce_enable_checkout_login_reminder
-		const signUpResponse = await api.get(
-			'settings/account/woocommerce_enable_signup_and_login_from_checkout'
+		const loginAtCheckoutState = await updateIfNeeded(
+			api,
+			'settings/account/woocommerce_enable_checkout_login_reminder',
+			'yes'
 		);
 
-		// enable the setting if it is not already enabled
-		const signUpInitialValue = signUpResponse.data.value;
-		if ( signUpInitialValue !== 'yes' ) {
-			await api.put(
-				'settings/account/woocommerce_enable_signup_and_login_from_checkout',
-				{
-					value: 'yes',
-				}
-			);
-		}
+		const signUpAtCheckoutState = await updateIfNeeded(
+			api,
+			'settings/account/woocommerce_enable_signup_and_login_from_checkout',
+			'yes'
+		);
 
 		// Check id COD payment is enabled and enable it if it is not
 		const codResponse = await api.get( 'payment_gateways/cod' );
@@ -86,23 +90,24 @@ const test = baseTest.extend( {
 		await use( page );
 
 		// revert the settings to initial state
-		if ( loginAtCheckoutInitialValue !== 'yes' ) {
-			await api.put(
-				'settings/account/woocommerce_enable_checkout_login_reminder',
-				{
-					value: loginAtCheckoutInitialValue,
-				}
-			);
-		}
 
-		if ( signUpInitialValue !== 'yes' ) {
-			await api.put(
-				'settings/account/woocommerce_enable_signup_and_login_from_checkout',
-				{
-					value: signUpInitialValue,
-				}
-			);
-		}
+		await resetValue(
+			api,
+			'settings/general/woocommerce_calc_taxes',
+			calcTaxesState
+		);
+
+		await resetValue(
+			api,
+			'settings/general/woocommerce_enable_checkout_login_reminder',
+			loginAtCheckoutState
+		);
+
+		await resetValue(
+			api,
+			'settings/general/woocommerce_enable_signup_and_login_from_checkout',
+			signUpAtCheckoutState
+		);
 
 		if ( ! codEnabled ) {
 			await api.put( 'payment_gateways/cod', {
