@@ -228,7 +228,6 @@ import { ProductCategorySelectors } from './product-categories/types';
 import { ProductAttributeTermsSelectors } from './product-attribute-terms/types';
 import { ProductVariationSelectors } from './product-variations/types';
 import { TaxClassSelectors } from './tax-classes/types';
-import { ProductFormSelectors } from './product-form/selectors';
 
 // As we add types to all the package selectors we can fill out these unknown types with real ones. See one
 // of the already typed selectors for an example of how you can do this.
