@@ -4,7 +4,6 @@
 import { Text } from '@woocommerce/experimental';
 import interpolateComponents from '@automattic/interpolate-components';
 import { Link } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/settings';
 import { recordEvent } from '@woocommerce/tracks';
 
 interface TextProps {
@@ -53,7 +52,7 @@ export const TrackedLink: React.FC< TrackedLinkProps > = ( {
 							} else {
 								recordEvent( eventName );
 							}
-							window.location.href = getAdminLink( targetUrl );
+							window.location.href = targetUrl;
 							return false;
 						} }
 						href=""

@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { check, commentContent, shield, people } from '@wordpress/icons';
-import { createInterpolateElement } from '@wordpress/element';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -11,30 +11,58 @@ import { createInterpolateElement } from '@wordpress/element';
 import './footer.scss';
 import IconWithText from '../icon-with-text/icon-with-text';
 import { MARKETPLACE_HOST } from '../constants';
+import { TrackedLink } from '../../../components/tracked-link/tracked-link';
 
-export const refundPolicyTitle = createInterpolateElement(
-	__( '30-day <a>money-back guarantee</a>', 'woocommerce' ),
-	{
-		// eslint-disable-next-line jsx-a11y/anchor-has-content
-		a: <a href={ MARKETPLACE_HOST + '/refund-policy/' } />,
-	}
-);
+export const refundPolicyTitle = ( location: string ) => {
+	return (
+		<TrackedLink
+			targetUrl={ MARKETPLACE_HOST + '/refund-policy/' }
+			onClickCallback={ () =>
+				recordEvent( `marketplace_${ location }_link_click`, {
+					feature_clicked: 'money_back_guarantee',
+				} )
+			}
+			message={ __(
+				'30-day {{Link}}money-back guarantee{{/Link}}',
+				'woocommerce'
+			) }
+		/>
+	);
+};
 
-export const supportTitle = createInterpolateElement(
-	__( '<a>Get help</a> when you need it', 'woocommerce' ),
-	{
-		// eslint-disable-next-line jsx-a11y/anchor-has-content
-		a: <a href={ MARKETPLACE_HOST + '/docs/' } />,
-	}
-);
+export const supportTitle = ( location: string ) => {
+	return (
+		<TrackedLink
+			targetUrl={ MARKETPLACE_HOST + '/docs/' }
+			onClickCallback={ () =>
+				recordEvent( `marketplace_${ location }_link_click`, {
+					feature_clikced: 'get_help',
+				} )
+			}
+			message={ __(
+				'{{Link}}Get help{{/Link}} when you need it',
+				'woocommerce'
+			) }
+		/>
+	);
+};
 
-export const paymentTitle = createInterpolateElement(
-	__( '<a>Products</a> you can trust', 'woocommerce' ),
-	{
-		// eslint-disable-next-line jsx-a11y/anchor-has-content
-		a: <a href={ MARKETPLACE_HOST + '/products/' } />,
-	}
-);
+export const paymentTitle = ( location: string ) => {
+	return (
+		<TrackedLink
+			targetUrl={ MARKETPLACE_HOST + '/products/' }
+			onClickCallback={ () =>
+				recordEvent( `marketplace_${ location }_link_click`, {
+					feature_clikced: 'products_you_can_trust',
+				} )
+			}
+			message={ __(
+				'{{Link}}Products{{/Link}} you can trust',
+				'woocommerce'
+			) }
+		/>
+	);
+};
 
 function FooterContent(): JSX.Element {
 	return (
@@ -48,7 +76,7 @@ function FooterContent(): JSX.Element {
 			<div className="woocommerce-marketplace__footer-columns">
 				<IconWithText
 					icon={ check }
-					title={ refundPolicyTitle }
+					title={ refundPolicyTitle( 'footer' ) }
 					description={ __(
 						"If you change your mind within 30 days of your purchase, we'll give you a full refund — hassle-free.",
 						'woocommerce'
@@ -56,7 +84,7 @@ function FooterContent(): JSX.Element {
 				/>
 				<IconWithText
 					icon={ commentContent }
-					title={ supportTitle }
+					title={ supportTitle( 'footer' ) }
 					description={ __(
 						'With detailed documentation and a global support team, help is always available if you need it.',
 						'woocommerce'
@@ -64,7 +92,7 @@ function FooterContent(): JSX.Element {
 				/>
 				<IconWithText
 					icon={ shield }
-					title={ paymentTitle }
+					title={ paymentTitle( 'footer' ) }
 					description={ __(
 						'Everything in the Marketplace has been built by our own team or by our trusted partners, so you can be sure of its quality.',
 						'woocommerce'
