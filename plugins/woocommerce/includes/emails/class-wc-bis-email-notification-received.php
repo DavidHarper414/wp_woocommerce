@@ -332,8 +332,8 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 			$placeholder_keys = (array) apply_filters(
 				'woocommerce_bis_notification_email_placeholders',
 				array(
-					'{site_title}',
-					'{product_name}',
+					'site_title',
+					'product_name',
 				)
 			);
 
