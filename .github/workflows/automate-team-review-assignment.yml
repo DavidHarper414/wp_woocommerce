@@ -136,5 +136,6 @@ jobs:
                   - 🖼️ **Screenshots or screen recordings**.
                   - 📝 **List of functionality tested / steps followed**.
                   - 🌐 **Site details** (environment attributes such as hosting type, plugins, theme, store size, store age, and relevant settings).
-                  - 🔍 **Any analysis performed**, such as assessing potential impacts on environment attributes and other plugins, conducting performance profiling, or using LLM/AI-based analysis.         
+                  - 🔍 **Any analysis performed**, such as assessing potential impacts on environment attributes and other plugins, conducting performance profiling, or using LLM/AI-based analysis.
+                  ⚠️ Within the testing details you provide, please ensure that no sensitive information (such as API keys, passwords, user data, etc.) is included in this public issue.
               edit-mode: replace
