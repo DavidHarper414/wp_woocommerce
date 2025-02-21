@@ -189,6 +189,11 @@ class WC_Frontend_Scripts {
 		$version = Constants::get_constant( 'WC_VERSION' );
 
 		$register_scripts = array(
+			'mini-cart-drawer'           => array(
+				'src'     => self::get_asset_url( 'assets/js/frontend/mini-cart-drawer' . $suffix . '.js' ),
+				'deps'    => array( 'jquery' ),
+				'version' => $version,
+			),
 			'flexslider'                 => array(
 				'src'     => self::get_asset_url( 'assets/js/flexslider/jquery.flexslider' . $suffix . '.js' ),
 				'deps'    => array( 'jquery' ),
@@ -422,6 +427,10 @@ class WC_Frontend_Scripts {
 				add_action( 'wp_footer', 'woocommerce_photoswipe' );
 			}
 			self::enqueue_script( 'wc-single-product' );
+		}
+
+		if ( is_product() ) {
+			self::enqueue_script( 'mini-cart-drawer' );
 		}
 
 		// Only enqueue the geolocation script if the Default Current Address is set to "Geolocate
