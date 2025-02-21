@@ -429,7 +429,8 @@ class WC_Frontend_Scripts {
 			self::enqueue_script( 'wc-single-product' );
 		}
 
-		if ( is_product() ) {
+		// Load Mini Cart drawer script on single product pages only.
+		if ( is_product() && 'yes' === get_option( 'woocommerce_enable_ajax_add_to_cart' ) ) {
 			self::enqueue_script( 'mini-cart-drawer' );
 		}
 
