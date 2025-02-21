@@ -21,7 +21,7 @@ on:
         required: false
       wc-version:
         type: string
-        description: 'If you want to test against a specific WC version, provide it here. Available versions: https://github.com/woocommerce/woocommerce/releases'
+        description: 'Optional. Only for `on-demand` or `custom` triggers. Most jobs (wp-env) ignore this. Available WC versions: https://github.com/woocommerce/woocommerce/releases'
         required: false
 
 jobs:
