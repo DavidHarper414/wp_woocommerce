@@ -155,17 +155,14 @@ test( 'can add custom product attributes', async ( { page, product } ) => {
 	}
 
 	await test.step( 'Update product', async () => {
-		// "Update" triggers a lot of requests. Wait for the final one to complete before proceeding.
-		// Otherwise, succeeding steps would be flaky.
-		const finalRequestResolution = page.waitForResponse( ( response ) =>
-			response.url().includes( 'options' )
-		);
 		await page
 			.locator( '#publishing-action' )
 			.getByRole( 'button', { name: 'Update' } )
 			.click();
 
-		await finalRequestResolution;
+		await expect(
+			page.locator( '.notice-success', { name: 'Product updated' } )
+		).toBeVisible();
 	} );
 
 	await goToAttributesTab( page );
