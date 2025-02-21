@@ -31,7 +31,7 @@ async function updateValue( api, path, desiredValue ) {
 }
 
 async function updateIfNeeded( api, path, desiredValue ) {
-	const initialValue = await api.get( path ).data.value;
+	const initialValue = await api.get( path ).then( ( r ) => r.data.value );
 	if ( initialValue !== desiredValue ) {
 		await updateValue( api, path, desiredValue );
 	}
