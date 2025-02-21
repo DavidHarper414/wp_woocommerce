@@ -24,7 +24,7 @@ on:
         default: 'default'
         type: string
       wc-version:
-        description: 'Specific WooCommerce version to test against.'
+        description: 'Specific WooCommerce version to install by the test jobs supporting it'
         required: false
         type: string
 
