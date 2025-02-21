@@ -1,0 +1,4 @@
+Significance: patch
+Type: update
+
+Remove use of `wcSettings.admin.onboarding.currencySymbols`

@@ -17,6 +17,7 @@ const reducer: Reducer< CountriesState, Action > = (
 		locales: {},
 		countries: [],
 		geolocation: undefined,
+		currencies: {},
 	},
 	action
 ) => {
@@ -63,6 +64,21 @@ const reducer: Reducer< CountriesState, Action > = (
 				errors: {
 					...state.errors,
 					geolocation: action.error,
+				},
+			};
+			break;
+		case TYPES.GET_CURRENCIES_SUCCESS:
+			state = {
+				...state,
+				currencies: action.currencies,
+			};
+			break;
+		case TYPES.GET_CURRENCIES_ERROR:
+			state = {
+				...state,
+				errors: {
+					...state.errors,
+					currencies: action.error,
 				},
 			};
 			break;

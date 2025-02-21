@@ -41,6 +41,9 @@ export type CountriesState = {
 	locales: Locales;
 	countries: Country[];
 	geolocation: GeolocationResponse | undefined;
+	currencySymbols: {
+		[ key: string ]: string;
+	};
 };
 
 /**

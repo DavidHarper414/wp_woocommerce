@@ -23,3 +23,7 @@ export const getCountry = ( state: CountriesState, code: string ) => {
 export const geolocate = ( state: CountriesState ) => {
 	return state.geolocation;
 };
+
+export const getCurrencies = ( state: CountriesState ) => {
+	return state.currencies;
+};

@@ -46,6 +46,30 @@ export function geolocationError( error: unknown ) {
 	};
 }
 
+export function getCurrenciesSuccess( currencies: {
+	[ key: string ]: {
+		code: string;
+		symbol: string;
+		symbolPosition?: string;
+		decimalSeparator?: string;
+		priceFormat?: string;
+		thousandSeparator?: string;
+		precision?: number;
+	};
+} ) {
+	return {
+		type: TYPES.GET_CURRENCIES_SUCCESS as const,
+		currencies,
+	};
+}
+
+export function getCurrenciesError( error: unknown ) {
+	return {
+		type: TYPES.GET_CURRENCIES_ERROR as const,
+		error,
+	};
+}
+
 export type Action = ReturnType<
 	| typeof getLocalesSuccess
 	| typeof getLocalesError

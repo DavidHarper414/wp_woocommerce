@@ -43,6 +43,13 @@ class WC_REST_Data_Currencies_Controller extends WC_REST_Data_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'args'                => array(
+						'include_extra' => array(
+							'description' => __( 'Include currency_position, thousand_separator, decimal_separator, and number_of_decimals.', 'woocommerce' ),
+							'type'        => 'boolean',
+							'default'     => false,
+						),
+					),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
@@ -110,10 +117,39 @@ class WC_REST_Data_Currencies_Controller extends WC_REST_Data_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$currencies = get_woocommerce_currencies();
-		$data       = array();
+		$currencies    = get_woocommerce_currencies();
+		$symbols       = get_woocommerce_currency_symbols();
+		$include_extra = $request['include_extra'] ?? false;
+		if ( $include_extra ) {
+			$locale_info = include WC()->plugin_path() . '/i18n/locale-info.php';
+			// Convert it to have the following format
+			// array(
+			// 'USD' => array(
+			// 'currency_code' => 'USD',
+			// 'currency_symbol' => '$',
+			// 'currency_position' => 'left',
+			// 'thousand_separator' => ',',
+			// 'decimal_separator' => '.',
+			// 'number_of_decimals' => 2,
+			// ),
+			// );
+			$locale_info = array_combine( array_column( $locale_info, 'currency_code' ), array_values( $locale_info ) );
+		}
+
+		$data = array();
 		foreach ( array_keys( $currencies ) as $code ) {
-			$currency = $this->get_currency( $code, $request );
+			$currency = array(
+				'code'   => $code,
+				'name'   => $currencies[ $code ],
+				'symbol' => $symbols[ $code ] ?? '',
+			);
+
+			if ( $include_extra && isset( $locale_info[ $code ] ) ) {
+				$currency['currency_position']  = $locale_info[ $code ]['currency_pos'];
+				$currency['thousand_separator'] = $locale_info[ $code ]['thousand_sep'];
+				$currency['decimal_separator']  = $locale_info[ $code ]['decimal_sep'];
+				$currency['number_of_decimals'] = intval( $locale_info[ $code ]['num_decimals'] );
+			}
 			$response = $this->prepare_item_for_response( $currency, $request );
 			$data[]   = $this->prepare_response_for_collection( $response );
 		}
@@ -202,23 +238,51 @@ class WC_REST_Data_Currencies_Controller extends WC_REST_Data_Controller {
 			'title'      => 'data_currencies',
 			'type'       => 'object',
 			'properties' => array(
-				'code'   => array(
+				'code'               => array(
 					'type'        => 'string',
 					'description' => __( 'ISO4217 currency code.', 'woocommerce' ),
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
-				'name'   => array(
+				'name'               => array(
 					'type'        => 'string',
 					'description' => __( 'Full name of currency.', 'woocommerce' ),
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
-				'symbol' => array(
+				'symbol'             => array(
 					'type'        => 'string',
 					'description' => __( 'Currency symbol.', 'woocommerce' ),
 					'context'     => array( 'view' ),
 					'readonly'    => true,
+				),
+				'currency_position'  => array(
+					'type'        => 'string',
+					'description' => __( 'Currency position. Available when `include_extra` is set to true.', 'woocommerce' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+					'required'    => false,
+				),
+				'thousand_separator' => array(
+					'type'        => 'string',
+					'description' => __( 'Thousand separator. Available when `include_extra` is set to true.', 'woocommerce' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+					'required'    => false,
+				),
+				'decimal_separator'  => array(
+					'type'        => 'string',
+					'description' => __( 'Decimal separator. Available when `include_extra` is set to true.', 'woocommerce' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+					'required'    => false,
+				),
+				'number_of_decimals' => array(
+					'type'        => 'integer',
+					'description' => __( 'Number of decimals. Available when `include_extra` is set to true.', 'woocommerce' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+					'required'    => false,
 				),
 			),
 		);
