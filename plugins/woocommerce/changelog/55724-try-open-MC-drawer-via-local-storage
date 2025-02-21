@@ -1,0 +1,4 @@
+Significance: minor
+Type: update
+
+This PR is a POC for using a local storage flag as a trigger to open the Mini Cart drawer.
