@@ -181,7 +181,7 @@ async function fillCheckoutBlocks( page, details = {}, type = 'shipping' ) {
 	if ( phone ) {
 		await page
 			.getByRole( 'group', { name: label[ type ] } )
-			.getByLabel( 'Phone', { exact: true } )
+			.getByRole( 'textbox', { name: 'Phone' } )
 			.fill( phone );
 	}
 }
