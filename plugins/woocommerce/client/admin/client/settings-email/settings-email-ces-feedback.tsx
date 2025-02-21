@@ -5,6 +5,7 @@ import { Button, TextareaControl, TextControl } from '@wordpress/components';
 import { isEmail } from '@wordpress/url';
 import { __ } from '@wordpress/i18n';
 import { useDispatch } from '@wordpress/data';
+import { useCallback, useEffect } from '@wordpress/element';
 import { STORE_KEY as CES_STORE_KEY } from '@woocommerce/customer-effort-score';
 
 /**
@@ -16,20 +17,18 @@ interface EmailCesFeedbackProps {
 	action: string;
 	description?: string;
 	question: string;
+	showOnLoad?: boolean;
 }
 
 export const EmailCesFeedback = ( {
 	action,
 	description,
 	question,
+	showOnLoad = false,
 }: EmailCesFeedbackProps ) => {
 	const { showCesModal } = useDispatch( CES_STORE_KEY );
 
-	if ( ! window.wcTracks?.isEnabled ) {
-		return null;
-	}
-
-	const handleFeedbackClick = () => {
+	const handleFeedbackClick = useCallback( () => {
 		showCesModal( {
 			action,
 			title: __( 'Share your experience', 'woocommerce' ),
@@ -103,16 +102,25 @@ export const EmailCesFeedback = ( {
 				return errors;
 			},
 		} );
-	};
+	}, [ action, question, showCesModal ] );
+
+	useEffect( () => {
+		if ( window.wcTracks?.isEnabled && showOnLoad ) {
+			handleFeedbackClick();
+		}
+	}, [ handleFeedbackClick, showOnLoad ] );
 
 	return (
-		<Button
-			variant="tertiary"
-			icon={ <FeedbackIcon /> }
-			iconSize={ 12 }
-			onClick={ handleFeedbackClick }
-		>
-			{ __( 'Help us improve', 'woocommerce' ) }
-		</Button>
+		window.wcTracks?.isEnabled &&
+		! showOnLoad && (
+			<Button
+				variant="tertiary"
+				icon={ <FeedbackIcon /> }
+				iconSize={ 12 }
+				onClick={ handleFeedbackClick }
+			>
+				{ __( 'Help us improve', 'woocommerce' ) }
+			</Button>
+		)
 	);
 };
