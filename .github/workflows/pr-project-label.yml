@@ -52,21 +52,25 @@ jobs:
     
               # Get list of changed files in the PR and filter to changelog files
               CHANGED_FILES=$(gh pr view "$PR_NUMBER" --json files -q '.files[].path' | grep '^plugins/woocommerce/changelog/' || true)
+
+              echo "changed files: $CHANGED_FILES"
     
               # Loop through only changed changelog files
               for FILE in $CHANGED_FILES; do
                 if [[ -f "$FILE" ]]; then
                   # Extract the type from file content
                   TYPE=$(grep -iE '^Type: (fix|add|update|tweak|enhancement|performance|dev)' "$FILE" | awk -F': ' '{print tolower($2)}' | head -n 1)
-    
+                  echo "type: $TYPE"
                   # Map the type to a label if it exists
                   LABEL="${LABEL_MAP[$TYPE]}"
+                  echo "label: $LABEL"
                   if [[ -n "$LABEL" && ! " ${APPLIED_LABELS[*]} " =~ " $LABEL " ]]; then
                     APPLIED_LABELS+=("$LABEL")
                   fi
                 fi
               done
-    
+
+              echo "APPLIED_LABELS: $APPLIED_LABELS"
               # Apply labels if any were found
               if [ ${#APPLIED_LABELS[@]} -ne 0 ]; then
                 echo "Applying labels: ${APPLIED_LABELS[*]}"
