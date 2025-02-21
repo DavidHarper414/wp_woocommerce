@@ -43,6 +43,7 @@ export async function createBlocksCheckoutPage( browser ) {
 		await fillPageTitle( page, BLOCKS_CHECKOUT_PAGE.name );
 		await insertBlockByShortcut( page, 'Checkout' );
 		await publishPage( page, BLOCKS_CHECKOUT_PAGE.name );
+		await page.close();
 		await context.close();
 	}
 }
