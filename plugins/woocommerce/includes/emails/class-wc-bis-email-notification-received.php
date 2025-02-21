@@ -13,13 +13,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 
+	include_once __DIR__ . '/interface-wc-bis-email-previewable.php';
+
 	/**
 	 * Notification Received email controller.
 	 *
 	 * @class    WC_BIS_Email_Notification_Received
 	 * @version  x.x.x
 	 */
-	class WC_BIS_Email_Notification_Received extends WC_Email {
+	class WC_BIS_Email_Notification_Received extends WC_Email implements WC_BIS_Email_Previewable {
 
 		/**
 		 * Constructor.
@@ -41,6 +43,22 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 		}
 
 		/**
+		 * Prepares the email based on the notification data.
+		 *
+		 * @since x.x.x
+		 * @param WC_BIS_Notification_Data $notification Notification.
+		 *
+		 * @return void
+		 */
+		public function prepare_email( WC_BIS_Notification_Data $notification ): void {
+			$this->object                         = $notification;
+			$this->recipient                      = $notification->get_user_email();
+			$product                              = $notification->get_product();
+			$this->placeholders['{product_name}'] = preg_replace( $this->plain_search, $this->plain_replace, $product->get_name() );
+			$this->placeholders['{site_title}']   = preg_replace( $this->plain_search, $this->plain_replace, $this->get_blogname() );
+		}
+
+		/**
 		 * Trigger the sending of this email.
 		 *
 		 * @param WC_BIS_Notification_Data|int $notification
@@ -58,11 +76,8 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 
 			$this->maybe_switch_locale( $notification );
 
-			$this->object                         = $notification;
-			$this->recipient                      = $notification->get_user_email();
-			$product                              = $notification->get_product();
-			$this->placeholders['{product_name}'] = preg_replace( $this->plain_search, $this->plain_replace, $product->get_name() );
-			$this->placeholders['{site_title}']   = preg_replace( $this->plain_search, $this->plain_replace, $this->get_blogname() );
+			$this->prepare_email( $notification );
+			$product = $notification->get_product();
 
 			// Sanity check notification.
 			if ( ! $notification->is_active() || ! $notification->is_verified() || ! $product->is_in_stock() ) {
@@ -136,7 +151,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 		/**
 		 * Switch locale if necessary based on notification meta.
 		 *
-		 * @since x.x.x
+		 * @since 3.0.1
 		 *
 		 * @param WC_BIS_Notification_Data $notification Notification object.
 		 */
@@ -150,7 +165,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 		/**
 		 * Restore locale if previously switched.
 		 *
-		 * @since x.x.x
+		 * @since 3.0.1
 		 *
 		 * @param WC_BIS_Notification_Data $notification Notification object.
 		 */

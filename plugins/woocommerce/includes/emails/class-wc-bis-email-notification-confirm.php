@@ -12,14 +12,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'WC_BIS_Email_Notification_Confirm', false ) ) :
+	include_once __DIR__ . '/interface-wc-bis-email-previewable.php';
 
 	/**
 	 * Notification Confirm email controller.
 	 *
 	 * @class    WC_BIS_Email_Notification_Confirm
-	 * @version  2.0.0
+	 * @version  x.x.x
 	 */
-	class WC_BIS_Email_Notification_Confirm extends WC_Email {
+	class WC_BIS_Email_Notification_Confirm extends WC_Email implements WC_BIS_Email_Previewable {
 
 		/**
 		 * Constructor.
@@ -47,6 +48,20 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Confirm', false ) ) :
 		/*---------------------------------------------------*/
 
 		/**
+		 * Prepares the email based on the notification data.
+		 *
+		 * @since x.x.x
+		 * @param WC_BIS_Notification_Data $notification Notification.
+		 *
+		 * @return void
+		 */
+		public function prepare_email( WC_BIS_Notification_Data $notification ): void {
+			$this->object    = $notification;
+			$this->recipient = $notification->get_user_email();
+			$this->set_placeholders_value();
+		}
+
+		/**
 		 * Trigger the sending of this email.
 		 *
 		 * @param WC_BIS_Notification_Data|int $notification
@@ -62,9 +77,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Confirm', false ) ) :
 				return;
 			}
 
-			$this->object    = $notification;
-			$this->recipient = $notification->get_user_email();
-			$this->set_placeholders_value();
+			$this->prepare_email( $notification );
 
 			if ( $this->is_enabled() && $this->get_recipient() ) {
 
