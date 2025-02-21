@@ -61,9 +61,8 @@ jobs:
     
               # Loop through only changed changelog files
               for FILE in $CHANGED_FILES; do
-                FULL_PATH="$GITHUB_WORKSPACE/$FILE"  # Ensure absolute path
+                  FULL_PATH="$GITHUB_WORKSPACE/$FILE"  # Ensure absolute path
     
-                if [[ -f "$FULL_PATH" ]]; then
                   echo "Processing file: $FULL_PATH"
     
                   # Extract the type from file content
@@ -77,9 +76,6 @@ jobs:
                   if [[ -n "$LABEL" && ! " ${APPLIED_LABELS[*]} " =~ " $LABEL " ]]; then
                     APPLIED_LABELS+=("$LABEL")
                   fi
-                else
-                  echo "Skipping non-existent file: $FULL_PATH (Check if checkout fetched all changes)"
-                fi
               done
     
               echo "APPLIED_LABELS: ${APPLIED_LABELS[*]}"
