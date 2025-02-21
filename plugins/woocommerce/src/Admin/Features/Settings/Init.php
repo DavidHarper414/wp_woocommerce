@@ -172,8 +172,11 @@ class Init {
 			$settings['settingsScripts'][ $setting_page->get_id() ] = self::get_script_urls( $settings_scripts_handles );
 		}
 
-		$transformer              = new Transformer();
-		$settings['settingsData'] = $transformer->transform( $pages );
+		$transformer                       = new Transformer();
+		$settings['settingsData']['pages'] = $transformer->transform( $pages );
+		$settings['settingsData']['start'] = $setting_pages[0]->get_custom_view( 'woocommerce_settings_start' );
+
+		$settings['settingsData']['_wpnonce'] = wp_create_nonce( 'woocommerce-settings' );
 
 		return $settings;
 	}

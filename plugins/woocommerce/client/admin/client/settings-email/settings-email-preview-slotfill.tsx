@@ -103,6 +103,7 @@ const EmailPreviewFill: React.FC< EmailPreviewFillProps > = ( {
 					<EmailPreviewHeader emailType={ emailType } />
 					<EmailPreviewIframe
 						src={ finalPreviewUrl }
+						isLoading={ isLoading }
 						setIsLoading={ setIsLoading }
 						settingsIds={ settingsIds }
 					/>
@@ -128,7 +129,7 @@ export const registerSettingsEmailPreviewFill = () => {
 		emailTypes = JSON.parse( emailTypesData || '' );
 	} catch ( e ) {}
 	const settingsIdsData = slotElement.getAttribute(
-		'data-email-settings-ids'
+		'data-email-setting-ids'
 	);
 	let settingsIds: string[] = [];
 	try {

@@ -12,7 +12,6 @@ export { REVIEWS_STORE_NAME } from './reviews';
 export { NOTES_STORE_NAME } from './notes';
 export { REPORTS_STORE_NAME } from './reports';
 export { COUNTRIES_STORE_NAME } from './countries';
-export { NAVIGATION_STORE_NAME } from './navigation';
 export { OPTIONS_STORE_NAME } from './options';
 export { ITEMS_STORE_NAME } from './items';
 export { PAYMENT_GATEWAYS_STORE_NAME } from './payment-gateways';
@@ -27,7 +26,6 @@ export { EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME } from './product-tags';
 export { EXPERIMENTAL_PRODUCT_CATEGORIES_STORE_NAME } from './product-categories';
 export { EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME } from './product-attribute-terms';
 export { EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME } from './product-variations';
-export { EXPERIMENTAL_PRODUCT_FORM_STORE_NAME } from './product-form';
 export { EXPERIMENTAL_TAX_CLASSES_STORE_NAME } from './tax-classes';
 export { PaymentGateway } from './payment-gateways/types';
 export {
@@ -45,14 +43,37 @@ export {
 	EnableGatewayResponse,
 	PaymentGatewayLink,
 	RecommendedPaymentMethod,
+	PluginData,
 } from './payment-settings/types';
 export { ShippingMethod } from './shipping-methods/types';
+
+// Export stores
+export { store as onboardingStore } from './onboarding';
+export { store as experimentalProductAttributesStore } from './product-attributes';
+export { store as experimentalProductAttributeTermsStore } from './product-attribute-terms';
+export { store as experimentalProductVariationsStore } from './product-variations';
+export { store as experimentalProductTagsStore } from './product-tags';
+export { store as experimentalShippingZonesStore } from './shipping-zones';
+export { store as experimentalProductShippingClassesStore } from './product-shipping-classes';
+export { store as experimentalProductCategoriesStore } from './product-categories';
+export { store as experimentalTaxClassesStore } from './tax-classes';
+export { store as notesStore } from './notes';
+export { store as reviewsStore } from './reviews';
+export { store as shippingMethodsStore } from './shipping-methods';
+export { store as settingsStore } from './settings';
+export { store as ordersStore } from './orders';
+export { store as pluginsStore } from './plugins';
+export { store as optionsStore } from './options';
+export { store as userStore } from './user';
+export { store as productsStore } from './products';
+export { store as countriesStore } from './countries';
+export { store as paymentGatewaysStore } from './payment-gateways';
+export { store as experimentalProductFormStore } from './product-form';
 
 // Export hooks
 export { withSettingsHydration } from './settings/with-settings-hydration';
 export { withOnboardingHydration } from './onboarding/with-onboarding-hydration';
 export { withCurrentUserHydration } from './user/with-current-user-hydration';
-export { withNavigationHydration } from './navigation/with-navigation-hydration';
 export { withPluginsHydration } from './plugins/with-plugins-hydration';
 export {
 	withOptionsHydration,
@@ -144,7 +165,6 @@ import type { PLUGINS_STORE_NAME } from './plugins';
 import type { ONBOARDING_STORE_NAME } from './onboarding';
 import type { USER_STORE_NAME } from './user';
 import type { OPTIONS_STORE_NAME } from './options';
-import type { NAVIGATION_STORE_NAME } from './navigation';
 import type { NOTES_STORE_NAME } from './notes';
 import type { REPORTS_STORE_NAME } from './reports';
 import type { ITEMS_STORE_NAME } from './items';
@@ -159,7 +179,6 @@ import type { EXPERIMENTAL_PRODUCT_SHIPPING_CLASSES_STORE_NAME } from './product
 import type { EXPERIMENTAL_SHIPPING_ZONES_STORE_NAME } from './shipping-zones';
 import type { EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME } from './product-tags';
 import type { EXPERIMENTAL_PRODUCT_CATEGORIES_STORE_NAME } from './product-categories';
-import type { EXPERIMENTAL_PRODUCT_FORM_STORE_NAME } from './product-form';
 import type { EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME } from './product-attribute-terms';
 import type { EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME } from './product-variations';
 import type { EXPERIMENTAL_TAX_CLASSES_STORE_NAME } from './tax-classes';
@@ -171,7 +190,6 @@ export type WCDataStoreName =
 	| typeof ONBOARDING_STORE_NAME
 	| typeof USER_STORE_NAME
 	| typeof OPTIONS_STORE_NAME
-	| typeof NAVIGATION_STORE_NAME
 	| typeof NOTES_STORE_NAME
 	| typeof REPORTS_STORE_NAME
 	| typeof ITEMS_STORE_NAME
@@ -188,8 +206,7 @@ export type WCDataStoreName =
 	| typeof EXPERIMENTAL_PRODUCT_TAGS_STORE_NAME
 	| typeof EXPERIMENTAL_PRODUCT_CATEGORIES_STORE_NAME
 	| typeof EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
-	| typeof EXPERIMENTAL_TAX_CLASSES_STORE_NAME
-	| typeof EXPERIMENTAL_PRODUCT_FORM_STORE_NAME;
+	| typeof EXPERIMENTAL_TAX_CLASSES_STORE_NAME;
 
 /**
  * Internal dependencies
@@ -211,7 +228,6 @@ import { ProductCategorySelectors } from './product-categories/types';
 import { ProductAttributeTermsSelectors } from './product-attribute-terms/types';
 import { ProductVariationSelectors } from './product-variations/types';
 import { TaxClassSelectors } from './tax-classes/types';
-import { ProductFormSelectors } from './product-form/selectors';
 
 // As we add types to all the package selectors we can fill out these unknown types with real ones. See one
 // of the already typed selectors for an example of how you can do this.
@@ -233,8 +249,6 @@ export type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
 	? WPDataSelectors
 	: T extends typeof OPTIONS_STORE_NAME
 	? OptionsSelectors
-	: T extends typeof NAVIGATION_STORE_NAME
-	? WPDataSelectors
 	: T extends typeof NOTES_STORE_NAME
 	? WPDataSelectors
 	: T extends typeof REPORTS_STORE_NAME
@@ -263,8 +277,6 @@ export type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
 	? ShippingZonesSelectors
 	: T extends typeof EXPERIMENTAL_TAX_CLASSES_STORE_NAME
 	? TaxClassSelectors
-	: T extends typeof EXPERIMENTAL_PRODUCT_FORM_STORE_NAME
-	? ProductFormSelectors
 	: never;
 
 export interface WCDataSelector {
@@ -273,7 +285,6 @@ export interface WCDataSelector {
 
 // Other exports
 export { ActionDispatchers as PluginsStoreActions } from './plugins/actions';
-export { CustomActionDispatchers as ProductAttributesActions } from './product-attributes/types';
 export { ActionDispatchers as ProductTagsActions } from './product-tags/types';
 export { ActionDispatchers as ProductCategoryActions } from './product-categories/types';
 export { ActionDispatchers as ProductAttributeTermsActions } from './product-attribute-terms/types';

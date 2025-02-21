@@ -90,21 +90,42 @@ test.describe( `${ blockData.name }`, () => {
 				page: 'frontend',
 			} );
 
-			// img[style] is the selector because the style attribute is Interactivity API.
-			const imgElement = blockFrontend.locator( 'img' ).first();
-			const style = await imgElement.evaluate( ( el ) => el.style );
+			const selectedImage = blockFrontend.locator( 'img' ).first();
 
-			expect( style.transform ).toBe( 'scale(1)' );
+			await test.step( 'for selected image', async () => {
+				// img[style] is the selector because the style attribute is Interactivity API.
 
-			await imgElement.hover();
+				const style = await selectedImage.evaluate(
+					( el ) => el.style
+				);
 
-			const styleOnHover = await imgElement.evaluate(
-				( el ) => el.style
-			);
+				expect( style.transform ).toBe( 'scale(1)' );
 
-			expect( styleOnHover.transform ).toBe( 'scale(1.3)' );
+				await selectedImage.hover();
+
+				const styleOnHover = await selectedImage.evaluate(
+					( el ) => el.style
+				);
+
+				expect( styleOnHover.transform ).toBe( 'scale(1.3)' );
+			} );
+
+			await test.step( 'styles are not applied to other images', async () => {
+				// img[style] is the selector because the style attribute is Interactivity API.
+				const hiddenImage = blockFrontend.locator( 'img' ).nth( 1 );
+				const style = await hiddenImage.evaluate( ( el ) => el.style );
+
+				expect( style.transform ).toBe( '' );
+
+				await selectedImage.hover();
+
+				const styleOnHover = await hiddenImage.evaluate(
+					( el ) => el.style
+				);
+
+				expect( styleOnHover.transform ).toBe( '' );
+			} );
 		} );
-
 		test( 'should not work on frontend when is disabled', async ( {
 			pageObject,
 			editor,
@@ -200,5 +221,113 @@ test.describe( `${ blockData.name }`, () => {
 		expect(
 			imageSourceForLargeImageElementAfterSelectingVariation
 		).toContain( 'hoodie-green-1' );
+	} );
+
+	test.describe( 'Swipe to navigate', () => {
+		test.use( { hasTouch: true } ); // Enable touch support
+
+		test( 'should work on frontend when is enabled', async ( {
+			pageObject,
+			editor,
+			page,
+		} ) => {
+			await pageObject.addProductGalleryBlock( { cleanContent: true } );
+			await editor.saveSiteEditorEntities( {
+				isOnlyCurrentEntityDirty: true,
+			} );
+
+			await page.goto( blockData.productPage );
+
+			const blockFrontend = await pageObject.getMainImageBlock( {
+				page: 'frontend',
+			} );
+
+			await expect( blockFrontend ).toBeVisible();
+
+			const largeImageElement = blockFrontend.locator(
+				'.wc-block-woocommerce-product-gallery-large-image__image--active-image-slide'
+			);
+
+			// Get the element's bounding box
+			const box = await largeImageElement.boundingBox();
+			if ( ! box ) {
+				return;
+			}
+
+			// Calculate start and end points for the swipe
+			const swipeStartX = box.x + box.width / 2; // middle of element
+			const swipeStartY = box.y + box.height / 2;
+			const swipeEndX = swipeStartX - 200; // swipe left by 200px
+			const swipeEndY = swipeStartY;
+
+			const initialImageSrc = await largeImageElement.getAttribute(
+				'src'
+			);
+
+			// Dispatch touch events to simulate swipe
+			await largeImageElement.evaluate(
+				( element, { startX, startY, endX, endY } ) => {
+					const touchStart = new TouchEvent( 'touchstart', {
+						bubbles: true,
+						cancelable: true,
+						touches: [
+							new Touch( {
+								identifier: 0,
+								target: element,
+								clientX: startX,
+								clientY: startY,
+							} ),
+						],
+					} );
+
+					const touchMove = new TouchEvent( 'touchmove', {
+						bubbles: true,
+						cancelable: true,
+						touches: [
+							new Touch( {
+								identifier: 0,
+								target: element,
+								clientX: endX,
+								clientY: endY,
+							} ),
+						],
+					} );
+
+					const touchEnd = new TouchEvent( 'touchend', {
+						bubbles: true,
+						cancelable: true,
+						touches: [],
+					} );
+
+					element.dispatchEvent( touchStart );
+					element.dispatchEvent( touchMove );
+					element.dispatchEvent( touchEnd );
+				},
+				{
+					startX: swipeStartX,
+					startY: swipeStartY,
+					endX: swipeEndX,
+					endY: swipeEndY,
+				}
+			);
+
+			// Verify dialog is not opened
+			const dialog = page.locator( '.wc-block-product-gallery-dialog' );
+			await expect( dialog ).toBeHidden();
+
+			// Timeout is needed to allow the image animation to finish.
+			// eslint-disable-next-line playwright/no-wait-for-timeout, no-restricted-syntax
+			await page.waitForTimeout( 1000 );
+
+			// Verify the next image is shown
+			const nextImage = blockFrontend.locator(
+				'.wc-block-woocommerce-product-gallery-large-image__image--active-image-slide'
+			);
+			const nextImageSrc = await nextImage.getAttribute( 'src' );
+
+			// The next image should be visible and have a different src
+			await expect( nextImage ).toBeVisible();
+			expect( nextImageSrc ).not.toEqual( initialImageSrc );
+		} );
 	} );
 } );
