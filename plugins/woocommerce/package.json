@@ -740,7 +740,7 @@
 						"pull_request",
 						"push",
 						"release-checks",
-						"core-e2e"
+						"product-attributes-test"
 					],
 					"report": {
 						"resultsBlobName": "core-e2e-report",
