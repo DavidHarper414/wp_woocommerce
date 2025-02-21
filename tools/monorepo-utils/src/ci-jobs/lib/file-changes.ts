@@ -96,9 +96,6 @@ export function getFileChanges(
 		encoding: 'utf8',
 	} );
 
-	Logger.warn( `Executing ${ command }` );
-	Logger.warn( `Result ${ output }` );
-
 	const changedFilePaths = output.split( '\n' );
 
 	// If the root lockfile has been changed we have no easy way
