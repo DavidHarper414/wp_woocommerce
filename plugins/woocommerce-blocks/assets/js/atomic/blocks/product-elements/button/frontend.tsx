@@ -11,6 +11,7 @@ import {
  * Internal dependencies
  */
 import type { Store as WooStore } from '../../../../base/stores/cart-items';
+import { StoreNoticesStore } from '../../../../blocks/product-collection/notices-frontend';
 
 interface Context {
 	addToCartText: string;
@@ -111,11 +112,43 @@ const { state } = store< Store >(
 					'../../../../base/stores/cart-items'
 				) ) as WooStore;
 
-				// Question: should this action throw so we can capture the error here?
-				actions.addCartItem( {
-					id: productId,
-					quantity: state.quantity + quantityToAdd,
-				} );
+				try {
+					yield actions.addCartItem( {
+						id: productId,
+						quantity: state.quantity + quantityToAdd,
+					} );
+				} catch ( error ) {
+					const message = ( error as Error ).message;
+
+					const { actions: noticeActions } =
+						store< StoreNoticesStore >(
+							'woocommerce/product-collection-notices'
+						);
+
+					// If the user deleted the hooked store notice block, the
+					// store won't be present and we should not add a notice.
+					if ( 'addNotice' in noticeActions ) {
+						// The old implementation always overwrites the last
+						// notice, so we remove the last notice before adding a
+						// new one.
+						if ( state.noticeId !== '' ) {
+							noticeActions.removeNotice( state.noticeId );
+						}
+
+						const noticeId = noticeActions.addNotice( {
+							notice: message,
+							type: 'error',
+							dismissible: true,
+						} );
+
+						state.noticeId = noticeId;
+					}
+
+					// We don't care about errors blocking execution, but will
+					// console.error for troubleshooting.
+					// eslint-disable-next-line no-console
+					console.error( error );
+				}
 
 				context.displayViewCart = true;
 			},

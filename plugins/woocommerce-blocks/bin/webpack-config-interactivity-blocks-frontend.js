@@ -9,8 +9,8 @@ const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extrac
  */
 const { sharedOptimizationConfig } = require( './webpack-shared-config' );
 
-const blockEntries = {
-	'woocommerce/store-notices': './assets/js/blocks/store-notices/frontend.ts',
+const entries = {
+	// Blocks
 	'woocommerce/product-button':
 		'./assets/js/atomic/blocks/product-elements/button/frontend.tsx',
 	'woocommerce/product-gallery':
@@ -19,10 +19,14 @@ const blockEntries = {
 		'./assets/js/blocks/product-gallery/inner-blocks/product-gallery-large-image/frontend.tsx',
 	'woocommerce/product-collection':
 		'./assets/js/blocks/product-collection/frontend.tsx',
+
+	// Other
+	'woocommerce/product-collection-notices':
+		'./assets/js/blocks/product-collection/notices-frontend.ts',
 };
 
 module.exports = {
-	entry: blockEntries,
+	entry: entries,
 	optimization: sharedOptimizationConfig,
 	name: 'interactivity-blocks-modules',
 	experiments: {
