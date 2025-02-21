@@ -57,7 +57,9 @@ jobs:
     
               # Loop through only changed changelog files
               for FILE in $CHANGED_FILES; do
-                if [[ -f "$FILE" ]]; then
+                FULL_PATH="./$FILE"  # Ensure the path is correct
+                if [[ -f "$FULL_PATH" ]]; then
+                  echo "Processing file: $FULL_PATH"
                   # Extract the type from file content
                   TYPE=$(grep -iE '^Type: (fix|add|update|tweak|enhancement|performance|dev)' "$FILE" | awk -F': ' '{print tolower($2)}' | head -n 1)
                   echo "type: $TYPE"
@@ -67,6 +69,8 @@ jobs:
                   if [[ -n "$LABEL" && ! " ${APPLIED_LABELS[*]} " =~ " $LABEL " ]]; then
                     APPLIED_LABELS+=("$LABEL")
                   fi
+                else
+                    echo "Skipping non-existent file: $FULL_PATH"
                 fi
               done
 
