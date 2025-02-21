@@ -27,7 +27,9 @@ class Packages {
 	 *
 	 * @var array Key is the package name/directory, value is the main package class which handles init.
 	 */
-	protected static $packages = array();
+	protected static $packages = array(
+		'email-editor' => '\\Automattic\\WooCommerce\\Internal\\EmailEditor\\Package',
+	);
 
 	/**
 	 * Array of package names and their main package classes.
