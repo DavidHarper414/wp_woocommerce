@@ -333,15 +333,15 @@ class WC_Tests_WC_Query extends WC_Unit_Test_Case {
 	 */
 	public function test_get_catalog_ordering_args_when_GET_is_array() {
 		$_GET['orderby'] = array(
-			'popularity',
 			'price-desc',
+			'popularity',
 			'date',
 		);
 
 		// phpcs:disable WordPress.DB.SlowDBQuery
 		$expected = array(
-			'orderby'  => 'popularity',
-			'order'    => 'ASC',
+			'orderby'  => 'price',
+			'order'    => 'DESC',
 			'meta_key' => '',
 		);
 		// phpcs:enable WordPress.DB.SlowDBQuery
@@ -357,6 +357,23 @@ class WC_Tests_WC_Query extends WC_Unit_Test_Case {
 	public function test_get_main_query() {
 		WC()->query->product_query( new WP_Query() );
 		$this->assertInstanceOf( 'WP_Query', WC_Query::get_main_query() );
+	}
+
+	/**
+	 * Test the get_main_query method with a custom query.
+	 */
+	public function test_get_catalog_ordering_args_get_query_var() {
+		set_query_var( 'orderby', array( 'priority', 'date' ) );
+
+		// phpcs:disable WordPress.DB.SlowDBQuery
+		$expected = array(
+			'orderby'  => 'priority',
+			'order'    => 'ASC',
+			'meta_key' => '',
+		);
+		// phpcs:enable WordPress.DB.SlowDBQuery
+
+		$this->assertEquals( $expected, WC()->query->get_catalog_ordering_args() );
 	}
 
 	/**
