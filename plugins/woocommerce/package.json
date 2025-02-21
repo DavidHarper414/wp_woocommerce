@@ -740,7 +740,7 @@
 						"product-attributes-test"
 					],
 					"report": {
-						"resultsBlobName": "core-e2e-report",
+						"resultsBlobName": "core-e2e-report-product-attributes-test",
 						"resultsPath": "tests/e2e-pw/test-results"
 					}
 				}
