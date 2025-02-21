@@ -56,6 +56,8 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 				return;
 			}
 
+			$this->maybe_switch_locale( $notification );
+
 			$this->object                         = $notification;
 			$this->recipient                      = $notification->get_user_email();
 			$product                              = $notification->get_product();
@@ -114,6 +116,8 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 
 				$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 
+				$this->maybe_restore_locale( $notification );
+
 				try {
 					$notification->set_last_notified_date( time() );
 					$notification->add_event( 'delivered' );
@@ -127,6 +131,34 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 			}
 
 			$this->restore_locale();
+		}
+
+		/**
+		 * Switch locale if necessary based on notification meta.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param WC_BIS_Notification_Data $notification Notification object.
+		 */
+		private function maybe_switch_locale( $notification ) {
+			$customer_locale = $notification->get_meta( '_customer_locale' );
+			if ( ! empty( $customer_locale ) ) {
+				switch_to_locale( $customer_locale );
+			}
+		}
+
+		/**
+		 * Restore locale if previously switched.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param WC_BIS_Notification_Data $notification Notification object.
+		 */
+		private function maybe_restore_locale( $notification ) {
+			$customer_locale = $notification->get_meta( '_customer_locale' );
+			if ( ! empty( $customer_locale ) ) {
+				restore_previous_locale();
+			}
 		}
 
 		/**
@@ -144,6 +176,8 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 			if ( ! is_a( $notification, 'WC_BIS_Notification_Data' ) ) {
 				return;
 			}
+
+			$this->maybe_switch_locale( $notification );
 
 			$this->object    = $notification;
 			$this->recipient = $notification->get_user_email();
@@ -168,8 +202,9 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 
 				$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 
-				try {
+				$this->maybe_restore_locale( $notification );
 
+				try {
 					$notification->set_last_notified_date( time() );
 					$notification->add_event( 'delivered', wp_get_current_user() );
 

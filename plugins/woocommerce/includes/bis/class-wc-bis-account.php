@@ -421,6 +421,7 @@ class WC_BIS_Account {
 
 			// New notification.
 			$args['is_verified'] = ! wc_bis_double_opt_in_required() ? 'yes' : 'no';
+			$args['locale']      = get_locale();
 			$id                  = WC_BIS()->db->notifications->add( $args );
 
 			if ( $id ) {

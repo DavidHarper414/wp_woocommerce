@@ -439,6 +439,18 @@ class WC_BIS_Notification_Data {
 	}
 
 	/**
+	 * Set locale.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param  string $value Locale code.
+	 * @return void
+	 */
+	public function set_locale( $value ) {
+		$this->meta_data['_customer_locale'] = $value;
+	}
+
+	/**
 	 * Set verified status.
 	 *
 	 * @since 1.2.0
