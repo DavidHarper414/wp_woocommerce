@@ -115,7 +115,7 @@ class WC_BIS_Emails {
 	 */
 	public function email_classes( $emails ) {
 		foreach ( self::$email_classes as $email_class => $file_name ) {
-			$emails[ $email_class ] = include $file_name;
+			$emails[ $email_class ] = include WC_ABSPATH . 'includes/' . $file_name;
 
 			if ( is_a( $emails[ $email_class ], 'WC_Email' ) ) {
 				$emails[ $email_class ]->setup_hooks();
