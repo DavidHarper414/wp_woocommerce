@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 do_action( 'woocommerce_bis_before_form', $product );
 ?><div id="wc_bis_product_form" data-bis-product-id="<?php echo $product->get_parent_id() ? absint( $product->get_parent_id() ) : absint( $product->get_id() ); ?>">
 
-	<p class="wc_bis_form_title"><?php echo esc_html( $header_text ); ?></p>
+	<p class="wc_bis_form_title"><?php echo wp_kses_post( $header_text ); ?></p>
 
 	<?php do_action( 'woocommerce_bis_before_form_fields', $product ); ?>
 

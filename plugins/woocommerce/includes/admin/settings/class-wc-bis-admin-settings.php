@@ -199,7 +199,7 @@ if ( ! class_exists( 'WC_BIS_Settings' ) ) :
 							'id'          => 'wc_bis_form_header_text',
 							'placeholder' => wc_bis_get_form_header_default_text(),
 							'default'     => wc_bis_get_form_header_default_text(),
-							'type'        => 'text',
+							'type'        => 'textarea',
 						),
 
 						array(
@@ -207,7 +207,7 @@ if ( ! class_exists( 'WC_BIS_Settings' ) ) :
 							'id'          => 'wc_bis_form_header_signed_up_text',
 							'placeholder' => wc_bis_get_form_header_signed_up_default_text(),
 							'default'     => wc_bis_get_form_header_signed_up_default_text(),
-							'type'        => 'text',
+							'type'        => 'textarea',
 							'desc'        => __( 'Text to display to logged-in customers who have already signed up, instead of the <strong>Sign-up form text</strong> above. <code>{manage_account_link}</code> will be substituted by the text below and converted into a <strong>My Account > Stock Notifications</strong> page link.', 'woocommerce' ),
 						),
 
