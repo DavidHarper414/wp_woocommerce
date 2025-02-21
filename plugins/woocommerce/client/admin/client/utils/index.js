@@ -122,3 +122,36 @@ export const useFullScreen = ( classes ) => {
 		};
 	} );
 };
+
+export function createDeprecatedObjectProxy( obj, messages, basePath = '' ) {
+	return new Proxy( obj, {
+		get( target, prop, receiver ) {
+			const fullPath = basePath ? `${ basePath }.${ prop }` : prop;
+
+			// Traverse the messages object to check for a deprecation message
+			const parts = fullPath.split( '.' );
+			let current = messages;
+
+			for ( const part of parts ) {
+				if (
+					current &&
+					typeof current === 'object' &&
+					part in current
+				) {
+					current = current[ part ];
+					if ( typeof current === 'string' ) {
+						console.warn( current ); // eslint-disable-line no-console
+						break;
+					}
+				} else {
+					break;
+				}
+			}
+
+			const value = Reflect.get( target, prop, receiver );
+			return value && typeof value === 'object'
+				? createDeprecatedObjectProxy( value, messages, fullPath )
+				: value;
+		},
+	} );
+}
