@@ -28,11 +28,6 @@ jobs:
         steps:
           - name: Checkout code
             uses: actions/checkout@v4
-
-          - name: Detect changelog types from content
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            run: |
           - name: Detect changelog types from content
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
