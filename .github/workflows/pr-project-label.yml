@@ -33,6 +33,11 @@ jobs:
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             run: |
+          - name: Detect changelog types from content
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              PR_NUMBER: ${{ github.event.pull_request.number }}
+            run: |
               declare -A LABEL_MAP=(
                 ["fix"]="type: fix"
                 ["add"]="type: feature"
@@ -45,9 +50,11 @@ jobs:
     
               APPLIED_LABELS=()
     
-              # Loop through changelog files
-              for FILE in plugins/woocommerce/changelog/*; do
-                # Ensure the file exists and is not a directory
+              # Get list of changed files in the PR and filter to changelog files
+              CHANGED_FILES=$(gh pr view "$PR_NUMBER" --json files -q '.files[].path' | grep '^plugins/woocommerce/changelog/' || true)
+    
+              # Loop through only changed changelog files
+              for FILE in $CHANGED_FILES; do
                 if [[ -f "$FILE" ]]; then
                   # Extract the type from file content
                   TYPE=$(grep -iE '^Type: (fix|add|update|tweak|enhancement|performance|dev)' "$FILE" | awk -F': ' '{print tolower($2)}' | head -n 1)
@@ -63,7 +70,7 @@ jobs:
               # Apply labels if any were found
               if [ ${#APPLIED_LABELS[@]} -ne 0 ]; then
                 echo "Applying labels: ${APPLIED_LABELS[*]}"
-                gh pr edit "$GITHUB_REF" --add-label "${APPLIED_LABELS[@]}"
+                gh pr edit "$PR_NUMBER" --add-label "${APPLIED_LABELS[@]}"
               else
                 echo "No matching changelog types found or no relevant changelog files."
               fi
