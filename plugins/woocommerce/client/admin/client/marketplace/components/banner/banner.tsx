@@ -21,26 +21,42 @@ import moneyBack from '../../assets/images/money-back.svg';
 import getHelp from '../../assets/images/get-help.svg';
 
 const SLIDES = [
-	{ imageUrl: moneyBack, title: refundPolicyTitle },
-	{ imageUrl: getHelp, title: supportTitle },
-	{ imageUrl: trustProducts, title: paymentTitle },
+	{
+		imageUrl: moneyBack,
+		title: refundPolicyTitle,
+		textTitle: __( '30-day money-back guarantee', 'woocommerce' ),
+	},
+	{
+		imageUrl: getHelp,
+		title: supportTitle,
+		textTitle: __( 'Get help when you need it', 'woocommerce' ),
+	},
+	{
+		imageUrl: trustProducts,
+		title: paymentTitle,
+		textTitle: __( 'Products you can trust', 'woocommerce' ),
+	},
 	{
 		imageUrl: supportEcosystem,
 		title: __( 'Support the ecosystem', 'woocommerce' ),
+		textTitle: __( 'Support the ecosystem', 'woocommerce' ),
 	},
 ];
 
 export default function ProductFeaturedBanner() {
 	const [ activeIndex, setActiveIndex ] = useState( 0 );
 	const [ isDismissed, setIsDismissed ] = useState( false );
+	const [ autoRotate, setAutoRotate ] = useState( true );
 
 	useEffect( () => {
-		const interval = setInterval( () => {
-			setActiveIndex( ( prev ) => ( prev + 1 ) % SLIDES.length );
-		}, 5000 );
-
+		let interval: NodeJS.Timeout;
+		if ( autoRotate ) {
+			interval = setInterval( () => {
+				setActiveIndex( ( prev ) => ( prev + 1 ) % SLIDES.length );
+			}, 5000 );
+		}
 		return () => clearInterval( interval );
-	}, [] );
+	}, [ autoRotate ] );
 
 	useEffect( () => {
 		const dismissed = localStorage.getItem( 'wc_featuredBannerDismissed' );
@@ -52,35 +68,71 @@ export default function ProductFeaturedBanner() {
 		setIsDismissed( true );
 
 		recordEvent( 'marketplace_features_banner_dismissed', {
-			active_slide: activeIndex,
+			active_slide: SLIDES[ activeIndex ].textTitle,
 		} );
 	};
+
+	const handlePause = () => setAutoRotate( false );
+	const handleResume = () => setAutoRotate( true );
 
 	if ( isDismissed ) return null;
 
 	return (
-		<div className="woocommerce-marketplace__banner">
+		<div
+			className="woocommerce-marketplace__banner"
+			role="region"
+			aria-roledescription="carousel"
+			aria-label={ __(
+				'Marketplace features with four slides',
+				'woocommerce'
+			) }
+			aria-live="polite"
+			aria-atomic="false"
+			onMouseEnter={ handlePause }
+			onMouseLeave={ handleResume }
+			onFocus={ handlePause }
+			onBlur={ handleResume }
+		>
 			<div className="carousel-container">
-				{ SLIDES.map( ( slide, index ) => (
-					<div
-						key={ index }
-						className={ `carousel-slide ${
-							index === activeIndex ? 'active' : ''
-						}` }
-						aria-hidden={ index !== activeIndex }
-					>
-						<img
-							src={ slide.imageUrl }
-							alt=""
-							className="woocommerce-marketplace__banner-image"
-						/>
-						<h3 className="woocommerce-marketplace__banner-title">
-							{ slide.title }
-						</h3>
-					</div>
-				) ) }
+				<ul className="carousel-list">
+					{ SLIDES.map( ( slide, index ) => (
+						<li
+							key={ index }
+							className={ `carousel-slide ${
+								index === activeIndex ? 'active' : ''
+							}` }
+							aria-roledescription="slide"
+							aria-hidden={ index !== activeIndex }
+							aria-live="off"
+							aria-posinset={ index + 1 }
+							aria-setsize={ SLIDES.length }
+							aria-label={ `${ slide.textTitle } - ${ __(
+								'Slide',
+								'woocommerce'
+							) } ${ index + 1 } ${ __( 'of', 'woocommerce' ) } ${
+								SLIDES.length
+							}` }
+						>
+							<img
+								src={ slide.imageUrl }
+								alt=""
+								className="woocommerce-marketplace__banner-image"
+							/>
+							<h3 className="woocommerce-marketplace__banner-title">
+								{ slide.title }
+							</h3>
+						</li>
+					) ) }
+				</ul>
 			</div>
-			<Button className="dismiss-button" onClick={ handleDismiss }>
+			<Button
+				className="dismiss-button"
+				onClick={ handleDismiss }
+				aria-label={ __(
+					'Dismiss Marketplace features carousel',
+					'woocommerce'
+				) }
+			>
 				<Icon icon="no-alt" />
 			</Button>
 		</div>
