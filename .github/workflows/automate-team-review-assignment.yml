@@ -127,6 +127,7 @@ jobs:
               comment-id: ${{ steps.find-comment.outputs.comment-id }}
               issue-number: ${{ github.event.pull_request.number }}
               body: |
+                  ## Testing Guidelines
                   Hi ${{ env.REVIEWERS }} ${{ env.TEAMS }},
                   
                   Apart from reviewing the code changes, please make sure to **review the testing instructions** ([Guide](https://github.com/woocommerce/woocommerce/wiki/Writing-high-quality-testing-instructions)) and verify that relevant tests (E2E, Unit, Integration, etc.) have been added or updated as needed.
