@@ -483,7 +483,7 @@ jobs:
 
   validate-changelog:
     name: 'Validate changelog'
-    if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'trunk' && needs.identify-jobs-to-run.outputs.needs-changelog-validation == 'true' }}
+    if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'trunk' && needs.identify-jobs-to-run.outputs.needs-changelog-validation == 'true' && ! contains( github.event.pull_request.body, '[x] This Pull Request does not require a changelog' ) }}
     needs: [ 'identify-jobs-to-run' ]
     runs-on: ubuntu-latest
     permissions:
