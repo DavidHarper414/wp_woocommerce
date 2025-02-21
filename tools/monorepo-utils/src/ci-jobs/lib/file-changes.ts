@@ -7,7 +7,6 @@ import { execSync } from 'node:child_process';
  * Internal dependencies
  */
 import { ProjectNode } from './project-graph';
-import { Logger } from '../../core/logger';
 
 /**
  * A map of changed files keyed by the project name.
