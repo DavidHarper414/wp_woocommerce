@@ -24,6 +24,9 @@ jobs:
                   configuration-path: .github/project-pr-labeler.yml
     label_by_content:
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: write
         needs: label_project
         steps:
           - name: Checkout code
