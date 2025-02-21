@@ -52,7 +52,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 		do_action( 'woocommerce_bis_email_notification_product_after_title', $product, $notification );
 		?>
 
-		<a href="<?php echo esc_attr( apply_filters( 'woocommerce_bis_email_received_button_href', $notification->get_product_permalink(), $notification, $product ) ); ?>" id="notification__action_button"><?php echo esc_html( apply_filters( 'woocommerce_bis_email_received_button_text', _x( 'Shop Now', 'Email notification', 'woocommerce' ), $notification ) ); ?></a>
+		<a href="
+		<?php
+		echo esc_attr(
+			add_query_arg(
+				array(
+					'utm_source' => 'back-in-stock-notifications',
+					'utm_medium' => 'email',
+				),
+				/**
+				* Edit the button href.
+				*
+				* @param string $product_permalink The product permalink.
+				* @param WC_BIS_Notification_Data $notification The notification data.
+				* @param WC_Product $product The product object.
+				*
+				* @since 3.0.1
+				*/
+				apply_filters(
+					'woocommerce_bis_email_received_button_href',
+					$notification->get_product_permalink(),
+					$notification,
+					$product
+				)
+			)
+		);
+		?>
+" id="notification__action_button">
+		<?php
+		/**
+		 * Customize the button text.
+		 *
+		 * @since 3.0.1
+		 */
+		echo esc_html( apply_filters( 'woocommerce_bis_email_received_button_text', _x( 'Shop Now', 'Email notification', 'woocommerce' ), $notification ) );
+		?>
+		</a>
 	</div>
 
 	<table id="notification__footer"><tr><td>
