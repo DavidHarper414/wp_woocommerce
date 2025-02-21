@@ -50,6 +50,7 @@ Using the [WooCommerce Testing Instructions Guide](https://github.com/woocommerc
 <!-- Detail any testing that has already been conducted. -->
 <!-- Include environment details such as hosting type, plugins, theme, store size, store age, and relevant settings. -->
 <!-- Mention any analysis performed, such as assessing potential impacts on environment attributes and other plugins, performance profiling, or LLM/AI-based analysis. -->
+<!-- Within the testing details you provide, please ensure that no sensitive information (such as API keys, passwords, user data, etc.) is included in this public pull request. -->
 
 ### Changelog entry
 
