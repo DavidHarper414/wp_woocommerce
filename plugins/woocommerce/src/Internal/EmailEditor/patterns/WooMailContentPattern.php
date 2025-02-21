@@ -19,7 +19,7 @@ class WooMailContentPattern extends Abstract_Pattern {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Here comes comes content composed from supported core blocks and Woo transactional email block(s).</p>
+<p>Here comes content composed of supported core blocks and Woo transactional email block(s).</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:buttons {"layout":{"justifyContent":"center"}} -->

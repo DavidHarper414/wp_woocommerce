@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 class PersonalizationTagManager {
 
 	public function init(): void {
-		add_filter('mailpoet_email_editor_personalization_tags', [$this, 'register_personalization_tags']);
+		add_filter('mailpoet_email_editor_register_personalization_tags', [$this, 'register_personalization_tags']);
 	}
 
 	public function register_personalization_tags(Personalization_Tags_Registry $registry) {
