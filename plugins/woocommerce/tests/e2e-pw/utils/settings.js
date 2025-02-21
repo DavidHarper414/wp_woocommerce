@@ -29,8 +29,6 @@ export async function updateIfNeeded( path, desiredValue ) {
 	const initialValue = await apiClient()
 		.get( resolvePath( path ) )
 		.then( ( r ) => r.data.value );
-
-	console.log( initialValue, desiredValue );
 	if ( initialValue !== desiredValue ) {
 		await updateValue( path, desiredValue );
 	}
