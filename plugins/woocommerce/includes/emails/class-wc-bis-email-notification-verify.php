@@ -203,8 +203,8 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Verify', false ) ) :
 			$placeholder_keys = (array) apply_filters(
 				'woocommerce_bis_verification_email_placeholders',
 				array(
-					'{site_title}',
-					'{product_name}',
+					'site_title',
+					'product_name',
 				)
 			);
 
