@@ -4,6 +4,11 @@
 import { __ } from '@wordpress/i18n';
 import { getSetting } from '@woocommerce/settings';
 
+/**
+ * Internal dependencies
+ */
+import { createDeprecatedObjectProxy } from './index';
+
 // Remove mutable data from settings object to prevent access. Data stores should be used instead.
 const mutableSources = [ 'wcAdminSettings', 'preloadSettings' ];
 const adminSettings = getSetting( 'admin', {} );
@@ -16,6 +21,19 @@ const ADMIN_SETTINGS_SOURCE = Object.keys( adminSettings ).reduce(
 	},
 	{}
 );
+
+export const deprecatedAdminProperties = {
+	onboarding: {
+		profile:
+			'Deprecated: wcSettings.admin.onboarding.profile is deprecated. It is planned to be released in WooCommerce 10.0.0. Please use `getProfileItems` from the onboarding store. See https://github.com/woocommerce/woocommerce/tree/trunk/packages/js/data/src/onboarding for more information.',
+		euCountries:
+			'Deprecated: wcSettings.admin.onboarding.euCountries is deprecated. Please use `/wc/v3/data/continents/eu` from the REST API. See https://woocommerce.github.io/woocommerce-rest-api-docs/#list-all-continents for more information.',
+		localInfo:
+			'Deprecated: wcSettings.admin.onboarding.localInfo is deprecated. Please use `include WC()->plugin_path() . "/i18n/locale-info.php"` instead.',
+		currencySymbols:
+			'"Deprecated: wcSettings.admin.onboarding.currencySymbols is deprecated. Please use get_woocommerce_currency_symbols() function instead.',
+	},
+};
 
 /**
  * Retrieves a setting value from the setting state.
@@ -36,19 +54,9 @@ const ADMIN_SETTINGS_SOURCE = Object.keys( adminSettings ).reduce(
 export function getAdminSetting(
 	name,
 	fallback = false,
-	filter = ( val ) => val
+	filter = ( val ) => val,
+	deprecatedProperties = deprecatedAdminProperties
 ) {
-	if ( window.deprecatedWcSettings ) {
-		const key = `admin.${ name }`;
-		if ( key in window.deprecatedWcSettings ) {
-			const warningMessage = window.deprecatedWcSettings[ key ]
-				? window.deprecatedWcSettings[ key ]
-				: `Deprecated: ${ name } has been deprecated. This value will be removed soon.`;
-			// eslint-disable-next-line no-console
-			console.warn( warningMessage );
-		}
-	}
-
 	if ( mutableSources.includes( name ) ) {
 		throw new Error(
 			__(
@@ -57,10 +65,16 @@ export function getAdminSetting(
 			)
 		);
 	}
+
 	const value = ADMIN_SETTINGS_SOURCE.hasOwnProperty( name )
 		? ADMIN_SETTINGS_SOURCE[ name ]
 		: fallback;
-	return filter( value, fallback );
+	const filtered = filter( value, fallback );
+
+	// Return proxied object if the requested object has deprecated properties.
+	return deprecatedProperties?.[ name ]
+		? createDeprecatedObjectProxy( filtered, deprecatedProperties[ name ] )
+		: filtered;
 }
 
 export const ADMIN_URL = getSetting( 'adminUrl' );
