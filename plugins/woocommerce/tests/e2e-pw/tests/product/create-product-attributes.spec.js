@@ -29,6 +29,13 @@ const productAttributes = [
 
 const test = baseTest.extend( {
 	storageState: ADMIN_STATE_PATH,
+	page: async ( { page, wcAdminApi }, use ) => {
+		await wcAdminApi.put( 'options', {
+			woocommerce_task_list_reminder_bar_hidden: 'yes',
+		} );
+
+		await use( page );
+	},
 	product: async ( { api }, use ) => {
 		let product = getFakeProduct( { type: 'variable' } );
 
