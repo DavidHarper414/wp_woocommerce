@@ -14,11 +14,13 @@ import FeedbackIcon from './icon-feedback';
 
 interface EmailCesFeedbackProps {
 	action: string;
+	description?: string;
 	question: string;
 }
 
 export const EmailCesFeedback = ( {
 	action,
+	description,
 	question,
 }: EmailCesFeedbackProps ) => {
 	const { showCesModal } = useDispatch( CES_STORE_KEY );
@@ -31,7 +33,8 @@ export const EmailCesFeedback = ( {
 		showCesModal( {
 			action,
 			title: __( 'Share your experience', 'woocommerce' ),
-			showDescription: false,
+			showDescription: !! description,
+			description,
 			firstQuestion: question,
 			getExtraFieldsToBeShown: (
 				extraFieldsValues: { [ key: string ]: string },
