@@ -26,6 +26,7 @@ const checkoutPages = [
 	BLOCKS_CHECKOUT_PAGE,
 ];
 
+/* region helpers */
 async function updateValue( api, path, desiredValue ) {
 	await api.put( path, { value: desiredValue } );
 }
@@ -44,6 +45,123 @@ async function resetValue( api, path, values ) {
 	}
 }
 
+function isBlocksCheckout( page ) {
+	return page.url().includes( BLOCKS_CHECKOUT_PAGE.slug );
+}
+
+async function checkOrderDetails( page, product, qty, tax ) {
+	const expectedTotalPrice = (
+		parseFloat( product.price ) *
+		qty *
+		( 1 + parseFloat( tax.rate ) / 100 )
+	).toLocaleString( 'en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	} );
+
+	if ( page.url().includes( BLOCKS_CHECKOUT_PAGE.slug ) ) {
+		await expect(
+			page.getByRole( 'heading', { name: product.name } )
+		).toBeVisible();
+
+		await expect(
+			page.locator( '.wc-block-components-order-summary-item__quantity' )
+		).toContainText( qty.toString() );
+
+		await expect(
+			page.locator(
+				'.wc-block-components-totals-footer-item > .wc-block-components-totals-item__value'
+			)
+		).toContainText( expectedTotalPrice );
+	} else {
+		await expect( page.locator( 'td.product-name' ) ).toHaveText(
+			`${ product.name } × ${ qty }`
+		);
+		await expect( page.locator( 'tr.order-total > td' ) ).toContainText(
+			expectedTotalPrice
+		);
+	}
+}
+
+async function addProductToCartAndProceedToCheckout(
+	pageSlug,
+	page,
+	product,
+	qty,
+	tax
+) {
+	await addAProductToCart( page, product.id, qty );
+	await page.goto( pageSlug );
+	await checkOrderDetails( page, product, qty, tax );
+}
+
+async function placeOrder( page ) {
+	if ( isBlocksCheckout( page ) ) {
+		await page.getByLabel( 'Add a note to your order' ).check();
+		// this helps with flakiness on clicking the Place order button
+		await page
+			.getByPlaceholder( 'Notes about your order' )
+			.fill( 'This order was created by an end-to-end test.' );
+	}
+
+	await page.getByRole( 'button', { name: 'Place order' } ).click();
+
+	await expect(
+		page.getByText( 'Your order has been received' )
+	).toBeVisible();
+}
+
+async function fillBillingDetails( page, data, createAccount ) {
+	if ( isBlocksCheckout( page ) ) {
+		await page
+			.getByRole( 'textbox', { name: 'Email address' } )
+			.fill( data.email );
+
+		await fillBillingCheckoutBlocks( page, {
+			firstName: data.first_name,
+			lastName: data.last_name,
+			address: data.address_1,
+			city: data.city,
+			zip: data.postcode,
+			phone: data.phone,
+		} );
+
+		if ( createAccount ) {
+			await page
+				.getByRole( 'checkbox', {
+					name: 'Create an account with',
+				} )
+				.check();
+		}
+	} else {
+		await page
+			.getByRole( 'textbox', { name: 'First name' } )
+			.fill( data.first_name );
+		await page
+			.getByRole( 'textbox', { name: 'Last name' } )
+			.fill( data.last_name );
+		await page
+			.getByRole( 'textbox', { name: 'Street address' } )
+			.fill( data.address_1 );
+		await page
+			.getByRole( 'textbox', { name: 'Town / City' } )
+			.fill( data.city );
+		await page
+			.getByRole( 'textbox', { name: 'ZIP Code' } )
+			.fill( data.postcode );
+		await page.getByRole( 'textbox', { name: 'Phone' } ).fill( data.phone );
+		await page
+			.getByRole( 'textbox', { name: 'Email address' } )
+			.fill( data.email );
+
+		if ( createAccount ) {
+			await page.getByText( 'Create an account?' ).check();
+		}
+	}
+}
+/* endregion */
+
+/* region fixtures */
 const test = baseTest.extend( {
 	page: async ( { page, api }, use ) => {
 		await createBlocksCheckoutPage( page.context().browser() );
@@ -193,122 +311,9 @@ const test = baseTest.extend( {
 		} );
 	},
 } );
+/* endregion */
 
-function isBlocksCheckout( page ) {
-	return page.url().includes( BLOCKS_CHECKOUT_PAGE.slug );
-}
-
-async function checkOrderDetails( page, product, qty, tax ) {
-	const expectedTotalPrice = (
-		parseFloat( product.price ) *
-		qty *
-		( 1 + parseFloat( tax.rate ) / 100 )
-	).toLocaleString( 'en-US', {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2,
-	} );
-
-	if ( page.url().includes( BLOCKS_CHECKOUT_PAGE.slug ) ) {
-		await expect(
-			page.getByRole( 'heading', { name: product.name } )
-		).toBeVisible();
-
-		await expect(
-			page.locator( '.wc-block-components-order-summary-item__quantity' )
-		).toContainText( qty.toString() );
-
-		await expect(
-			page.locator(
-				'.wc-block-components-totals-footer-item > .wc-block-components-totals-item__value'
-			)
-		).toContainText( expectedTotalPrice );
-	} else {
-		await expect( page.locator( 'td.product-name' ) ).toHaveText(
-			`${ product.name } × ${ qty }`
-		);
-		await expect( page.locator( 'tr.order-total > td' ) ).toContainText(
-			expectedTotalPrice
-		);
-	}
-}
-
-async function addProductToCartAndProceedToCheckout(
-	pageSlug,
-	page,
-	product,
-	qty,
-	tax
-) {
-	await addAProductToCart( page, product.id, qty );
-	await page.goto( pageSlug );
-	await checkOrderDetails( page, product, qty, tax );
-}
-
-async function placeOrder( page ) {
-	if ( isBlocksCheckout( page ) ) {
-		await page.getByLabel( 'Add a note to your order' ).check();
-		// this helps with flakiness on clicking the Place order button
-		await page
-			.getByPlaceholder( 'Notes about your order' )
-			.fill( 'This order was created by an end-to-end test.' );
-	}
-
-	await page.getByRole( 'button', { name: 'Place order' } ).click();
-
-	await expect(
-		page.getByText( 'Your order has been received' )
-	).toBeVisible();
-}
-
-async function fillBillingDetails( page, data, createAccount ) {
-	if ( isBlocksCheckout( page ) ) {
-		await page
-			.getByRole( 'textbox', { name: 'Email address' } )
-			.fill( data.email );
-
-		await fillBillingCheckoutBlocks( page, {
-			firstName: data.first_name,
-			lastName: data.last_name,
-			address: data.address_1,
-			city: data.city,
-			zip: data.postcode,
-			phone: data.phone,
-		} );
-
-		if ( createAccount ) {
-			await page
-				.getByRole( 'checkbox', {
-					name: 'Create an account with',
-				} )
-				.check();
-		}
-	} else {
-		await page
-			.getByRole( 'textbox', { name: 'First name' } )
-			.fill( data.first_name );
-		await page
-			.getByRole( 'textbox', { name: 'Last name' } )
-			.fill( data.last_name );
-		await page
-			.getByRole( 'textbox', { name: 'Street address' } )
-			.fill( data.address_1 );
-		await page
-			.getByRole( 'textbox', { name: 'Town / City' } )
-			.fill( data.city );
-		await page
-			.getByRole( 'textbox', { name: 'ZIP Code' } )
-			.fill( data.postcode );
-		await page.getByRole( 'textbox', { name: 'Phone' } ).fill( data.phone );
-		await page
-			.getByRole( 'textbox', { name: 'Email address' } )
-			.fill( data.email );
-
-		if ( createAccount ) {
-			await page.getByText( 'Create an account?' ).check();
-		}
-	}
-}
-
+/* region tests */
 checkoutPages.forEach( ( { name, slug } ) => {
 	test(
 		`guest can checkout paying with cash on delivery on ${ name }`,
@@ -499,3 +504,5 @@ checkoutPages.forEach( ( { name, slug } ) => {
 		}
 	);
 } );
+
+/* endregion */
