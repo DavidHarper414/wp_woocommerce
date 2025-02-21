@@ -22,3 +22,48 @@ jobs:
               with:
                   repo-token: '${{ secrets.GITHUB_TOKEN }}'
                   configuration-path: .github/project-pr-labeler.yml
+    label_by_content:
+        runs-on: ubuntu-latest
+        needs: label_project
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Detect changelog types from content
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            run: |
+              declare -A LABEL_MAP=(
+                ["fix"]="type: fix"
+                ["add"]="type: feature"
+                ["update"]="type: enhancement"
+                ["tweak"]="type: enhancement"
+                ["enhancement"]="type: enhancement"
+                ["performance"]="type: performance"
+                ["dev"]="type: infrastructure"
+              )
+    
+              APPLIED_LABELS=()
+    
+              # Loop through changelog files
+              for FILE in plugins/woocommerce/changelog/*; do
+                # Ensure the file exists and is not a directory
+                if [[ -f "$FILE" ]]; then
+                  # Extract the type from file content
+                  TYPE=$(grep -iE '^Type: (fix|add|update|tweak|enhancement|performance|dev)' "$FILE" | awk -F': ' '{print tolower($2)}' | head -n 1)
+    
+                  # Map the type to a label if it exists
+                  LABEL="${LABEL_MAP[$TYPE]}"
+                  if [[ -n "$LABEL" && ! " ${APPLIED_LABELS[*]} " =~ " $LABEL " ]]; then
+                    APPLIED_LABELS+=("$LABEL")
+                  fi
+                fi
+              done
+    
+              # Apply labels if any were found
+              if [ ${#APPLIED_LABELS[@]} -ne 0 ]; then
+                echo "Applying labels: ${APPLIED_LABELS[*]}"
+                gh pr edit "$GITHUB_REF" --add-label "${APPLIED_LABELS[@]}"
+              else
+                echo "No matching changelog types found or no relevant changelog files."
+              fi
