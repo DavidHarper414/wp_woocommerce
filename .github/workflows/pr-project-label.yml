@@ -28,6 +28,9 @@ jobs:
         steps:
           - name: Checkout code
             uses: actions/checkout@v4
+            with:
+              ref: refs/pull/${{ github.event.pull_request.number }}/merge  # Ensures only merged changes are used
+              fetch-depth: 0
           - name: Detect changelog types from content
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,9 +48,6 @@ jobs:
     
               APPLIED_LABELS=()
     
-              # Ensure we are in the correct repository path
-              cd "$GITHUB_WORKSPACE"
-    
               # Get list of changed files in the PR and filter to changelog files
               CHANGED_FILES=$(gh pr view "$PR_NUMBER" --json files -q '.files[].path' | grep '^plugins/woocommerce/changelog/' || true)
     
@@ -56,8 +56,9 @@ jobs:
     
               # Loop through only changed changelog files
               for FILE in $CHANGED_FILES; do
-                  FULL_PATH="$GITHUB_WORKSPACE/$FILE"  # Ensure absolute path
+                FULL_PATH="$GITHUB_WORKSPACE/$FILE"
     
+                if [[ -f "$FULL_PATH" ]]; then
                   echo "Processing file: $FULL_PATH"
     
                   # Extract the type from file content
@@ -71,6 +72,9 @@ jobs:
                   if [[ -n "$LABEL" && ! " ${APPLIED_LABELS[*]} " =~ " $LABEL " ]]; then
                     APPLIED_LABELS+=("$LABEL")
                   fi
+                else
+                  echo "Skipping non-existent file: $FULL_PATH (Check if checkout fetched all changes)"
+                fi
               done
     
               echo "APPLIED_LABELS: ${APPLIED_LABELS[*]}"
