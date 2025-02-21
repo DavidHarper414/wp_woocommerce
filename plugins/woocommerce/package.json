@@ -726,23 +726,6 @@
 						"resultsPath": "tests/e2e-pw/test-results",
 						"allure": true
 					}
-				},
-				{
-					"name": "Core e2e tests - product-attribute",
-					"testType": "e2e",
-					"command": "test:e2e create-product-attributes --repeat-each=100 --max-failures=1",
-					"shardingArguments": [],
-					"changes": [],
-					"testEnv": {
-						"start": "env:test"
-					},
-					"events": [
-						"product-attributes-test"
-					],
-					"report": {
-						"resultsBlobName": "core-e2e-report-product-attributes-test",
-						"resultsPath": "tests/e2e-pw/test-results"
-					}
 				}
 			]
 		}
