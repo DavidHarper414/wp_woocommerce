@@ -15,9 +15,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Emails manager.
  *
  * @class    WC_BIS_Emails
- * @version  2.0.0
+ * @version  x.x.x
  */
 class WC_BIS_Emails {
+
+	/**
+	 * List of all core subscription email classes.
+	 *
+	 * @var array
+	 */
+	public static $email_classes = array(
+		'WC_BIS_Email_Notification_Received' => 'emails/class-wc-bis-email-notification-received.php',
+		'WC_BIS_Email_Notification_Confirm'  => 'emails/class-wc-bis-email-notification-confirm.php',
+		'WC_BIS_Email_Notification_Verify'   => 'emails/class-wc-bis-email-notification-verify.php',
+	);
 
 	/**
 	 * Constructor.
@@ -99,23 +110,16 @@ class WC_BIS_Emails {
 	/**
 	 * Registers custom emails classes.
 	 *
-	 * @param  array $emails
+	 * @param  array $emails Array of email classes.
 	 * @return array
 	 */
 	public function email_classes( $emails ) {
-		$emails['WC_BIS_Email_Notification_Received'] = include WC_ABSPATH . 'includes/emails/class-wc-bis-email-notification-received.php';
-		if ( is_a( $emails['WC_BIS_Email_Notification_Received'], 'WC_Email' ) ) {
-			$emails['WC_BIS_Email_Notification_Received']->setup_hooks();
-		}
+		foreach ( self::$email_classes as $email_class => $file_name ) {
+			$emails[ $email_class ] = include $file_name;
 
-		$emails['WC_BIS_Email_Notification_Confirm'] = include WC_ABSPATH . 'includes/emails/class-wc-bis-email-notification-confirm.php';
-		if ( is_a( $emails['WC_BIS_Email_Notification_Confirm'], 'WC_Email' ) ) {
-			$emails['WC_BIS_Email_Notification_Confirm']->setup_hooks();
-		}
-
-		$emails['WC_BIS_Email_Notification_Verify'] = include WC_ABSPATH . 'includes/emails/class-wc-bis-email-notification-verify.php';
-		if ( is_a( $emails['WC_BIS_Email_Notification_Verify'], 'WC_Email' ) ) {
-			$emails['WC_BIS_Email_Notification_Verify']->setup_hooks();
+			if ( is_a( $emails[ $email_class ], 'WC_Email' ) ) {
+				$emails[ $email_class ]->setup_hooks();
+			}
 		}
 
 		return $emails;

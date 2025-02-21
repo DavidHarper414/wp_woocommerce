@@ -251,6 +251,7 @@ class WC_BIS_Notifications {
 
 		// Emails.
 		require_once WC_ABSPATH . 'includes/bis/class-wc-bis-emails.php';
+		require_once WC_ABSPATH . 'includes/emails/class-wc-bis-email-preview.php';
 
 		// REST API support.
 		require_once WC_ABSPATH . 'includes/bis/class-wc-bis-rest-api.php';

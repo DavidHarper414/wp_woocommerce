@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Notification Data model class.
  *
  * @class    WC_BIS_Notification_Data
- * @version  1.3.2
+ * @version  x.x.x
  */
 class WC_BIS_Notification_Data {
 
@@ -545,6 +545,18 @@ class WC_BIS_Notification_Data {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Set Notification Product.
+	 *
+	 * @since x.x.x
+	 * @param WC_Product $product Product object.
+	 * @return void
+	 */
+	public function set_product( WC_Product $product ): void {
+		$this->product = $product;
+		$this->set_product_id( $product->get_id() );
 	}
 
 	/*
