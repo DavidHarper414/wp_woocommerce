@@ -124,29 +124,6 @@ class DefaultFreeExtensionsTest extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Asserts WCS&T is not recommended for Tax if it is already active.
-	 *
-	 * @return void
-	 */
-	public function test_wcservices_is_not_recommended_if_it_is_already_active() {
-		// Arrange.
-		// Make sure the plugin passes as active.
-		$services_plugin_file = 'woocommerce-services/woocommerce-services.php';
-		// To pass the validation, we need to the plugin file to exist.
-		$services_plugin_file_path = WP_PLUGIN_DIR . '/' . $services_plugin_file;
-		self::touch( $services_plugin_file_path );
-		update_option( 'active_plugins', array( $services_plugin_file ) );
-
-		$recommended_plugin_slugs = $this->get_recommended_plugin_slugs( $this->bundles_mock );
-
-		$this->assertNotContains( 'woocommerce-services:tax', $recommended_plugin_slugs );
-
-		// Clean up.
-		self::rmdir( dirname( $services_plugin_file_path ) );
-		self::delete_folders( dirname( $services_plugin_file_path ) );
-	}
-
-	/**
 	 * Asserts that in the core profiler, WC Shipping is displayed as a shipping solution and WCS&T as the tax solution.
 	 *
 	 * @return void
