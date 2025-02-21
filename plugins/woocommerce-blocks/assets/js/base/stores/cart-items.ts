@@ -34,6 +34,12 @@ type StoreAPIError = { message: string; code: string };
 type CartItemResponse = Item | StoreAPIError;
 type CartItemsResponse = Item[] | StoreAPIError;
 
+type QuantityChanges = {
+	cartItemsPendingQuantity?: string[];
+	cartItemsPendingDelete?: string[];
+	productsPendingAdd?: number[];
+};
+
 function isSuccessfulResponse(
 	res: Response,
 	json: CartItemsResponse | CartItemResponse
@@ -49,14 +55,19 @@ function generateError( json: StoreAPIError ) {
 
 let pendingRefresh = false;
 let refreshTimeout = 3000;
-let eventId = 0;
 
-function emitSyncEvent() {
-	++eventId;
-
+function emitSyncEvent( {
+	quantityChanges,
+}: {
+	quantityChanges: QuantityChanges;
+} ) {
 	window.dispatchEvent(
-		new CustomEvent( 'wc-blocks_cart_sync_required', {
-			detail: { type: 'from_iAPI', id: eventId },
+		// Question: What are the usual names for WooCommerce events?
+		new CustomEvent( 'wc-blocks_store_sync_required', {
+			detail: {
+				type: 'from_iAPI',
+				quantityChanges,
+			},
 		} )
 	);
 }
@@ -71,19 +82,26 @@ export const { state, actions } = store< Store >( 'woocommerce', {
 			const previousQuantity =
 				state.cart.items[ itemIndex ]?.quantity ?? 0;
 			let key: string | null = null;
+			const quantityChanges: QuantityChanges = {};
 
 			// Optimistically updates the number of items in the cart.
 			if ( itemIndex !== -1 ) {
 				state.cart.items[ itemIndex ].quantity = quantity;
 				key = state.cart.items[ itemIndex ].key || null;
+				if ( key ) quantityChanges.cartItemsPendingQuantity = [ key ];
 			} else {
 				state.cart.items.push( { id, quantity } );
 				itemIndex = state.cart.items.length - 1;
+				quantityChanges.productsPendingAdd = [ id ];
 			}
 
 			// Updates the database.
 			try {
 				const res: Response = yield fetch(
+					// Todo: replace with `/cart/add-item` and
+					// `/cart/update-item` because sometimes extenders can
+					// modify the quantities of other items on the server so we
+					// need to retrieve the whole cart each time.
 					`${ state.restUrl }wc/store/v1/cart/items/${ key || '' }`,
 					{
 						method: key ? 'PUT' : 'POST',
@@ -109,9 +127,10 @@ export const { state, actions } = store< Store >( 'woocommerce', {
 				} );
 
 				// Dispatches the event to sync the @wordpress/data store.
-				emitSyncEvent();
+				emitSyncEvent( { quantityChanges } );
 			} catch ( error ) {
 				// Reverts the optimistic update.
+				// Todo: Prevent racing conditions with multiple addToCart calls for the same item.
 				state.cart.items[ itemIndex ].quantity = previousQuantity || 0;
 
 				throw error;
@@ -153,7 +172,7 @@ export const { state, actions } = store< Store >( 'woocommerce', {
 } );
 
 window.addEventListener(
-	'wc-blocks_cart_sync_required',
+	'wc-blocks_store_sync_required',
 	async ( event: Event ) => {
 		const customEvent = event as CustomEvent< {
 			type: string;
