@@ -157,12 +157,8 @@ export const ColorPanel = ( {
 		for ( let i = 0; i < settings.length; i++ ) {
 			const setting = settings[ i ];
 
-			if ( ! setting.colorValue ) {
+			if ( ! setting.colorValue || ! miniCartButtonRef.current ) {
 				continue;
-			}
-
-			if ( ! miniCartButtonRef.current ) {
-				return;
 			}
 
 			const bgColor = getElementBackgroundColor(
