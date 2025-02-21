@@ -24,6 +24,7 @@ import { OtherPaymentGateways } from '~/settings-payments/components/other-payme
 import { PaymentGateways } from '~/settings-payments/components/payment-gateways';
 import { IncentiveBanner } from '~/settings-payments/components/incentive-banner';
 import { IncentiveModal } from '~/settings-payments/components/incentive-modal';
+import { OnboardingModal } from '~/settings-payments/components/onboarding-modal';
 import {
 	providersContainWooPaymentsInTestMode,
 	providersContainWooPaymentsInDevMode,
@@ -283,6 +284,10 @@ export const SettingsPaymentsMain = () => {
 
 	return (
 		<>
+			<OnboardingModal
+				isOpen={ true }
+				onDismiss={ () => {} }
+			/>
 			{ showModalIncentive && incentiveProvider && incentive && (
 				<IncentiveModal
 					incentive={ incentive }

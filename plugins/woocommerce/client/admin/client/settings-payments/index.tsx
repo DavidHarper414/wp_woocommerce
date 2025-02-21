@@ -96,13 +96,6 @@ const hideWooCommerceNavTab = ( display: string ) => {
  * Renders the main payment settings page with a fallback while loading.
  */
 const SettingsPaymentsMain = () => {
-	const location = useLocation();
-
-	useEffect( () => {
-		if ( location.pathname === '' ) {
-			hideWooCommerceNavTab( 'block' );
-		}
-	}, [ location ] );
 	return (
 		<>
 			<Suspense
@@ -302,15 +295,7 @@ export const SettingsPaymentsMainWrapper = () => {
 	return (
 		<>
 			<Header title={ __( 'WooCommerce Settings', 'woocommerce' ) } />
-			<HistoryRouter history={ getHistory() }>
-				<Routes>
-					<Route path="/" element={ <SettingsPaymentsMain /> } />
-					<Route
-						path="/payment-methods"
-						element={ <SettingsPaymentsMethods /> }
-					/>
-				</Routes>
-			</HistoryRouter>
+			<SettingsPaymentsMain />
 		</>
 	);
 };
