@@ -50,31 +50,39 @@ jobs:
     
               APPLIED_LABELS=()
     
+              # Ensure we are in the correct repository path
+              cd "$GITHUB_WORKSPACE"
+    
               # Get list of changed files in the PR and filter to changelog files
               CHANGED_FILES=$(gh pr view "$PR_NUMBER" --json files -q '.files[].path' | grep '^plugins/woocommerce/changelog/' || true)
-
-              echo "changed files: $CHANGED_FILES"
+    
+              echo "Changed files detected:"
+              echo "$CHANGED_FILES"
     
               # Loop through only changed changelog files
               for FILE in $CHANGED_FILES; do
-                FULL_PATH="./$FILE"  # Ensure the path is correct
+                FULL_PATH="$GITHUB_WORKSPACE/$FILE"  # Ensure absolute path
+    
                 if [[ -f "$FULL_PATH" ]]; then
                   echo "Processing file: $FULL_PATH"
+    
                   # Extract the type from file content
-                  TYPE=$(grep -iE '^Type: (fix|add|update|tweak|enhancement|performance|dev)' "$FILE" | awk -F': ' '{print tolower($2)}' | head -n 1)
-                  echo "type: $TYPE"
+                  TYPE=$(grep -iE '^Type: (fix|add|update|tweak|enhancement|performance|dev)' "$FULL_PATH" | awk -F': ' '{print tolower($2)}' | head -n 1)
+                  echo "Type: $TYPE"
+    
                   # Map the type to a label if it exists
                   LABEL="${LABEL_MAP[$TYPE]}"
-                  echo "label: $LABEL"
+                  echo "Label: $LABEL"
+    
                   if [[ -n "$LABEL" && ! " ${APPLIED_LABELS[*]} " =~ " $LABEL " ]]; then
                     APPLIED_LABELS+=("$LABEL")
                   fi
                 else
-                    echo "Skipping non-existent file: $FULL_PATH"
+                  echo "Skipping non-existent file: $FULL_PATH (Check if checkout fetched all changes)"
                 fi
               done
-
-              echo "APPLIED_LABELS: $APPLIED_LABELS"
+    
+              echo "APPLIED_LABELS: ${APPLIED_LABELS[*]}"
               # Apply labels if any were found
               if [ ${#APPLIED_LABELS[@]} -ne 0 ]; then
                 echo "Applying labels: ${APPLIED_LABELS[*]}"
