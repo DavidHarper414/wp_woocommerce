@@ -21,7 +21,7 @@ Closes Issue # .
 
 (For Bug Fixes) Bug introduced in PR # .
 
-## Screenshots or screen recordings:
+### Screenshots or screen recordings:
 
 <!-- If this PR includes UI changes, please provide screenshots or a screen recording for clarity. -->
 <!-- This section can be removed if not applicable. -->
