@@ -125,8 +125,8 @@ const { state } = store< Store >(
 							'woocommerce/product-collection-notices'
 						);
 
-					// If the user deleted the hooked store notice block, the
-					// store won't be present and we should not add a notice.
+					// Technically as long as the product collection is present, noticeActions
+					// will be too, but we check for 'addNotice' to guard against possible fatal errors.
 					if ( 'addNotice' in noticeActions ) {
 						// The old implementation always overwrites the last
 						// notice, so we remove the last notice before adding a
