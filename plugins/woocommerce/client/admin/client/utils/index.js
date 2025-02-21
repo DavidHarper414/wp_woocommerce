@@ -123,6 +123,30 @@ export const useFullScreen = ( classes ) => {
 	} );
 };
 
+/**
+ * Create a proxy object to warn about deprecated properties.
+ *
+ * Your object (obj):
+ * {
+ * 	prop1: "test",
+ * 	prop2: {
+ * 		"prop3": "test"
+ *  }
+ * }
+ *
+ * messages object structure:
+ * {
+ *  prop1: {
+ *   prop2: 'Deprecation message'
+ * }
+ *
+ * Once proxied, when you access obj.prop1.prop2, you will see a warning in the console.
+ *
+ * @param {Object} obj      - Object to proxy
+ * @param {Object} messages - Object containing deprecation messages
+ * @param {string} basePath - Base path
+ * @return {Proxy} proxied object
+ */
 export function createDeprecatedObjectProxy( obj, messages, basePath = '' ) {
 	return new Proxy( obj, {
 		get( target, prop, receiver ) {
