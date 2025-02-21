@@ -89,7 +89,7 @@ jobs:
             // - Pushes: run CI jobs aiming pushes without filtering based on the content changes
 
             let prNumberFilter   = '';
-            if ( '${{ github.event_name }}' == 'pull_request' ) {
+            if ( '${{ github.event_name }}' === 'pull_request' ) {
               prNumberFilter = `--pr-number ${{ github.event.pull_request.number }}`;
             }
 
