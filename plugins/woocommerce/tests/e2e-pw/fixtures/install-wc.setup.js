@@ -123,7 +123,7 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 				{
 					method: 'POST',
 					data: {
-						version: resolvedVersion.toString(),
+						version: resolvedVersion,
 					},
 				}
 			);
