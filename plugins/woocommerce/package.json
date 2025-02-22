@@ -703,8 +703,7 @@
 					"changes": [],
 					"events": [
 						"on-demand",
-						"core-e2e-pressable",
-						"release-checks"
+						"core-e2e-pressable"
 					],
 					"report": {
 						"resultsBlobName": "default-pressable-core-e2e-and-api",
@@ -720,8 +719,7 @@
 					"changes": [],
 					"events": [
 						"on-demand",
-						"core-e2e-wpcom",
-						"release-checks"
+						"core-e2e-wpcom"
 					],
 					"report": {
 						"resultsBlobName": "default-wpcom-core-e2e-and-api",
