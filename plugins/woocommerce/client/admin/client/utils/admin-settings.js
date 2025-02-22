@@ -72,7 +72,8 @@ export function getAdminSetting(
 	const filtered = filter( value, fallback );
 
 	// Return proxied object if the requested object has deprecated properties.
-	return deprecatedProperties?.[ name ]
+	return deprecatedProperties?.[ name ] &&
+		process.env.NODE_ENV === 'development'
 		? createDeprecatedObjectProxy( filtered, deprecatedProperties[ name ] )
 		: filtered;
 }
