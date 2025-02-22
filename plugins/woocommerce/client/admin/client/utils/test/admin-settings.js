@@ -53,7 +53,7 @@ describe( 'getAdminSetting', () => {
 		);
 	} );
 
-	it( 'should not log a warning if the setting does not exist under "admin.onboarding"', () => {
+	it( 'should not log a warning if the setting does not exist', () => {
 		const deprecatedWcSettings = {
 			onboarding: {
 				profile: 'This setting is deprecated',
@@ -66,6 +66,7 @@ describe( 'getAdminSetting', () => {
 	} );
 
 	it( 'should not log a warning if NODE_ENV is not "development"', () => {
+		const _originalNodeEnv = process.env.NODE_ENV;
 		process.env.NODE_ENV = 'production'; // Simulate non-development environment
 
 		const deprecatedWcSettings = {
@@ -78,6 +79,6 @@ describe( 'getAdminSetting', () => {
 
 		expect( consoleWarnSpy ).not.toHaveBeenCalled();
 
-		delete process.env.NODE_ENV; // Reset NODE_ENV after test
+		process.env.NODE_ENV = _originalNodeEnv; // Restore ENV
 	} );
 } );
