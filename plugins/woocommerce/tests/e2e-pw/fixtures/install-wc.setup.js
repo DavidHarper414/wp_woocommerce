@@ -75,6 +75,15 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 		} else {
 			console.log( `Latest version installed: ${ resolvedVersion }` );
 		}
+
+		// Wait for it...
+		console.log(
+			'Waiting a few seconds for WooCommerce to be recognized...'
+		);
+		await new Promise( ( resolve ) => setTimeout( resolve, 5000 ) );
+
+		const wcCheckVersion = await getActivatedWooCommerceVersion( wpApi );
+		console.log( `Post-install WC check: ${ wcCheckVersion }` );
 	} else {
 		if ( wcVersion === activatedWcVersion ) {
 			console.log(
