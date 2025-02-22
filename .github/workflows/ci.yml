@@ -500,6 +500,9 @@ jobs:
 
       - name: 'Validate - missing entries'
         id: validate_missing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
             passed=$( php tools/monorepo/check-changelogger-use.php --debug --pr-number=${{ github.event.pull_request.number }} | tee -a /dev/stderr | grep 'Passed validation' )
             echo "passed=${passed/Passed validation: /}" >> $GITHUB_OUTPUT
