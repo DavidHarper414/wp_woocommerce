@@ -54,9 +54,6 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 			}
 		);
 
-		const latestResponseJson = await latestResponse.json();
-		console.log( 'Latest WC API Response:', latestResponseJson );
-
 		if ( ! latestResponse.ok() ) {
 			throw new Error(
 				`Failed to install latest WC: ${ latestResponse.status() } ${ await latestResponse.text() }`
@@ -117,7 +114,6 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 	// Activate WC
 	if ( resolvedVersion ) {
 		try {
-			console.log( 'WC resolved version: ', resolvedVersion );
 			const activationResponse = await wcbtApi.fetch(
 				'/wp-json/wc-admin-test-helper/live-branches/activate/v1',
 				{
@@ -127,9 +123,6 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 					},
 				}
 			);
-
-			const activationResponseJson = await activationResponse.json();
-			console.log( 'Activation Response:', activationResponseJson );
 
 			if ( ! activationResponse.ok() ) {
 				throw new Error(
