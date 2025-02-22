@@ -171,7 +171,7 @@ while ( ( $line = fgets( $pipes[1] ) ) ) {
 	}
 
 	if ( false === $project_match ) {
-		debug( 'Ignoring non-project file %s.', $line );
+		debug( 'Ignoring file %s (no associated composer manifest).', $line );
 		continue;
 	}
 
