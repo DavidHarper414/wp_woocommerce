@@ -23,6 +23,32 @@ async function getActivatedWooCommerceVersion( wpApi ) {
 	return plugins.find( ( plugin ) => plugin.name === 'WooCommerce' )?.version;
 }
 
+async function waitForWooCommerceRecognition(
+	wpApi,
+	expectedVersion,
+	maxRetries = 10,
+	delay = 1000
+) {
+	for ( let attempt = 1; attempt <= maxRetries; attempt++ ) {
+		const wcCheckVersion = await getActivatedWooCommerceVersion( wpApi );
+
+		if ( wcCheckVersion === expectedVersion ) {
+			console.log( `WooCommerce ${ wcCheckVersion } is now recognized.` );
+			return wcCheckVersion;
+		}
+
+		console.log(
+			`Attempt ${ attempt }: WooCommerce not yet recognized. Retrying in ${ delay } ms...`
+		);
+		await new Promise( ( resolve ) => setTimeout( resolve, delay ) );
+	}
+
+	console.warn(
+		`Installed WooCommerce still not recognized after ${ maxRetries } attempts.`
+	);
+	return null;
+}
+
 setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 	setup.skip(
 		! process.env.INSTALL_WC,
@@ -75,15 +101,17 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 		} else {
 			console.log( `Latest version installed: ${ resolvedVersion }` );
 		}
-
-		// Wait for it...
-		console.log(
-			'Waiting a few seconds for WooCommerce to be recognized...'
+		console.log( 'Waiting for WooCommerce to be recognized...' );
+		const wcCheckVersion = await waitForWooCommerceRecognition(
+			wpApi,
+			resolvedVersion
 		);
-		await new Promise( ( resolve ) => setTimeout( resolve, 5000 ) );
 
-		const wcCheckVersion = await getActivatedWooCommerceVersion( wpApi );
-		console.log( `Post-install WC check: ${ wcCheckVersion }` );
+		if ( ! wcCheckVersion ) {
+			console.error(
+				'Installed WooCommerce was not recognized in time. Activation may fail.'
+			);
+		}
 	} else {
 		if ( wcVersion === activatedWcVersion ) {
 			console.log(
