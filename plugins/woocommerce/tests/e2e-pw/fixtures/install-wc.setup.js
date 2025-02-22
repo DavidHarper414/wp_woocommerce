@@ -128,7 +128,22 @@ setup( 'Install WC using WC Beta Tester', async ( { wcbtApi, wpApi } ) => {
 				}
 			);
 
-			const activationResponseJson = await activationResponse.json();
+			const activationText = await activationResponse.text();
+			console.log( 'Raw Activation Response:', activationText );
+
+			let activationResponseJson;
+			try {
+				activationResponseJson = activationText
+					? JSON.parse( activationText )
+					: {};
+			} catch ( jsonError ) {
+				console.error(
+					'Failed to parse activation response JSON:',
+					jsonError
+				);
+				activationResponseJson = {};
+			}
+
 			console.log( 'Activation Response:', activationResponseJson );
 
 			if ( ! activationResponse.ok() ) {
