@@ -7,7 +7,6 @@
  */
 
 use Automattic\WooCommerce\Internal\Admin\EmailPreview\EmailPreview;
-use Automattic\WooCommerce\Internal\BrandingController;
 use Automattic\WooCommerce\Internal\Email\EmailFont;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
@@ -422,7 +421,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 	 * Get default colors for emails.
 	 */
 	private function get_email_default_colors() {
-		$base_color_default        = BrandingController::get_default_email_base_color();
+		$base_color_default        = '#720eec';
 		$bg_color_default          = '#f7f7f7';
 		$body_bg_color_default     = '#ffffff';
 		$body_text_color_default   = '#3c3c3c';
@@ -671,7 +670,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 			id="wc_settings_email_preview_slotfill"
 			data-preview-url="<?php echo esc_url( wp_nonce_url( admin_url( '?preview_woocommerce_mail=true' ), 'preview-mail' ) ); ?>"
 			data-email-types="<?php echo esc_attr( wp_json_encode( $email_types ) ); ?>"
-			data-email-settings-ids="<?php echo esc_attr( wp_json_encode( EmailPreview::get_email_style_settings_ids() ) ); ?>"
+			data-email-setting-ids="<?php echo esc_attr( wp_json_encode( EmailPreview::get_email_style_setting_ids() ) ); ?>"
 		></div>
 		<?php
 	}
@@ -699,7 +698,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 				id="wc_settings_email_preview_slotfill"
 				data-preview-url="<?php echo esc_url( wp_nonce_url( admin_url( '?preview_woocommerce_mail=true' ), 'preview-mail' ) ); ?>"
 				data-email-types="<?php echo esc_attr( wp_json_encode( $email_types ) ); ?>"
-				data-email-settings-ids="<?php echo esc_attr( wp_json_encode( EmailPreview::get_email_content_settings_ids( $email->id ) ) ); ?>"
+				data-email-setting-ids="<?php echo esc_attr( wp_json_encode( EmailPreview::get_email_content_setting_ids( $email->id ) ) ); ?>"
 			></div>
 			<input type="hidden" id="woocommerce_email_from_name" value="<?php echo esc_attr( get_option( 'woocommerce_email_from_name' ) ); ?>" />
 			<input type="hidden" id="woocommerce_email_from_address" value="<?php echo esc_attr( get_option( 'woocommerce_email_from_address' ) ); ?>" />
@@ -712,7 +711,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 	 * prevent conflicts where the preview would show values from previous session.
 	 */
 	private function delete_transient_email_settings() {
-		$setting_ids = EmailPreview::get_all_email_settings_ids();
+		$setting_ids = EmailPreview::get_all_email_setting_ids();
 		foreach ( $setting_ids as $id ) {
 			delete_transient( $id );
 		}
