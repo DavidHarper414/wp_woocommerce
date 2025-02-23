@@ -15,7 +15,6 @@ export { COUNTRIES_STORE_NAME } from './countries';
 export { OPTIONS_STORE_NAME } from './options';
 export { ITEMS_STORE_NAME } from './items';
 export { PAYMENT_GATEWAYS_STORE_NAME } from './payment-gateways';
-export { PAYMENT_SETTINGS_STORE_NAME } from './payment-settings';
 export { SHIPPING_METHODS_STORE_NAME } from './shipping-methods';
 export { PRODUCTS_STORE_NAME } from './products';
 export { ORDERS_STORE_NAME } from './orders';
@@ -70,6 +69,7 @@ export { store as countriesStore } from './countries';
 export { store as paymentGatewaysStore } from './payment-gateways';
 export { store as importStore } from './import';
 export { store as experimentalProductFormStore } from './product-form';
+export { store as paymentSettingsStore } from './payment-settings';
 
 // Export hooks
 export { withSettingsHydration } from './settings/with-settings-hydration';
@@ -171,7 +171,6 @@ import type { REPORTS_STORE_NAME } from './reports';
 import type { ITEMS_STORE_NAME } from './items';
 import type { COUNTRIES_STORE_NAME } from './countries';
 import type { PAYMENT_GATEWAYS_STORE_NAME } from './payment-gateways';
-import type { PAYMENT_SETTINGS_STORE_NAME } from './payment-settings';
 import type { SHIPPING_METHODS_STORE_NAME } from './shipping-methods';
 import type { PRODUCTS_STORE_NAME } from './products';
 import type { ORDERS_STORE_NAME } from './orders';
@@ -196,7 +195,6 @@ export type WCDataStoreName =
 	| typeof ITEMS_STORE_NAME
 	| typeof COUNTRIES_STORE_NAME
 	| typeof PAYMENT_GATEWAYS_STORE_NAME
-	| typeof PAYMENT_SETTINGS_STORE_NAME
 	| typeof SHIPPING_METHODS_STORE_NAME
 	| typeof PRODUCTS_STORE_NAME
 	| typeof ORDERS_STORE_NAME
@@ -214,7 +212,6 @@ export type WCDataStoreName =
  */
 import { WPDataSelectors } from './types';
 import { PaymentSelectors } from './payment-gateways/selectors';
-import { PaymentSettingsSelectors } from './payment-settings/selectors';
 import { ShippingMethodsSelectors } from './shipping-methods/selectors';
 import { PluginSelectors } from './plugins/selectors';
 import { OnboardingSelectors } from './onboarding/selectors';
@@ -242,8 +239,6 @@ export type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
 	? OnboardingSelectors
 	: T extends typeof PAYMENT_GATEWAYS_STORE_NAME
 	? PaymentSelectors
-	: T extends typeof PAYMENT_SETTINGS_STORE_NAME
-	? PaymentSettingsSelectors
 	: T extends typeof SHIPPING_METHODS_STORE_NAME
 	? ShippingMethodsSelectors
 	: T extends typeof USER_STORE_NAME
