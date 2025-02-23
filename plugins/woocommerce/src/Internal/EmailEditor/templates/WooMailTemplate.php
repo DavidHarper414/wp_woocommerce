@@ -2,20 +2,43 @@
 
 namespace Automattic\WooCommerce\Internal\EmailEditor\Templates;
 
+/**
+ * Basic template for WooCommerce transactional emails used in the email editor.
+ */
 class WooMailTemplate {
 
+	/**
+	 * Get the template slug.
+	 *
+	 * @return string Template identifier.
+	 */
 	public function get_slug(): string {
 		return 'woomailtemplate';
 	}
 
+	/**
+	 * Get the template title.
+	 *
+	 * @return string Localized template title.
+	 */
 	public function get_title(): string {
-		return __('WooMailTemplate', 'woocommerce');
+		return __( 'WooMailTemplate', 'woocommerce' );
 	}
 
+	/**
+	 * Get the template description.
+	 *
+	 * @return string Localized template description.
+	 */
 	public function get_description(): string {
-		return __('Basic template for WooCommerce transactional emails used in the email editor', 'woocommerce');
+		return __( 'Basic template for WooCommerce transactional emails used in the email editor', 'woocommerce' );
 	}
 
+	/**
+	 * Get the template content.
+	 *
+	 * @return string HTML content for the template.
+	 */
 	public function get_content(): string {
 		return '
 <!-- wp:group {"backgroundColor":"white","style":{"spacing":{"padding":{"top":"var:preset|spacing|10","bottom":"var:preset|spacing|10","left":"var:preset|spacing|20","right":"var:preset|spacing|20"}}},"layout":{"type":"constrained"}} -->

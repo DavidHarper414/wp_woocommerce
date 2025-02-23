@@ -9,18 +9,31 @@ use Automattic\WooCommerce\Internal\EmailEditor\Templates\TemplatesController;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Integration class for the Email Editor functionality.
+ */
 class Integration {
 	const EMAIL_POST_TYPE = 'woo_mail';
 
+	/**
+	 * The email editor page renderer instance.
+	 *
+	 * @var PageRenderer
+	 */
 	private PageRenderer $editor_page_renderer;
 
-	public function init(): void {
+	/**
+	 * Initialize the integration.
+	 *
+	 * @internal
+	 */
+	final public function init(): void {
 		$this->init_hooks();
 		$this->register_hooks();
 	}
 
 	/**
-	 * These classes have an register init method.
+	 * Initialize hooks for required classes.
 	 */
 	public function init_hooks() {
 		$container = wc_get_container();
@@ -30,53 +43,75 @@ class Integration {
 		$this->editor_page_renderer = $container->get( PageRenderer::class );
 	}
 
+	/**
+	 * Register hooks for the integration.
+	 */
 	public function register_hooks() {
-		add_filter('mailpoet_email_editor_post_types', [$this, 'add_email_post_type']);
-		add_filter('mailpoet_is_email_editor_page', [$this, 'is_editor_page'], 10, 1);
-		add_filter('replace_editor', [$this, 'replace_editor'], 10, 2);
+		add_filter( 'mailpoet_email_editor_post_types', array( $this, 'add_email_post_type' ) );
+		add_filter( 'mailpoet_is_email_editor_page', array( $this, 'is_editor_page' ), 10, 1 );
+		add_filter( 'replace_editor', array( $this, 'replace_editor' ), 10, 2 );
 	}
 
-	public function add_email_post_type(array $postTypes): array {
-		$postTypes[] = [
+	/**
+	 * Add WooCommerce email post type to the list of supported post types.
+	 *
+	 * @param array $post_types List of post types.
+	 * @return array Modified list of post types.
+	 */
+	public function add_email_post_type( array $post_types ): array {
+		$post_types[] = array(
 			'name' => self::EMAIL_POST_TYPE,
-			'args' => [
-				'labels' => [
-					'name' => __('Woo Emails', 'woocommerce'),
-					'singular_name' => __('Woo Email', 'woocommerce'),
-					'add_new_item' => __('Add New Woo Email', 'woocommerce'),
-					'edit_item' => __('Edit Woo Email', 'woocommerce'),
-					'new_item' => __('New Woo Email', 'woocommerce'),
-					'view_item' => __('View Woo Email', 'woocommerce'),
-					'search_items' => __('Search Woo Emails', 'woocommerce')
-				],
-				'rewrite' => ['slug' => self::EMAIL_POST_TYPE],
-				'supports' => ['title', 'editor'],
-				'public' => true,
-				'show_ui' => true,  // showing in the admin UI is temporary, it will be removed in the future
+			'args' => array(
+				'labels'       => array(
+					'name'          => __( 'Woo Emails', 'woocommerce' ),
+					'singular_name' => __( 'Woo Email', 'woocommerce' ),
+					'add_new_item'  => __( 'Add New Woo Email', 'woocommerce' ),
+					'edit_item'     => __( 'Edit Woo Email', 'woocommerce' ),
+					'new_item'      => __( 'New Woo Email', 'woocommerce' ),
+					'view_item'     => __( 'View Woo Email', 'woocommerce' ),
+					'search_items'  => __( 'Search Woo Emails', 'woocommerce' ),
+				),
+				'rewrite'      => array( 'slug' => self::EMAIL_POST_TYPE ),
+				'supports'     => array( 'title', 'editor' ),
+				'public'       => true,
+				'show_ui'      => true,  // Showing in the admin UI is temporary, it will be removed in the future.
 				'show_in_menu' => true,
-				'show_in_rest' => true
-			],
-		];
-		return $postTypes;
+				'show_in_rest' => true,
+			),
+		);
+		return $post_types;
 	}
 
-	public function is_editor_page(bool $isEditorPage): bool {
-		if ($isEditorPage) {
-			return $isEditorPage;
+	/**
+	 * Check if current page is email editor page.
+	 *
+	 * @param bool $is_editor_page Current editor page status.
+	 * @return bool Whether current page is email editor page.
+	 */
+	public function is_editor_page( bool $is_editor_page ): bool {
+		if ( $is_editor_page ) {
+			return $is_editor_page;
 		}
 
 		// We need to check early if we are on the email editor page. The check runs early so we can't use current_screen() here.
-		if (is_admin() && isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] === 'edit') {
-			$post = get_post((int)$_GET['post']);
-			return $post && $post->post_type === self::EMAIL_POST_TYPE;
+		if ( is_admin() && isset( $_GET['post'] ) && isset( $_GET['action'] ) && 'edit' === $_GET['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- We are not verifying the nonce here because we are not using the nonce in the function and the data is okay in this context (WP-admin errors out gracefully).
+			$post = get_post( (int) $_GET['post'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- We are not verifying the nonce here because we are not using the nonce in the function and the data is okay in this context (WP-admin errors out gracefully).
+			return $post && self::EMAIL_POST_TYPE === $post->post_type;
 		}
 
 		return false;
 	}
 
-	public function replace_editor($replace, $post) {
+	/**
+	 * Replace the default editor with our custom email editor.
+	 *
+	 * @param bool    $replace Whether to replace the editor.
+	 * @param WP_Post $post    Post object.
+	 * @return bool Whether the editor was replaced.
+	 */
+	public function replace_editor( $replace, $post ) {
 		$current_screen = get_current_screen();
-		if ($post->post_type === self::EMAIL_POST_TYPE && $current_screen) {
+		if ( self::EMAIL_POST_TYPE === $post->post_type && $current_screen ) {
 			$this->editor_page_renderer->render();
 			return true;
 		}

@@ -3,6 +3,8 @@
  * Loads WooCommerce packages from the /packages directory. These are packages developed outside of core.
  */
 
+declare( strict_types=1 );
+
 namespace Automattic\WooCommerce;
 
 use Automattic\Jetpack\Constants;
@@ -206,7 +208,7 @@ class Packages {
 			deactivate_plugins( $active_plugin_path );
 			add_action(
 				'admin_notices',
-				function() use ( $plugin_data ) {
+				function () use ( $plugin_data ) {
 					echo '<div class="error"><p>';
 					printf(
 					/* translators: %s: is referring to the plugin's name. */

@@ -10,32 +10,52 @@ use Automattic\WooCommerce\Internal\EmailEditor\Integration;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Controller for managing WooCommerce email templates.
+ *
+ * @internal
+ */
 class TemplatesController {
 
-	private string $templatePrefix = 'wooemail';
+	/**
+	 * Prefix used for template identification.
+	 *
+	 * @var string
+	 */
+	private string $template_prefix = 'wooemail';
 
-
-	public function init(): void {
-		add_filter('mailpoet_email_editor_register_templates', [$this, 'register_templates']);
+	/**
+	 * Initialize the controller by registering hooks.
+	 *
+	 * @internal
+	 * @return void
+	 */
+	final public function init(): void {
+		add_filter( 'mailpoet_email_editor_register_templates', array( $this, 'register_templates' ) );
 	}
 
-	public function register_templates(Templates_Registry $templatesRegistry) {
-		$templates = [];
-		 $templates[] = new WooMailTemplate();
+	/**
+	 * Register WooCommerce email templates with the template registry.
+	 *
+	 * @param Templates_Registry $templates_registry The template registry instance.
+	 * @return Templates_Registry
+	 */
+	public function register_templates( Templates_Registry $templates_registry ) {
+		$templates   = array();
+		$templates[] = new WooMailTemplate();
 
-		foreach ($templates as $template) {
-			$theTemplate = new Template(
-				$this->templatePrefix,
+		foreach ( $templates as $template ) {
+			$the_template = new Template(
+				$this->template_prefix,
 				$template->get_slug(),
 				$template->get_title(),
 				$template->get_description(),
 				$template->get_content(),
-				[Integration::EMAIL_POST_TYPE]
+				array( Integration::EMAIL_POST_TYPE )
 			);
-			$templatesRegistry->register($theTemplate);
+			$templates_registry->register( $the_template );
 		}
 
-		return $templatesRegistry;
+		return $templates_registry;
 	}
 }
-

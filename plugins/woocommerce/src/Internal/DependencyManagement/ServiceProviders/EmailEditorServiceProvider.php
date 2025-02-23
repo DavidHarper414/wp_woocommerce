@@ -31,12 +31,11 @@ class EmailEditorServiceProvider extends AbstractInterfaceServiceProvider {
 	/**
 	 * Register the classes.
 	 */
-	public function register()
-	{
-		$this->share(Integration::class);
-		$this->share(PageRenderer::class);
-		$this->share(PersonalizationTagManager::class);
-		$this->share(PatternsController::class);
-		$this->share(TemplatesController::class);
+	public function register() {
+		$this->share( Integration::class );
+		$this->share( PageRenderer::class );
+		$this->share( PersonalizationTagManager::class );
+		$this->share( PatternsController::class );
+		$this->share( TemplatesController::class );
 	}
 }

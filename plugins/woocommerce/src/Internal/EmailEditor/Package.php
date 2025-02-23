@@ -31,11 +31,13 @@ class Package {
 
 	/**
 	 * Init the package.
+	 *
+	 * @internal
 	 */
-	public static function init() {
+	final public static function init() {
 		self::$package_active = FeaturesUtil::feature_is_enabled( 'block_email_editor' );
 
-		// we only want to initialize the package if the block editor feature flag is enabled
+		// we only want to initialize the package if the block editor feature flag is enabled.
 		if ( ! self::$package_active ) {
 			return;
 		}
@@ -62,7 +64,12 @@ class Package {
 		return \MailPoet\EmailEditor\Package::get_path();
 	}
 
-	public static function initialize()  {
+	/**
+	 * Initialize the email editor integration by fetching the class from the container.
+	 *
+	 * @return void
+	 */
+	public static function initialize() {
 		$container = wc_get_container();
 		$container->get( Integration::class );
 	}

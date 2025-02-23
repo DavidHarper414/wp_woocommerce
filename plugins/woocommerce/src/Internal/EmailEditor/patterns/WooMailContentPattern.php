@@ -4,14 +4,52 @@ namespace Automattic\WooCommerce\Internal\EmailEditor\Patterns;
 
 use MailPoet\EmailEditor\Engine\Patterns\Abstract_Pattern;
 
+/**
+ * Pattern class for WooCommerce email content.
+ *
+ * Provides a default content pattern that can be used in WooCommerce email templates.
+ */
 class WooMailContentPattern extends Abstract_Pattern {
+	/**
+	 * Pattern name identifier.
+	 *
+	 * @var string
+	 */
 	public $name = 'woo-mail-content-pattern';
-	public $block_types = [];
-	public $template_types = ['email-template']; 	// required
-	public $categories = ['email-contents'];  		// optional
 
-	public $namespace = 'woocommerce';		// required
+	/**
+	 * Allowed block types for this pattern.
+	 *
+	 * @var array
+	 */
+	public $block_types = array();
 
+	/**
+	 * Template types where this pattern can be used.
+	 *
+	 * @var array
+	 */
+	public $template_types = array( 'email-template' );    // Required.
+
+	/**
+	 * Categories this pattern belongs to.
+	 *
+	 * @var array
+	 */
+	public $categories = array( 'email-contents' );        // Optional.
+
+	/**
+	 * Pattern namespace.
+	 *
+	 * @var string
+	 */
+	public $namespace = 'woocommerce';      // Required.
+
+	/**
+	 * Get the pattern content.
+	 *
+	 * @return string HTML content for the pattern.
+	 */
 	public function get_content(): string {
 		return '<!-- wp:group {"style":{"spacing":{"padding":{"right":"var:preset|spacing|20","left":"var:preset|spacing|20"}}},"layout":{"type":"constrained"}} -->
 <div class="wp-block-group" style="padding-right:var(--wp--preset--spacing--20);padding-left:var(--wp--preset--spacing--20)"><!-- wp:heading -->
@@ -30,8 +68,13 @@ class WooMailContentPattern extends Abstract_Pattern {
 <!-- /wp:group -->';
 	}
 
+	/**
+	 * Get the pattern title.
+	 *
+	 * @return string Localized pattern title.
+	 */
 	public function get_title(): string {
 		/* translators: Name of a content pattern used as starting content of an email */
-		return __('Woo Mail Content Pattern', 'woocommerce');
+		return __( 'Woo Mail Content Pattern', 'woocommerce' );
 	}
 }
