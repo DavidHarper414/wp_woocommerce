@@ -44,8 +44,6 @@ describe( 'getAdminSetting', () => {
 			deprecatedWcSettings
 		);
 
-		console.log( onboarding );
-
 		void onboarding.profile;
 
 		expect( consoleWarnSpy ).toHaveBeenCalledWith(
