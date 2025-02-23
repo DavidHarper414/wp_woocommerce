@@ -18,7 +18,7 @@ USAGE: {$argv[0]} [--debug|-v] [--list] [-p <path>|--path=<path>] [--pr-number=<
 Checks that a monorepo commit contains a Changelogger change entry for each
 project touched.
   --debug, -v              Display verbose output.
-  --list                   Just list projects, no explanatory output.
+  --list, -l               Just list projects, no explanatory output.
   --path=<path>, -p <path> Project path to check for changed files.
   --pr-number=<pr-number>  PR number for change detection. If specified, fetches the changes list via GitHub client.
   <base-ref>               Base git ref to compare for changed files.
@@ -43,12 +43,9 @@ if ( isset( $options['h'] ) || isset( $options['help'] ) ) {
 	usage();
 }
 
-$list = isset( $options['l'] ) || isset( $options['list'] );
-$verbose = isset( $options['v'] ) || isset( $options['debug'] );
-$path = false;
-if ( isset( $options['p'] ) || isset( $options['path'] ) ) {
-	$path = isset( $options['path'] ) ? $options['path'] : $options['p'];
-}
+$list      = isset( $options['l'] ) || isset( $options['list'] );
+$verbose   = isset( $options['v'] ) || isset( $options['debug'] );
+$path      = $options['path'] ?? $options['p'] ?? false;
 $pr_number = $options['pr-number'] ?? false;
 
 if ( ! $pr_number && $arg_count !== 2 ) {
