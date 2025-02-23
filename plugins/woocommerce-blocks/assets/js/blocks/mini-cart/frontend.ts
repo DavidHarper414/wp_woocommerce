@@ -165,6 +165,13 @@ window.addEventListener( 'load', () => {
 			loadContents();
 		};
 
+		// Auto-open the drawer if the session storage is set from the single product page.
+		// Remove the session storage before opening the drawer to prevent reopening on page refresh.
+		if ( sessionStorage.getItem( 'open_mini_cart_drawer' ) ) {
+			sessionStorage.removeItem( 'open_mini_cart_drawer' );
+			openDrawer();
+		}
+
 		// Load the scripts if a device is touch-enabled. We don't get the mouseover or focus events on touch devices,
 		// so the event listeners below won't work.
 		if (
