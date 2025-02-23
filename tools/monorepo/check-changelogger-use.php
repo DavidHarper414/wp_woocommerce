@@ -17,13 +17,12 @@ function usage() {
 USAGE: {$argv[0]} [--debug|-v] [--list] [-p <path>|--path=<path>] [--pr-number=<pr-number>|<base-ref> <head-ref>]
 Checks that a monorepo commit contains a Changelogger change entry for each
 project touched.
-  --debug, -v     Display verbose output.
-  --list          Just list projects, no explanatory output.
-  --path=<path>,  Project path to check for changed files.
-    -p <path>
-  --pr-number=<pr-number> Project path to check for changed files.
-  <base-ref>              Base git ref to compare for changed files.
-  <head-ref>              Head git ref to compare for changed files.
+  --debug, -v              Display verbose output.
+  --list                   Just list projects, no explanatory output.
+  --path=<path>, -p <path> Project path to check for changed files.
+  --pr-number=<pr-number>  PR number for change detection. If specified, fetches the changes list via GitHub client.
+  <base-ref>               Base git ref to compare for changed files.
+  <head-ref>               Head git ref to compare for changed files.
 EOH;
 	exit( 1 );
 }
