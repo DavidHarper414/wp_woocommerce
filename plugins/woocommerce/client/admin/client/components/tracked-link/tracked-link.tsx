@@ -57,7 +57,7 @@ export const TrackedLink: React.FC< TrackedLinkProps > = ( {
 							window.location.href = targetUrl;
 							return false;
 						} }
-						href=""
+						href={ targetUrl }
 						type="wc-admin"
 					/>
 				),

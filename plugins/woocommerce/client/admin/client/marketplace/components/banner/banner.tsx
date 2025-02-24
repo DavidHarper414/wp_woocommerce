@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { Button, Icon } from '@wordpress/components';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -47,6 +47,7 @@ export default function ProductFeaturedBanner() {
 	const [ activeIndex, setActiveIndex ] = useState( 0 );
 	const [ isDismissed, setIsDismissed ] = useState( false );
 	const [ autoRotate, setAutoRotate ] = useState( true );
+	const carouselItemRef = useRef< HTMLLIElement >( null );
 
 	useEffect( () => {
 		let interval: NodeJS.Timeout;
@@ -75,6 +76,22 @@ export default function ProductFeaturedBanner() {
 	const handlePause = () => setAutoRotate( false );
 	const handleResume = () => setAutoRotate( true );
 
+	const handleKeyPress = ( event: React.KeyboardEvent< HTMLLIElement > ) => {
+		if ( event.key === 'ArrowRight' ) {
+			setActiveIndex( ( prev ) => ( prev + 1 ) % SLIDES.length );
+			setTimeout( () => {
+				carouselItemRef.current?.focus();
+			}, 100 );
+		} else if ( event.key === 'ArrowLeft' ) {
+			setActiveIndex(
+				( prev ) => ( prev - 1 + SLIDES.length ) % SLIDES.length
+			);
+			setTimeout( () => {
+				carouselItemRef.current?.focus();
+			}, 100 );
+		}
+	};
+
 	if ( isDismissed ) return null;
 
 	return (
@@ -86,8 +103,6 @@ export default function ProductFeaturedBanner() {
 				'Marketplace features with four slides',
 				'woocommerce'
 			) }
-			aria-live="polite"
-			aria-atomic="false"
 			onMouseEnter={ handlePause }
 			onMouseLeave={ handleResume }
 			onFocus={ handlePause }
@@ -97,7 +112,11 @@ export default function ProductFeaturedBanner() {
 				<ul className="carousel-list">
 					{ SLIDES.map( ( slide, index ) => (
 						<li
+							ref={
+								index === activeIndex ? carouselItemRef : null
+							}
 							key={ index }
+							id={ `carousel-slide-${ index }` }
 							className={ `carousel-slide ${
 								index === activeIndex ? 'active' : ''
 							}` }
@@ -112,6 +131,8 @@ export default function ProductFeaturedBanner() {
 							) } ${ index + 1 } ${ __( 'of', 'woocommerce' ) } ${
 								SLIDES.length
 							}` }
+							tabIndex={ index === activeIndex ? 0 : -1 }
+							onKeyDown={ handleKeyPress }
 						>
 							<img
 								src={ slide.imageUrl }

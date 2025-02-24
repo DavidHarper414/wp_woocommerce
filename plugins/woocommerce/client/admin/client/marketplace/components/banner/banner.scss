@@ -37,6 +37,10 @@
 		transition: opacity 0.5s ease, visibility 0.5s ease;
 		pointer-events: none;
 
+		&:focus-visible {
+			border: 2px solid var(--wp-admin-theme-color, #007cba);
+		}
+
 		&.active {
 			opacity: 1;
 			visibility: visible;
