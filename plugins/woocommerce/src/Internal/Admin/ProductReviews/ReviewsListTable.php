@@ -579,6 +579,7 @@ class ReviewsListTable extends WP_List_Table {
 		 * @param WP_Comment $item The comment object.
 		 * */
 		$actions = apply_filters( 'comment_row_actions', array_filter( $actions ), $item );
+
 		$always_visible = 'excerpt' === get_user_setting( 'posts_list_mode', 'list' );
 
 		$output = '<div class="' . ( $always_visible ? 'row-actions visible' : 'row-actions' ) . '">';
