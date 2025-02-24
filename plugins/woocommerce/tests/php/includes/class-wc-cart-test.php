@@ -4,6 +4,7 @@
  *
  * @package WooCommerce\Tests\Cart.
  */
+use Automattic\WooCommerce\Tests\Blocks\Helpers\FixtureData;
 
 /**
  * Class WC_Cart_Test
