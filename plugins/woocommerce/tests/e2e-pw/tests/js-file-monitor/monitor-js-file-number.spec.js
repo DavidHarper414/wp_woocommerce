@@ -12,7 +12,7 @@ const shopperPages = [
 const merchantPages = [
 	{
 		name: 'WC Dashboard',
-		url: 'wp-admin/admin.php?page=wc-admin/',
+		url: 'wp-admin/admin.php?page=wc-admin',
 		expectedCount: 50,
 	},
 	{
