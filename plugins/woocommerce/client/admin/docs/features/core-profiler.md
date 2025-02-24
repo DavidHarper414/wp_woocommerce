@@ -48,7 +48,6 @@ This stores the name of the store, which is used in the store header and in the 
         industry: "clothing_and_accessories" | "health_and_beauty" | "food_and_drink" | "home_furniture_and_garden" | "education_and_learning" | "electronics_and_computers" | "arts_and_crafts" | "sports_and_recreation" | "other"
         store_email: string
         is_agree_marketing: true | false
-        core_profiler_completed_steps: Record< 'intro-opt-in' | 'user-profile' | 'business-information' | 'extensions' | 'update-store-currency-and-measurement-units' | 'coming-soon', { completed_at: string } >
     }
     ```
 
@@ -61,6 +60,11 @@ This stores the location that the WooCommerce store believes it is in. This is u
 - `woocommerce_allow_tracking`: 'yes' | 'no'
 
 This determines whether we return telemetry to Automattic.
+
+- `woocommerce_onboarding_profile_progress`: Record< CoreProfilerStep , { completed_at: string } >
+
+This stores the steps that have been completed in the Core Profiler.
+See [`packages/js/data/src/onboarding/types.ts`](https://github.com/woocommerce/woocommerce/blob/trunk/packages/js/data/src/onboarding/types.ts) for CoreProfilerStep type.
 
 ### Currency and Measurement Unit Options
 
