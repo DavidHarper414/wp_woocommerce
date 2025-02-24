@@ -172,6 +172,7 @@ import type { REPORTS_STORE_NAME } from './reports';
 import type { ITEMS_STORE_NAME } from './items';
 import type { COUNTRIES_STORE_NAME } from './countries';
 import type { PAYMENT_GATEWAYS_STORE_NAME } from './payment-gateways';
+import type { PAYMENT_SETTINGS_STORE_NAME } from './payment-settings';
 import type { SHIPPING_METHODS_STORE_NAME } from './shipping-methods';
 import type { PRODUCTS_STORE_NAME } from './products';
 import type { ORDERS_STORE_NAME } from './orders';
@@ -214,6 +215,7 @@ export type WCDataStoreName =
  */
 import { WPDataSelectors } from './types';
 import { PaymentSelectors } from './payment-gateways/selectors';
+import { PaymentSettingsSelectors } from './payment-settings/selectors';
 import { ShippingMethodsSelectors } from './shipping-methods/selectors';
 import { PluginSelectors } from './plugins/selectors';
 import { OnboardingSelectors } from './onboarding/selectors';
