@@ -75,23 +75,6 @@ const productGalleryLargeImage = {
 			}
 		},
 	},
-	callbacks: {
-		scrollInto: () => {
-			if ( ! state.isSelected ) {
-				return;
-			}
-
-			const { ref } = getElement();
-			if ( ref ) {
-				// Scroll to the selected image with a smooth animation.
-				ref.scrollIntoView( {
-					behavior: 'smooth',
-					block: 'nearest',
-					inline: 'center',
-				} );
-			}
-		},
-	},
 };
 
 store< Store >( 'woocommerce/product-gallery', productGalleryLargeImage );
