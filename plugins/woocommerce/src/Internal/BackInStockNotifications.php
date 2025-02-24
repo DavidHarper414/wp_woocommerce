@@ -81,6 +81,11 @@ class BackInStockNotifications {
 	 * @return void
 	 */
 	public static function maybe_deactivate_signups() {
+		// Only run if BIS is enabled.
+		if ( ! self::is_enabled() ) {
+			return;
+		}
+
 		// Check if we've already done the initial setup.
 		if ( 'yes' === get_option( 'wc_bis_core_initialized' ) ) {
 			return;
