@@ -39,8 +39,8 @@ const entries = {
 		'./assets/js/blocks/product-filters/inner-blocks/removable-chips/frontend.ts',
 	'woocommerce/product-filter-status':
 		'./assets/js/blocks/product-filters/inner-blocks/status-filter/frontend.ts',
-	
-  // Other
+
+	// Other
 	'woocommerce/product-collection-notices':
 		'./assets/js/blocks/product-collection/notices-frontend.ts',
 };
