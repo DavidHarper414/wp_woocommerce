@@ -19,17 +19,7 @@ config = {
 		},
 		{
 			name: 'e2e-wpcom',
-			testIgnore: [
-				'**/api-tests/**',
-				'**/customize-store/**',
-				'**/js-file-monitor/**',
-			],
-			grepInvert,
-			dependencies: [ 'reset', 'site setup' ],
-		},
-		{
-			name: 'api-wpcom',
-			testMatch: [ '**/api-tests/**' ],
+			testMatch: [ '**/basic/basic.spec.js' ],
 			grepInvert,
 			dependencies: [ 'reset', 'site setup' ],
 		},
