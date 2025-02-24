@@ -36,6 +36,7 @@ class OrderItemSchema extends ItemSchema {
 		return [
 			'key'                  => $order->get_order_key(),
 			'id'                   => $order_item->get_id(),
+			'slug'                 => $product->is_type( 'variation' ) ? wc_get_product( $product->get_parent_id() )->get_slug() : $product->get_slug(),
 			'quantity'             => $order_item->get_quantity(),
 			'quantity_limits'      => array(
 				'minimum'     => $order_item->get_quantity(),

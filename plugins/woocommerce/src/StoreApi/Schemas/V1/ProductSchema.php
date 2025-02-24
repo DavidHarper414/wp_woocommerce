@@ -214,7 +214,13 @@ class ProductSchema extends AbstractSchema {
 							'readonly'    => true,
 						],
 						'link' => [
-							'description' => __( 'Category link', 'woocommerce' ),
+							'description' => __( 'Deprecated: Category link, use permalink instead.', 'woocommerce' ),
+							'type'        => 'string',
+							'context'     => [ 'view', 'edit' ],
+							'readonly'    => true,
+						],
+						'permalink' => [
+							'description' => __( 'Category permalink', 'woocommerce' ),
 							'type'        => 'string',
 							'context'     => [ 'view', 'edit' ],
 							'readonly'    => true,
@@ -248,7 +254,47 @@ class ProductSchema extends AbstractSchema {
 							'readonly'    => true,
 						],
 						'link' => [
-							'description' => __( 'Tag link', 'woocommerce' ),
+							'description' => __( 'Deprecated: Tag link, use permalink instead.', 'woocommerce' ),
+							'type'        => 'string',
+							'context'     => [ 'view', 'edit' ],
+							'readonly'    => true,
+						],
+						'permalink' => [
+							'description' => __( 'Tag permalink', 'woocommerce' ),
+							'type'        => 'string',
+							'context'     => [ 'view', 'edit' ],
+							'readonly'    => true,
+						],
+					],
+				],
+			],
+			'brands'              => [
+				'description' => __( 'List of brands, if applicable.', 'woocommerce' ),
+				'type'        => 'array',
+				'context'     => [ 'view', 'edit' ],
+				'items'       => [
+					'type'       => 'object',
+					'properties' => [
+						'id'   => [
+							'description' => __( 'Brand ID', 'woocommerce' ),
+							'type'        => 'number',
+							'context'     => [ 'view', 'edit' ],
+							'readonly'    => true,
+						],
+						'name' => [
+							'description' => __( 'Brand name', 'woocommerce' ),
+							'type'        => 'string',
+							'context'     => [ 'view', 'edit' ],
+							'readonly'    => true,
+						],
+						'slug' => [
+							'description' => __( 'Brand slug', 'woocommerce' ),
+							'type'        => 'string',
+							'context'     => [ 'view', 'edit' ],
+							'readonly'    => true,
+						],
+						'permalink' => [
+							'description' => __( 'Brand permalink', 'woocommerce' ),
 							'type'        => 'string',
 							'context'     => [ 'view', 'edit' ],
 							'readonly'    => true,
@@ -505,6 +551,7 @@ class ProductSchema extends AbstractSchema {
 			'images'              => $this->get_images( $product ),
 			'categories'          => $this->get_term_list( $product, 'product_cat' ),
 			'tags'                => $this->get_term_list( $product, 'product_tag' ),
+			'brands'              => $this->get_term_list( $product, 'product_brand' ),
 			'attributes'          => $this->get_attributes( $product ),
 			'variations'          => $this->get_variations( $product ),
 			'grouped_products'    => $this->get_grouped_products( $product ),
@@ -913,6 +960,7 @@ class ProductSchema extends AbstractSchema {
 				'name' => $term->name,
 				'slug' => $term->slug,
 				'link' => $link,
+				'permalink' => $link,
 			];
 		}
 
