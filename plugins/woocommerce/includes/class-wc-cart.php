@@ -1586,8 +1586,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @return bool whether or not the cart needs shipping
 	 */
 	public function needs_shipping() {
-		// If there are no shipping methods or no cart contents, no need to calculate shipping.
-		if ( ! wc_shipping_enabled() || 0 === wc_get_shipping_method_count( true ) || ! $this->get_cart_contents() ) {
+		if ( ! wc_shipping_enabled() || 0 === wc_get_shipping_method_count( true ) ) {
 			return false;
 		}
 
