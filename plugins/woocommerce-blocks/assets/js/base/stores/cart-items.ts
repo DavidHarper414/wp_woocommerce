@@ -6,7 +6,6 @@ import { store } from '@wordpress/interactivity';
 /**
  * Internal dependencies
  */
-import type { StoreNoticesStore } from '../../blocks/store-notices/frontend';
 import { triggerAddedToCartEvent } from './legacy-events';
 
 type Item = {
