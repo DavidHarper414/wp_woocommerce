@@ -19,51 +19,31 @@ export const BLOCKS_CHECKOUT_PAGE = {
 	slug: 'blocks-checkout',
 };
 
-export const BLOCKS_CART_PAGE = {
-	name: 'blocks cart',
-	slug: 'blocks-cart',
-};
-
-export async function pageExists( slug ) {
-	const pages = await apiClient().get( `wp/v2/pages?slug=${ slug }`, {
-		data: {
-			_fields: [ 'id' ],
-		},
-	} );
+export async function existsBlocksCheckoutPage() {
+	const pages = await apiClient().get(
+		`wp/v2/pages?slug=${ BLOCKS_CHECKOUT_PAGE.slug }`,
+		{
+			data: {
+				_fields: [ 'id' ],
+			},
+		}
+	);
 
 	return pages.data.length > 0;
 }
 
-async function createBlocksPage( browser, slug, title, blockName ) {
-	if ( ! ( await pageExists( slug ) ) ) {
+export async function createBlocksCheckoutPage( browser ) {
+	if ( ! ( await existsBlocksCheckoutPage() ) ) {
 		console.log( 'Creating Checkout Blocks page' );
 		const context = await browser.newContext( {
 			storageState: ADMIN_STATE_PATH,
 		} );
 		const page = await context.newPage();
 		await goToPageEditor( { page } );
-		await fillPageTitle( page, title );
-		await insertBlockByShortcut( page, blockName );
-		await publishPage( page, title );
+		await fillPageTitle( page, BLOCKS_CHECKOUT_PAGE.name );
+		await insertBlockByShortcut( page, 'Checkout' );
+		await publishPage( page, BLOCKS_CHECKOUT_PAGE.name );
 		await page.close();
 		await context.close();
 	}
-}
-
-export async function createBlocksCheckoutPage( browser ) {
-	await createBlocksPage(
-		browser,
-		BLOCKS_CHECKOUT_PAGE.slug,
-		BLOCKS_CHECKOUT_PAGE.name,
-		'Checkout'
-	);
-}
-
-export async function createBlocksCartPage( browser ) {
-	await createBlocksPage(
-		browser,
-		BLOCKS_CART_PAGE.slug,
-		BLOCKS_CART_PAGE.name,
-		'Cart'
-	);
 }

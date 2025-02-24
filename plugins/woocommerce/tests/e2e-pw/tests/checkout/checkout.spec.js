@@ -18,7 +18,6 @@ import {
 	BLOCKS_CHECKOUT_PAGE,
 } from '../../utils/pages';
 import { logInFromMyAccount } from '../../utils/login';
-import { updateIfNeeded, resetValue } from '../../utils/settings';
 
 //todo handle other countries and states than the default (US, CA) when filling the addresses
 
@@ -28,6 +27,24 @@ const checkoutPages = [
 ];
 
 /* region helpers */
+async function updateValue( api, path, desiredValue ) {
+	await api.put( path, { value: desiredValue } );
+}
+
+async function updateIfNeeded( api, path, desiredValue ) {
+	const initialValue = await api.get( path ).then( ( r ) => r.data.value );
+	if ( initialValue !== desiredValue ) {
+		await updateValue( api, path, desiredValue );
+	}
+	return { initial: initialValue, updated: desiredValue };
+}
+
+async function resetValue( api, path, values ) {
+	if ( values.initial !== values.updated ) {
+		await updateValue( api, path, values.initial );
+	}
+}
+
 function isBlocksCheckout( page ) {
 	return page.url().includes( BLOCKS_CHECKOUT_PAGE.slug );
 }
@@ -150,17 +167,20 @@ const test = baseTest.extend( {
 		await createBlocksCheckoutPage( page.context().browser() );
 
 		const calcTaxesState = await updateIfNeeded(
-			'general/woocommerce_calc_taxes',
+			api,
+			'settings/general/woocommerce_calc_taxes',
 			'yes'
 		);
 
 		const loginAtCheckoutState = await updateIfNeeded(
-			'account/woocommerce_enable_checkout_login_reminder',
+			api,
+			'settings/account/woocommerce_enable_checkout_login_reminder',
 			'yes'
 		);
 
 		const signUpAtCheckoutState = await updateIfNeeded(
-			'account/woocommerce_enable_signup_and_login_from_checkout',
+			api,
+			'settings/account/woocommerce_enable_signup_and_login_from_checkout',
 			'yes'
 		);
 
@@ -189,15 +209,21 @@ const test = baseTest.extend( {
 
 		// revert the settings to initial state
 
-		await resetValue( 'general/woocommerce_calc_taxes', calcTaxesState );
+		await resetValue(
+			api,
+			'settings/general/woocommerce_calc_taxes',
+			calcTaxesState
+		);
 
 		await resetValue(
-			'general/woocommerce_enable_checkout_login_reminder',
+			api,
+			'settings/general/woocommerce_enable_checkout_login_reminder',
 			loginAtCheckoutState
 		);
 
 		await resetValue(
-			'general/woocommerce_enable_signup_and_login_from_checkout',
+			api,
+			'settings/general/woocommerce_enable_signup_and_login_from_checkout',
 			signUpAtCheckoutState
 		);
 
