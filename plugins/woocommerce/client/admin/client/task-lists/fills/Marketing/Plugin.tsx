@@ -7,6 +7,7 @@ import { getAdminLink } from '@woocommerce/settings';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
 import { Pill } from '@woocommerce/components';
+import { type TagsSlug } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -26,7 +27,29 @@ export type PluginProps = {
 	manageUrl?: string;
 	name: string;
 	slug: string;
+	tags?: TagsSlug[];
+	learnMoreLink?: string;
+	installExternal?: boolean;
 };
+
+const tagsToPillsMap = {
+	marketplace: __( 'Marketplace', 'woocommerce' ),
+};
+
+function getPills( tags?: TagsSlug[] ) {
+	if ( ! tags ) {
+		return null;
+	}
+
+	return tags
+		.map( ( tag ) => {
+			if ( ! tagsToPillsMap[ tag ] ) {
+				return null;
+			}
+			return <Pill key={ tag }>{ tagsToPillsMap[ tag ] }</Pill>;
+		} )
+		.filter( Boolean );
+}
 
 export const Plugin: React.FC< PluginProps > = ( {
 	description,
@@ -41,6 +64,9 @@ export const Plugin: React.FC< PluginProps > = ( {
 	manageUrl,
 	name,
 	slug,
+	tags,
+	learnMoreLink = '',
+	installExternal = false,
 } ) => {
 	return (
 		<div className="woocommerce-plugin-list__plugin">
@@ -64,6 +90,7 @@ export const Plugin: React.FC< PluginProps > = ( {
 							{ __( 'Built by WooCommerce', 'woocommerce' ) }
 						</Pill>
 					) }
+					{ getPills( tags ) }
 				</Text>
 				<Text variant="subtitle.small">{ description }</Text>
 			</div>
@@ -99,7 +126,13 @@ export const Plugin: React.FC< PluginProps > = ( {
 						disabled={ isDisabled }
 						isBusy={ isBusy }
 						isSecondary
-						onClick={ () => installAndActivate( slug ) }
+						onClick={ () => {
+							if ( ! installExternal ) {
+								installAndActivate( slug );
+							} else if ( learnMoreLink !== '' ) {
+								window.open( learnMoreLink, '_blank' );
+							}
+						} }
 					>
 						{ __( 'Get started', 'woocommerce' ) }
 					</Button>
