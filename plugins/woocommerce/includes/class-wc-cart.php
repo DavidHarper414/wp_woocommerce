@@ -1590,6 +1590,7 @@ class WC_Cart extends WC_Legacy_Cart {
 		if ( ! wc_shipping_enabled() || 0 === wc_get_shipping_method_count( true ) || ! $this->get_cart_contents() ) {
 			return false;
 		}
+
 		$needs_shipping = false;
 
 		foreach ( $this->get_cart_contents() as $values ) {
@@ -1617,7 +1618,8 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @return bool
 	 */
 	public function show_shipping() {
-		if ( ! wc_shipping_enabled() ) {
+		// If there are no shipping methods or no cart contents, no need to calculate shipping.
+		if ( ! wc_shipping_enabled() || 0 === wc_get_shipping_method_count( true ) || ! $this->get_cart_contents() ) {
 			return false;
 		}
 
