@@ -51,8 +51,13 @@ export const TrackedLink: React.FC< TrackedLinkProps > = ( {
 						onClick={ () => {
 							if ( onClickCallback ) {
 								onClickCallback();
-							} else {
+							} else if (
+								eventProperties &&
+								Object.keys( eventProperties ).length > 0
+							) {
 								recordEvent( eventName, eventProperties );
+							} else {
+								recordEvent( eventName );
 							}
 							window.location.href = targetUrl;
 							return false;
