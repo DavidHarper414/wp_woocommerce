@@ -24,6 +24,7 @@ interface TrackedLinkProps {
 	eventName?: string;
 	eventProperties?: ExtraProperties;
 	targetUrl: string;
+	linkType?: 'wc-admin' | 'wp-admin' | 'external';
 	/**
 	 * Optional callback function to be called when the link is clicked
 	 * If provided, this will be called instead of the default recordEvent behavior
@@ -40,6 +41,7 @@ export const TrackedLink: React.FC< TrackedLinkProps > = ( {
 	eventName = '',
 	eventProperties = {},
 	targetUrl,
+	linkType = 'wc-admin',
 	onClickCallback,
 } ) => (
 	<Text { ...textProps }>
@@ -58,7 +60,7 @@ export const TrackedLink: React.FC< TrackedLinkProps > = ( {
 							return false;
 						} }
 						href={ targetUrl }
-						type="wc-admin"
+						type={ linkType }
 					/>
 				),
 			},
