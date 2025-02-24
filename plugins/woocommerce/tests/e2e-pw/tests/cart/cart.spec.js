@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { addAProductToCart } from '@woocommerce/e2e-utils-playwright';
-import { faker } from '@faker-js/faker';
 
 /**
  * Internal dependencies
