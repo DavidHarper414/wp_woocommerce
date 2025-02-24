@@ -25,6 +25,7 @@ import { registerBlueprintSlotfill } from '../../blueprint';
 import { registerSettingsEmailColorPaletteFill } from '../../settings-email/settings-email-color-palette-slotfill';
 import { registerSettingsEmailImageUrlFill } from '../../settings-email/settings-email-image-url-slotfill';
 import { registerSettingsEmailPreviewFill } from '../../settings-email/settings-email-preview-slotfill';
+import { registerSettingsEmailFeedbackFill } from '~/settings-email/settings-email-feedback-slotfill';
 
 const renderPaymentsSettings = () => {
 	if (
@@ -92,6 +93,8 @@ const registerSlotFills = () => {
 		registerSettingsEmailImageUrlFill();
 		registerSettingsEmailPreviewFill();
 	}
+
+	registerSettingsEmailFeedbackFill();
 };
 
 renderPaymentsSettings();
