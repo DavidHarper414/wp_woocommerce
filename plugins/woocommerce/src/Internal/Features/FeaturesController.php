@@ -5,6 +5,7 @@
 
 namespace Automattic\WooCommerce\Internal\Features;
 
+use WC_Tracks;
 use WC_Site_Tracking;
 use Automattic\Jetpack\Constants;
 use Automattic\WooCommerce\Internal\Admin\Analytics;
@@ -100,13 +101,28 @@ class FeaturesController {
 	 * Creates a new instance of the class.
 	 */
 	public function __construct() {
+		// In principle, register_additional_features is triggered manually from within class-woocommerce
+		// right before before_woocommerce_init is fired (this is needed for the features to be visible
+		// to plugins executing declare_compatibility).
+		// However we add additional checks/hookings here to support unit tests and possible overlooked/future
+		// DI container/class instantiation nuances.
+		if ( ! $this->registered_additional_features ) {
+			if ( did_action( 'before_woocommerce_init' ) ) {
+				// Needed for unit tests, where 'before_woocommerce_init' will have been fired already at this point.
+				$this->register_additional_features();
+			} else {
+				// This needs to have a higher $priority than the 'before_woocommerce_init' hooked by plugins that declare compatibility.
+				add_filter( 'before_woocommerce_init', array( $this, 'register_additional_features' ), -9999, 0 );
+			}
+		}
+
 		if ( did_action( 'init' ) ) {
 			// Needed for unit tests, where 'init' will have been fired already at this point.
-			$this->register_additional_features();
+			$this->start_listening_for_option_changes();
 		} else {
 			add_filter( 'init', array( $this, 'start_listening_for_option_changes' ), 10, 0 );
-			add_filter( 'init', array( $this, 'register_additional_features' ), 1, 0 ); // This needs to have a higher $priority than the 'init' hooked in class-woocommerce.
 		}
+
 		add_filter( 'woocommerce_get_sections_advanced', array( $this, 'add_features_section' ), 10, 1 );
 		add_filter( 'woocommerce_get_settings_advanced', array( $this, 'add_feature_settings' ), 10, 2 );
 		add_filter( 'deactivated_plugin', array( $this, 'handle_plugin_deactivation' ), 10, 1 );
@@ -338,11 +354,23 @@ class FeaturesController {
 					),
 				),
 				'email_improvements'     => array(
-					'name'        => __( 'Email improvements', 'woocommerce' ),
-					'description' => __(
+					'name'            => __( 'Email improvements', 'woocommerce' ),
+					'description'     => __(
 						'Enable modern email design and live preview for transactional emails',
 						'woocommerce'
 					),
+
+					/*
+					 * This is not truly a legacy feature (it is not a feature that pre-dates the FeaturesController),
+					 * but as this feature doesn't affect all extensions, and the rollout is fairly short,
+					 * we'll skip the compatibility check by marking this as legacy. This is a workaround until
+					 * we can implement a more sophisticated compatibility checking system.
+					 *
+					 * @see https://github.com/woocommerce/woocommerce/issues/39147
+					 * @see https://github.com/woocommerce/woocommerce/issues/55540
+					 */
+					'is_legacy'       => true,
+					'is_experimental' => false,
 				),
 				'blueprint'              => array(
 					'name'               => __( 'Blueprint (beta)', 'woocommerce' ),
@@ -363,6 +391,15 @@ class FeaturesController {
 					*/
 					'is_legacy'          => true,
 					'is_experimental'    => false,
+				),
+				'block_email_editor'     => array(
+					'name'               => __( 'Block Email Editor (alpha)', 'woocommerce' ),
+					'description'        => __(
+						'Enable the block-based email editor for transactional emails',
+						'woocommerce'
+					),
+					'enabled_by_default' => false,
+					'disable_ui'         => true,
 				),
 			);
 
@@ -820,6 +857,14 @@ class FeaturesController {
 		if ( ! $feature_id ) {
 			return;
 		}
+
+		WC_Tracks::record_event(
+			self::FEATURE_ENABLED_CHANGED_ACTION,
+			array(
+				'feature_id' => $feature_id,
+				'enabled'    => $value,
+			)
+		);
 
 		/**
 		 * Action triggered when a feature is enabled or disabled (the value of the corresponding setting option is changed).
