@@ -112,7 +112,7 @@ class WC_REST_Shipping_Methods_V2_Controller extends WC_REST_Controller {
 		$total     = count( $data );
 		$response  = rest_ensure_response( $data );
 		$response->header( 'X-WP-Total', (int) $total );
-		$response->header( 'X-WP-TotalPages', 1 );
+		$response->header( 'X-WP-TotalPages', $total ? 1 : 0 );
 		return $response;
 	}
 
