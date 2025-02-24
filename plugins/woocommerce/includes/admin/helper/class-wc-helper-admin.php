@@ -75,6 +75,7 @@ class WC_Helper_Admin {
 			'storeCountry'               => wc_get_base_location()['country'],
 			'inAppPurchaseURLParams'     => WC_Admin_Addons::get_in_app_purchase_url_params(),
 			'installedProducts'          => $installed_products,
+			'mySubscriptionsTabLoaded'   => WC_Helper_Options::get( 'my_subscriptions_tab_loaded' ),
 			'wooUpdateManagerInstalled'  => WC_Woo_Update_Manager_Plugin::is_plugin_installed(),
 			'wooUpdateManagerActive'     => WC_Woo_Update_Manager_Plugin::is_plugin_active(),
 			'wooUpdateManagerInstallUrl' => WC_Woo_Update_Manager_Plugin::generate_install_url(),
