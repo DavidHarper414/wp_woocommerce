@@ -86,5 +86,8 @@ class ShippingControllerTest extends \WP_UnitTestCase {
 		// Finally test that it passes when an ordinarily optional prop filtered to be required is provided.
 		WC()->customer->set_shipping_state( 'Lancashire' );
 		$this->assertTrue( WC()->customer->has_full_shipping_address() );
+
+		// Remove filter.
+		remove_all_filters( 'woocommerce_get_country_locale' );
 	}
 }
