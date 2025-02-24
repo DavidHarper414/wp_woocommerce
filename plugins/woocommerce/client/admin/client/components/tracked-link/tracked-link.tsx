@@ -4,8 +4,7 @@
 import { Text } from '@woocommerce/experimental';
 import interpolateComponents from '@automattic/interpolate-components';
 import { Link } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/settings';
-import { recordEvent } from '@woocommerce/tracks';
+import { recordEvent, ExtraProperties } from '@woocommerce/tracks';
 
 interface TextProps {
 	/**
@@ -23,7 +22,9 @@ interface TrackedLinkProps {
 	 */
 	message: string;
 	eventName?: string;
+	eventProperties?: ExtraProperties;
 	targetUrl: string;
+	linkType?: 'wc-admin' | 'wp-admin' | 'external';
 	/**
 	 * Optional callback function to be called when the link is clicked
 	 * If provided, this will be called instead of the default recordEvent behavior
@@ -38,7 +39,9 @@ export const TrackedLink: React.FC< TrackedLinkProps > = ( {
 	textProps,
 	message,
 	eventName = '',
+	eventProperties = {},
 	targetUrl,
+	linkType = 'wc-admin',
 	onClickCallback,
 } ) => (
 	<Text { ...textProps }>
@@ -51,13 +54,13 @@ export const TrackedLink: React.FC< TrackedLinkProps > = ( {
 							if ( onClickCallback ) {
 								onClickCallback();
 							} else {
-								recordEvent( eventName );
+								recordEvent( eventName, eventProperties );
 							}
-							window.location.href = getAdminLink( targetUrl );
+							window.location.href = targetUrl;
 							return false;
 						} }
-						href=""
-						type="wc-admin"
+						href={ targetUrl }
+						type={ linkType }
 					/>
 				),
 			},
