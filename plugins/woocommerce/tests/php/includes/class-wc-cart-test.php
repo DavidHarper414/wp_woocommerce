@@ -246,12 +246,14 @@ class WC_Cart_Test extends \WC_Unit_Test_Case {
 		// Country that does not require state.
 		WC()->cart->get_customer()->set_shipping_country( 'LB' );
 		WC()->cart->get_customer()->set_shipping_state( '' );
+		WC()->cart->get_customer()->set_shipping_city( 'Test' );
 		WC()->cart->get_customer()->set_shipping_postcode( '12345' );
 		$this->assertTrue( WC()->cart->show_shipping() );
 
 		// Country that does not require postcode.
 		WC()->cart->get_customer()->set_shipping_country( 'NG' );
 		WC()->cart->get_customer()->set_shipping_state( 'AB' );
+		WC()->cart->get_customer()->set_shipping_city( 'Test' );
 		WC()->cart->get_customer()->set_shipping_postcode( '' );
 		$this->assertTrue( WC()->cart->show_shipping() );
 
@@ -260,6 +262,7 @@ class WC_Cart_Test extends \WC_Unit_Test_Case {
 		$product->delete( true );
 		WC()->cart->get_customer()->set_shipping_country( 'GB' );
 		WC()->cart->get_customer()->set_shipping_state( '' );
+		WC()->cart->get_customer()->set_shipping_city( 'Test' );
 		WC()->cart->get_customer()->set_shipping_postcode( '' );
 	}
 
