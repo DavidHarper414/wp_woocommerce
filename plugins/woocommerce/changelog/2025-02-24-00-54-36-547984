@@ -1,4 +1,4 @@
 Significance: minor
 Type: fix
 
-Fixing shipping endpoint response
+Include pagination headers in shipping endpoints response.
