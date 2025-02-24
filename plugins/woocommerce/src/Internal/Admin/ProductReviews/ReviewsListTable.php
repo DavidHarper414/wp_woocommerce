@@ -578,7 +578,6 @@ class ReviewsListTable extends WP_List_Table {
 		 *                            'Delete', and 'Trash'.
 		 * @param WP_Comment $item The comment object.
 	 	*/
-		
 		$actions = apply_filters( 'comment_row_actions', array_filter( $actions ), $item );
 		$always_visible = 'excerpt' === get_user_setting( 'posts_list_mode', 'list' );
 
