@@ -581,7 +581,7 @@ class RestApi {
 					array(
 						'message' => sprintf(
 							// Translators: %s is the maximum file size in megabytes.
-							__( 'Request size exceeds maximum limit of %s MB', 'woocommerce' ),
+							__( 'Blueprint step definition size exceeds maximum limit of %s MB', 'woocommerce' ),
 							( $this->get_max_file_size() / ( 1024 * 1024 ) )
 						),
 						'type'    => 'error',
