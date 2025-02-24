@@ -102,7 +102,6 @@ class WC_REST_Shipping_Methods_V2_Controller extends WC_REST_Controller {
 	 */
 	public function get_items( $request ) {
 		$wc_shipping   = WC_Shipping::instance();
-
 		$data          = array();
 		foreach ( $wc_shipping->get_shipping_methods() as $id => $shipping_method ) {
 			$method = $this->prepare_item_for_response( $shipping_method, $request );
