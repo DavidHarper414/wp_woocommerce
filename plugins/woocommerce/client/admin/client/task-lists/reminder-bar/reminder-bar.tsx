@@ -14,7 +14,7 @@ import { Link } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/settings';
 import { close as closeIcon } from '@wordpress/icons';
 import interpolateComponents from '@automattic/interpolate-components';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useMemo } from '@wordpress/element';
 import { getQuery } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -83,60 +83,55 @@ const ReminderText: React.FC< ReminderTextProps > = ( {
 };
 
 export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
-	taskListId,
 	updateBodyMargin,
+	taskListId,
 } ) => {
 	const { updateOptions } = useDispatch( optionsStore );
-	const {
-		remainingCount,
-		loading,
-		taskListHidden,
-		taskListComplete,
-		reminderBarHidden,
-		completedTasksCount,
-	} = useSelect(
-		( select ) => {
-			const {
-				getTaskList,
-				hasFinishedResolution: onboardingHasFinishedResolution,
-			} = select( onboardingStore );
-			const {
-				getOption,
-				hasFinishedResolution: optionHasFinishedResolution,
-			} = select( optionsStore );
-			const reminderBarHiddenOption = getOption(
-				REMINDER_BAR_HIDDEN_OPTION
-			);
-			const taskList = getTaskList( taskListId );
-			const taskListIsResolved = onboardingHasFinishedResolution(
-				'getTaskList',
-				[ taskListId ]
-			);
-			const optionIsResolved = optionHasFinishedResolution( 'getOption', [
-				REMINDER_BAR_HIDDEN_OPTION,
-			] );
+	const { remainingCount, loading, reminderBarHidden, completedTasksCount } =
+		useSelect(
+			( select ) => {
+				const {
+					getTaskList,
+					hasFinishedResolution: onboardingHasFinishedResolution,
+				} = select( onboardingStore );
+				const {
+					getOption,
+					hasFinishedResolution: optionHasFinishedResolution,
+				} = select( optionsStore );
+				const reminderBarHiddenOption = getOption(
+					REMINDER_BAR_HIDDEN_OPTION
+				);
 
-			const visibleTasks = getVisibleTasks( taskList?.tasks || [] );
+				const optionIsResolved = optionHasFinishedResolution(
+					'getOption',
+					[ REMINDER_BAR_HIDDEN_OPTION ]
+				);
 
-			const completedTasks =
-				visibleTasks.filter( ( task: TaskType ) => task.isComplete ) ||
-				[];
+				const taskList = getTaskList( taskListId );
+				const taskListIsResolved = onboardingHasFinishedResolution(
+					'getTaskList',
+					[ taskListId ]
+				);
+				const visibleTasks = getVisibleTasks( taskList?.tasks || [] );
 
-			const isResolved = taskListIsResolved && optionIsResolved;
+				const completedTasks =
+					visibleTasks.filter(
+						( task: TaskType ) => task.isComplete
+					) || [];
 
-			return {
-				reminderBarHidden: reminderBarHiddenOption === 'yes',
-				taskListHidden: isResolved ? taskList?.isHidden : false,
-				taskListComplete: isResolved ? taskList?.isComplete : false,
-				loading: ! isResolved,
-				completedTasksCount: completedTasks.length,
-				remainingCount: isResolved
-					? visibleTasks?.length - completedTasks.length
-					: null,
-			};
-		},
-		[ taskListId ]
-	);
+				const isResolved = taskListIsResolved && optionIsResolved;
+
+				return {
+					reminderBarHidden: reminderBarHiddenOption === 'yes',
+					loading: ! isResolved,
+					completedTasksCount: completedTasks.length,
+					remainingCount: isResolved
+						? visibleTasks?.length - completedTasks.length
+						: null,
+				};
+			},
+			[ taskListId ]
+		);
 
 	const query = getQuery() as { [ key: string ]: string };
 	const isHomescreen =
@@ -145,8 +140,6 @@ export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
 
 	const isHidden =
 		loading ||
-		taskListHidden ||
-		taskListComplete ||
 		reminderBarHidden ||
 		completedTasksCount === 0 ||
 		isHomescreen ||
@@ -156,11 +149,13 @@ export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
 		updateBodyMargin();
 	}, [ isHidden, updateBodyMargin ] );
 
-	const tracksProps = {
-		completed: completedTasksCount,
-		is_homescreen: !! isHomescreen,
-		is_active_task_page: isActiveTaskPage,
-	};
+	const tracksProps = useMemo( () => {
+		return {
+			completed: completedTasksCount,
+			is_homescreen: !! isHomescreen,
+			is_active_task_page: isActiveTaskPage,
+		};
+	}, [ completedTasksCount, isHomescreen, isActiveTaskPage ] );
 
 	useEffect( () => {
 		if ( loading || isHidden ) {
@@ -168,7 +163,11 @@ export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
 		}
 
 		recordEvent( 'tasklist_reminder_bar_view', tracksProps );
-	}, [ isHidden, loading ] );
+	}, [ isHidden, loading, tracksProps ] );
+
+	if ( isHidden ) {
+		return null;
+	}
 
 	const onClose = () => {
 		updateOptions( {
@@ -177,17 +176,13 @@ export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
 		recordEvent( 'tasklist_reminder_bar_close', tracksProps );
 	};
 
-	if ( isHidden ) {
-		return null;
-	}
-
 	return (
 		<div className="woocommerce-layout__header-tasks-reminder-bar">
 			<ReminderText
 				remainingCount={ remainingCount }
 				tracksProps={ tracksProps }
 			/>
-			<Button isSmall onClick={ onClose } icon={ closeIcon } />
+			<Button size="small" onClick={ onClose } icon={ closeIcon } />
 		</div>
 	);
 };
