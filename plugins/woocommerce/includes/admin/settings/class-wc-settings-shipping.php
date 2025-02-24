@@ -124,6 +124,15 @@ class WC_Settings_Shipping extends WC_Settings_Page {
 					'id'            => 'woocommerce_shipping_cost_requires_address',
 					'default'       => 'no',
 					'type'          => 'checkbox',
+					'checkboxgroup' => '',
+				),
+
+				array(
+					'desc'          => __( 'Hide flat rate when free shipping is available', 'woocommerce' ),
+					'id'            => 'woocommerce_shipping_hide_flat_rate_when_free',
+					'default'       => 'no',
+					'type'          => 'checkbox',
+					'autoload'      => false,
 					'checkboxgroup' => 'end',
 				),
 
