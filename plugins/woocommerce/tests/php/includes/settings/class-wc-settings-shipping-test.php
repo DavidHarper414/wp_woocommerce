@@ -91,11 +91,12 @@ class WC_Settings_Shipping_Test extends WC_Settings_Unit_Test_Case {
 		$setting_ids_and_types = $this->get_ids_and_types( $settings );
 
 		$expected = array(
-			'shipping_options'                           => array( 'title', 'sectionend' ),
-			'woocommerce_enable_shipping_calc'           => 'checkbox',
-			'woocommerce_shipping_cost_requires_address' => 'checkbox',
-			'woocommerce_ship_to_destination'            => 'radio',
-			'woocommerce_shipping_debug_mode'            => 'checkbox',
+			'shipping_options'                              => array( 'title', 'sectionend' ),
+			'woocommerce_enable_shipping_calc'              => 'checkbox',
+			'woocommerce_shipping_cost_requires_address'    => 'checkbox',
+			'woocommerce_shipping_hide_flat_rate_when_free' => 'checkbox',
+			'woocommerce_ship_to_destination'               => 'radio',
+			'woocommerce_shipping_debug_mode'               => 'checkbox',
 		);
 
 		$this->assertEquals( $expected, $setting_ids_and_types );
