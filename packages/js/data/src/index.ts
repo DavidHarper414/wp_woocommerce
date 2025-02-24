@@ -241,10 +241,10 @@ export type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
 	? OnboardingSelectors
 	: T extends typeof PAYMENT_GATEWAYS_STORE_NAME
 	? PaymentSelectors
-	: T extends typeof SHIPPING_METHODS_STORE_NAME
-	? ShippingMethodsSelectors
 	: T extends typeof PAYMENT_SETTINGS_STORE_NAME
 	? PaymentSettingsSelectors
+	: T extends typeof SHIPPING_METHODS_STORE_NAME
+	? ShippingMethodsSelectors
 	: T extends typeof USER_STORE_NAME
 	? WPDataSelectors
 	: T extends typeof OPTIONS_STORE_NAME
