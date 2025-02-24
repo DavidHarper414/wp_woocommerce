@@ -228,6 +228,7 @@ class WC_Cart_Test extends \WC_Unit_Test_Case {
 		// Set address for shipping calculation required for "woocommerce_shipping_cost_requires_address".
 		WC()->cart->get_customer()->set_shipping_country( 'US' );
 		WC()->cart->get_customer()->set_shipping_state( 'NY' );
+		WC()->cart->get_customer()->set_shipping_city( 'New York' );
 		WC()->cart->get_customer()->set_shipping_postcode( '12345' );
 		$this->assertTrue( WC()->cart->show_shipping() );
 
@@ -236,6 +237,7 @@ class WC_Cart_Test extends \WC_Unit_Test_Case {
 		$product->delete( true );
 		WC()->cart->get_customer()->set_shipping_country( 'GB' );
 		WC()->cart->get_customer()->set_shipping_state( '' );
+		WC()->cart->get_customer()->set_shipping_city( '' );
 		WC()->cart->get_customer()->set_shipping_postcode( '' );
 	}
 
