@@ -16,7 +16,7 @@ import { checkoutStore } from '@woocommerce/block-data';
 /**
  * Internal dependencies
  */
-import { STORE_KEY as PAYMENT_STORE_KEY } from '../payment/constants';
+import { store as paymentStore } from '../payment';
 import { removeNoticesByStatus } from '../../utils/notices';
 import {
 	getPaymentResultFromCheckoutResponse,
@@ -31,7 +31,11 @@ import {
 import type {
 	emitValidateEventType,
 	emitAfterProcessingEventsType,
+	CheckoutPutData,
 } from './types';
+import { apiFetchWithHeaders } from '../shared-controls';
+import { CheckoutPutAbortController } from '../utils/clear-put-requests';
+import { CART_STORE_KEY } from '../cart';
 
 interface CheckoutThunkArgs {
 	select?: CurriedSelectorsOf< typeof checkoutStore >;
@@ -52,9 +56,7 @@ export const __internalProcessCheckoutResponse = (
 		dispatch.__internalSetRedirectUrl( paymentResult?.redirectUrl || '' );
 		// The local `dispatch` here is bound  to the actions of the data store. We need to use the global dispatch here
 		// to dispatch an action on a different store.
-		wpDispatch( PAYMENT_STORE_KEY ).__internalSetPaymentResult(
-			paymentResult
-		);
+		wpDispatch( paymentStore ).__internalSetPaymentResult( paymentResult );
 		dispatch.__internalSetAfterProcessing();
 	};
 };
@@ -109,8 +111,7 @@ export const __internalEmitAfterProcessingEvents: emitAfterProcessingEventsType 
 				orderId: select.getOrderId(),
 				customerId: select.getCustomerId(),
 				orderNotes: select.getOrderNotes(),
-				processingResponse:
-					wpSelect( PAYMENT_STORE_KEY ).getPaymentResult(),
+				processingResponse: wpSelect( paymentStore ).getPaymentResult(),
 			};
 			if ( select.hasError() ) {
 				// allow payment methods or other things to customize the error
@@ -143,3 +144,23 @@ export const __internalEmitAfterProcessingEvents: emitAfterProcessingEventsType 
 			}
 		};
 	};
+
+export const updateDraftOrder = ( data: CheckoutPutData ) => {
+	return async ( { registry } ) => {
+		const { receiveCart } = registry.dispatch( CART_STORE_KEY );
+		try {
+			const response = await apiFetchWithHeaders( {
+				path: '/wc/store/v1/checkout?__experimental_calc_totals=true',
+				method: 'PUT',
+				data,
+				signal: CheckoutPutAbortController.signal,
+			} );
+			if ( response?.response?.__experimentalCart ) {
+				receiveCart( response.response.__experimentalCart );
+			}
+			return response;
+		} catch ( error ) {
+			return Promise.reject( error );
+		}
+	};
+};

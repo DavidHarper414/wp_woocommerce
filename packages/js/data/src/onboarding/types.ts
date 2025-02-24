@@ -24,7 +24,7 @@ export type TaskType = {
 	canView: boolean;
 	isActioned: boolean;
 	eventPrefix: string;
-	level: number;
+	level: 1 | 2 | 3;
 	recordViewEvent: boolean;
 	badge?: string;
 	additionalData?: {
@@ -170,7 +170,6 @@ export type CoreProfilerStep =
 	| 'user-profile'
 	| 'business-info'
 	| 'plugins'
-	| 'intro-builder'
 	| 'skip-guided-setup';
 
 export type CoreProfilerCompletedSteps = Record<

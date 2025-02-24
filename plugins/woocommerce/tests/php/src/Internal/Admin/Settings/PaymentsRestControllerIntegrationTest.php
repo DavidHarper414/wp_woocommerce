@@ -275,7 +275,7 @@ class PaymentsRestControllerIntegrationTest extends WC_REST_Unit_Test_Case {
 		// No suggestions are returned because the user can't install plugins.
 		$this->assertCount( 0, $data['suggestions'] );
 		// But we do get the suggestion categories.
-		$this->assertCount( 3, $data['suggestion_categories'] );
+		$this->assertCount( 4, $data['suggestion_categories'] );
 
 		// Clean up.
 		remove_filter( 'user_has_cap', $filter_callback );
@@ -316,10 +316,9 @@ class PaymentsRestControllerIntegrationTest extends WC_REST_Unit_Test_Case {
 		// We also have the 3 offline payment methods.
 		$this->assertCount( 3, $data['offline_payment_methods'] );
 		// We only have PSPs because there is no payment gateway enabled.
-		// Square (in-person) is not a suggestion because we don't have the core profiler data set up for offline selling.
-		$this->assertCount( 2, $data['suggestions'] );
+		$this->assertCount( 3, $data['suggestions'] );
 		// Assert we get the suggestion categories.
-		$this->assertCount( 3, $data['suggestion_categories'] );
+		$this->assertCount( 4, $data['suggestion_categories'] );
 
 		// Assert that the preferred suggestions are WooPayments and PayPal (full stack), in this order.
 		$this->assertSame( PaymentProviders::SUGGESTION_ORDERING_PREFIX . PaymentExtensionSuggestions::WOOPAYMENTS, $data['providers'][0]['id'] );
@@ -363,10 +362,9 @@ class PaymentsRestControllerIntegrationTest extends WC_REST_Unit_Test_Case {
 		// We also have the 3 offline payment methods.
 		$this->assertCount( 3, $data['offline_payment_methods'] );
 		// We get all the suggestions.
-		// Square (in-person) is not a suggestion because we don't have the core profiler data set up for offline selling.
-		$this->assertCount( 6, $data['suggestions'] );
+		$this->assertCount( 7, $data['suggestions'] );
 		// Assert we get the suggestion categories.
-		$this->assertCount( 3, $data['suggestion_categories'] );
+		$this->assertCount( 4, $data['suggestion_categories'] );
 
 		// Assert that the PayPal gateway is returned as enabled.
 		$gateway = $data['providers'][3];
@@ -414,7 +412,7 @@ class PaymentsRestControllerIntegrationTest extends WC_REST_Unit_Test_Case {
 		// We get all the suggestions.
 		$this->assertCount( 1, $data['suggestions'] );
 		// Assert we get the suggestion categories.
-		$this->assertCount( 3, $data['suggestion_categories'] );
+		$this->assertCount( 4, $data['suggestion_categories'] );
 
 		// Assert that the preferred suggestions are Stripe and PayPal (full stack), in this order.
 		$this->assertSame( PaymentProviders::SUGGESTION_ORDERING_PREFIX . PaymentExtensionSuggestions::STRIPE, $data['providers'][0]['id'] );
@@ -457,7 +455,7 @@ class PaymentsRestControllerIntegrationTest extends WC_REST_Unit_Test_Case {
 		// No suggestions are returned.
 		$this->assertCount( 0, $data['suggestions'] );
 		// Assert we get the suggestion categories.
-		$this->assertCount( 3, $data['suggestion_categories'] );
+		$this->assertCount( 4, $data['suggestion_categories'] );
 	}
 
 	/**
@@ -540,10 +538,9 @@ class PaymentsRestControllerIntegrationTest extends WC_REST_Unit_Test_Case {
 		// We also have the 3 offline payment methods.
 		$this->assertCount( 3, $data['offline_payment_methods'] );
 		// We get all the suggestions.
-		// Square (in-person) is not a suggestion because we don't have the core profiler data set up for offline selling.
-		$this->assertCount( 6, $data['suggestions'] );
+		$this->assertCount( 7, $data['suggestions'] );
 		// Assert we get the suggestion categories.
-		$this->assertCount( 3, $data['suggestion_categories'] );
+		$this->assertCount( 4, $data['suggestion_categories'] );
 
 		// Assert that the WooPayments suggestion has all the details, including the incentive data.
 		$suggestion = $data['providers'][3];

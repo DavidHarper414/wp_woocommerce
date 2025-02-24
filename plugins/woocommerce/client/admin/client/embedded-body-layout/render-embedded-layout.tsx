@@ -28,6 +28,7 @@ import {
 import { registerSettingsEmailColorPaletteFill } from '../settings-email/settings-email-color-palette-slotfill';
 import { registerSettingsEmailImageUrlFill } from '../settings-email/settings-email-image-url-slotfill';
 import { registerSettingsEmailPreviewFill } from '../settings-email/settings-email-preview-slotfill';
+import { registerSettingsEmailFeedbackFill } from '../settings-email/settings-email-feedback-slotfill';
 
 const debug = debugFactory( 'wc-admin:client' );
 
@@ -46,11 +47,14 @@ const renderHydratedLayout = (
 	let HydratedEmbedLayout = withSettingsHydration(
 		settingsGroup,
 		window.wcSettings?.admin
-	)( EmbedLayout );
+	)( EmbedLayout as React.ComponentType< Record< string, unknown > > );
 
 	if ( hydrateUser ) {
-		HydratedEmbedLayout =
-			withCurrentUserHydration( hydrateUser )( HydratedEmbedLayout );
+		HydratedEmbedLayout = withCurrentUserHydration( hydrateUser )(
+			HydratedEmbedLayout as React.ComponentType<
+				Record< string, unknown >
+			>
+		);
 	}
 
 	createRoot( embeddedRoot ).render( <HydratedEmbedLayout /> );
@@ -116,7 +120,7 @@ const registerSlotFills = () => {
 		registerSiteVisibilitySlotFill();
 	}
 
-	if ( features?.blueprint === true ) {
+	if ( isFeatureEnabled( 'blueprint' ) ) {
 		registerBlueprintSlotfill();
 	}
 
@@ -124,10 +128,14 @@ const registerSlotFills = () => {
 	registerOrderAttributionSlotFill();
 
 	if ( isFeatureEnabled( 'email_improvements' ) ) {
+		registerSettingsEmailPreviewFill( true );
 		registerSettingsEmailColorPaletteFill();
 		registerSettingsEmailImageUrlFill();
-		registerSettingsEmailPreviewFill();
+	} else {
+		registerSettingsEmailPreviewFill( false );
 	}
+
+	registerSettingsEmailFeedbackFill();
 };
 
 /**

@@ -9,6 +9,7 @@ import {
 	PaymentProviderOnboardingState,
 } from '@woocommerce/data';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -43,6 +44,10 @@ interface CompleteSetupButtonProps {
 	 * The text of the button.
 	 */
 	buttonText?: string;
+	/**
+	 * ID of the plugin that is being installed.
+	 */
+	installingPlugin: string | null;
 }
 
 /**
@@ -57,6 +62,7 @@ export const CompleteSetupButton = ( {
 	settingsHref,
 	onboardingHref,
 	gatewayHasRecommendedPaymentMethods,
+	installingPlugin,
 	buttonText = __( 'Complete setup', 'woocommerce' ),
 }: CompleteSetupButtonProps ) => {
 	const [ isUpdating, setIsUpdating ] = useState( false );
@@ -66,6 +72,12 @@ export const CompleteSetupButton = ( {
 	const onboardingCompleted = onboardingState.completed;
 
 	const completeSetup = () => {
+		// Record the click of this button.
+		recordEvent( 'settings_payments_provider_complete_setup_click', {
+			provider_id: gatewayId,
+			onboarding_state: onboardingState,
+		} );
+
 		setIsUpdating( true );
 
 		if ( ! accountConnected || ! onboardingStarted ) {
@@ -99,7 +111,7 @@ export const CompleteSetupButton = ( {
 			key={ gatewayId }
 			variant={ 'primary' }
 			isBusy={ isUpdating }
-			disabled={ isUpdating }
+			disabled={ isUpdating || !! installingPlugin }
 			onClick={ completeSetup }
 		>
 			{ buttonText }
