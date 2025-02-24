@@ -572,6 +572,24 @@ class RestApi {
 	 * @return array
 	 */
 	public function import_step( \WP_REST_Request $request ) {
+		// Get the raw body size.
+		$body_size = strlen( $request->get_body() );
+		if ( $body_size > $this->get_max_file_size() ) {
+			return array(
+				'success'  => false,
+				'messages' => array(
+					array(
+						'message' => sprintf(
+							// Translators: %s is the maximum file size in megabytes.
+							__( 'Request size exceeds maximum limit of %s MB', 'woocommerce' ),
+							( $this->get_max_file_size() / ( 1024 * 1024 ) )
+						),
+						'type'    => 'error',
+					),
+				),
+			);
+		}
+
 		// Make sure we're dealing with object.
 		$step_definition = json_decode( wp_json_encode( $request->get_param( 'step_definition' ) ) );
 		$step_importer   = new ImportStep( $step_definition );

@@ -100,6 +100,30 @@ class RestApiTest extends WP_Test_REST_TestCase {
 	}
 
 	/**
+	 * Test file size validation in import_step endpoint.
+	 */
+	public function test_import_step_file_size_validation() {
+		// Create a large request body
+		$large_value = str_repeat('X', RestApi::MAX_FILE_SIZE + 1024); // Slightly over limit
+		$request = new \WP_REST_Request('POST', '/wc-admin/blueprint/import-step');
+		$request->set_body(json_encode(array(
+			'step_definition' => array(
+				'step' => 'setWCSettings',
+				'settings' => array(
+					'large_setting' => $large_value
+				)
+			)
+		)));
+
+		$response = $this->rest_api->import_step($request);
+
+		$this->assertFalse($response['success']);
+		$this->assertCount(1, $response['messages']);
+		$this->assertEquals('error', $response['messages'][0]['type']);
+		$this->assertStringContainsString('50 MB', $response['messages'][0]['message']);
+	}
+
+	/**
 	 * Clean up after each test.
 	 */
 	public function tearDown(): void {
