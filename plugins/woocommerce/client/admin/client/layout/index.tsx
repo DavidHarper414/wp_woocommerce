@@ -185,7 +185,7 @@ const BaseLayout = ( { page }: { page: Page } ) => {
 	);
 };
 
-const _AppLayout = () => {
+export const _Layout = () => {
 	const { currentUserCan } = useUser();
 	const pages = usePages() as Page[];
 
@@ -222,7 +222,7 @@ const _AppLayout = () => {
 
 const dataEndpoints = getAdminSetting( 'dataEndpoints' );
 
-export const AppLayout = compose(
+export const Layout = compose(
 	window.wcSettings.admin
 		? withOptionsHydration( {
 				...getAdminSetting( 'preloadOptions', {} ),
@@ -233,4 +233,4 @@ export const AppLayout = compose(
 		jetpackStatus:
 			( dataEndpoints && dataEndpoints.jetpackStatus ) || false,
 	} )
-)( _AppLayout );
+)( _Layout ) as React.ComponentType< Record< string, unknown > >;
