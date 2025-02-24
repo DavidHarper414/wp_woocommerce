@@ -121,20 +121,30 @@ export const Plugin: React.FC< PluginProps > = ( {
 						{ __( 'Activate', 'woocommerce' ) }
 					</Button>
 				) }
-				{ ! isInstalled && (
+				{ ! isInstalled && ! installExternal && (
 					<Button
 						disabled={ isDisabled }
 						isBusy={ isBusy }
 						isSecondary
 						onClick={ () => {
-							if ( ! installExternal ) {
-								installAndActivate( slug );
-							} else if ( learnMoreLink !== '' ) {
+							installAndActivate( slug );
+						} }
+					>
+						{ __( 'Get started', 'woocommerce' ) }
+					</Button>
+				) }
+				{ ! isInstalled && installExternal && (
+					<Button
+						disabled={ isDisabled }
+						isBusy={ isBusy }
+						isSecondary
+						onClick={ () => {
+							if ( learnMoreLink !== '' ) {
 								window.open( learnMoreLink, '_blank' );
 							}
 						} }
 					>
-						{ __( 'Get started', 'woocommerce' ) }
+						{ __( 'View extension', 'woocommerce' ) }
 					</Button>
 				) }
 			</div>
