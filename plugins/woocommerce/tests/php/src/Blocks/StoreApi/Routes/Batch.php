@@ -44,11 +44,6 @@ class Batch extends ControllerTestCase {
 		);
 	}
 
-	protected function tearDown(): void {
-		//remove_all_filters( '__experimental_woocommerce_store_api_batch_request_methods' );
-		parent::tearDown();
-	}
-
 	/**
 	 * Test that a batch of requests are successful.
 	 */
