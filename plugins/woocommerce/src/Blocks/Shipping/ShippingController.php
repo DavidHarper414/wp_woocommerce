@@ -432,7 +432,7 @@ class ShippingController {
 
 		$customer = WC()->customer;
 
-		if ( ! $customer instanceof WC_Customer || ! $customer->has_full_shipping_address() ) {
+		if ( $customer instanceof WC_Customer && $customer->has_full_shipping_address() ) {
 			return $packages;
 		}
 

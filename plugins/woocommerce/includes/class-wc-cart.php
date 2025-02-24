@@ -1407,7 +1407,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * Get cart's owner.
 	 *
 	 * @since  3.2.0
-	 * @return WC_Customer
+	 * @return \WC_Customer
 	 */
 	public function get_customer() {
 		return WC()->customer;
@@ -1479,22 +1479,20 @@ class WC_Cart extends WC_Legacy_Cart {
 			return $this->shipping_methods;
 		}
 
-		$this->shipping_methods        = $this->get_chosen_shipping_methods( WC()->shipping()->calculate_shipping( $this->get_shipping_packages() ) );
 		$this->has_calculated_shipping = true;
+		$this->shipping_methods        = $this->get_chosen_shipping_methods( WC()->shipping()->calculate_shipping( $this->get_shipping_packages() ) );
 
 		$shipping_costs = wp_list_pluck( $this->shipping_methods, 'cost' );
 		$shipping_taxes = wp_list_pluck( $this->shipping_methods, 'taxes' );
-
-		$this->set_shipping_total( array_sum( $shipping_costs ) );
-		$this->set_shipping_tax( array_sum( $shipping_taxes ) );
-
-		$merged_taxes = array();
+		$merged_taxes   = array();
 		foreach ( $shipping_taxes as $taxes ) {
 			foreach ( $taxes as $tax_id => $tax_amount ) {
 				$merged_taxes[ $tax_id ] = ( $merged_taxes[ $tax_id ] ?? 0 ) + $tax_amount;
 			}
 		}
 
+		$this->set_shipping_total( array_sum( $shipping_costs ) );
+		$this->set_shipping_tax( array_sum( $merged_taxes ) );
 		$this->set_shipping_taxes( $merged_taxes );
 
 		return $this->shipping_methods;
@@ -1625,7 +1623,7 @@ class WC_Cart extends WC_Legacy_Cart {
 		if ( 'yes' === get_option( 'woocommerce_shipping_cost_requires_address' ) ) {
 			$customer = $this->get_customer();
 
-			if ( ! $customer instanceof WC_Customer || ! $customer->has_full_shipping_address() ) {
+			if ( ! $customer instanceof \WC_Customer || ! $customer->has_full_shipping_address() ) {
 				return false;
 			}
 		}
