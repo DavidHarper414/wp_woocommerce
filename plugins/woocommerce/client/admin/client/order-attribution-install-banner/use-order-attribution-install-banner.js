@@ -1,9 +1,14 @@
 /**
  * External dependencies
  */
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 import { useCallback, useMemo } from '@wordpress/element';
-import { optionsStore, pluginsStore, useUser } from '@woocommerce/data';
+import {
+	optionsStore,
+	pluginsStore,
+	useUser,
+	useUserPreferences,
+} from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { getPath } from '@woocommerce/navigation';
 import { isWcVersion } from '@woocommerce/settings';
@@ -14,8 +19,7 @@ import { isWcVersion } from '@woocommerce/settings';
 import { STORE_KEY } from '~/marketing/data/constants';
 import '~/marketing/data';
 
-const OPTION_NAME_BANNER_DISMISSED =
-	'woocommerce_order_attribution_install_banner_dismissed';
+const USER_META_BANNER_DISMISSED = 'order_attribution_install_banner_dismissed';
 const OPTION_VALUE_YES = 'yes';
 const OPTION_NAME_REMOTE_VARIANT_ASSIGNMENT =
 	'woocommerce_remote_variant_assignment';
@@ -69,12 +73,15 @@ const shouldPromoteOrderAttribution = (
  * which determines if the banner should be displayed, checks if it has been dismissed, and provides a function to dismiss it.
  */
 export const useOrderAttributionInstallBanner = ( { isInstalling } ) => {
-	const { updateOptions } = useDispatch( optionsStore );
 	const { currentUserCan } = useUser();
+	const {
+		[ USER_META_BANNER_DISMISSED ]: bannerDismissed,
+		updateUserPreferences,
+	} = useUserPreferences();
 
 	const dismiss = ( eventContext = 'analytics-overview' ) => {
-		updateOptions( {
-			[ OPTION_NAME_BANNER_DISMISSED ]: OPTION_VALUE_YES,
+		updateUserPreferences( {
+			[ USER_META_BANNER_DISMISSED ]: OPTION_VALUE_YES,
 		} );
 		recordEvent( 'order_attribution_install_banner_dismissed', {
 			path: getPath(),
@@ -103,15 +110,15 @@ export const useOrderAttributionInstallBanner = ( { isInstalling } ) => {
 
 			return {
 				loading: ! hasFinishedResolution( 'getOption', [
-					OPTION_NAME_BANNER_DISMISSED,
+					OPTION_NAME_REMOTE_VARIANT_ASSIGNMENT,
 				] ),
-				isBannerDismissed: getOption( OPTION_NAME_BANNER_DISMISSED ),
+				isBannerDismissed: bannerDismissed,
 				remoteVariantAssignment: getOption(
 					OPTION_NAME_REMOTE_VARIANT_ASSIGNMENT
 				),
 			};
 		},
-		[]
+		[ bannerDismissed ]
 	);
 
 	const { loadingRecommendations, recommendations } = useSelect(
