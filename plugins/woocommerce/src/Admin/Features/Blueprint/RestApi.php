@@ -24,11 +24,31 @@ use RecursiveIteratorIterator;
  */
 class RestApi {
 	/**
+	 * Maximum allowed file size in bytes (50MB)
+	 */
+	const MAX_FILE_SIZE = 52428800; // 50 * 1024 * 1024
+
+	/**
 	 * Endpoint namespace.
 	 *
 	 * @var string
 	 */
 	protected $namespace = 'wc-admin';
+
+	/**
+	 * Get maximum allowed file size for blueprint uploads.
+	 *
+	 * @return int Maximum file size in bytes
+	 */
+	protected function get_max_file_size() {
+		/**
+		 * Filters the maximum allowed file size for blueprint uploads.
+		 *
+		 * @since 9.3.0
+		 * @param int $max_size Maximum file size in bytes.
+		 */
+		return apply_filters( 'woocommerce_blueprint_upload_max_file_size', self::MAX_FILE_SIZE );
+	}
 
 	/**
 	 * Register routes.
@@ -340,9 +360,20 @@ class RestApi {
 		}
 
 		// Validate file upload.
-		if ( empty( $_FILES['file'] ) || ! isset( $_FILES['file']['error'], $_FILES['file']['tmp_name'], $_FILES['file']['type'] ) ) {
+		if ( empty( $_FILES['file'] ) || ! isset( $_FILES['file']['error'], $_FILES['file']['tmp_name'], $_FILES['file']['type'], $_FILES['file']['size'] ) ) {
 			$response['error_type'] = 'upload';
 			$response['errors'][]   = __( 'No file uploaded', 'woocommerce' );
+			return $response;
+		}
+
+		// Check file size.
+		if ( isset( $_FILES['file']['size'] ) && $_FILES['file']['size'] > $this->get_max_file_size() ) {
+			$response['error_type'] = 'upload';
+			$response['errors'][]   = sprintf(
+				// Translators: %s is the maximum file size in megabytes.
+				__( 'File size exceeds maximum limit of %s MB', 'woocommerce' ),
+				( $this->get_max_file_size() / ( 1024 * 1024 ) )
+			);
 			return $response;
 		}
 
