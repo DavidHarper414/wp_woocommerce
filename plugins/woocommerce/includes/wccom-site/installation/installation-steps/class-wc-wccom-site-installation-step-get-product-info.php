@@ -45,9 +45,6 @@ class WC_WCCOM_Site_Installation_Step_Get_Product_Info implements WC_WCCOM_Site_
 			add_query_arg(
 				array( 'product_id' => $product_id ),
 				'info'
-			),
-			array(
-				'authenticated' => true,
 			)
 		);
 

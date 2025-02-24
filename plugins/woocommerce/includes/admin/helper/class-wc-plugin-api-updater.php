@@ -90,8 +90,7 @@ class WC_Plugin_Api_Updater {
 					'product_id' => absint( $product_id ),
 				),
 				'info'
-			),
-			array( 'authenticated' => true )
+			)
 		);
 
 		$results = json_decode( wp_remote_retrieve_body( $request ), true );
