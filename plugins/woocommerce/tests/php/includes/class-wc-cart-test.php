@@ -9,6 +9,14 @@
  * Class WC_Cart_Test
  */
 class WC_Cart_Test extends \WC_Unit_Test_Case {
+	/**
+	 * Called before every test.
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$fixtures = new FixtureData();
+		$fixtures->shipping_add_flat_rate();
+	}
 
 	/**
 	 * tearDown.
