@@ -153,10 +153,11 @@
           "menu_title": "Frequently Asked Questions",
           "tags": "reference",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/faq.md",
-          "hash": "3289920c5224a5c392617620b839df1454431257abf2162744b1fa9040314378",
+          "hash": "31bfbf216252c709466e293c6b2159858db994e9cdb530d8f13ffc327ab07ea7",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/faq.md",
           "id": "041787aca25af363a5eff3e710bd669cc8aebc4b",
           "links": {
+            "./slot-fills.md": "e388101586765dd9aca752d66d667d74951a1504",
             "./removing-checkout-fields.md": "030247059754260bce6285cfb352a4a733f1f677"
           }
         },
@@ -479,7 +480,7 @@
           "post_title": "Customizing checkout fields using actions and filters",
           "tags": "code-snippet",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/code-snippets/customising-checkout-fields.md",
-          "hash": "a18c788943a1841be742aaa34669c436aaebf266d3492959ade0d0d0654b0275",
+          "hash": "85f7cb4d88b3e10930ad655de01e6d1c23454f24f2daa70e253c41b3b8f84332",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/code-snippets/customising-checkout-fields.md",
           "id": "83097d3b7414557fc80dcf9f8f1a708bbdcdd884",
           "links": {
@@ -1935,5 +1936,5 @@
       "categories": []
     }
   ],
-  "hash": "54e68eead4fab95dd4bc567b3c258922c5de2e2fc488d18217998bf94c3c4184"
+  "hash": "492d599907e8b913f8f61311329d215650711e2f3741244539363d658ac1a695"
 }
