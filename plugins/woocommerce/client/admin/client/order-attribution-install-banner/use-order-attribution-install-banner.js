@@ -26,9 +26,9 @@ const OPTION_NAME_REMOTE_VARIANT_ASSIGNMENT =
 
 const getThreshold = ( percentages ) => {
 	const defaultPercentages = [
-		[ '9.7', 100 ], // 100%
-		[ '9.6', 60 ], // 60%
-		[ '9.5', 10 ], // 10%
+		[ '9.7', 10 ], // 10%
+		[ '9.6', 10 ], // 10%
+		[ '9.5', 1 ], // 1%
 	];
 
 	if ( ! Array.isArray( percentages ) || percentages.length === 0 ) {
@@ -36,7 +36,7 @@ const getThreshold = ( percentages ) => {
 	}
 
 	// Sort the percentages in descending order by version, to ensure we get the highest version first so the isWcVersion() check works correctly.
-	// E.g. if we are on 9.7 but the percentages are in version ascending order, we would get 10% instead of 100%.
+	// E.g. if we are on 9.7 but the percentages are in version ascending order, we would get 1% instead of 10%.
 	percentages.sort( ( a, b ) => parseFloat( b[ 0 ] ) - parseFloat( a[ 0 ] ) );
 
 	for ( let [ version, percentage ] of percentages ) {
