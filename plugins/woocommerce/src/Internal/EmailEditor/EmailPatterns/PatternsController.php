@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace Automattic\WooCommerce\Internal\EmailEditor\Patterns;
+namespace Automattic\WooCommerce\Internal\EmailEditor\EmailPatterns;
 
 defined( 'ABSPATH' ) || exit;
 

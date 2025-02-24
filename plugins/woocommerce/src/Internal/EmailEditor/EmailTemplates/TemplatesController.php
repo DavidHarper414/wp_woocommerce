@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace Automattic\WooCommerce\Internal\EmailEditor\Templates;
+namespace Automattic\WooCommerce\Internal\EmailEditor\EmailTemplates;
 
 use MailPoet\EmailEditor\Engine\Templates\Template;
 use MailPoet\EmailEditor\Engine\Templates\Templates_Registry;

@@ -7,8 +7,8 @@ namespace Automattic\WooCommerce\Internal\DependencyManagement\ServiceProviders;
 use Automattic\WooCommerce\Internal\EmailEditor\Integration;
 use Automattic\WooCommerce\Internal\EmailEditor\PageRenderer;
 use Automattic\WooCommerce\Internal\EmailEditor\PersonalizationTagManager;
-use Automattic\WooCommerce\Internal\EmailEditor\Patterns\PatternsController;
-use Automattic\WooCommerce\Internal\EmailEditor\Templates\TemplatesController;
+use Automattic\WooCommerce\Internal\EmailEditor\EmailPatterns\PatternsController;
+use Automattic\WooCommerce\Internal\EmailEditor\EmailTemplates\TemplatesController;
 
 /**
  * Service provider for the EmailEditor namespace.

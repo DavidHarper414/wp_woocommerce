@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Automattic\WooCommerce\Internal\EmailEditor\Patterns;
+namespace Automattic\WooCommerce\Internal\EmailEditor\EmailPatterns;
 
 use MailPoet\EmailEditor\Engine\Patterns\Abstract_Pattern;
 

@@ -4,8 +4,8 @@ declare( strict_types=1 );
 
 namespace Automattic\WooCommerce\Internal\EmailEditor;
 
-use Automattic\WooCommerce\Internal\EmailEditor\Patterns\PatternsController;
-use Automattic\WooCommerce\Internal\EmailEditor\Templates\TemplatesController;
+use Automattic\WooCommerce\Internal\EmailEditor\EmailPatterns\PatternsController;
+use Automattic\WooCommerce\Internal\EmailEditor\EmailTemplates\TemplatesController;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Automattic\WooCommerce\Internal\EmailEditor\Templates;
+namespace Automattic\WooCommerce\Internal\EmailEditor\EmailTemplates;
 
 /**
  * Basic template for WooCommerce transactional emails used in the email editor.
