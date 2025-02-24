@@ -2,12 +2,6 @@
  * External dependencies
  */
 import {
-	ValidatedTextInput,
-	type ValidatedTextInputHandle,
-	CheckboxControl,
-	ValidatedCheckboxControl,
-} from '@woocommerce/blocks-components';
-import {
 	BillingCountryInput,
 	ShippingCountryInput,
 } from '@woocommerce/base-components/country-input';
@@ -15,38 +9,44 @@ import {
 	BillingStateInput,
 	ShippingStateInput,
 } from '@woocommerce/base-components/state-input';
-import { useEffect, useRef } from '@wordpress/element';
-import { useInstanceId } from '@wordpress/compose';
-import { useShallowEqual, usePrevious } from '@woocommerce/base-hooks';
-import isShallowEqual from '@wordpress/is-shallow-equal';
-import clsx from 'clsx';
+import { useCheckoutAddress } from '@woocommerce/base-context';
+import { usePrevious, useShallowEqual } from '@woocommerce/base-hooks';
+import { validationStore } from '@woocommerce/block-data';
+import {
+	CheckboxControl,
+	ValidatedCheckboxControl,
+	ValidatedTextInput,
+	type ValidatedTextInputHandle,
+} from '@woocommerce/blocks-components';
 import {
 	AddressFormValues,
 	ContactFormValues,
 	OrderFormValues,
 } from '@woocommerce/settings';
 import { isNull } from '@woocommerce/types';
-import { useCheckoutAddress } from '@woocommerce/base-context';
-import fastDeepEqual from 'fast-deep-equal/es6';
-import { decodeEntities } from '@wordpress/html-entities';
-import { validationStore } from '@woocommerce/block-data';
+import { useInstanceId } from '@wordpress/compose';
 import { dispatch } from '@wordpress/data';
+import { useEffect, useRef } from '@wordpress/element';
+import { decodeEntities } from '@wordpress/html-entities';
+import isShallowEqual from '@wordpress/is-shallow-equal';
+import clsx from 'clsx';
+import fastDeepEqual from 'fast-deep-equal/es6';
 
 /**
  * Internal dependencies
  */
+import { Select } from '../../select';
+import AddressLineFields from './address-line-fields';
 import { FormProps } from './types';
 import { useFormFields } from './use-form-fields';
-import validateCountry from './validate-country';
-import AddressLineFields from './address-line-fields';
+import { useFormValidation } from './use-form-validation';
 import {
-	createFieldProps,
 	createCheckboxFieldProps,
+	createFieldProps,
 	getFieldData,
 } from './utils';
-import { Select } from '../../select';
+import validateCountry from './validate-country';
 import { validateState } from './validate-state';
-import { useFormValidation } from './use-form-validation';
 /**
  * Checkout form.
  */
@@ -410,7 +410,9 @@ const Form = <
 						type={ field.type }
 						ariaDescribedBy={ ariaDescribedBy }
 						value={
-							decodeEntities( values[ field.key as keyof T ] as string ) ?? ''
+							decodeEntities(
+								values[ field.key as keyof T ] as string
+							) ?? ''
 						}
 						onChange={ ( newValue: string ) =>
 							onChange( {
