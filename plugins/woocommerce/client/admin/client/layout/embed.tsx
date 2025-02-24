@@ -20,7 +20,7 @@ import { PluginArea } from '@wordpress/plugins';
  * Internal dependencies
  */
 import './style.scss';
-// import '~/activity-panel';
+import '~/activity-panel';
 import { EmbedHeader } from '../header/embed';
 import { TransientNotices } from './transient-notices';
 import { usePageClasses } from './hooks/use-page-classes';

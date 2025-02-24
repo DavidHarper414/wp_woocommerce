@@ -248,6 +248,10 @@ class WCAdminAssets {
 		wp_enqueue_style( 'wc-material-icons' );
 		wp_enqueue_style( 'wc-onboarding' );
 
+		if ( PageController::is_settings_page() ) {
+			$this->register_script( 'wp-admin-scripts', 'settings', true );
+		}
+
 		// Preload our assets.
 		$this->output_header_preload_tags();
 	}
