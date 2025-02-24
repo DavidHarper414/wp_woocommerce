@@ -129,7 +129,7 @@ This is used to retrieve the URL that the browser should be redirected to in ord
 
 This is used to indicate to WooCommerce Admin that the Core Profiler has been completed, and this sets the Store's coming-soon mode to true. This hides the store pages from the public until the store is ready.
 
-- `dispatch( onboardingStore ).updateProfileItems( { profileItems } )`
+- `dispatch( onboardingStore ).updateProfileItems( profileItems )`
 
 This is used to update `woocommerce_onboarding_profile`.
 
