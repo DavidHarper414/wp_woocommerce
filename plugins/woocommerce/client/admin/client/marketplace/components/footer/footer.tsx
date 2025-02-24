@@ -3,7 +3,6 @@
  */
 import { __ } from '@wordpress/i18n';
 import { check, commentContent, shield, people } from '@wordpress/icons';
-import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -17,11 +16,10 @@ export const refundPolicyTitle = ( location: string ) => {
 	return (
 		<TrackedLink
 			targetUrl={ MARKETPLACE_HOST + '/refund-policy/' }
-			onClickCallback={ () =>
-				recordEvent( `marketplace_${ location }_link_click`, {
-					feature_clicked: 'money_back_guarantee',
-				} )
-			}
+			eventName={ `marketplace_${ location }_link_click` }
+			eventProperties={ {
+				feature_clicked: 'money_back_guarantee',
+			} }
 			message={ __(
 				'30-day {{Link}}money-back guarantee{{/Link}}',
 				'woocommerce'
@@ -34,11 +32,10 @@ export const supportTitle = ( location: string ) => {
 	return (
 		<TrackedLink
 			targetUrl={ MARKETPLACE_HOST + '/docs/' }
-			onClickCallback={ () =>
-				recordEvent( `marketplace_${ location }_link_click`, {
-					feature_clikced: 'get_help',
-				} )
-			}
+			eventName={ `marketplace_${ location }_link_click` }
+			eventProperties={ {
+				feature_clicked: 'get_help',
+			} }
 			message={ __(
 				'{{Link}}Get help{{/Link}} when you need it',
 				'woocommerce'
@@ -51,11 +48,10 @@ export const paymentTitle = ( location: string ) => {
 	return (
 		<TrackedLink
 			targetUrl={ MARKETPLACE_HOST + '/products/' }
-			onClickCallback={ () =>
-				recordEvent( `marketplace_${ location }_link_click`, {
-					feature_clikced: 'products_you_can_trust',
-				} )
-			}
+			eventName={ `marketplace_${ location }_link_click` }
+			eventProperties={ {
+				feature_clicked: 'products_you_can_trust',
+			} }
 			message={ __(
 				'{{Link}}Products{{/Link}} you can trust',
 				'woocommerce'

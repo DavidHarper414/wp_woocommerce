@@ -4,7 +4,7 @@
 import { Text } from '@woocommerce/experimental';
 import interpolateComponents from '@automattic/interpolate-components';
 import { Link } from '@woocommerce/components';
-import { recordEvent } from '@woocommerce/tracks';
+import { recordEvent, ExtraProperties } from '@woocommerce/tracks';
 
 interface TextProps {
 	/**
@@ -22,6 +22,7 @@ interface TrackedLinkProps {
 	 */
 	message: string;
 	eventName?: string;
+	eventProperties?: ExtraProperties;
 	targetUrl: string;
 	/**
 	 * Optional callback function to be called when the link is clicked
@@ -37,6 +38,7 @@ export const TrackedLink: React.FC< TrackedLinkProps > = ( {
 	textProps,
 	message,
 	eventName = '',
+	eventProperties = {},
 	targetUrl,
 	onClickCallback,
 } ) => (
@@ -50,7 +52,7 @@ export const TrackedLink: React.FC< TrackedLinkProps > = ( {
 							if ( onClickCallback ) {
 								onClickCallback();
 							} else {
-								recordEvent( eventName );
+								recordEvent( eventName, eventProperties );
 							}
 							window.location.href = targetUrl;
 							return false;
