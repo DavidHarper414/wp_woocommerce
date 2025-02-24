@@ -110,7 +110,6 @@ class WC_REST_Shipping_Methods_V2_Controller extends WC_REST_Controller {
 		}
 
 		$total     = count( $data );
-		$max_pages = ceil( $total / $per_page );
 		$response  = rest_ensure_response( $data );
 		$response->header( 'X-WP-Total', (int) $total );
 		$response->header( 'X-WP-TotalPages', 1 );
