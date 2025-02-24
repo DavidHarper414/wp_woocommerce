@@ -71,11 +71,6 @@ class ProductGalleryLargeImage extends AbstractBlock {
 			return '';
 		}
 
-		if ( class_exists( 'WC_Frontend_Scripts' ) ) {
-			$frontend_scripts = new \WC_Frontend_Scripts();
-			$frontend_scripts::load_scripts();
-		}
-
 		$images_html = $this->get_main_images_html( $block->context, $post_id );
 		$directives  = $this->get_directives( $block->context );
 
@@ -86,7 +81,7 @@ class ProductGalleryLargeImage extends AbstractBlock {
 			},
 			''
 		);
-
+ 
 		$processor = new \WP_HTML_Tag_Processor( $content );
 		$processor->next_tag();
 		$processor->remove_class( 'wp-block-woocommerce-product-gallery-large-image' );
