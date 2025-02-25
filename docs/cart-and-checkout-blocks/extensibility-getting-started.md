@@ -99,7 +99,7 @@ You may not need to create a block to get your extension working the way you wan
 
 In this case, you could remove the block folder from the example block, modify the Webpack config file so it no longer reads from that directory, and include the code you need in the entry JavaScript file.
 
-More information about how to use filters can be found in the [Filter Registry](https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce/client/blocks/packages/checkout/filter-registry/README.md#filter-registry-) and [Available Filters](https://developer.woocommerce.com/docs/category/cart-and-checkout-blocks/available-filters/) documents.
+More information about how to use filters can be found in the [Filter Registry](../../plugins/woocommerce/client/blocks/packages/checkout/filter-registry/README.md) and [Available Filters](https://developer.woocommerce.com/docs/category/cart-and-checkout-blocks/available-filters/) documents.
 
 ### Importing WooCommerce components into your extension
 
