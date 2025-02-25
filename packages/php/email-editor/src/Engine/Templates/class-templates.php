@@ -2,13 +2,13 @@
 /**
  * This file is part of the MailPoet Email Editor package.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare(strict_types = 1);
-namespace MailPoet\EmailEditor\Engine\Templates;
+namespace Automattic\WooCommerce\EmailEditor\Engine\Templates;
 
-use MailPoet\EmailEditor\Validator\Builder;
+use Automattic\WooCommerce\EmailEditor\Validator\Builder;
 use WP_Block_Template;
 
 /**

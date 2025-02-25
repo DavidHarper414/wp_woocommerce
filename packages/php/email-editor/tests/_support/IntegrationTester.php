@@ -2,7 +2,7 @@
 /**
  * This file is part of the MailPoet plugin tests.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare(strict_types=1);

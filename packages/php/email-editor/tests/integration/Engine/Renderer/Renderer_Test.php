@@ -2,15 +2,15 @@
 /**
  * This file is part of the MailPoet plugin.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare(strict_types = 1);
-namespace MailPoet\EmailEditor\Engine\Renderer;
+namespace Automattic\WooCommerce\EmailEditor\Engine\Renderer;
 
-use MailPoet\EmailEditor\Engine\Email_Editor;
-use MailPoet\EmailEditor\Engine\Templates\Utils;
-use MailPoet\EmailEditor\Engine\Theme_Controller;
+use Automattic\WooCommerce\EmailEditor\Engine\Email_Editor;
+use Automattic\WooCommerce\EmailEditor\Engine\Templates\Utils;
+use Automattic\WooCommerce\EmailEditor\Engine\Theme_Controller;
 
 /**
  * Integration test for Renderer

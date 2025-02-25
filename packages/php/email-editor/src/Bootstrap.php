@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace MailPoet\EmailEditor;
+namespace Automattic\WooCommerce\EmailEditor;
 
-use MailPoet\EmailEditor\Engine\Email_Editor;
-use MailPoet\EmailEditor\Integrations\Core\Initializer as CoreEmailEditorIntegration;
+use Automattic\WooCommerce\EmailEditor\Engine\Email_Editor;
+use Automattic\WooCommerce\EmailEditor\Integrations\Core\Initializer as CoreEmailEditorIntegration;
 
 class Bootstrap {
 

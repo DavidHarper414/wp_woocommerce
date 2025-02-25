@@ -2,11 +2,11 @@
 /**
  * This file is part of the MailPoet Email Editor package.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare( strict_types = 1 );
-namespace MailPoet\EmailEditor\Validator;
+namespace Automattic\WooCommerce\EmailEditor\Validator;
 
 use function wp_json_encode;
 use function rest_get_allowed_schema_keywords;

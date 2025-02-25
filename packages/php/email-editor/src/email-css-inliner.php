@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace MailPoet\EmailEditor;
+namespace Automattic\WooCommerce\EmailEditor;
 
-use MailPoet\EmailEditor\Engine\Renderer\Css_Inliner;
+use Automattic\WooCommerce\EmailEditor\Engine\Renderer\Css_Inliner;
 use Pelago\Emogrifier\CssInliner;
 
 class EmailCssInliner implements Css_Inliner {

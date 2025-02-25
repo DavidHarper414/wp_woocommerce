@@ -2,13 +2,13 @@
 /**
  * This file is part of the MailPoet plugin.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare(strict_types = 1);
-namespace MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\Layout;
+namespace Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Layout;
 
-use MailPoet\EmailEditor\Engine\Settings_Controller;
+use Automattic\WooCommerce\EmailEditor\Engine\Settings_Controller;
 
 /**
  * This class provides functionality to render inner blocks of a block that supports reduced flex layout.

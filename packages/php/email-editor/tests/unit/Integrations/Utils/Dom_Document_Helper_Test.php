@@ -2,11 +2,11 @@
 /**
  * This file is part of the MailPoet plugin.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare(strict_types = 1);
-namespace MailPoet\EmailEditor\Integrations\Utils;
+namespace Automattic\WooCommerce\EmailEditor\Integrations\Utils;
 
 /**
  * Unit test for Dom_Document_Helper class.

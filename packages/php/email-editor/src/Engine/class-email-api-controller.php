@@ -2,15 +2,15 @@
 /**
  * This file is part of the MailPoet plugin.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare(strict_types = 1);
-namespace MailPoet\EmailEditor\Engine;
+namespace Automattic\WooCommerce\EmailEditor\Engine;
 
-use MailPoet\EmailEditor\Engine\PersonalizationTags\Personalization_Tag;
-use MailPoet\EmailEditor\Engine\PersonalizationTags\Personalization_Tags_Registry;
-use MailPoet\EmailEditor\Validator\Builder;
+use Automattic\WooCommerce\EmailEditor\Engine\PersonalizationTags\Personalization_Tag;
+use Automattic\WooCommerce\EmailEditor\Engine\PersonalizationTags\Personalization_Tags_Registry;
+use Automattic\WooCommerce\EmailEditor\Validator\Builder;
 use WP_Post;
 use WP_REST_Request;
 use WP_REST_Response;

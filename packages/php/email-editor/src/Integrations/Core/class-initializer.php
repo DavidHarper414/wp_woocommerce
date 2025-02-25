@@ -2,14 +2,14 @@
 /**
  * This file is part of the MailPoet plugin.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare( strict_types = 1 );
-namespace MailPoet\EmailEditor\Integrations\Core;
+namespace Automattic\WooCommerce\EmailEditor\Integrations\Core;
 
-use MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\Blocks_Registry;
-use MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\Layout\Flex_Layout_Renderer;
+use Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Blocks_Registry;
+use Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Layout\Flex_Layout_Renderer;
 
 /**
  * Initializes the core blocks renderers.

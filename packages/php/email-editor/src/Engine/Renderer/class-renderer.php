@@ -2,17 +2,17 @@
 /**
  * This file is part of the MailPoet Email Editor package.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare(strict_types = 1);
-namespace MailPoet\EmailEditor\Engine\Renderer;
+namespace Automattic\WooCommerce\EmailEditor\Engine\Renderer;
 
 // require_once __DIR__ . '/../../../vendor/autoload.php'; // wrong vendor path. TODO: need to fix this
 
-use MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\Content_Renderer;
-use MailPoet\EmailEditor\Engine\Templates\Templates;
-use MailPoet\EmailEditor\Engine\Theme_Controller;
+use Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Content_Renderer;
+use Automattic\WooCommerce\EmailEditor\Engine\Templates\Templates;
+use Automattic\WooCommerce\EmailEditor\Engine\Theme_Controller;
 use Soundasleep\Html2Text;
 use WP_Style_Engine;
 

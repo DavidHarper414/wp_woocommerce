@@ -2,14 +2,14 @@
 /**
  * This file is part of the MailPoet Email Editor package.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use MailPoet\EmailEditor\Engine\Templates\Templates_Registry;
-use MailPoet\EmailEditor\Engine\Templates\Template;
+use Automattic\WooCommerce\EmailEditor\Engine\Templates\Templates_Registry;
+use Automattic\WooCommerce\EmailEditor\Engine\Templates\Template;
 
 /**
  * Test cases for the Templates_Registry class.

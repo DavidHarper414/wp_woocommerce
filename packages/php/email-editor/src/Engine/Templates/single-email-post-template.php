@@ -3,7 +3,7 @@
  * This file is part of the MailPoet Email Editor package.
  * Template canvas file to render the emails custom post type.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 // get the rendered post HTML content.

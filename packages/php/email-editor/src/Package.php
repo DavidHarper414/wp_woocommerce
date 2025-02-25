@@ -1,6 +1,6 @@
 <?php
 
-namespace MailPoet\EmailEditor;
+namespace Automattic\WooCommerce\EmailEditor;
 
 defined( 'ABSPATH' ) || exit;
 

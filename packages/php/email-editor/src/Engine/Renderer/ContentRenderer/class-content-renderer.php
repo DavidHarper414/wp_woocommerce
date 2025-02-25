@@ -2,15 +2,15 @@
 /**
  * This file is part of the MailPoet Email Editor package.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare(strict_types = 1);
-namespace MailPoet\EmailEditor\Engine\Renderer\ContentRenderer;
+namespace Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer;
 
-use MailPoet\EmailEditor\Engine\Renderer\Css_Inliner;
-use MailPoet\EmailEditor\Engine\Settings_Controller;
-use MailPoet\EmailEditor\Engine\Theme_Controller;
+use Automattic\WooCommerce\EmailEditor\Engine\Renderer\Css_Inliner;
+use Automattic\WooCommerce\EmailEditor\Engine\Settings_Controller;
+use Automattic\WooCommerce\EmailEditor\Engine\Theme_Controller;
 use WP_Block_Template;
 use WP_Post;
 
@@ -113,7 +113,7 @@ class Content_Renderer {
 	 * @return string
 	 */
 	public function block_parser() {
-		return 'MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\Blocks_Parser';
+		return 'Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Blocks_Parser';
 	}
 
 	/**

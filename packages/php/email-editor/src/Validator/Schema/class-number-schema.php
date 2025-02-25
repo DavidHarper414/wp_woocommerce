@@ -2,13 +2,13 @@
 /**
  * This file is part of the MailPoet plugin.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare( strict_types = 1 );
-namespace MailPoet\EmailEditor\Validator\Schema;
+namespace Automattic\WooCommerce\EmailEditor\Validator\Schema;
 
-use MailPoet\EmailEditor\Validator\Schema;
+use Automattic\WooCommerce\EmailEditor\Validator\Schema;
 
 /**
  * Represents a schema for a number.
