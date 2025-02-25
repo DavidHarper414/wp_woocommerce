@@ -330,7 +330,7 @@ class WC_Settings_Products extends WC_Settings_Page {
 
 				array(
 					'title'         => __( 'Admin notifications', 'woocommerce' ),
-					'desc'          => __( 'Enable low stock notifications for the admin', 'woocommerce' ),
+					'desc'          => __( 'Enable low stock notifications', 'woocommerce' ),
 					'id'            => 'woocommerce_notify_low_stock',
 					'default'       => 'yes',
 					'type'          => 'checkbox',
@@ -340,7 +340,7 @@ class WC_Settings_Products extends WC_Settings_Page {
 				),
 
 				array(
-					'desc'          => __( 'Enable out of stock notifications for the admin', 'woocommerce' ),
+					'desc'          => __( 'Enable out of stock notifications', 'woocommerce' ),
 					'id'            => 'woocommerce_notify_no_stock',
 					'default'       => 'yes',
 					'type'          => 'checkbox',
