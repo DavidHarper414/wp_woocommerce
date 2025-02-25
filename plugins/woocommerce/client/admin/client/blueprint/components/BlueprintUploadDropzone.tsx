@@ -97,7 +97,9 @@ const importBlueprint = async ( file: File ) => {
 
 		// Loop through each step and send it to the endpoint
 		for ( const step of steps ) {
-			const stepJson = JSON.stringify( step );
+			const stepJson = JSON.stringify( {
+				step_definition: step,
+			} );
 			const stepSize = new Blob( [ stepJson ] ).size;
 			if ( stepSize > MAX_STEP_SIZE_BYTES ) {
 				errors.push( {
