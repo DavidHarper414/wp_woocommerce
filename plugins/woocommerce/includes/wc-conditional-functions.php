@@ -16,19 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Check if the block hooks API supports contents of post_content.
- *
- * @since 9.8.0
- * @return bool
- */
-function wc_is_block_hook_post_content_supported() {
-	return (
-		has_filter( 'the_content', 'gutenberg_apply_block_hooks_to_post_content' ) ||
-		has_filter( 'the_content', 'apply_block_hooks_to_content' )
-	);
-}
-
-/**
  * Is_woocommerce - Returns true if on a page which uses WooCommerce templates (cart and checkout are standard pages with shortcodes and thus are not included).
  *
  * @return bool
