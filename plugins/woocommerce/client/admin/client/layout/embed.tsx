@@ -25,6 +25,7 @@ import { EmbedHeader } from '../header/embed';
 import { TransientNotices } from './transient-notices';
 import { usePageClasses } from './hooks/use-page-classes';
 import { getAdminSetting } from '~/utils/admin-settings';
+import { Footer } from './footer';
 
 const dataEndpoints = getAdminSetting( 'dataEndpoints' );
 
@@ -57,6 +58,7 @@ export const _EmbedLayout = () => {
 						query={ query }
 					/>
 					<TransientNotices />
+					<Footer />
 					<CustomerEffortScoreModalContainer />
 				</div>
 
