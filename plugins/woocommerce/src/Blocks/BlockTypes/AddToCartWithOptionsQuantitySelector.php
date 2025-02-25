@@ -17,22 +17,6 @@ class AddToCartWithOptionsQuantitySelector extends AbstractBlock {
 	protected $block_name = 'add-to-cart-with-options-quantity-selector';
 
 	/**
-	 * Get the block's attributes.
-	 *
-	 * @param array $attributes Block attributes. Default empty array.
-	 * @return array  Block attributes merged with defaults.
-	 */
-	private function parse_attributes( $attributes ) {
-		// These should match what's set in JS `registerBlockType`.
-		$defaults = array(
-			'quantitySelectorStyle' => 'input',
-		);
-
-		return wp_parse_args( $attributes, $defaults );
-	}
-
-
-	/**
 	 * Enqueue assets specific to this block.
 	 * We enqueue frontend scripts only if the quantitySelectorStyle is set to 'stepper'.
 	 *
