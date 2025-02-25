@@ -1,11 +1,11 @@
 <?php
 /**
- * Class WC_BIS_Notifications
+ * Class WC_Back_In_Stock
  */
 
-// Exit if accessed directly.
 use Automattic\Jetpack\Constants;
 
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -13,10 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Migrated from the BIS main plugin class.
  *
- * @class    WC_BIS_Notifications
+ * @class    WC_Back_In_Stock
  * @version  x.x.x
  */
-class WC_BIS_Notifications {
+class WC_Back_In_Stock {
 
 	/**
 	 * Plugin version.
@@ -70,7 +70,7 @@ class WC_BIS_Notifications {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var WC_BIS_Notifications
+	 * @var WC_Back_In_Stock
 	 */
 	protected static $_instance = null;
 
@@ -78,7 +78,7 @@ class WC_BIS_Notifications {
 	 * Main WC_Back_In_Stock instance. Ensures only one instance is loaded or can be loaded - @see 'WC_BIS()'.
 	 *
 	 * @static
-	 * @return  WC_BIS_Notifications
+	 * @return  WC_Back_In_Stock
 	 */
 	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
@@ -117,7 +117,7 @@ class WC_BIS_Notifications {
 	 * @return string
 	 */
 	public function get_plugin_url() {
-		wc_deprecated_function( 'WC_BIS_Notifications::get_plugin_url', '9.9.0' );
+		wc_deprecated_function( __METHOD__, '9.9.0' );
 		return untrailingslashit( plugins_url( '/', __FILE__ ) );
 	}
 
@@ -127,7 +127,7 @@ class WC_BIS_Notifications {
 	 * @return string
 	 */
 	public function get_plugin_path() {
-		wc_deprecated_function( 'WC_BIS_Notifications::get_plugin_path', '9.9.0' );
+		wc_deprecated_function( __METHOD__, '9.9.0' );
 		return untrailingslashit( plugin_dir_path( __FILE__ ) );
 	}
 
@@ -137,7 +137,7 @@ class WC_BIS_Notifications {
 	 * @return string
 	 */
 	public function get_plugin_basename() {
-		wc_deprecated_function( 'WC_BIS_Notifications::get_plugin_basename', '9.9.0' );
+		wc_deprecated_function( __METHOD__, '9.9.0' );
 		return plugin_basename( __FILE__ );
 	}
 
@@ -149,7 +149,7 @@ class WC_BIS_Notifications {
 	 * @return string
 	 */
 	public function get_plugin_version( $base = false, $version = '' ) {
-		wc_deprecated_function( 'WC_BIS_Notifications::get_plugin_version', 9.9, 'Constants::get_constant( \'WC_VERSION\' )' );
+		wc_deprecated_function( __METHOD__, '9.9.0', 'Constants::get_constant( \'WC_VERSION\' )' );
 
 		$version = $version ? $version : $this->version;
 
@@ -174,9 +174,6 @@ class WC_BIS_Notifications {
 	 * Fire in the hole!
 	 */
 	public function initialize_plugin() {
-
-		$this->maybe_create_store();
-
 		$this->includes();
 
 		// Instantiate global singletons.
@@ -186,28 +183,13 @@ class WC_BIS_Notifications {
 		$this->account   = new WC_BIS_Account();
 		$this->product   = new WC_BIS_Product();
 		$this->emails    = new WC_BIS_Emails();
-
 	}
 
 	/**
 	 * Constants.
 	 */
 	public function define_constants() {
-		wc_deprecated_function( 'WC_BIS_Notifications::define_constants', '9.9.0' );
-//		$this->maybe_define_constant( 'WC_BIS_VERSION', $this->version );
-//		$this->maybe_define_constant( 'WC_BIS_SUPPORT_URL', 'https://woocommerce.com/my-account/marketplace-ticket-form/' );
-//		$this->maybe_define_constant( 'WC_ABSPATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
-	}
-
-	/**
-	 * A simple dumb datastore for sharing information accross our plugins.
-	 *
-	 * @return void
-	 */
-	private function maybe_create_store() {
-		if ( ! isset( $GLOBALS['sw_store'] ) ) {
-			$GLOBALS['sw_store'] = array();
-		}
+		wc_deprecated_function( __METHOD__, '9.9.0' );
 	}
 
 	/**
@@ -286,7 +268,7 @@ class WC_BIS_Notifications {
 	 * Load textdomain.
 	 */
 	public function load_translation() {
-		wc_deprecated_function( 'WC_BIS_Notifications::load_translation', '9.9.0' );
+		wc_deprecated_function( __METHOD__, '9.9.0' );
 
 	}
 
@@ -383,12 +365,12 @@ class WC_BIS_Notifications {
 
 if ( ! function_exists( 'WC_BIS' ) ) {
 	/**
-	 * Returns the main instance of WC_BIS_Notifications to prevent the need to use globals.
+	 * Returns the main instance of WC_Back_In_Stock to prevent the need to use globals.
 	 *
-	 * @return  WC_BIS_Notifications
+	 * @return  WC_Back_In_Stock
 	 */
 	function WC_BIS() {
-		return WC_BIS_Notifications::instance();
+		return WC_Back_In_Stock::instance();
 	}
 
 	// If the function already existed, it's from the standalone plugin. Avoid calling init of the plugin.

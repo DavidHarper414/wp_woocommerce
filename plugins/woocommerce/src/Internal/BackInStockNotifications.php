@@ -62,7 +62,7 @@ class BackInStockNotifications {
 		add_action( 'woocommerce_updated', array( __CLASS__, 'maybe_deactivate_signups' ) );
 
 		// Include BIS files.
-		include_once WC_ABSPATH . '/includes/bis/class-wc-bis-notifications.php';
+		include_once WC_ABSPATH . '/includes/bis/class-wc-back-in-stock.php';
 
 		$wc_bis = wc_get_container()->get( LegacyProxy::class )->call_function( 'WC_BIS' );
 		$wc_bis->initialize_plugin();
