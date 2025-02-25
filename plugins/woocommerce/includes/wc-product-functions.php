@@ -549,22 +549,19 @@ function wc_get_attachment_image_attributes( $attr, $attachment, $size ) {
         return $attr;
     }
 
+    if ( isset( $attr['srcset'] ) ) {
+        $attr['srcset'] = '';
+    }
+
     // If not a WooCommerce manager, return placeholder
     if ( ! current_user_can( 'manage_woocommerce' ) ) {
         $attr['src'] = wc_placeholder_img_src( $size );
-        if ( isset( $attr['srcset'] ) ) {
-            $attr['srcset'] = '';
-        }
         return $attr;
     }
 
     // Generate secure admin URL for image src
     $attr['src'] = WC_Download_Handler::get_admin_image_src_url( $attachment->ID, $size );
 
-    // Clear srcset as we'll handle sizing directly
-    if ( isset( $attr['srcset'] ) ) {
-        $attr['srcset'] = '';
-    }
 
     return $attr;
 }
