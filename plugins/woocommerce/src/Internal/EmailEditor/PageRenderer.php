@@ -72,7 +72,7 @@ class PageRenderer {
 		$this->preload_rest_api_data( $post );
 
 		require_once ABSPATH . 'wp-admin/admin-header.php';
-		echo '<div id="mailpoet-email-editor" class="block-editor block-editor__container hide-if-no-js"></div>';
+		echo '<div id="woocommerce-email-editor" class="block-editor block-editor__container hide-if-no-js"></div>';
 	}
 
 	/**
