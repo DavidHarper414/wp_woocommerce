@@ -60,6 +60,13 @@ class OrdersTableQuery {
 	private $args = array();
 
 	/**
+	 * Original query vars used to build this query.
+	 *
+	 * @var array
+	 */
+	private $query_args = array();
+
+	/**
 	 * Columns to be selected in the SELECT clause.
 	 *
 	 * @var array
@@ -193,7 +200,8 @@ class OrdersTableQuery {
 		$this->suppress_filters = array_key_exists( 'suppress_filters', $args ) ? (bool) $args['suppress_filters'] : false;
 		unset( $args['suppress_filters'] );
 
-		$this->args = $args;
+		$this->args       = $args;
+		$this->query_args = $args; // Keep a copy of the original vars used to initialize the query.
 
 		// TODO: args to be implemented.
 		unset( $this->args['customer_note'], $this->args['name'] );
@@ -1487,12 +1495,12 @@ class OrdersTableQuery {
 	}
 
 	/**
-	 * Return the query args
+	 * Return the query args that were used to initialize the query.
 	 *
-	 * @since 9.6.3
-	 * @return array
+	 * @since 9.8.0
+	 * @return array Query args.
 	 */
-	public function get_args(): array {
-		return $this->args;
+	public function get_query_args(): array {
+		return $this->query_args;
 	}
 }
