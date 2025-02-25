@@ -36,21 +36,6 @@ const tagsToPillsMap = {
 	marketplace: __( 'Marketplace', 'woocommerce' ),
 };
 
-function getPills( tags?: TagsSlug[] ) {
-	if ( ! tags ) {
-		return null;
-	}
-
-	return tags
-		.map( ( tag ) => {
-			if ( ! tagsToPillsMap[ tag ] ) {
-				return null;
-			}
-			return <Pill key={ tag }>{ tagsToPillsMap[ tag ] }</Pill>;
-		} )
-		.filter( Boolean );
-}
-
 export const Plugin: React.FC< PluginProps > = ( {
 	description,
 	imageUrl,
@@ -90,7 +75,14 @@ export const Plugin: React.FC< PluginProps > = ( {
 							{ __( 'Built by WooCommerce', 'woocommerce' ) }
 						</Pill>
 					) }
-					{ getPills( tags ) }
+					{ tags?.map(
+						( tag ) =>
+							tagsToPillsMap[ tag ] && (
+								<Pill key={ tag }>
+									{ tagsToPillsMap[ tag ] }
+								</Pill>
+							)
+					) }
 				</Text>
 				<Text variant="subtitle.small">{ description }</Text>
 			</div>
@@ -99,7 +91,7 @@ export const Plugin: React.FC< PluginProps > = ( {
 					<Button
 						disabled={ isDisabled }
 						isBusy={ isBusy }
-						isSecondary
+						variant="secondary"
 						href={ getAdminLink( manageUrl ) }
 						onClick={ () => {
 							recordEvent( 'marketing_manage', {
@@ -115,7 +107,7 @@ export const Plugin: React.FC< PluginProps > = ( {
 					<Button
 						disabled={ isDisabled }
 						isBusy={ isBusy }
-						isSecondary
+						variant="secondary"
 						onClick={ () => installAndActivate( slug ) }
 					>
 						{ __( 'Activate', 'woocommerce' ) }
@@ -125,7 +117,7 @@ export const Plugin: React.FC< PluginProps > = ( {
 					<Button
 						disabled={ isDisabled }
 						isBusy={ isBusy }
-						isSecondary
+						variant="secondary"
 						onClick={ () => {
 							installAndActivate( slug );
 						} }
@@ -134,18 +126,24 @@ export const Plugin: React.FC< PluginProps > = ( {
 					</Button>
 				) }
 				{ ! isInstalled && installExternal && (
-					<Button
-						disabled={ isDisabled }
-						isBusy={ isBusy }
-						isSecondary
-						onClick={ () => {
-							if ( learnMoreLink !== '' ) {
-								window.open( learnMoreLink, '_blank' );
-							}
-						} }
-					>
-						{ __( 'View extension', 'woocommerce' ) }
-					</Button>
+					<>
+						{ learnMoreLink ? (
+							<Button
+								disabled={ isDisabled }
+								isBusy={ isBusy }
+								variant="secondary"
+								onClick={ () => {
+									window.open( learnMoreLink, '_blank' );
+								} }
+							>
+								{ __( 'View extension', 'woocommerce' ) }
+							</Button>
+						) : (
+							<Button disabled={ true } variant="secondary">
+								{ __( 'View extension', 'woocommerce' ) }
+							</Button>
+						) }
+					</>
 				) }
 			</div>
 		</div>
