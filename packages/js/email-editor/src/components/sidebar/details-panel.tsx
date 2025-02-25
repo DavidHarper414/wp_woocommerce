@@ -12,7 +12,7 @@ import { recordEvent } from '../../events';
 import { RichTextWithButton } from '../personalization-tags/rich-text-with-button';
 
 const SidebarExtensionComponent = applyFilters(
-	'mailpoet_email_editor_setting_sidebar_extension_component',
+	'woocommerce_email_editor_setting_sidebar_extension_component',
 	RichTextWithButton
 ) as () => JSX.Element;
 

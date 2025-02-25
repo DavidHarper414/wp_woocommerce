@@ -26,7 +26,7 @@ import {
 import { recordEvent, recordEventOnce } from '../../events';
 
 const sendingMethodConfigurationLink = applyFilters(
-	'mailpoet_email_editor_check_sending_method_configuration_link',
+	'woocommerce_email_editor_check_sending_method_configuration_link',
 	'admin.php?page=mailpoet-settings#mta'
 ) as string;
 
