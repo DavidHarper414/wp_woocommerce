@@ -20,6 +20,14 @@ class ProductButton extends AbstractBlock {
 
 
 	/**
+	 * Cart.
+	 *
+	 * @var array
+	 */
+	private static $cart = null;
+
+
+	/**
 	 * Disable frontend script for this block type, it's a script module.
 	 *
 	 * @param string $key Data to get, or default to everything.
@@ -89,9 +97,7 @@ class ProductButton extends AbstractBlock {
 
 		wp_enqueue_script_module( 'woocommerce/product-button' );
 
-		// Initialize the "Add To Cart" store part.
-		// Question: Is this ok for 3PD or should we use a global function like `woocommerce_interactivity_use_add_to_cart_store()`.
-		Store::initialize_cart_state();
+		$this->initialize_cart_state();
 
 		wp_interactivity_state(
 			'woocommerce/product-button',
@@ -254,6 +260,27 @@ class ProductButton extends AbstractBlock {
 		$product = $previous_product;
 
 		return $html;
+	}
+
+	/**
+	 * Initialize the cart state.
+	 */
+	private function initialize_cart_state() {
+		if ( null === self::$cart ) {
+			$cart_items = isset( WC()->cart )
+				? rest_do_request( new \WP_REST_Request( 'GET', '/wc/store/v1/cart/items' ) )->data
+				: array();
+
+			wp_interactivity_state(
+				'woocommerce',
+				array(
+					'cart'     => array( 'items' => $cart_items ),
+					'nonce'    => wp_create_nonce( 'wc_store_api' ),
+					'noticeId' => '',
+					'restUrl'  => get_rest_url(),
+				)
+			);
+		}
 	}
 
 	/**
