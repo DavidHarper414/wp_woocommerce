@@ -63,7 +63,6 @@ function emitSyncEvent( {
 	quantityChanges: QuantityChanges;
 } ) {
 	window.dispatchEvent(
-		// Question: What are the usual names for WooCommerce events?
 		new CustomEvent( 'wc-blocks_store_sync_required', {
 			detail: {
 				type: 'from_iAPI',
@@ -73,137 +72,147 @@ function emitSyncEvent( {
 	);
 }
 
-// Question: disable "used before defined" lint rule?
-export const { state, actions } = store< Store >( 'woocommerce', {
-	actions: {
-		*addCartItem( { id, quantity }: { id: number; quantity: number } ) {
-			let itemIndex = state.cart.items.findIndex(
-				( { id: productId } ) => id === productId
-			);
-			const previousQuantity =
-				state.cart.items[ itemIndex ]?.quantity ?? 0;
-			let key: string | null = null;
-			const quantityChanges: QuantityChanges = {};
-
-			// Optimistically updates the number of items in the cart.
-			if ( itemIndex !== -1 ) {
-				state.cart.items[ itemIndex ].quantity = quantity;
-				key = state.cart.items[ itemIndex ].key || null;
-				if ( key ) quantityChanges.cartItemsPendingQuantity = [ key ];
-			} else {
-				state.cart.items.push( { id, quantity } );
-				itemIndex = state.cart.items.length - 1;
-				quantityChanges.productsPendingAdd = [ id ];
-			}
-
-			// Updates the database.
-			try {
-				const res: Response = yield fetch(
-					// Todo: replace with `/cart/add-item` and
-					// `/cart/update-item` because sometimes extenders can
-					// modify the quantities of other items on the server so we
-					// need to retrieve the whole cart each time.
-					`${ state.restUrl }wc/store/v1/cart/items/${ key || '' }`,
-					{
-						method: key ? 'PUT' : 'POST',
-						headers: {
-							Nonce: state.nonce,
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify( state.cart.items[ itemIndex ] ),
-					}
+export const { state, actions } = store< Store >(
+	'woocommerce',
+	{
+		actions: {
+			*addCartItem( { id, quantity }: { id: number; quantity: number } ) {
+				let itemIndex = state.cart.items.findIndex(
+					( { id: productId } ) => id === productId
 				);
-				const json: CartItemResponse = yield res.json();
+				const previousQuantity =
+					state.cart.items[ itemIndex ]?.quantity ?? 0;
+				let key: string | null = null;
+				const quantityChanges: QuantityChanges = {};
 
-				// Checks if the response contains an error.
-				if ( ! isSuccessfulResponse( res, json ) )
-					throw generateError( json );
-
-				// Updates the local cart.
-				state.cart.items[ itemIndex ] = json;
-
-				// dispatch legacy event
-				triggerAddedToCartEvent( {
-					preserveCartData: true,
-				} );
-
-				// Dispatches the event to sync the @wordpress/data store.
-				emitSyncEvent( { quantityChanges } );
-			} catch ( error ) {
-				const message = ( error as Error ).message;
-
-				// Question: can we import this dynamically so it's not loaded on page load?
-				// Todo: fix the types of `store` so that `storePart` is optional once we have our own `@wordpress/interactivity` version.
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				const { actions: noticeActions } = store< StoreNoticesStore >(
-					'woocommerce/store-notices'
-				);
-
-				// If the user deleted the hooked store notice block, the
-				// store won't be present and we should not add a notice.
-				if ( 'addNotice' in noticeActions ) {
-					// The old implementation always overwrites the last
-					// notice, so we remove the last notice before adding a
-					// new one.
-					// Todo: Review this implementation.
-					if ( state.noticeId !== '' ) {
-						noticeActions.removeNotice( state.noticeId );
-					}
-
-					const noticeId = noticeActions.addNotice( {
-						notice: message,
-						type: 'error',
-						dismissible: true,
-					} );
-
-					state.noticeId = noticeId;
+				// Optimistically updates the number of items in the cart.
+				if ( itemIndex !== -1 ) {
+					state.cart.items[ itemIndex ].quantity = quantity;
+					key = state.cart.items[ itemIndex ].key || null;
+					if ( key )
+						quantityChanges.cartItemsPendingQuantity = [ key ];
+				} else {
+					state.cart.items.push( { id, quantity } );
+					itemIndex = state.cart.items.length - 1;
+					quantityChanges.productsPendingAdd = [ id ];
 				}
 
-				// We don't care about errors blocking execution, but will
-				// console.error for troubleshooting.
-				// eslint-disable-next-line no-console
-				console.error( error );
+				// Updates the database.
+				try {
+					const res: Response = yield fetch(
+						// Todo: replace with `/cart/add-item` and
+						// `/cart/update-item` because sometimes extenders can
+						// modify the quantities of other items on the server so we
+						// need to retrieve the whole cart each time.
+						`${ state.restUrl }wc/store/v1/cart/items/${
+							key || ''
+						}`,
+						{
+							method: key ? 'PUT' : 'POST',
+							headers: {
+								Nonce: state.nonce,
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify(
+								state.cart.items[ itemIndex ]
+							),
+						}
+					);
+					const json: CartItemResponse = yield res.json();
 
-				// Reverts the optimistic update.
-				// Todo: Prevent racing conditions with multiple addToCart calls for the same item.
-				state.cart.items[ itemIndex ].quantity = previousQuantity || 0;
-			}
-		},
-		*refreshCartItems() {
-			// Skips if there's a pending request.
-			if ( pendingRefresh ) return;
+					// Checks if the response contains an error.
+					if ( ! isSuccessfulResponse( res, json ) )
+						throw generateError( json );
 
-			pendingRefresh = true;
+					// Updates the local cart.
+					state.cart.items[ itemIndex ] = json;
 
-			try {
-				const res: Response = yield fetch(
-					`${ state.restUrl }wc/store/v1/cart/items`,
-					{ headers: { 'Content-Type': 'application/json' } }
-				);
-				const json: CartItemsResponse = yield res.json();
+					// dispatch legacy event
+					triggerAddedToCartEvent( {
+						preserveCartData: true,
+					} );
 
-				// Checks if the response contains an error.
-				if ( ! isSuccessfulResponse( res, json ) )
-					throw generateError( json );
+					// Dispatches the event to sync the @wordpress/data store.
+					emitSyncEvent( { quantityChanges } );
+				} catch ( error ) {
+					const message = ( error as Error ).message;
 
-				// Updates the local cart.
-				state.cart.items = json;
+					// Question: can we import this dynamically so it's not loaded on page load?
+					// Todo: fix the types of `store` so that `storePart` is optional once we have our own `@wordpress/interactivity` version.
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					const { actions: noticeActions } =
+						store< StoreNoticesStore >(
+							'woocommerce/store-notices'
+						);
 
-				// Resets the timeout.
-				refreshTimeout = 3000;
-			} catch ( error ) {
-				// Tries again after the timeout.
-				setTimeout( actions.refreshCartItems, refreshTimeout );
+					// If the user deleted the hooked store notice block, the
+					// store won't be present and we should not add a notice.
+					if ( 'addNotice' in noticeActions ) {
+						// The old implementation always overwrites the last
+						// notice, so we remove the last notice before adding a
+						// new one.
+						// Todo: Review this implementation.
+						if ( state.noticeId !== '' ) {
+							noticeActions.removeNotice( state.noticeId );
+						}
 
-				// Increases the timeout exponentially.
-				refreshTimeout *= 2;
-			} finally {
-				pendingRefresh = false;
-			}
+						const noticeId = noticeActions.addNotice( {
+							notice: message,
+							type: 'error',
+							dismissible: true,
+						} );
+
+						state.noticeId = noticeId;
+					}
+
+					// We don't care about errors blocking execution, but will
+					// console.error for troubleshooting.
+					// eslint-disable-next-line no-console
+					console.error( error );
+
+					// Reverts the optimistic update.
+					// Todo: Prevent racing conditions with multiple addToCart calls for the same item.
+					state.cart.items[ itemIndex ].quantity =
+						previousQuantity || 0;
+				}
+			},
+			*refreshCartItems() {
+				// Skips if there's a pending request.
+				if ( pendingRefresh ) return;
+
+				pendingRefresh = true;
+
+				try {
+					const res: Response = yield fetch(
+						`${ state.restUrl }wc/store/v1/cart/items`,
+						{ headers: { 'Content-Type': 'application/json' } }
+					);
+					const json: CartItemsResponse = yield res.json();
+
+					// Checks if the response contains an error.
+					if ( ! isSuccessfulResponse( res, json ) )
+						throw generateError( json );
+
+					// Updates the local cart.
+					state.cart.items = json;
+
+					// Resets the timeout.
+					refreshTimeout = 3000;
+				} catch ( error ) {
+					// Tries again after the timeout.
+					setTimeout( actions.refreshCartItems, refreshTimeout );
+
+					// Increases the timeout exponentially.
+					refreshTimeout *= 2;
+				} finally {
+					pendingRefresh = false;
+				}
+			},
 		},
 	},
-} );
+	{ lock: true }
+);
 
 window.addEventListener(
 	'wc-blocks_store_sync_required',
