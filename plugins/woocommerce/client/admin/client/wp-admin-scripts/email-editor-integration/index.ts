@@ -4,6 +4,12 @@
  * External dependencies
  */
 import { addFilter } from '@wordpress/hooks';
+import { registerBlockType } from '@wordpress/blocks';
+
+/**
+ * Internal dependencies
+ */
+import { wooContentBlock } from './woo_content_placeholder_block';
 
 const NAME_SPACE = 'woocommerce/email-editor-integration';
 
@@ -12,3 +18,5 @@ addFilter(
 	NAME_SPACE,
 	() => 'Save WooCommerce email template' // This is a temporary label to confirm the integration works, it will be updated in the future.
 );
+
+registerBlockType( 'woo/email-content', wooContentBlock );
