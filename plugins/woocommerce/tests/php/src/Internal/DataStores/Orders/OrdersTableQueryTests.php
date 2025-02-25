@@ -607,6 +607,6 @@ class OrdersTableQueryTests extends \WC_Unit_Test_Case {
 		);
 
 		$query = new OrdersTableQuery( $args );
-		$this->assertEquals( $args, $query->get_args() );
+		$this->assertEquals( $args, $query->get_query_args() );
 	}
 }
