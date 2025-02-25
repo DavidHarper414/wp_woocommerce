@@ -48,7 +48,7 @@ export const _EmbedLayout = () => {
 	return (
 		<LayoutContextProvider value={ getLayoutContextValue( [ 'page' ] ) }>
 			<SlotFillProvider>
-				<div className="woocommerce-layout woocommerce-layout--embedded">
+				<div className="woocommerce-layout">
 					<EmbedHeader
 						sections={
 							isFunction( breadcrumbs )
