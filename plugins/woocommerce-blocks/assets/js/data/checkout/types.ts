@@ -8,7 +8,6 @@ import { AdditionalValues } from '@woocommerce/settings';
 /**
  * Internal dependencies
  */
-import type { EventObserversType } from '../../base/context/event-emit/types';
 import type { CheckoutState } from './default-state';
 import type { PaymentState } from '../payment/default-state';
 import type { CheckoutThunkArgs } from './thunks';
