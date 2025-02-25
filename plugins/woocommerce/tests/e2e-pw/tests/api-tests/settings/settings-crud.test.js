@@ -928,7 +928,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 				expect.arrayContaining( [
 					expect.objectContaining( {
 						id: 'woocommerce_stock_email_recipient',
-						label: 'Notification recipient(s)',
+						label: 'Admin notification recipient(s)',
 						description:
 							'Enter recipients (comma separated) that will receive this notification.',
 						type: 'text',
