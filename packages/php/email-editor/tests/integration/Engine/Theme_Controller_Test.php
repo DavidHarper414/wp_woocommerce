@@ -25,6 +25,9 @@ class Theme_Controller_Test extends \Email_Editor_Integration_Test_Case {
 	public function setUp(): void {
 		parent::setUp();
 
+		// Switch theme for easier testing theme colors.
+		switch_theme('twentytwentyfour');
+
 		// Crete a custom user theme post.
 		$styles_data = array(
 			'version'                     => 3,
@@ -111,12 +114,9 @@ class Theme_Controller_Test extends \Email_Editor_Integration_Test_Case {
 		$this->assertStringContainsString( '.has-black-background-color', $css );
 		$this->assertStringContainsString( '.has-black-border-color', $css );
 
-		$this->checkCorrectThemeConfiguration();
-		if ( wp_get_theme()->get( 'Name' ) === 'Twenty Twenty-One' ) {
-			$this->assertStringContainsString( '.has-yellow-background-color', $css );
-			$this->assertStringContainsString( '.has-yellow-color', $css );
-			$this->assertStringContainsString( '.has-yellow-border-color', $css );
-		}
+		$this->assertStringContainsString( '.has-vivid-purple-background-color', $css );
+		$this->assertStringContainsString( '.has-vivid-purple-color', $css );
+		$this->assertStringContainsString( '.has-vivid-purple-border-color', $css );
 	}
 
 	/**
@@ -138,10 +138,7 @@ class Theme_Controller_Test extends \Email_Editor_Integration_Test_Case {
 		$this->assertEquals( '#ffffff', $this->theme_controller->translate_slug_to_color( 'white' ) );
 		$this->assertEquals( '#abb8c3', $this->theme_controller->translate_slug_to_color( 'cyan-bluish-gray' ) );
 		$this->assertEquals( '#f78da7', $this->theme_controller->translate_slug_to_color( 'pale-pink' ) );
-		$this->checkCorrectThemeConfiguration();
-		if ( wp_get_theme()->get( 'Name' ) === 'Twenty Twenty-One' ) {
-			$this->assertEquals( '#eeeadd', $this->theme_controller->translate_slug_to_color( 'yellow' ) );
-		}
+		$this->assertEquals( '#9b51e0', $this->theme_controller->translate_slug_to_color( 'vivid-purple' ) );
 	}
 
 	/**
@@ -176,11 +173,8 @@ class Theme_Controller_Test extends \Email_Editor_Integration_Test_Case {
 	 * Test if the theme controller returns correct color palette
 	 */
 	public function testItLoadsColorPaletteFromSiteTheme() {
-		$this->checkCorrectThemeConfiguration();
 		$settings = $this->theme_controller->get_settings();
-		if ( wp_get_theme()->get( 'Name' ) === 'Twenty Twenty-One' ) {
-			$this->assertNotEmpty( $settings['color']['palette']['theme'] );
-		}
+		$this->assertNotEmpty( $settings['color']['palette']['theme'] );
 	}
 
 	/**
@@ -190,17 +184,5 @@ class Theme_Controller_Test extends \Email_Editor_Integration_Test_Case {
 		$variable_map = $this->theme_controller->get_variables_values_map();
 		$this->assertSame( '#000000', $variable_map['--wp--preset--color--black'] );
 		$this->assertSame( '20px', $variable_map['--wp--preset--spacing--20'] );
-	}
-
-	/**
-	 * This test depends on using Twenty Twenty-One or Twenty Nineteen theme.
-	 * This method checks if the theme is correctly configured and trigger a failure if not
-	 * to prevent silent failures in case we change theme configuration in the test environment.
-	 */
-	private function checkCorrectThemeConfiguration() {
-		$expected_themes = array( 'Twenty Twenty-One' );
-		if ( ! in_array( wp_get_theme()->get( 'Name' ), $expected_themes, true ) ) {
-			$this->fail( 'Test depends on using Twenty Twenty-One or Twenty Nineteen theme. If you changed the theme, please update the test.' );
-		}
 	}
 }
