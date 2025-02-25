@@ -19,6 +19,14 @@ on:
         type: string
         description: 'Custom event name: In case the `Event name` choice is `custom`, this field is required.'
         required: false
+      install-wc:
+        type: choice
+        description: 'Do you want to install WC before test execution?'
+        required: false
+        options:
+          - 'true'
+          - 'false'
+        default: 'true'
       wc-version:
         type: string
         description: 'Optional, for `on-demand` or `custom` jobs. Most jobs (wp-env) ignore this. It can be `latest`, `nightly`, or a specific WC version (e.g., `9.7.0-rc.1`).'
