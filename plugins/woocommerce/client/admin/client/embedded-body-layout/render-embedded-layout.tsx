@@ -98,7 +98,7 @@ const renderEmbeddedBody = ( wpBody: HTMLElement, wrap: Element ) => {
 };
 
 /**
- * Registers the slot fills.
+ * Registers slot fills for the embedded layout. This should be used only for pages other than the settings page. For settings pages, slot fills are registered in wp-admin-scripts/settings/
  */
 const registerSlotFills = () => {
 	possiblyRenderOrderAttributionSlot();
