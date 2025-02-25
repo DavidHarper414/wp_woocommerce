@@ -14,7 +14,7 @@
  *
  * @see https://woocommerce.com/document/template-structure/
  * @package WooCommerce Back In Stock Notifications
- * @version 1.6.0
+ * @version 9.9.0
  */
 
 // Exit if accessed directly.
