@@ -8,6 +8,7 @@
 declare(strict_types = 1);
 
 use MailPoet\EmailEditor\Container;
+use MailPoet\EmailEditor\EmailCssInliner;
 use MailPoet\EmailEditor\Engine\Dependency_Check;
 use MailPoet\EmailEditor\Engine\Email_Api_Controller;
 use MailPoet\EmailEditor\Engine\Email_Editor;
@@ -99,9 +100,9 @@ abstract class Email_Editor_Integration_Test_Case extends \WP_UnitTestCase {
 	protected function initContainer(): void {
 		$container = new Container();
 		$container->set(
-			Default_Css_Inliner::class,
+      EmailCssInliner::class,
 			function () {
-				return new Default_Css_Inliner();
+				return new EmailCssInliner();
 			}
 		);
 		$container->set(
@@ -214,7 +215,7 @@ abstract class Email_Editor_Integration_Test_Case extends \WP_UnitTestCase {
 					$container->get( Process_Manager::class ),
 					$container->get( Blocks_Registry::class ),
 					$container->get( Settings_Controller::class ),
-					$container->get( Default_Css_Inliner::class ),
+					$container->get( EmailCssInliner::class ),
 					$container->get( Theme_Controller::class ),
 				);
 			}
@@ -225,7 +226,7 @@ abstract class Email_Editor_Integration_Test_Case extends \WP_UnitTestCase {
 				return new Renderer(
 					$container->get( Content_Renderer::class ),
 					$container->get( Templates::class ),
-					$container->get( Default_Css_Inliner::class ),
+					$container->get( EmailCssInliner::class ),
 					$container->get( Theme_Controller::class ),
 				);
 			}
