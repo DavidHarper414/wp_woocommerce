@@ -229,9 +229,8 @@ class OrdersTableQuery {
 		 * }
 		 * @param OrdersTableQuery   $query The OrdersTableQuery instance.
 		 * @param string             $sql   Fully built SQL query.
-		 * @param array              $args  Query arguments.
 		 */
-		$pre_query = apply_filters( 'woocommerce_hpos_pre_query', null, $this, $this->sql, $this->args );
+		$pre_query = apply_filters( 'woocommerce_hpos_pre_query', null, $this, $this->sql );
 		if ( ! $pre_query || ! isset( $pre_query[0] ) || ! is_array( $pre_query[0] ) ) {
 			return false;
 		}
@@ -1485,5 +1484,15 @@ class OrdersTableQuery {
 								: $this->tables[ $result['mapping_id'] ];
 
 		return $result;
+	}
+
+	/**
+	 * Return the query args
+	 *
+	 * @since 9.6.3
+	 * @return array
+	 */
+	public function get_args(): array {
+		return $this->args;
 	}
 }
