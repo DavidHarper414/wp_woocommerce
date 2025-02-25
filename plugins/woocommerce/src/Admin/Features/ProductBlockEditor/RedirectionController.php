@@ -155,16 +155,9 @@ class RedirectionController {
 		$path        = esc_url_raw( wp_unslash( $_GET['path'] ) );
 		$path_pieces = explode( '/', wp_parse_url( $path, PHP_URL_PATH ) );
 
-		if ( 3 !== count( $path_pieces ) ) {
-			return array(
-				'page'       => null,
-				'product_id' => null,
-			);
-		}
-
 		return array(
-			'page'       => $path_pieces[1],
-			'product_id' => 'product' === $path_pieces[1] ? absint( $path_pieces[2] ) : null,
+			'page'       => $path_pieces[1] ?? '',
+			'product_id' => 'product' === ( $path_pieces[1] ?? '' ) ? absint( $path_pieces[2] ?? 0 ) : null,
 		);
 	}
 
