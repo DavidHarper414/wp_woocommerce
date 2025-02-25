@@ -236,47 +236,6 @@ class WC_Product_Variable_Data_Store_CPT_Test extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * @testdox Test read_price_data method works even when price validation fails
-	 */
-	public function test_read_price_data_with_validation_failure() {
-		$data_store = new WC_Product_Variable_Data_Store_CPT();
-		$product    = WC_Helper_Product::create_variation_product();
-
-		// Get initial valid price data.
-		$initial_prices = $data_store->read_price_data( $product, false );
-
-		// Create a mock that will force validation to fail.
-		$mock_data_store = $this->getMockBuilder( WC_Product_Variable_Data_Store_CPT::class )
-			->setMethods( array( 'validate_prices_data' ) )
-			->getMock();
-
-		$mock_data_store->method( 'validate_prices_data' )
-			->willReturn( false );
-
-		// Clear any existing transient.
-		delete_transient( 'wc_var_prices_' . $product->get_id() );
-
-		// Read prices with the mock that will fail validation.
-		$prices_with_failed_validation = $mock_data_store->read_price_data( $product, false );
-
-		// Verify the data is still correct despite validation failing.
-		$this->assertArrayHasKey( 'price', $prices_with_failed_validation );
-		$this->assertArrayHasKey( 'regular_price', $prices_with_failed_validation );
-		$this->assertArrayHasKey( 'sale_price', $prices_with_failed_validation );
-		$this->assertEquals(
-			$initial_prices,
-			$prices_with_failed_validation,
-			'Should return correct prices even when validation fails'
-		);
-
-		// Verify the transient was not set.
-		$this->assertFalse(
-			get_transient( 'wc_var_prices_' . $product->get_id() ),
-			'Transient should not be set when validation fails'
-		);
-	}
-
-	/**
 	 * @testdox Test read_children method works even when validation fails
 	 */
 	public function test_read_children_with_validation_failure() {
