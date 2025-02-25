@@ -26,6 +26,9 @@ class WC_Download_Handler {
 		if ( isset( $_GET['download_file'], $_GET['order'] ) && ( isset( $_GET['email'] ) || isset( $_GET['uid'] ) ) ) { // WPCS: input var ok, CSRF ok.
 			add_action( 'init', array( __CLASS__, 'download_product' ) );
 		}
+
+		add_action( 'init', array( __CLASS__, 'serve_admin_image_src' ), 5 );
+
 		add_action( 'woocommerce_download_file_redirect', array( __CLASS__, 'download_file_redirect' ), 10, 2 );
 		add_action( 'woocommerce_download_file_xsendfile', array( __CLASS__, 'download_file_xsendfile' ), 10, 2 );
 		add_action( 'woocommerce_download_file_force', array( __CLASS__, 'download_file_force' ), 10, 2 );
@@ -775,6 +778,102 @@ class WC_Download_Handler {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Get secure URL for admin image that works with image src attributes
+	 *
+	 * @param int $attachment_id Attachment ID
+	 * @return string Secure admin image URL
+	 *
+	 * @since x.x.x
+	 */
+	public static function get_admin_image_src_url( $product_id, $attachment_id, $size) {
+
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			return '';
+		}
+
+		return add_query_arg(
+				array(
+					'wc-uploads-image-src'=> $attachment_id,
+					'product'=> $product_id,
+					'nonce' => wp_create_nonce( 'admin-image-src-' . $attachment_id ),
+					// Add size parameter for different image sizes
+					'size' => $size,
+					),
+				trailingslashit( home_url() )
+				);
+	}
+
+	/**
+	 * Serve image directly with appropriate headers for src attributes
+	 *
+	 * @since x.x.x
+	 */
+	public static function serve_admin_image_src() {
+
+		if ( ! isset( $_GET['wc-uploads-image-src'] )
+			|| !isset( $_GET['product'])
+			|| ! isset( $_GET['nonce'] ) ) {
+			return;
+		}
+
+		$attachment_id = absint( $_GET['wc-uploads-image-src'] );
+
+		// Security check
+		if ( ! wp_verify_nonce( $_GET['nonce'], 'admin-image-src-' . $attachment_id )
+				|| ! current_user_can( 'manage_woocommerce' )
+		   ) {
+			self::download_error( __( 'Invalid access token', 'woocommerce' ), '', 403 );
+		}
+
+		// Get file path
+		$file_path = get_attached_file( $attachment_id );
+		/* throw new Exception($file_path, 1); */
+		if ( ! $file_path || ! file_exists( $file_path ) ) {
+			self::download_error( __( 'File not found', 'woocommerce' ), '', 404 );
+		}
+
+		// Only allow image mime types
+		$mime_type = get_post_mime_type( $attachment_id );
+		$allowed_mime_types = [
+				'image/jpeg',
+				'image/jpg',
+				'image/png',
+				'image/gif',
+				'image/webp',
+				'image/svg+xml'
+		];
+		if ( ! in_array( $mime_type, $allowed_mime_types ) ) {
+			self::download_error( __( 'Invalid file type', 'woocommerce' ), '', 403 );
+		}
+
+		// Handle image size requests
+		$size = isset( $_GET['size'] ) ? sanitize_text_field( $_GET['size'] ) : 'full';
+		if ( $size !== 'full' ) {
+			$resized = image_get_intermediate_size( $attachment_id, $size );
+			if ( $resized && isset( $resized['path'] ) ) {
+				$uploads_dir = wp_upload_dir();
+				$resized_file_path = $uploads_dir['basedir'] . '/' . $resized['path'];
+				if ( file_exists( $resized_file_path ) ) {
+					$file_path = $resized_file_path;
+				}
+			}
+		}
+
+
+		// Prevent any accidental output
+		self::clean_buffers();
+
+		// Set headers for direct viewing in browser
+		nocache_headers();
+		header( 'Content-Type: ' . $mime_type );
+		header( 'Content-Length: ' . filesize( $file_path ) );
+		header( 'Content-Disposition: inline; filename="' . basename( $file_path ) . '"' );
+
+		readfile( $file_path );
+		exit;
 	}
 }
 

@@ -538,33 +538,37 @@ add_action( 'woocommerce_scheduled_sales', 'wc_scheduled_sales' );
  * Get attachment image attributes.
  *
  * @param array $attr Image attributes.
+ * @param WP_Post $attachment
+ * @param string|int[] size
+ *
  * @return array
  */
-function wc_get_attachment_image_attributes( $attr ) {
-	/*
-	 * If the user can manage woocommerce, allow them to
-	 * see the image content.
-	 */
-	if ( current_user_can( 'manage_woocommerce' ) ) {
-		return $attr;
-	}
+function wc_get_attachment_image_attributes( $attr, $attachment, $size ) {
+    // Early return if src isn't set or isn't in woocommerce_uploads
+    if ( ! isset( $attr['src'] ) || ! strstr( $attr['src'], 'woocommerce_uploads/' ) ) {
+        return $attr;
+    }
 
-	/*
-	 * If the user does not have the right capabilities,
-	 * filter out the image source and replace with placeholder
-	 * image.
-	 */
-	if ( isset( $attr['src'] ) && strstr( $attr['src'], 'woocommerce_uploads/' ) ) {
-		$attr['src'] = wc_placeholder_img_src();
+    // If not a WooCommerce manager, return placeholder
+    if ( ! current_user_can( 'manage_woocommerce' ) ) {
+        $attr['src'] = wc_placeholder_img_src( $size );
+        if ( isset( $attr['srcset'] ) ) {
+            $attr['srcset'] = '';
+        }
+        return $attr;
+    }
 
-		if ( isset( $attr['srcset'] ) ) {
-			$attr['srcset'] = '';
-		}
-	}
-	return $attr;
+    // Generate secure admin URL for image src
+    $attr['src'] = WC_Download_Handler::get_admin_image_src_url( $attachment->ID, $size );
+
+    // Clear srcset as we'll handle sizing directly
+    if ( isset( $attr['srcset'] ) ) {
+        $attr['srcset'] = '';
+    }
+
+    return $attr;
 }
-add_filter( 'wp_get_attachment_image_attributes', 'wc_get_attachment_image_attributes' );
-
+add_filter( 'wp_get_attachment_image_attributes', 'wc_get_attachment_image_attributes', 10, 3 );
 
 /**
  * Prepare attachment for JavaScript.
@@ -573,29 +577,39 @@ add_filter( 'wp_get_attachment_image_attributes', 'wc_get_attachment_image_attri
  * @return array
  */
 function wc_prepare_attachment_for_js( $response ) {
-	/*
-	 * If the user can manage woocommerce, allow them to
-	 * see the image content.
-	 */
-	if ( current_user_can( 'manage_woocommerce' ) ) {
-		return $response;
-	}
+    if ( ! isset( $response['url'] ) || ! strstr( $response['url'], 'woocommerce_uploads/' ) ) {
+        return $response;
+    }
 
-	/*
-	 * If the user does not have the right capabilities,
-	 * filter out the image source and replace with placeholder
-	 * image.
-	 */
-	if ( isset( $response['url'] ) && strstr( $response['url'], 'woocommerce_uploads/' ) ) {
-		$response['full']['url'] = wc_placeholder_img_src();
+    // If not a WooCommerce manager, return placeholder for all image sizse.
+    if ( ! current_user_can( 'manage_woocommerce' ) ) {
+		$response['full']['url'] = wc_placeholder_img_src( $size );
 		if ( isset( $response['sizes'] ) ) {
 			foreach ( $response['sizes'] as $size => $value ) {
-				$response['sizes'][ $size ]['url'] = wc_placeholder_img_src();
+				$response['sizes'][ $size ]['url'] = wc_placeholder_img_src( $size );
 			}
+		}
+		return $response;
+    }
+
+	$product_id = $response['uploadedTo'];
+	$attachment_id = $response['id'];
+
+    // Generate secure admin URL for image src
+    $response['url'] = WC_Download_Handler::get_admin_image_src_url( $product_id, $attachment_id, '' );
+
+
+	if ( isset( $response['sizes'] ) ) {
+
+		foreach ( $response['sizes'] as $size => $value ) {
+			$url = WC_Download_Handler::get_admin_image_src_url( $product_id, $attachment_id, $size );
+			$response['sizes'][ $size ]['url'] = $url;
 		}
 	}
 
-	return $response;
+
+
+    return $response;
 }
 add_filter( 'wp_prepare_attachment_for_js', 'wc_prepare_attachment_for_js' );
 
