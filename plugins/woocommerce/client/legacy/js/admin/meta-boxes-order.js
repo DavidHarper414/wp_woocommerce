@@ -1568,6 +1568,9 @@ jQuery( function ( $ ) {
 	 */
 	var wc_meta_boxes_order_custom_meta = {
 		init: function() {
+			let select2_args;
+			let metakey_select;
+
 			if ( ! $('#order_custom').length ) {
 				return;
 			}
@@ -1585,16 +1588,25 @@ jQuery( function ( $ ) {
 					$('table#list-table').show();
 				},
 
-				delBefore: function( settings ) {
+				delBefore: function( settings, el ) {
+					if (typeof select2_args.ajax == 'undefined') {
+						// If the list of meta keys have already loaded, prepend the deleted key to the list if it isn't already present.
+						let meta_key = $(el).find('#meta-' + settings.data.id + '-key').val();
+						if (metakey_select.find('option[value=\'' + meta_key + '\']').length === 0) {
+							let newOption = new Option(meta_key, meta_key, false, false);
+							metakey_select.prepend(newOption);
+						}
+					}
 					settings.data.order_id = woocommerce_admin_meta_boxes.post_id;
 					settings.data.action   = 'woocommerce_order_delete_meta';
 					return settings;
-				}
+				},
+
 			});
 
 			$( '#order_custom #metakeyselect').filter( ':not(.enhanced)' ).each( function() {
-				var select2Element = this;
-				var select2_args = {
+				metakey_select = $(this);
+				select2_args = {
 					allowClear: !!$(this).data('allow_clear'),
 					placeholder: $(this).data('placeholder'),
 					escapeMarkup: function (m) {
@@ -1625,7 +1637,7 @@ jQuery( function ( $ ) {
 							// we are not using the search term to filter the list on the backend.
 							select2_args.data = terms;
 							delete select2_args.ajax;
-							$(select2Element).selectWoo(select2_args).select2('open');
+							metakey_select.selectWoo(select2_args).select2('open');
 						},
 						cache: true
 					},
