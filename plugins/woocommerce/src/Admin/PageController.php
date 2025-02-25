@@ -573,6 +573,16 @@ class PageController {
 		// phpcs:enable WordPress.Security.NonceVerification
 	}
 
+
+	/**
+	 * Returns true if we are on a settings page.
+	 */
+	public static function is_settings_page() {
+		// phpcs:disable WordPress.Security.NonceVerification
+		return isset( $_GET['page'] ) && 'wc-settings' === $_GET['page'];
+		// phpcs:enable WordPress.Security.NonceVerification
+	}
+
 	/**
 	 *  Returns true if we are on a "classic" (non JS app) powered admin page.
 	 *
