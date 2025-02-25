@@ -38,8 +38,8 @@ import { CheckoutPutAbortController } from '../utils/clear-put-requests';
 import { CART_STORE_KEY } from '../cart';
 
 export interface CheckoutThunkArgs {
-	select?: CurriedSelectorsOf< typeof checkoutStore >;
-	dispatch: ActionCreatorsOf< ConfigOf< typeof checkoutStore > >;
+	select: CurriedSelectorsOf< CheckoutStoreDescriptor >;
+	dispatch: ActionCreatorsOf< ConfigOf< CheckoutStoreDescriptor > >;
 	registry: { dispatch: DispatchFunction; select: SelectFunction };
 }
 
