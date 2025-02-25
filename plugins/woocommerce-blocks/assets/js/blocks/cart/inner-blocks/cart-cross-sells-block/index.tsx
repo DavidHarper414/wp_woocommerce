@@ -2,14 +2,16 @@
  * External dependencies
  */
 import { Icon, column } from '@wordpress/icons';
-import { registerBlockType } from '@wordpress/blocks';
+import { registerBlockType, createBlock } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
  */
 import { Edit, Save } from './edit';
+import crossSells from '../../../product-collection/collections/cross-sells';
+import metadata from './block.json';
 
-registerBlockType( 'woocommerce/cart-cross-sells-block', {
+registerBlockType( metadata, {
 	icon: {
 		src: (
 			<Icon
@@ -20,4 +22,21 @@ registerBlockType( 'woocommerce/cart-cross-sells-block', {
 	},
 	edit: Edit,
 	save: Save,
+	transforms: {
+		to: [
+			{
+				type: 'block',
+				blocks: [ 'woocommerce/product-collection' ],
+				transform: () => {
+					return createBlock( 'woocommerce/product-collection', {
+						attributes: {
+							collection:
+								'woocommerce/product-collection/cross-sells',
+						},
+						innerBlocks: crossSells.innerBlocks,
+					} );
+				},
+			},
+		],
+	},
 } );
