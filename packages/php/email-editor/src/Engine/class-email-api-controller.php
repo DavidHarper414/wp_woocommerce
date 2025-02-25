@@ -71,7 +71,7 @@ class Email_Api_Controller {
 		 */
 		$data = $request->get_params();
 		try {
-			$result = apply_filters( 'mailpoet_email_editor_send_preview_email', $data );
+			$result = apply_filters( 'woocommerce_email_editor_send_preview_email', $data );
 			return new WP_REST_Response(
 				array(
 					'success' => (bool) $result,

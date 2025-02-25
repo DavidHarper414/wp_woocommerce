@@ -52,7 +52,7 @@ class Templates_Test extends \Email_Editor_Integration_Test_Case {
 	public function testItTriggersActionForRegisteringTemplates(): void {
 		$trigger_check = false;
 		add_filter(
-			'mailpoet_email_editor_register_templates',
+			'woocommerce_email_editor_register_templates',
 			function ( $registry ) use ( &$trigger_check ) {
 				$trigger_check = true;
 				return $registry;

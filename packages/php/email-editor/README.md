@@ -38,21 +38,20 @@ Please avoid using MailPoet-specific services and modules in the Email editor pa
 
 #### Content Renderer
 
-* Responsible for rendering saved template + email content to HTML or email clients
-* Flow is Preprocessors > BlocksRenderer > Postprocessors
+-   Responsible for rendering saved template + email content to HTML or email clients
+-   Flow is Preprocessors > BlocksRenderer > Postprocessors
 
 #### Root Renderer.php
 
-* Takes the rendered content html and places it into email HTML template template-canvas.php (We have too many items we call “template” I know 🙁)
+-   Takes the rendered content html and places it into email HTML template template-canvas.php (We have too many items we call "template" I know 🙁)
 
 ### Integrations
 
 Please locate MailPoet PHP integrations [here](https://github.com/mailpoet/mailpoet/tree/13bf305aeb29bbadd0695ee02a3735e62cc4f21f/mailpoet/lib/EmailEditor/Integrations/MailPoet)
 
-
 ## Known rendering issues
 
-* In some (not all) Outlook versions the width of columns is not respected. The columns will be rendered with the full width.
+-   In some (not all) Outlook versions the width of columns is not respected. The columns will be rendered with the full width.
 
 ## Actions and Filters
 
@@ -63,22 +62,20 @@ We may add, update and delete any of them.
 
 ### Actions
 
-| Name                                       | Argument         | Description                                                                                                      |
-|--------------------------------------------|------------------|------------------------------------------------------------------------------------------------------------------|
-| `mailpoet_email_editor_initialized`        | `null`           | Called when the Email Editor is initialized                                                                      |
-| `mailpoet_blocks_renderer_initialized`     | `BlocksRegistry` | Called when the block content renderer is initialized. You may use this to add a new BlockRenderer               |
-| `mailpoet_email_editor_register_templates` |                  | Called when the basic blank email template is registered. You can add more templates via register_block_template |
+| Name                                          | Argument         | Description                                                                                                      |
+| --------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `woocommerce_email_editor_initialized`        | `null`           | Called when the Email Editor is initialized                                                                      |
+| `woocommerce_blocks_renderer_initialized`     | `BlocksRegistry` | Called when the block content renderer is initialized. You may use this to add a new BlockRenderer               |
+| `woocommerce_email_editor_register_templates` |                  | Called when the basic blank email template is registered. You can add more templates via register_block_template |
 
 ### Filters
 
-| Name                                          | Argument                                  | Return                                                       | Description                                                                                                                                                         |
-|-----------------------------------------------|-------------------------------------------|--------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `mailpoet_email_editor_post_types`            | `Array` $postTypes                        | `Array` EmailPostType                                        | Applied to the list of post types used by the `getPostTypes` method                                                                                                 |
-| `mailpoet_email_editor_theme_json`            | `WP_Theme_JSON` $coreThemeData            | `WP_Theme_JSON` $themeJson                                   | Applied to the theme json data. This theme json data is created from the merging of the `WP_Theme_JSON_Resolver::get_core_data` and MailPoet owns `theme.json` file |
-| `mailpoet_email_renderer_styles`              | `string` $templateStyles, `WP_Post` $post | `string` $templateStyles                                     | Applied to the email editor template styles.                                                                                                                        |
-| `mailpoet_blocks_renderer_parsed_blocks`      | `WP_Block_Parser_Block[]` $output         | `WP_Block_Parser_Block[]` $output                            | Applied to the result of parsed blocks created by the BlocksParser.                                                                                                 |
-| `mailpoet_email_content_renderer_styles`      | `string` $contentStyles, `WP_Post` $post  | `string` $contentStyles                                      | Applied to the inline content styles prior to use by the CSS Inliner.                                                                                               |
-| `mailpoet_is_email_editor_page`               | `boolean` $isEditorPage                   | `boolean`                                                    | Check current page is the email editor page                                                                                                                         |
-| `mailpoet_email_editor_send_preview_email`    | `Array` $postData                         | `boolean` Result of processing. Was email sent successfully? | Allows override of the send preview mail function. Folks may choose to use custom implementation                                                                    |
-| `mailpoet_email_editor_post_sent_status_args` | `Array` `sent` post status args           | `Array` register_post_status args                            | Allows update of the argument for the sent post status                                                                                                              |
-
+| Name                                             | Argument                                  | Return                                                       | Description                                                                                                                                                         |
+| ------------------------------------------------ | ----------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `woocommerce_email_editor_post_types`            | `Array` $postTypes                        | `Array` EmailPostType                                        | Applied to the list of post types used by the `getPostTypes` method                                                                                                 |
+| `woocommerce_email_editor_theme_json`            | `WP_Theme_JSON` $coreThemeData            | `WP_Theme_JSON` $themeJson                                   | Applied to the theme json data. This theme json data is created from the merging of the `WP_Theme_JSON_Resolver::get_core_data` and MailPoet owns `theme.json` file |
+| `woocommerce_email_renderer_styles`              | `string` $templateStyles, `WP_Post` $post | `string` $templateStyles                                     | Applied to the email editor template styles.                                                                                                                        |
+| `woocommerce_email_content_renderer_styles`      | `string` $contentStyles, `WP_Post` $post  | `string` $contentStyles                                      | Applied to the inline content styles prior to use by the CSS Inliner.                                                                                               |
+| `woocommerce_is_email_editor_page`               | `boolean` $isEditorPage                   | `boolean`                                                    | Check current page is the email editor page                                                                                                                         |
+| `woocommerce_email_editor_send_preview_email`    | `Array` $postData                         | `boolean` Result of processing. Was email sent successfully? | Allows override of the send preview mail function. Folks may choose to use custom implementation                                                                    |
+| `woocommerce_email_editor_post_sent_status_args` | `Array` `sent` post status args           | `Array` register_post_status args                            | Allows update of the argument for the sent post status                                                                                                              |

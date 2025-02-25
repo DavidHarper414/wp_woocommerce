@@ -84,19 +84,19 @@ class Email_Editor {
 	 * @return void
 	 */
 	public function initialize(): void {
-		do_action( 'mailpoet_email_editor_initialized' );
-		add_filter( 'mailpoet_email_editor_rendering_theme_styles', array( $this, 'extend_email_theme_styles' ), 10, 2 );
+		do_action( 'woocommerce_email_editor_initialized' );
+		add_filter( 'woocommerce_email_editor_rendering_theme_styles', array( $this, 'extend_email_theme_styles' ), 10, 2 );
 		$this->register_block_patterns();
 		$this->register_email_post_types();
 		$this->register_block_templates();
 		$this->register_email_post_sent_status();
 		$this->register_personalization_tags();
-		$is_editor_page = apply_filters( 'mailpoet_is_email_editor_page', false );
+		$is_editor_page = apply_filters( 'woocommerce_is_email_editor_page', false );
 		if ( $is_editor_page ) {
 			$this->extend_email_post_api();
 		}
 		add_action( 'rest_api_init', array( $this, 'register_email_editor_api_routes' ) );
-		add_filter( 'mailpoet_email_editor_send_preview_email', array( $this->send_preview_email, 'send_preview_email' ), 11, 1 ); // allow for other filter methods to take precedent.
+		add_filter( 'woocommerce_email_editor_send_preview_email', array( $this->send_preview_email, 'send_preview_email' ), 11, 1 ); // allow for other filter methods to take precedent.
 		add_filter( 'single_template', array( $this, 'load_email_preview_template' ) );
 	}
 
@@ -124,7 +124,7 @@ class Email_Editor {
 
 	/**
 	 * Register all custom post types that should be edited via the email editor
-	 * The post types are added via mailpoet_email_editor_post_types filter.
+	 * The post types are added via woocommerce_email_editor_post_types filter.
 	 *
 	 * @return void
 	 */
@@ -139,7 +139,7 @@ class Email_Editor {
 
 	/**
 	 * Register all personalization tags registered via
-	 * the mailpoet_email_editor_register_personalization_tags filter.
+	 * the woocommerce_email_editor_register_personalization_tags filter.
 	 *
 	 * @return void
 	 */
@@ -155,7 +155,7 @@ class Email_Editor {
 	 */
 	private function get_post_types(): array {
 		$post_types = array();
-		return apply_filters( 'mailpoet_email_editor_post_types', $post_types );
+		return apply_filters( 'woocommerce_email_editor_post_types', $post_types );
 	}
 
 	/**
@@ -192,7 +192,7 @@ class Email_Editor {
 			'show_in_admin_status_list' => false,
 			'private'                   => true, // required by the preview in new tab feature for sent post (newsletter). Posts are only visible to site admins and editors.
 		);
-		$args         = apply_filters( 'mailpoet_email_editor_post_sent_status_args', $default_args );
+		$args         = apply_filters( 'woocommerce_email_editor_post_sent_status_args', $default_args );
 		register_post_status(
 			'sent',
 			$args
@@ -298,7 +298,7 @@ class Email_Editor {
 		}
 
 		add_filter(
-			'mailpoet_email_editor_preview_post_template_html',
+			'woocommerce_email_editor_preview_post_template_html',
 			function () use ( $post ) {
 				// Generate HTML content for email editor post.
 				return $this->send_preview_email->render_html( $post );

@@ -27,7 +27,7 @@ class Bootstrap {
 			'initialize',
 		]);
 
-		add_filter('mailpoet_email_editor_initialized', [
+		add_filter('woocommerce_email_editor_initialized', [
 			$this,
 			'setupEmailEditorIntegrations',
 		]);

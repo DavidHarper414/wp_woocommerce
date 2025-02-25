@@ -19,8 +19,8 @@ class Initializer {
 	 * Initializes the core blocks renderers.
 	 */
 	public function initialize(): void {
-		add_action( 'mailpoet_blocks_renderer_initialized', array( $this, 'register_core_blocks_renderers' ), 10, 1 );
-		add_filter( 'mailpoet_email_editor_theme_json', array( $this, 'adjust_theme_json' ), 10, 1 );
+		add_action( 'woocommerce_blocks_renderer_initialized', array( $this, 'register_core_blocks_renderers' ), 10, 1 );
+		add_filter( 'woocommerce_email_editor_theme_json', array( $this, 'adjust_theme_json' ), 10, 1 );
 		add_filter( 'safe_style_css', array( $this, 'allow_styles' ) );
 	}
 

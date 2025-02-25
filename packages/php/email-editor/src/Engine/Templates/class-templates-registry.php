@@ -27,7 +27,7 @@ class Templates_Registry {
 	 * @return void
 	 */
 	public function initialize(): void {
-		apply_filters( 'mailpoet_email_editor_register_templates', $this );
+		apply_filters( 'woocommerce_email_editor_register_templates', $this );
 	}
 
 	/**

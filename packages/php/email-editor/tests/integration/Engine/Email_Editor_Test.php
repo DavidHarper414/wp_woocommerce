@@ -46,7 +46,7 @@ class Email_Editor_Test extends \Email_Editor_Integration_Test_Case {
 			);
 			return $post_types;
 		};
-		add_filter( 'mailpoet_email_editor_post_types', $this->post_register_callback );
+		add_filter( 'woocommerce_email_editor_post_types', $this->post_register_callback );
 		$this->email_editor->initialize();
 	}
 
@@ -63,6 +63,6 @@ class Email_Editor_Test extends \Email_Editor_Integration_Test_Case {
 	 */
 	public function tearDown(): void {
 		parent::tearDown();
-		remove_filter( 'mailpoet_email_editor_post_types', $this->post_register_callback );
+		remove_filter( 'woocommerce_email_editor_post_types', $this->post_register_callback );
 	}
 }

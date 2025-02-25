@@ -112,7 +112,7 @@ class Renderer {
 		);
 		$template_styles  .= '.email_layout_wrapper { box-sizing: border-box;}';
 		$template_styles  .= file_get_contents( __DIR__ . '/' . self::TEMPLATE_STYLES_FILE );
-		$template_styles   = '<style>' . wp_strip_all_tags( (string) apply_filters( 'mailpoet_email_renderer_styles', $template_styles, $post ) ) . '</style>';
+		$template_styles   = '<style>' . wp_strip_all_tags( (string) apply_filters( 'woocommerce_email_renderer_styles', $template_styles, $post ) ) . '</style>';
 		$rendered_template = $this->inline_css_styles( $template_styles . $rendered_template );
 
 		// This is a workaround to support link :hover in some clients. Ideally we would remove the ability to set :hover

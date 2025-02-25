@@ -34,7 +34,7 @@ class Heading extends AbstractBlockRenderer {
 
 use Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Blocks_Registry;
 
-add_action('mailpoet_blocks_renderer_initialized', 'register_my_block_email_renderer');
+add_action('woocommerce_blocks_renderer_initialized', 'register_my_block_email_renderer');
 
 function register_my_block_email_renderer(Blocks_Registry $blocksRegistry): void {
   $blocksRegistry->add_block_renderer('core/heading', new Renderer\Blocks\Heading());

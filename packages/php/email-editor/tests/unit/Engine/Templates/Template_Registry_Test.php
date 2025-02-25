@@ -127,7 +127,7 @@ class TemplatesRegistryTest extends TestCase {
 		$wp_filter_applied = false;
 
 		add_filter(
-			'mailpoet_email_editor_register_templates',
+			'woocommerce_email_editor_register_templates',
 			function ( $registry ) use ( &$wp_filter_applied ) {
 				$wp_filter_applied = true;
 				return $registry;

@@ -28,7 +28,7 @@ class Personalization_Tags_Registry {
 	 * @return void
 	 */
 	public function initialize(): void {
-		apply_filters( 'mailpoet_email_editor_register_personalization_tags', $this );
+		apply_filters( 'woocommerce_email_editor_register_personalization_tags', $this );
 	}
 
 	/**

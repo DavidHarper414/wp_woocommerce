@@ -157,7 +157,7 @@ class PersonalizationTagsRegistryTest extends TestCase {
 		$wp_filter_applied = false;
 
 		add_filter(
-			'mailpoet_email_editor_register_personalization_tags',
+			'woocommerce_email_editor_register_personalization_tags',
 			function ( $registry ) use ( &$wp_filter_applied ) {
 				$wp_filter_applied = true;
 				return $registry;

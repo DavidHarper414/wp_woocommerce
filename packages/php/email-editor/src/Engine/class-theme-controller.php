@@ -70,7 +70,7 @@ class Theme_Controller {
 		$theme->merge( $this->core_theme );
 		$theme->merge( $this->base_theme );
 
-		return apply_filters( 'mailpoet_email_editor_theme_json', $theme );
+		return apply_filters( 'woocommerce_email_editor_theme_json', $theme );
 	}
 
 	/**

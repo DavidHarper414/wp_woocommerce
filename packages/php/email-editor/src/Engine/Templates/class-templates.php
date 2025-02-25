@@ -57,7 +57,7 @@ class Templates {
 	public function initialize( array $post_types ): void {
 		$this->post_types = $post_types;
 		add_filter( 'theme_templates', array( $this, 'add_theme_templates' ), 10, 4 ); // Workaround needed when saving post – template association.
-		add_filter( 'mailpoet_email_editor_register_templates', array( $this, 'register_templates' ) );
+		add_filter( 'woocommerce_email_editor_register_templates', array( $this, 'register_templates' ) );
 		$this->templates_registry->initialize();
 		$this->register_post_types_to_api();
 	}
