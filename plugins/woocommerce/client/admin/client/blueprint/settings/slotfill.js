@@ -234,8 +234,15 @@ const BlueprintSlotfill = () => {
 };
 
 export const registerBlueprintSlotfill = () => {
-	registerPlugin( 'woocommerce-admin-blueprint-settings-slotfill', {
-		scope: 'woocommerce-blueprint-settings',
-		render: BlueprintSlotfill,
-	} );
+	window.test = () => {
+		registerPlugin( 'woocommerce-admin-blueprint-settings-slotfill', {
+			scope: 'woocommerce-blueprint-settings',
+			render: BlueprintSlotfill,
+		} );
+	};
+
+	// registerPlugin( 'woocommerce-admin-blueprint-settings-slotfill', {
+	// 	scope: 'woocommerce-blueprint-settings',
+	// 	render: BlueprintSlotfill,
+	// } );
 };
