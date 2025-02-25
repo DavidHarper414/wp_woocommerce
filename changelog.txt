@@ -10,7 +10,6 @@
 * Dev - Add tracking events for the new Payment settings page. [#55493](https://github.com/woocommerce/woocommerce/pull/55493)
 * Fix - Add To Cart form - tweak CSS to ensure that layout isn't broken when `woocommerce_before_add_to_cart_button` hook is used. [#54980](https://github.com/woocommerce/woocommerce/pull/54980)
 * Fix - Ensure that category slugs with non-latin characters do not cause a redirection loop [#54940](https://github.com/woocommerce/woocommerce/pull/54940)
-* Fix - Ensure that the Mini Cart item count remains visible even when the inherited color has an alpha channel, which would make the item count color transparent. [#55219](https://github.com/woocommerce/woocommerce/pull/55219)
 * Fix - Fix global popover CSS styling bug [#54744](https://github.com/woocommerce/woocommerce/pull/54744)
 * Fix - Fix return type of the `pages` property in REST API so shortcode is a string [#54777](https://github.com/woocommerce/woocommerce/pull/54777)
 * Fix - Prevent a delay in rendering the checkout block payment methods on first load. [#55191](https://github.com/woocommerce/woocommerce/pull/55191)
