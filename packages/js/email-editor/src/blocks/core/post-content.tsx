@@ -48,7 +48,7 @@ function PostContentEdit( OriginalEditComponent ) {
 function enhancePostContentBlock() {
 	addFilter(
 		'blocks.registerBlockType',
-		'mailpoet-email-editor/change-post-content',
+		'woocommerce-email-editor/change-post-content',
 		( settings: Block, name ) => {
 			if ( name === 'core/post-content' ) {
 				return {

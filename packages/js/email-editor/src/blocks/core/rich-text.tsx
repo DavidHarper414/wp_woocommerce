@@ -89,7 +89,7 @@ function PersonalizationTagsButton( { contentRef }: Props ) {
 				richTextValue = applyFormat(
 					richTextValue,
 					{
-						type: 'mailpoet-email-editor/link-shortcode',
+						type: 'woocommerce-email-editor/link-shortcode',
 						// @ts-expect-error attributes property is missing in build type for WPFormat type
 						attributes: {
 							'data-link-href': tag,
@@ -188,8 +188,8 @@ function PersonalizationTagsButton( { contentRef }: Props ) {
  * Extend the rich text formats with a button for personalization tags.
  */
 function extendRichTextFormats() {
-	registerFormatType( 'mailpoet-email-editor/shortcode', {
-		name: 'mailpoet-email-editor/shortcode',
+	registerFormatType( 'woocommerce-email-editor/shortcode', {
+		name: 'woocommerce-email-editor/shortcode',
 		title: __( 'Personalization Tags', 'mailpoet' ),
 		className: 'mailpoet-email-editor-personalization-tags',
 		tagName: 'span',
@@ -199,8 +199,8 @@ function extendRichTextFormats() {
 	} );
 
 	// Register format type for using personalization tags as link attributes
-	registerFormatType( 'mailpoet-email-editor/link-shortcode', {
-		name: 'mailpoet-email-editor/link-shortcode',
+	registerFormatType( 'woocommerce-email-editor/link-shortcode', {
+		name: 'woocommerce-email-editor/link-shortcode',
 		title: __( 'Personalization Tags Link', 'mailpoet' ),
 		className: 'mailpoet-email-editor-personalization-tags-link',
 		tagName: 'a',
@@ -283,7 +283,7 @@ const personalizationTagsLiveContentUpdate = createHigherOrderComponent(
 function activatePersonalizationTagsReplacing() {
 	addFilter(
 		'editor.BlockEdit',
-		'mailpoet-email-editor/with-live-content-update',
+		'woocommerce-email-editor/with-live-content-update',
 		personalizationTagsLiveContentUpdate
 	);
 }

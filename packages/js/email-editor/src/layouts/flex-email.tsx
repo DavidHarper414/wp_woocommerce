@@ -223,17 +223,17 @@ export const withLayoutStyles = createHigherOrderComponent(
 export function initializeLayout() {
 	addFilter(
 		'blocks.registerBlockType',
-		'mailpoet-email-editor/layout/addAttribute',
+		'woocommerce-email-editor/layout/addAttribute',
 		addAttribute
 	);
 	addFilter(
 		'editor.BlockListBlock',
-		'mailpoet-email-editor/with-layout-styles',
+		'woocommerce-email-editor/with-layout-styles',
 		withLayoutStyles
 	);
 	addFilter(
 		'editor.BlockEdit',
-		'mailpoet-email-editor/with-inspector-controls',
+		'woocommerce-email-editor/with-inspector-controls',
 		withLayoutControls
 	);
 }
