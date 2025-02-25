@@ -40,9 +40,6 @@ class WC_BIS_Admin {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_resources' ), 11 );
 		add_filter( 'woocommerce_screen_ids', array( __CLASS__, 'add_wc_screens' ) );
 
-		// Add debug data in the system status report.
-		add_action( 'woocommerce_system_status_report', array( __CLASS__, 'render_system_status_items' ) );
-
 		// Inject notices into variation's metabox validation.
 		add_filter( 'woocommerce_show_invalid_variations_notice', array( __CLASS__, 'inject_custom_notices' ) );
 
@@ -218,8 +215,7 @@ class WC_BIS_Admin {
 	 * @return void
 	 */
 	public static function render_system_status_items() {
-		//TODO: Adapt to core situation. Anything to add here?
-		include WC_ABSPATH . 'includes/admin/status/views/html-bis-admin-page-status-report.php';
+		wc_deprecated_function( __METHOD__, '9.9.0' );
 	}
 
 	/**
