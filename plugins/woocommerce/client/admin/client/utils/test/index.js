@@ -71,6 +71,7 @@ describe( 'createDeprecatedObjectProxy', () => {
 				onboarding: {
 					profile: {
 						name: 'hello',
+						arr: [ 'one', 'two', 'three' ],
 					},
 				},
 			},
@@ -101,5 +102,26 @@ describe( 'createDeprecatedObjectProxy', () => {
 	it( 'should not log a warning when accessing a non-deprecated property', () => {
 		expect( proxiedSettings.admin ).toBeDefined();
 		expect( consoleWarnSpy ).not.toHaveBeenCalled();
+	} );
+
+	it( 'should retain array prototype methods', () => {
+		expect( proxiedSettings.admin.onboarding.profile.arr.length ).toEqual(
+			3
+		);
+
+		// destructuring
+		const copiedArray = [ ...proxiedSettings.admin.onboarding.profile.arr ];
+		expect( copiedArray.length ).toEqual( 3 );
+
+		// Array method forEach
+		proxiedSettings.admin.onboarding.profile.arr.forEach( ( item ) => {
+			expect( copiedArray.includes( item ) ).toBe( true );
+		} );
+
+		// Array method push
+		proxiedSettings.admin.onboarding.profile.arr.push( 'four' );
+		expect( proxiedSettings.admin.onboarding.profile.arr.length ).toEqual(
+			4
+		);
 	} );
 } );
