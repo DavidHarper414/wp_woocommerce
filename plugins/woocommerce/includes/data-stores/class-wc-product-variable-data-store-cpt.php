@@ -291,13 +291,6 @@ class WC_Product_Variable_Data_Store_CPT extends WC_Product_Data_Store_CPT imple
 		if ( empty( $this->prices_array[ $price_hash ] ) ) {
 			$transient_cached_prices_array = array_filter( (array) json_decode( strval( get_transient( $transient_name ) ), true ) );
 
-			// If the prices are not valid, reset the transient cache.
-			if ( ! $this->validate_prices_data( $transient_cached_prices_array, $transient_version ) ) {
-				$transient_cached_prices_array = array(
-					'version' => $transient_version,
-				);
-			}
-
 			// If the prices are not stored for this hash, generate them and add to the transient.
 			if ( empty( $transient_cached_prices_array[ $price_hash ] ) ) {
 				$prices_array = array(
@@ -392,10 +385,7 @@ class WC_Product_Variable_Data_Store_CPT extends WC_Product_Data_Store_CPT imple
 					$transient_cached_prices_array[ $price_hash ][ $key ] = $values;
 				}
 
-				// Validate the prices data before storing it in the transient.
-				if ( $this->validate_prices_data( $transient_cached_prices_array, $transient_version ) ) {
-					set_transient( $transient_name, wp_json_encode( $transient_cached_prices_array ), DAY_IN_SECONDS * 30 );
-				}
+				set_transient( $transient_name, wp_json_encode( $transient_cached_prices_array ), DAY_IN_SECONDS * 30 );
 			}
 
 			/**
@@ -761,76 +751,6 @@ class WC_Product_Variable_Data_Store_CPT extends WC_Product_Data_Store_CPT imple
 			if ( ! is_numeric( $id ) ) {
 				return false;
 			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Validate the prices data by checking the structure and type of the data.
-	 *
-	 * @param  array  $prices_array The prices data.
-	 * @param  string $current_version The current version of the data.
-	 * @return bool True if valid, false otherwise.
-	 */
-	protected function validate_prices_data( $prices_array, $current_version ) {
-		if ( ! is_array( $prices_array ) ) {
-			return false;
-		}
-
-		// Fail if array is empty - we want to rebuild in this case.
-		if ( empty( $prices_array ) ) {
-			return false;
-		}
-
-		if ( isset( $prices_array['version'] ) && $prices_array['version'] !== $current_version ) {
-			return false;
-		}
-
-		$data_without_version = array_diff_key( $prices_array, array( 'version' => '' ) );
-		$price_data_is_empty  = true;
-
-		foreach ( $data_without_version as $price_data ) {
-			if ( ! is_array( $price_data ) ) {
-				return false;
-			}
-
-			$required_types = array( 'price', 'regular_price', 'sale_price' );
-
-			foreach ( $required_types as $type ) {
-				// If all 'price' fields are empty, we want to track that so we can rebuild the data.
-				if ( 'price' === $type && ! empty( $price_data[ $type ] ) && $price_data_is_empty ) {
-					$price_data_is_empty = false;
-				}
-
-				if ( ! isset( $price_data[ $type ] ) || ! is_array( $price_data[ $type ] ) ) {
-					return false;
-				}
-			}
-
-			$variation_ids = array_keys( $price_data['price'] );
-
-			foreach ( $variation_ids as $variation_id ) {
-				if ( ! is_numeric( $variation_id ) ) {
-					return false;
-				}
-
-				foreach ( $required_types as $type ) {
-					if ( ! array_key_exists( $variation_id, $price_data[ $type ] ) ) {
-						return false;
-					}
-
-					$type_price = $price_data[ $type ][ $variation_id ];
-					if ( ! is_numeric( $type_price ) && '' !== $type_price ) {
-						return false;
-					}
-				}
-			}
-		}
-
-		// If price is empty, we want to rebuild the data.
-		if ( $price_data_is_empty ) {
-			return false;
 		}
 
 		return true;
