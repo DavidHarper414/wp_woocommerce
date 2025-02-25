@@ -13,6 +13,7 @@ import { DataForm } from '@wordpress/dataviews';
 import { getNewPath } from '@woocommerce/navigation';
 import { useDispatch } from '@wordpress/data';
 import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -88,7 +89,7 @@ export const Form = ( {
 		}
 
 		apiFetch( {
-			path: '/wc-admin/legacy-settings',
+			path: addQueryArgs( '/wc-admin/legacy-settings', query ),
 			method: 'POST',
 			body: payload,
 		} )
