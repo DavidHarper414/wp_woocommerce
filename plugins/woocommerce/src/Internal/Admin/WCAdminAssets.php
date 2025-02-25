@@ -249,7 +249,8 @@ class WCAdminAssets {
 		wp_enqueue_style( 'wc-onboarding' );
 
 		if ( PageController::is_settings_page() ) {
-			$this->register_script( 'wp-admin-scripts', 'settings', true );
+			$this->register_script( 'wp-admin-scripts', 'settings-embed', true );
+			$this->register_style( 'settings-embed', 'style', array( 'wp-components' ) );
 		}
 
 		// Preload our assets.
