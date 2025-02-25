@@ -37,7 +37,7 @@ import { apiFetchWithHeaders } from '../shared-controls';
 import { CheckoutPutAbortController } from '../utils/clear-put-requests';
 import { CART_STORE_KEY } from '../cart';
 
-interface CheckoutThunkArgs {
+export interface CheckoutThunkArgs {
 	select?: CurriedSelectorsOf< typeof checkoutStore >;
 	dispatch: ActionCreatorsOf< ConfigOf< typeof checkoutStore > >;
 	registry: { dispatch: DispatchFunction; select: SelectFunction };
@@ -66,7 +66,6 @@ export const __internalProcessCheckoutResponse = (
  * registered observers
  */
 export const __internalEmitValidateEvent: emitValidateEventType = ( {
-	observers,
 	setValidationErrors,
 } ) => {
 	return ( { dispatch, registry }: CheckoutThunkArgs ) => {

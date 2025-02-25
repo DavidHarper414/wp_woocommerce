@@ -1,8 +1,7 @@
 /**
  * External dependencies
  */
-import type { Notice } from '@wordpress/notices/';
-import { DataRegistry } from '@wordpress/data';
+import type { WPNotice } from '@wordpress/notices/build-types/store/selectors';
 import { FieldValidationStatus } from '@woocommerce/types';
 import { AdditionalValues } from '@woocommerce/settings';
 
@@ -12,9 +11,7 @@ import { AdditionalValues } from '@woocommerce/settings';
 import type { EventObserversType } from '../../base/context/event-emit/types';
 import type { CheckoutState } from './default-state';
 import type { PaymentState } from '../payment/default-state';
-import type { DispatchFromMap, SelectFromMap } from '../mapped-types';
-import * as selectors from './selectors';
-import * as actions from './actions';
+import { CheckoutThunkArgs } from './thunks';
 
 export type CheckoutAfterProcessingWithErrorEventData = {
 	redirectUrl: CheckoutState[ 'redirectUrl' ];
@@ -24,9 +21,9 @@ export type CheckoutAfterProcessingWithErrorEventData = {
 	processingResponse: PaymentState[ 'paymentResult' ];
 };
 export type CheckoutAndPaymentNotices = {
-	checkoutNotices: Notice[];
-	paymentNotices: Notice[];
-	expressPaymentNotices: Notice[];
+	checkoutNotices: WPNotice[];
+	paymentNotices: WPNotice[];
+	expressPaymentNotices: WPNotice[];
 };
 
 /**
@@ -38,34 +35,18 @@ export type emitAfterProcessingEventsType = ( {
 }: {
 	observers: EventObserversType;
 	notices: CheckoutAndPaymentNotices;
-} ) => ( {
-	select,
-	dispatch,
-	registry,
-}: {
-	select: SelectFromMap< typeof selectors >;
-	dispatch: DispatchFromMap< typeof actions >;
-	registry: DataRegistry;
-} ) => void;
+} ) => ( { select, dispatch, registry }: CheckoutThunkArgs ) => void;
 
 /**
  * Type for emitValidateEventType() thunk
  */
 export type emitValidateEventType = ( {
-	observers,
 	setValidationErrors,
 }: {
-	observers: EventObserversType;
 	setValidationErrors: (
 		errors: Record< string, FieldValidationStatus >
 	) => void;
-} ) => ( {
-	dispatch,
-	registry,
-}: {
-	dispatch: DispatchFromMap< typeof actions >;
-	registry: DataRegistry;
-} ) => void;
+} ) => ( { dispatch, registry }: CheckoutThunkArgs ) => void;
 
 export type CheckoutPutData = {
 	additional_fields?: AdditionalValues;
