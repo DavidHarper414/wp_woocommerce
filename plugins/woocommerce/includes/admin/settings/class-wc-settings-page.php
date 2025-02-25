@@ -190,8 +190,9 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 		public function add_settings_page_data( $pages ) {
 			global $current_section;
 
-			$sections      = $this->get_sections();
-			$sections_data = array();
+			$saved_current_section = $current_section;
+			$sections              = $this->get_sections();
+			$sections_data         = array();
 
 			// Loop through each section and get the settings for that section.
 			foreach ( $sections as $section_id => $section_label ) {
@@ -205,6 +206,9 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 					'settings' => $section_settings_data,
 				);
 			}
+
+			// Reset the current section to the saved current section.
+			$current_section = $saved_current_section;
 
 			$pages[ $this->id ] = array(
 				'label'     => html_entity_decode( $this->label ),
