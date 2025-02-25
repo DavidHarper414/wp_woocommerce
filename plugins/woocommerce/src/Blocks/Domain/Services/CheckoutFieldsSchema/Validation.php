@@ -67,7 +67,7 @@ class Validation {
 		try {
 		$validator = new Validator();
 
-		$parsed_rules = isset( $rules['type'] ) ? array_merge( [
+		$parsed_rules = isset( $rules['type'] )  && $rules['type'] === 'object' ? array_merge( [
 			'$schema'    => 'http://json-schema.org/draft-07/schema#',
 			'type'       => 'object',
 		], $rules ) : $rules;
