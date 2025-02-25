@@ -3618,13 +3618,12 @@ if ( ! function_exists( 'wc_no_products_found' ) ) {
 		if ( ! function_exists( 'wc_print_notice' ) ) {
 			// wc_print_notice() is used in our default template, so this likely means this function was called out of
 			// context. We include the notice functions here to avoid a fatal error.
-			include_once WC_ABSPATH . 'includes/wc-notice-functions.php';
-
 			wc_doing_it_wrong(
 				__FUNCTION__,
 				'Function should only be used during frontend requests.',
 				'9.8.0'
 			);
+			return;
 		}
 
 		wc_get_template( 'loop/no-products-found.php' );
