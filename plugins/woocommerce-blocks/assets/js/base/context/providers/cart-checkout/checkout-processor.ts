@@ -17,10 +17,11 @@ import {
 import { useDispatch, useSelect, select as selectStore } from '@wordpress/data';
 import {
 	checkoutStore,
-	PAYMENT_STORE_KEY,
+	paymentStore,
 	validationStore,
 	CART_STORE_KEY,
 	processErrorResponse,
+	clearCheckoutPutRequests,
 } from '@woocommerce/block-data';
 import {
 	getPaymentMethods,
@@ -101,7 +102,7 @@ const CheckoutProcessor = () => {
 		isPaymentReady,
 		shouldSavePayment,
 	} = useSelect( ( select ) => {
-		const store = select( PAYMENT_STORE_KEY );
+		const store = select( paymentStore );
 
 		return {
 			activePaymentMethod: store.getActivePaymentMethod(),
@@ -266,6 +267,10 @@ const CheckoutProcessor = () => {
 				: undefined,
 			...paymentData,
 		};
+
+		// Checkout fields are persisted on change, so we want to cancel any pending PUT requests
+		// before placing the order.
+		clearCheckoutPutRequests();
 
 		triggerFetch( {
 			path: '/wc/store/v1/checkout',
