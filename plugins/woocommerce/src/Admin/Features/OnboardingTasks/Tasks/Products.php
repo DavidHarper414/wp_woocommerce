@@ -11,7 +11,7 @@ use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile;
  * Products Task
  */
 class Products extends Task {
-	const PRODUCT_COUNT_TRANSIENT_NAME = 'woocommerce_product_task_product_count_transient';
+	const HAS_PRODUCT_TRANSIENT = 'woocommerce_product_task_has_product_transient';
 
 	/**
 	 * Constructor
@@ -182,7 +182,7 @@ class Products extends Task {
 	 * @return void
 	 */
 	public static function delete_product_count_cache() {
-		delete_transient( self::PRODUCT_COUNT_TRANSIENT_NAME );
+		delete_transient( self::HAS_PRODUCT_TRANSIENT );
 	}
 
 	/**
@@ -191,28 +191,18 @@ class Products extends Task {
 	 * @return bool
 	 */
 	public static function has_products() {
-		$product_counts = get_transient( self::PRODUCT_COUNT_TRANSIENT_NAME );
-		if ( false !== $product_counts && is_numeric( $product_counts ) ) {
-			return (int) $product_counts > 0;
+		$product_exists = get_transient( self::HAS_PRODUCT_TRANSIENT );
+		if ( $product_exists ) {
+			return 'yes' === $product_exists;
 		}
 
-		$product_counts = self::count_user_products();
-		set_transient( self::PRODUCT_COUNT_TRANSIENT_NAME, $product_counts );
-		return $product_counts > 0;
-	}
-
-	/**
-	 * Count the number of user created products.
-	 * Generated products have the _headstart_post meta key.
-	 *
-	 * @return int The number of user created products.
-	 */
-	private static function count_user_products() {
 		$args = array(
-			'post_type'   => 'product',
-			'post_status' => ProductStatus::PUBLISH,
-			'fields'      => 'ids',
-			'meta_query'  => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			'post_type'      => 'product',
+			'post_status'    => ProductStatus::PUBLISH,
+			'posts_per_page' => 1,
+			'no_found_rows'  => true,
+			'fields'         => 'ids',
+			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'relation' => 'OR',
 				array(
 					'key'     => '_headstart_post',
@@ -227,7 +217,9 @@ class Products extends Task {
 
 		$products_query = new \WP_Query( $args );
 
-		return $products_query->found_posts;
+		$value = $products_query->post_count > 0 ? 'yes' : 'no';
+		set_transient( self::HAS_PRODUCT_TRANSIENT, $value );
+		return $value;
 	}
 
 	/**
