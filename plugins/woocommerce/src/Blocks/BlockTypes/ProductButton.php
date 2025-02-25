@@ -70,8 +70,6 @@ class ProductButton extends AbstractBlock {
 	 * @return string Rendered block type output.
 	 */
 	protected function render( $attributes, $content, $block ) {
-		wp_enqueue_script_module( 'woocommerce/product-button' );
-
 		// This workaround ensures that WordPress loads the core/button block styles.
 		// For more details, see https://github.com/woocommerce/woocommerce/pull/53052.
 		( new \WP_Block( array( 'blockName' => 'core/button' ) ) )->render();
@@ -88,6 +86,8 @@ class ProductButton extends AbstractBlock {
 		} elseif ( ! $product instanceof \WC_Product ) {
 			return '';
 		}
+
+		wp_enqueue_script_module( 'woocommerce/product-button' );
 
 		// Initialize the "Add To Cart" store part.
 		// Question: Is this ok for 3PD or should we use a global function like `woocommerce_interactivity_use_add_to_cart_store()`.
