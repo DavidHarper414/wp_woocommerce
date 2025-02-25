@@ -22,7 +22,7 @@ class WooEmailTemplate {
 	 * @return string Localized template title.
 	 */
 	public function get_title(): string {
-		return __( 'WooEmailTemplate', 'woocommerce' );
+		return __( 'Woo Email Template', 'woocommerce' );
 	}
 
 	/**
