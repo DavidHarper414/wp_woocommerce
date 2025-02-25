@@ -1835,3 +1835,34 @@ function wc_product_attach_featured_image( $attachment_id, $product = null, $sav
 	}
 }
 add_action( 'add_attachment', 'wc_product_attach_featured_image' );
+
+/**
+ * Delete related product transients when a product is saved.
+ * This is necessary because changing one product might affect many related products.
+ *
+ * @since 9.8.1
+ * @param int $product_id Product ID.
+ */
+function wc_delete_related_product_transients( $product_id ) {
+	global $wpdb;
+
+	// Delete all related product timeout transients
+	$wpdb->query( 
+		$wpdb->prepare( 
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+			$wpdb->esc_like( '_transient_timeout_wc_related_' ) . '%'
+		)
+	);
+
+	// Also delete the actual transient entries
+	$wpdb->query( 
+		$wpdb->prepare( 
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+			$wpdb->esc_like( '_transient_wc_related_' ) . '%'
+		)
+	);
+}
+add_action( 'woocommerce_update_product', 'wc_delete_related_product_transients' );
+add_action( 'woocommerce_new_product', 'wc_delete_related_product_transients' );
+// If a product doesn't exist it won't get rendered. Leaving the below commented out for posterity.
+// add_action( 'woocommerce_delete_product', 'wc_delete_related_product_transients' ); 
