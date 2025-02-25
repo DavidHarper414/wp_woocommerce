@@ -831,7 +831,7 @@ class WC_Download_Handler {
 		// Get file path
 		$file_path = get_attached_file( $attachment_id );
 		/* throw new Exception($file_path, 1); */
-		if ( ! $file_path || ! file_exists( $file_path ) ) {
+		if ( ! $file_path || ! is_readable( $file_path ) ) {
 			self::download_error( __( 'File not found', 'woocommerce' ), '', 404 );
 		}
 
