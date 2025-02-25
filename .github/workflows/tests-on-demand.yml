@@ -21,7 +21,7 @@ on:
         required: false
       install-wc:
         type: choice
-        description: 'Do you want to install WC before test execution?'
+        description: 'Optional, for `on-demand` or `custom` jobs. Do you want to install WC before test execution?'
         required: false
         options:
           - 'true'
