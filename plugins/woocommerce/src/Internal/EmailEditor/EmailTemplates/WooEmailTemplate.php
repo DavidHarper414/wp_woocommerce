@@ -5,7 +5,7 @@ namespace Automattic\WooCommerce\Internal\EmailEditor\EmailTemplates;
 /**
  * Basic template for WooCommerce transactional emails used in the email editor.
  */
-class WooMailTemplate {
+class WooEmailTemplate {
 
 	/**
 	 * Get the template slug.
@@ -13,7 +13,7 @@ class WooMailTemplate {
 	 * @return string Template identifier.
 	 */
 	public function get_slug(): string {
-		return 'woomailtemplate';
+		return 'wooemailtemplate';
 	}
 
 	/**
@@ -22,7 +22,7 @@ class WooMailTemplate {
 	 * @return string Localized template title.
 	 */
 	public function get_title(): string {
-		return __( 'WooMailTemplate', 'woocommerce' );
+		return __( 'WooEmailTemplate', 'woocommerce' );
 	}
 
 	/**

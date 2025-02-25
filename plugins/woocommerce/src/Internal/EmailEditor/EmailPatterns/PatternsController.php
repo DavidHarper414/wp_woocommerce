@@ -25,7 +25,7 @@ class PatternsController {
 	 */
 	public function register_patterns(): void {
 		$patterns   = array();
-		$patterns[] = new WooMailContentPattern();
+		$patterns[] = new WooEmailContentPattern();
 		foreach ( $patterns as $pattern ) {
 			register_block_pattern( $pattern->get_namespace() . '/' . $pattern->get_name(), $pattern->get_properties() );
 		}

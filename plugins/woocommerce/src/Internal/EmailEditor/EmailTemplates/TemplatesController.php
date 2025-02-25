@@ -22,7 +22,7 @@ class TemplatesController {
 	 *
 	 * @var string
 	 */
-	private string $template_prefix = 'wooemail';
+	private string $template_prefix = 'woocommerce';
 
 	/**
 	 * Initialize the controller by registering hooks.
@@ -42,7 +42,7 @@ class TemplatesController {
 	 */
 	public function register_templates( Templates_Registry $templates_registry ) {
 		$templates   = array();
-		$templates[] = new WooMailTemplate();
+		$templates[] = new WooEmailTemplate();
 
 		foreach ( $templates as $template ) {
 			$the_template = new Template(

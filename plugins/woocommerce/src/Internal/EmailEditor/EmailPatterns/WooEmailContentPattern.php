@@ -9,13 +9,13 @@ use MailPoet\EmailEditor\Engine\Patterns\Abstract_Pattern;
  *
  * Provides a default content pattern that can be used in WooCommerce email templates.
  */
-class WooMailContentPattern extends Abstract_Pattern {
+class WooEmailContentPattern extends Abstract_Pattern {
 	/**
 	 * Pattern name identifier.
 	 *
 	 * @var string
 	 */
-	public $name = 'woo-mail-content-pattern';
+	public $name = 'woo-email-content-pattern';
 
 	/**
 	 * Allowed block types for this pattern.
@@ -75,6 +75,6 @@ class WooMailContentPattern extends Abstract_Pattern {
 	 */
 	public function get_title(): string {
 		/* translators: Name of a content pattern used as starting content of an email */
-		return __( 'Woo Mail Content Pattern', 'woocommerce' );
+		return __( 'Woo Email Content Pattern', 'woocommerce' );
 	}
 }

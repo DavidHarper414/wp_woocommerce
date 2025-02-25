@@ -4,6 +4,8 @@ declare( strict_types=1 );
 
 namespace Automattic\WooCommerce\Internal\EmailEditor;
 
+use MailPoet\EmailEditor\EmailEditorContainer;
+use MailPoet\EmailEditor\Engine\Dependency_Check;
 use Automattic\WooCommerce\Internal\EmailEditor\EmailPatterns\PatternsController;
 use Automattic\WooCommerce\Internal\EmailEditor\EmailTemplates\TemplatesController;
 
@@ -13,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * Integration class for the Email Editor functionality.
  */
 class Integration {
-	const EMAIL_POST_TYPE = 'woo_mail';
+	const EMAIL_POST_TYPE = 'woo_email';
 
 	/**
 	 * The email editor page renderer instance.
@@ -23,11 +25,30 @@ class Integration {
 	private PageRenderer $editor_page_renderer;
 
 	/**
+	 * The dependency check instance.
+	 *
+	 * @var Dependency_Check
+	 */
+	private Dependency_Check $dependency_check;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		$editor_container       = EmailEditorContainer::container();
+		$this->dependency_check = $editor_container->get( Dependency_Check::class );
+	}
+
+	/**
 	 * Initialize the integration.
 	 *
 	 * @internal
 	 */
 	final public function init(): void {
+		if ( ! $this->dependency_check->are_dependencies_met() ) {
+			// If dependencies are not met, do not initialize the email editor integration.
+			return;
+		}
 		$this->init_hooks();
 		$this->register_hooks();
 	}
