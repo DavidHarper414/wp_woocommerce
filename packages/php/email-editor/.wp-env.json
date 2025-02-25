@@ -13,6 +13,7 @@
 	},
 	"env": {
 		"development": {
+			"port": 8887,
 			"phpmyadminPort": 9070
 		},
 		"tests": {
