@@ -1,0 +1,123 @@
+<?php
+declare(strict_types=1);
+
+namespace Automattic\WooCommerce\Blocks\BlockTypes;
+
+use Automattic\WooCommerce\Blocks\BlockTypes\AddToCartWithOptionsQuantitySelector;
+use WP_Block;
+
+/**
+ * Block type for the CTA of grouped product selector items in add to cart with options.
+ * It's responsible to render the CTA for each child product in a form of a list item.
+ */
+class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
+	/**
+	 * Block name.
+	 *
+	 * @var string
+	 */
+	protected $block_name = 'add-to-cart-with-options-grouped-product-selector-item-cta';
+
+	private function get_quantity_selector_markup( $product ) {
+		ob_start();
+
+		woocommerce_quantity_input(
+			array(
+				/**
+				 * Filter the minimum quantity value allowed for the product.
+				 *
+				 * @since 2.0.0
+				 * @param int        $min_value Minimum quantity value.
+				 * @param WC_Product $product   Product object.
+				 */
+				'min_value'   => apply_filters( 'woocommerce_quantity_input_min', $product->get_min_purchase_quantity(), $product ),
+				/**
+				 * Filter the maximum quantity value allowed for the product.
+				 *
+				 * @since 2.0.0
+				 * @param int        $max_value Maximum quantity value.
+				 * @param WC_Product $product   Product object.
+				 */
+				'max_value'   => apply_filters( 'woocommerce_quantity_input_max', $product->get_max_purchase_quantity(), $product ),
+				'input_value' => isset( $_POST['quantity'] ) ? wc_stock_amount( wp_unslash( $_POST['quantity'] ) ) : $product->get_min_purchase_quantity(), // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			)
+		);
+
+		$product_html = ob_get_clean();
+
+		return '<div class="wp-block-add-to-cart-with-options-grouped-product-selector-item-cta wc-block-add-to-cart-with-options__quantity-selector wc-block-add-to-cart-with-options__quantity-selector--input">' . $product_html . '</div>';
+	}
+
+	private function get_button_markup( $product ) {
+		global $post;
+
+		$previous_post = $post;
+
+		$post_object = get_post( $product->get_id() );
+		$post        = $post_object; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		setup_postdata( $post );
+
+		ob_start();
+		woocommerce_template_loop_add_to_cart();
+		$button_html = ob_get_clean();
+
+		$post = $previous_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		setup_postdata( $post );
+
+		return $button_html;
+	}
+
+	private function get_checkbox_markup( $product ) {
+		if ( $product->is_on_sale() ) {
+			$label = sprintf(
+				/* translators: %1$s: Product name. %2$s: Sale price. %3$s: Regular price */
+				esc_html__( 'Buy one of %1$s on sale for %2$s, original price was %3$s', 'woocommerce' ),
+				esc_html( $product->get_name() ),
+				esc_html( wp_strip_all_tags( wc_price( $product->get_price() ) ) ),
+				esc_html( wp_strip_all_tags( wc_price( $product->get_regular_price() ) ) )
+			);
+		} else {
+			$label = sprintf(
+				/* translators: %1$s: Product name. %2$s: Product price */
+				esc_html__( 'Buy one of %1$s for %2$s', 'woocommerce' ),
+				esc_html( $product->get_name() ),
+				esc_html( wp_strip_all_tags( wc_price( $product->get_price() ) ) )
+			);
+		}
+		return '<input type="checkbox" name="' . esc_attr( 'quantity[' . $product->get_id() . ']' ) . '" value="1" class="wc-grouped-product-add-to-cart-checkbox" id="' . esc_attr( 'quantity-' . $product->get_id() ) . '" /><label for="' . esc_attr( 'quantity-' . $product->get_id() ) . '" class="screen-reader-text">' . $label . '</label>';
+	}
+
+	/**
+	 * Render the block.
+	 *
+	 * @param array    $attributes Block attributes.
+	 * @param string   $content Block content.
+	 * @param WP_Block $block Block instance.
+	 * @return string Rendered block output.
+	 */
+	protected function render( $attributes, $content, $block ): string {
+		$post_id = isset( $block->context['postId'] ) ? $block->context['postId'] : '';
+		$product = wc_get_product( $post_id );
+
+		if ( $product ) {
+			$product_type = $product->get_type();
+			$markup       = '';
+
+			if ( ! $product->is_purchasable() || $product->has_options() || ! $product->is_in_stock() ) {
+				$markup = $this->get_button_markup( $product );
+			} elseif ( $product->is_sold_individually() ) {
+				$markup = $this->get_checkbox_markup( $product );
+			} else {
+				// return AddToCartWithOptionsQuantitySelector::get_quantity_selector_markup( $product, array( 'quantitySelectorStyle' => 'stepper' ) );
+				$markup = $this->get_quantity_selector_markup( $product );
+			}
+
+			if ( $markup ) {
+				return '<div class="wc-block-add-to-cart-with-options-grouped-product-selector-item-cta">' . $markup . '</div>';
+			}
+		}
+
+		var_dump( $block->context['postId'] ); // @todo, investigate why $block->context['postId'] is the post ID at the beginning.
+		return '';
+	}
+}
