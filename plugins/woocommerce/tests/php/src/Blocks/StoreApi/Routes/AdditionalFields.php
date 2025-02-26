@@ -2499,7 +2499,7 @@ class AdditionalFields extends MockeryTestCase {
 	 * Test for errors when providing the wrong validation rules schema.
 	 */
 	public function test_invalid_validation_rules_schema() {
-		$doing_it_wrong_mocker = $this->add_doing_it_wrong_error_mocker( 'woocommerce_register_additional_checkout_field', 'Unable to register field with id: "namespace/test-id". The properties must match schema: {properties}' );
+		$doing_it_wrong_mocker = $this->add_doing_it_wrong_error_mocker( 'woocommerce_register_additional_checkout_field', 'Unable to register field with id: "namespace/test-id". validation: The properties must match schema: {properties}' );
 		\woocommerce_register_additional_checkout_field(
 			array(
 				'id'         => 'namespace/test-id',
