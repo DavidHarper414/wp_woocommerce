@@ -4,6 +4,7 @@
 import { test as setup } from './fixtures';
 import { setComingSoon } from '../utils/coming-soon';
 import { skipOnboardingWizard } from '../utils/onboarding';
+import { WC_API_PATH, WP_API_PATH } from '../utils/api-client';
 
 setup( 'configure HPOS', async ( { restApi } ) => {
 	const { DISABLE_HPOS } = process.env;
@@ -22,7 +23,7 @@ setup( 'configure HPOS', async ( { restApi } ) => {
 					} HPOS...`
 				);
 				const response = await restApi.post(
-					'wc/v3/settings/advanced/woocommerce_custom_orders_table_enabled',
+					`${ WC_API_PATH }/settings/advanced/woocommerce_custom_orders_table_enabled`,
 					{ value }
 				);
 				if ( response.data.value === value ) {
@@ -51,7 +52,7 @@ setup( 'configure HPOS', async ( { restApi } ) => {
 	}
 
 	const response = await restApi.get(
-		'wc/v3/settings/advanced/woocommerce_custom_orders_table_enabled'
+		`${ WC_API_PATH }/settings/advanced/woocommerce_custom_orders_table_enabled`
 	);
 	const dataValue = response.data.value;
 	const enabledOption = response.data.options[ dataValue ];
@@ -66,7 +67,7 @@ setup(
 	async ( { restApi } ) => {
 		// List all pages
 		const response_list = await restApi.get(
-			'wp/v2/pages?slug=cart,checkout',
+			`${ WP_API_PATH }/pages?slug=cart,checkout`,
 			{
 				data: {
 					_fields: [ 'id', 'slug' ],
@@ -81,21 +82,25 @@ setup(
 		const cart = list.find( ( page ) => page.slug === 'cart' );
 		const checkout = list.find( ( page ) => page.slug === 'checkout' );
 
+		if ( ! cart ) {
+			console.error( 'Cart page not found' );
+		}
+
+		if ( ! checkout ) {
+			console.error( 'Checkout page not found' );
+		}
+
 		// Convert their contents to shortcodes
-		await restApi.put( `wp/v2/pages/${ cart.id }`, {
-			data: {
-				content: {
-					raw: '<!-- wp:shortcode -->[woocommerce_cart]<!-- /wp:shortcode -->',
-				},
+		const r = await restApi.put( `${ WP_API_PATH }/pages/${ cart.id }`, {
+			content: {
+				raw: '<!-- wp:shortcode -->[woocommerce_cart]<!-- /wp:shortcode -->',
 			},
 			failOnStatusCode: true,
 		} );
 
-		await restApi.put( `wp/v2/pages/${ checkout.id }`, {
-			data: {
-				content: {
-					raw: '<!-- wp:shortcode -->[woocommerce_checkout]<!-- /wp:shortcode -->',
-				},
+		await restApi.put( `${ WP_API_PATH }/pages/${ checkout.id }`, {
+			content: {
+				raw: '<!-- wp:shortcode -->[woocommerce_checkout]<!-- /wp:shortcode -->',
 			},
 			failOnStatusCode: true,
 		} );
@@ -111,7 +116,7 @@ setup( 'disable onboarding wizard', async () => {
 } );
 
 setup( 'determine if multisite', async ( { restApi } ) => {
-	const response = await restApi.get( 'wc/v3/system_status' );
+	const response = await restApi.get( `${ WC_API_PATH }/system_status` );
 	const { environment } = response.data;
 
 	if ( environment.wp_multisite === false ) {
@@ -123,7 +128,7 @@ setup( 'determine if multisite', async ( { restApi } ) => {
 } );
 
 setup( 'general settings', async ( { restApi } ) => {
-	await restApi.post( 'wc/v3/settings/general/batch', {
+	await restApi.post( `${ WC_API_PATH }/settings/general/batch`, {
 		update: [
 			{ id: 'woocommerce_allowed_countries', value: 'all' },
 			{ id: 'woocommerce_currency', value: 'USD' },
