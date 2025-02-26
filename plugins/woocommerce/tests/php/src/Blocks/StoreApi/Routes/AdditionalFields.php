@@ -2482,11 +2482,11 @@ class AdditionalFields extends MockeryTestCase {
 		$doing_it_wrong_mocker = $this->add_doing_it_wrong_error_mocker( 'woocommerce_register_additional_checkout_field', 'Unable to register field with id: "namespace/test-id". The rules must be an array.' );
 		\woocommerce_register_additional_checkout_field(
 			array(
-				'id'       => 'namespace/test-id',
-				'label'    => 'Test Field',
-				'location' => 'address',
-				'required' => true,
-				'rules'    => 'invalid-rules',
+				'id'         => 'namespace/test-id',
+				'label'      => 'Test Field',
+				'location'   => 'address',
+				'required'   => true,
+				'validation' => 'invalid-rules',
 			)
 		);
 		remove_action( 'doing_it_wrong_run', array( $doing_it_wrong_mocker, 'doing_it_wrong_run' ), 10, 2 );
@@ -2502,15 +2502,13 @@ class AdditionalFields extends MockeryTestCase {
 		$doing_it_wrong_mocker = $this->add_doing_it_wrong_error_mocker( 'woocommerce_register_additional_checkout_field', 'Unable to register field with id: "namespace/test-id". The properties must match schema: {properties}' );
 		\woocommerce_register_additional_checkout_field(
 			array(
-				'id'       => 'namespace/test-id',
-				'label'    => 'Test Field',
-				'location' => 'address',
-				'required' => true,
-				'rules'    => array(
-					'validation' => array(
-						'type'    => 'invalid-type',
-						'pattern' => '^[A-Z]{2}[0-9A-Z]{2,12}$',
-					),
+				'id'         => 'namespace/test-id',
+				'label'      => 'Test Field',
+				'location'   => 'address',
+				'required'   => true,
+				'validation' => array(
+					'type'    => 'invalid-type',
+					'pattern' => '^[A-Z]{2}[0-9A-Z]{2,12}$',
 				),
 			)
 		);
@@ -2519,13 +2517,11 @@ class AdditionalFields extends MockeryTestCase {
 		$doing_it_wrong_mocker = $this->add_doing_it_wrong_error_mocker( 'woocommerce_register_additional_checkout_field', 'Unable to register field with id: "namespace/test-id". The validation rules must be an array.' );
 		\woocommerce_register_additional_checkout_field(
 			array(
-				'id'       => 'namespace/test-id',
-				'label'    => 'Test Field',
-				'location' => 'address',
-				'required' => true,
-				'rules'    => array(
-					'validation' => 'invalid-value',
-				),
+				'id'         => 'namespace/test-id',
+				'label'      => 'Test Field',
+				'location'   => 'address',
+				'required'   => true,
+				'validation' => 'invalid-value',
 			)
 		);
 		remove_action( 'doing_it_wrong_run', array( $doing_it_wrong_mocker, 'doing_it_wrong_run' ), 10, 2 );
@@ -2543,15 +2539,13 @@ class AdditionalFields extends MockeryTestCase {
 		add_action( 'doing_it_wrong_run', array( $doing_it_wrong_mocker, 'doing_it_wrong_run' ), 10, 2 );
 		\woocommerce_register_additional_checkout_field(
 			array(
-				'id'       => 'namespace/test-id',
-				'label'    => 'Test Field',
-				'location' => 'address',
-				'required' => true,
-				'rules'    => array(
-					'validation' => array(
-						'type'    => 'string',
-						'pattern' => '^[A-Z]{2}[0-9A-Z]{2,12}$',
-					),
+				'id'         => 'namespace/test-id',
+				'label'      => 'Test Field',
+				'location'   => 'address',
+				'required'   => true,
+				'validation' => array(
+					'type'    => 'string',
+					'pattern' => '^[A-Z]{2}[0-9A-Z]{2,12}$',
 				),
 			)
 		);
@@ -2569,10 +2563,7 @@ class AdditionalFields extends MockeryTestCase {
 				'id'       => 'namespace/test-id',
 				'label'    => 'Test Field',
 				'location' => 'address',
-				'required' => true,
-				'rules'    => array(
-					'required' => 'invalid-value',
-				),
+				'required' => 'invalid-value',
 			)
 		);
 		remove_action( 'doing_it_wrong_run', array( $doing_it_wrong_mocker, 'doing_it_wrong_run' ), 10, 2 );
@@ -2594,16 +2585,14 @@ class AdditionalFields extends MockeryTestCase {
 				'label'    => 'Test Field',
 				'location' => 'address',
 				'required' => true,
-				'rules'    => array(
-					'required' => array(
-						'customer' => array(
-							'properties' => array(
-								'billing_address' => array(
-									'properties' => array(
-										'country' => array(
-											'type' => 'string',
-											'enum' => 'GB',
-										),
+				'required' => array(
+					'customer' => array(
+						'properties' => array(
+							'billing_address' => array(
+								'properties' => array(
+									'country' => array(
+										'type' => 'string',
+										'enum' => 'GB',
 									),
 								),
 							),
@@ -2633,16 +2622,14 @@ class AdditionalFields extends MockeryTestCase {
 				'location' => 'address',
 				'type'     => 'text',
 				'required' => true,
-				'rules'    => array(
-					'hidden' => array(
-						'customer' => array(
-							'properties' => array(
-								'address' => array(
-									'properties' => array(
-										'country' => array(
-											'type' => 'string',
-											'enum' => array( 'US' ), // Hidden for US.
-										),
+				'hidden'   => array(
+					'customer' => array(
+						'properties' => array(
+							'billing_address' => array(
+								'properties' => array(
+									'country' => array(
+										'type' => 'string',
+										'enum' => array( 'US' ), // Hidden for US.
 									),
 								),
 							),
