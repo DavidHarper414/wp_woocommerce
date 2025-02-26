@@ -19,8 +19,9 @@ import {
 	checkoutStore,
 	paymentStore,
 	validationStore,
-	CART_STORE_KEY,
+	cartStore,
 	processErrorResponse,
+	clearCheckoutPutRequests,
 } from '@woocommerce/block-data';
 import {
 	getPaymentMethods,
@@ -87,7 +88,7 @@ const CheckoutProcessor = () => {
 	const { shippingErrorStatus } = useShippingDataContext();
 
 	const { billingAddress, shippingAddress } = useSelect( ( select ) =>
-		select( CART_STORE_KEY ).getCustomerData()
+		select( cartStore ).getCustomerData()
 	);
 
 	const { cartNeedsPayment, cartNeedsShipping, receiveCartContents } =
@@ -266,6 +267,10 @@ const CheckoutProcessor = () => {
 				: undefined,
 			...paymentData,
 		};
+
+		// Checkout fields are persisted on change, so we want to cancel any pending PUT requests
+		// before placing the order.
+		clearCheckoutPutRequests();
 
 		triggerFetch( {
 			path: '/wc/store/v1/checkout',
