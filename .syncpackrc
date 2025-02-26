@@ -77,8 +77,7 @@
 				"webpack*"
 			],
 			"packages": [
-				"@woocommerce/block-library",
-				"@woocommerce/storybook"
+				"@woocommerce/block-library"
 			],
 			"isIgnored": true
 		},
