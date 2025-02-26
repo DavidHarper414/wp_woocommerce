@@ -17,6 +17,7 @@ use Automattic\WooCommerce\Proxies\LegacyProxy;
 use Automattic\WooCommerce\Utilities\ArrayUtil;
 use Automattic\WooCommerce\Utilities\NumberUtil;
 use Automattic\WooCommerce\Internal\ProductImage\MatchImageBySKU;
+use Automattic\WooCommerce\Internal\ProductDownloads\AdminPreview;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -560,7 +561,8 @@ function wc_get_attachment_image_attributes( $attr, $attachment, $size ) {
     }
 
     // Generate secure admin URL for image src
-    $attr['src'] = WC_Download_Handler::get_admin_image_src_url( $attachment->ID, $size );
+    $admin_preview = wc_get_container()->get( AdminPreview::class );
+    $attr['src'] = $admin_preview->get_admin_image_src_url( $attachment->post_parent, $attachment->ID, $size );
 
 
     return $attr;
@@ -593,13 +595,12 @@ function wc_prepare_attachment_for_js( $response ) {
 	$attachment_id = $response['id'];
 
     // Generate secure admin URL for image src
-    $response['url'] = WC_Download_Handler::get_admin_image_src_url( $product_id, $attachment_id, '' );
-
+    $admin_preview = wc_get_container()->get( AdminPreview::class );
+    $response['url'] = $admin_preview->get_admin_image_src_url( $product_id, $attachment_id, '' );
 
 	if ( isset( $response['sizes'] ) ) {
-
 		foreach ( $response['sizes'] as $size => $value ) {
-			$url = WC_Download_Handler::get_admin_image_src_url( $product_id, $attachment_id, $size );
+			$url = $admin_preview->get_admin_image_src_url( $product_id, $attachment_id, $size );
 			$response['sizes'][ $size ]['url'] = $url;
 		}
 	}

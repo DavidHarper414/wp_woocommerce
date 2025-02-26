@@ -3,6 +3,7 @@
 namespace Automattic\WooCommerce\Internal\DependencyManagement\ServiceProviders;
 
 use Automattic\WooCommerce\Internal\DependencyManagement\AbstractServiceProvider;
+use Automattic\WooCommerce\Internal\ProductDownloads\AdminPreview;
 use Automattic\WooCommerce\Internal\ProductDownloads\ApprovedDirectories\Admin\SyncUI;
 use Automattic\WooCommerce\Internal\ProductDownloads\ApprovedDirectories\Admin\UI;
 use Automattic\WooCommerce\Internal\ProductDownloads\ApprovedDirectories\Register;
@@ -22,6 +23,7 @@ class ProductDownloadsServiceProvider extends AbstractServiceProvider {
 		Synchronize::class,
 		SyncUI::class,
 		UI::class,
+		AdminPreview::class,
 	);
 
 	/**
@@ -32,5 +34,6 @@ class ProductDownloadsServiceProvider extends AbstractServiceProvider {
 		$this->share( Synchronize::class )->addArgument( Register::class );
 		$this->share( SyncUI::class )->addArgument( Register::class );
 		$this->share( UI::class )->addArgument( Register::class );
+		$this->share( AdminPreview::class );
 	}
 }
