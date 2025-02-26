@@ -248,6 +248,11 @@ class WCAdminAssets {
 		wp_enqueue_style( 'wc-material-icons' );
 		wp_enqueue_style( 'wc-onboarding' );
 
+		if ( PageController::is_settings_page() ) {
+			$this->register_script( 'wp-admin-scripts', 'settings-embed', true );
+			$this->register_style( 'settings-embed', 'style', array( 'wp-components' ) );
+		}
+
 		// Preload our assets.
 		$this->output_header_preload_tags();
 	}
@@ -284,7 +289,7 @@ class WCAdminAssets {
 		);
 
 		$scripts_map = array(
-			WC_ADMIN_APP    => 'app',
+			WC_ADMIN_APP    => PageController::is_embed_page() ? 'embed' : 'app',
 			'wc-csv'        => 'csv-export',
 			'wc-store-data' => 'data',
 		);
