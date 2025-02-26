@@ -93,7 +93,7 @@ if ( ! function_exists( 'apply_filters' ) ) {
 /**
  * Base class for unit tests.
  */
-abstract class MailPoetUnitTest extends \PHPUnit\Framework\TestCase {
+abstract class Email_Editor_Unit_Test extends \PHPUnit\Framework\TestCase {
 }
 
 require 'stubs.php';

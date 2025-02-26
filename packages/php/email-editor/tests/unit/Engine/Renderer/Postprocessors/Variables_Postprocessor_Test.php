@@ -15,7 +15,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 /**
  * Unit test for Variables_Postprocessor
  */
-class Variables_Postprocessor_Test extends \MailPoetUnitTest {
+class Variables_Postprocessor_Test extends \Email_Editor_Unit_Test {
 	/**
 	 * Instance of Variables_Postprocessor
 	 *

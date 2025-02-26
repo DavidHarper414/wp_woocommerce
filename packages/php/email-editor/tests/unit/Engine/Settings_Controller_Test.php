@@ -11,7 +11,7 @@ namespace Automattic\WooCommerce\EmailEditor\Engine;
 /**
  * Unit test class for Settings_Controller.
  */
-class Settings_Controller_Test extends \MailPoetUnitTest {
+class Settings_Controller_Test extends \Email_Editor_Unit_Test {
 	/**
 	 * Test it gets correct layout width without padding.
 	 */

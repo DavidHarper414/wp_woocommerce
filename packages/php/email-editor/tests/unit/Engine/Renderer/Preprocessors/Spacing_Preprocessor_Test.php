@@ -13,7 +13,7 @@ use Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Preproces
 /**
  * Unit test for Spacing_Preprocessor
  */
-class Spacing_Preprocessor_Test extends \MailPoetUnitTest {
+class Spacing_Preprocessor_Test extends \Email_Editor_Unit_Test {
 
 	/**
 	 * Spacing_Preprocessor instance

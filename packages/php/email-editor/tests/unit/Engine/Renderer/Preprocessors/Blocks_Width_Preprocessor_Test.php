@@ -13,7 +13,7 @@ use Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Preproces
 /**
  * Unit test for Blocks_Width_Preprocessor
  */
-class Blocks_Width_Preprocessor_Test extends \MailPoetUnitTest {
+class Blocks_Width_Preprocessor_Test extends \Email_Editor_Unit_Test {
 
 	/**
 	 * Instance of Blocks_Width_Preprocessor

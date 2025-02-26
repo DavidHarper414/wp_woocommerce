@@ -14,7 +14,7 @@ use Automattic\WooCommerce\EmailEditor\Engine\Settings_Controller;
 /**
  * Unit test for Typography_Preprocessor
  */
-class Typography_Preprocessor_Test extends \MailPoetUnitTest {
+class Typography_Preprocessor_Test extends \Email_Editor_Unit_Test {
 
 	/**
 	 * Instance of Typography_Preprocessor

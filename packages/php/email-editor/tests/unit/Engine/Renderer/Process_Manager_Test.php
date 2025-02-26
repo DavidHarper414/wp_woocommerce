@@ -19,7 +19,7 @@ use Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Process_M
 /**
  * Unit test class for Process_Manager.
  */
-class Process_Manager_Test extends \MailPoetUnitTest {
+class Process_Manager_Test extends \Email_Editor_Unit_Test {
 	/**
 	 * Test it calls preprocessors properly.
 	 */

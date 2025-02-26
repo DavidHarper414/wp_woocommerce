@@ -13,7 +13,7 @@ use Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Postproce
 /**
  * Unit test class for Highlighting_Postprocessor.
  */
-class Highlighting_Postprocessor_Test extends \MailPoetUnitTest {
+class Highlighting_Postprocessor_Test extends \Email_Editor_Unit_Test {
 	/**
 	 * Instance of Highlighting_Postprocessor.
 	 *

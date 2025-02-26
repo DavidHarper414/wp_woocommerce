@@ -13,7 +13,7 @@ use Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Preproces
 /**
  * Unit test for Cleanup_Preprocessor
  */
-class Cleanup_Preprocessor_Test extends \MailPoetUnitTest {
+class Cleanup_Preprocessor_Test extends \Email_Editor_Unit_Test {
 
 	private const PARAGRAPH_BLOCK = array(
 		'blockName' => 'core/paragraph',
