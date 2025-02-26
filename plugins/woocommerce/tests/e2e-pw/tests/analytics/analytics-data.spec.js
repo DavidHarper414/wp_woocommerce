@@ -26,7 +26,7 @@ const test = baseTest.extend( {
 
 let categoryIds, productIds, orderIds, setupPage;
 
-test.beforeAll( async ( { browser, api } ) => {
+test.beforeAll( async ( { browser, api, wcAdminApi } ) => {
 	// create a couple of product categories
 	await api
 		.post( 'products/categories/batch', {
@@ -157,6 +157,22 @@ test.beforeAll( async ( { browser, api } ) => {
 		.then( ( response ) => {
 			orderIds = response.data.create.map( ( order ) => order.id );
 		} );
+
+	// Reset Analytics Settings to their default values.
+	// Setting options can be found at plugins/woocommerce/src/Internal/Admin/Settings.php.
+	await wcAdminApi.post( 'options', {
+		woocommerce_excluded_report_order_statuses: [
+			'pending',
+			'cancelled',
+			'failed',
+		],
+	} );
+	await wcAdminApi.post( 'options', {
+		woocommerce_actionable_order_statuses: [ 'processing', 'on-hold' ],
+	} );
+	await wcAdminApi.post( 'options', {
+		woocommerce_default_date_range: 'period=month&compare=previous_year',
+	} );
 
 	// process the Action Scheduler tasks
 	setupPage = await browser.newPage();
