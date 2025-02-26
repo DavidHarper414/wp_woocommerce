@@ -6,6 +6,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { createElement, useEffect } from '@wordpress/element';
 import { SelectFromMap } from '@automattic/data-stores';
 import type { ComponentType } from 'react';
+import deprecated from '@wordpress/deprecated';
 
 /**
  * Internal dependencies
@@ -27,6 +28,7 @@ export const withNavigationHydration = ( data: { menuItems: MenuItem[] } ) =>
 		ComponentType< Record< string, unknown > >
 	>(
 		( OriginalComponent ) => ( props ) => {
+			deprecated( 'withNavigationHydration', {} );
 			const shouldHydrate = useSelect(
 				(
 					select: (
