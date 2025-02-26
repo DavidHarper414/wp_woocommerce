@@ -80,7 +80,7 @@ class IntegrationTester extends \Codeception\Actor {
 	 * Deletes user theme post that might be created during the test.
 	 */
 	public function cleanup_user_theme_post(): void {
-		$post = get_page_by_path( 'wp-global-styles-mailpoet-email', OBJECT, 'wp_global_styles' );
+		$post = get_page_by_path( 'wp-global-styles-woocommerce-email', OBJECT, 'wp_global_styles' );
 		if ( $post ) {
 			wp_delete_post( $post->ID, true );
 		}

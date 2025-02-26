@@ -44,7 +44,7 @@ class Theme_Controller_Test extends \Email_Editor_Integration_Test_Case {
 		);
 		$post_data   = array(
 			'post_title'   => __( 'Custom Email Styles', 'mailpoet' ),
-			'post_name'    => 'wp-global-styles-mailpoet-email',
+			'post_name'    => 'wp-global-styles-woocommerce-email',
 			'post_content' => (string) wp_json_encode( $styles_data, JSON_FORCE_OBJECT ),
 			'post_status'  => 'publish',
 			'post_type'    => 'wp_global_styles',

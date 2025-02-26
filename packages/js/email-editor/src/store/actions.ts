@@ -163,7 +163,7 @@ export function* requestSendingNewsletterPreview( email: string ) {
 		const postId = select( storeName ).getEmailPostId();
 
 		yield apiFetch( {
-			path: '/mailpoet-email-editor/v1/send_preview_email',
+			path: '/woocommerce-email-editor/v1/send_preview_email',
 			method: 'POST',
 			data: {
 				email,

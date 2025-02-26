@@ -21,7 +21,7 @@ use WP_Theme_JSON;
  * See register_post_type for details about EmailPostType args.
  */
 class Email_Editor {
-	public const MAILPOET_EMAIL_META_THEME_TYPE = 'mailpoet_email_theme';
+	public const WOOCOMMERCE_EMAIL_META_THEME_TYPE = 'woocommerce_email_theme';
 
 	/**
 	 * Property for the email API controller.
@@ -224,7 +224,7 @@ class Email_Editor {
 	 */
 	public function register_email_editor_api_routes() {
 		register_rest_route(
-			'mailpoet-email-editor/v1',
+			'woocommerce-email-editor/v1',
 			'/send_preview_email',
 			array(
 				'methods'             => 'POST',
@@ -235,7 +235,7 @@ class Email_Editor {
 			)
 		);
 		register_rest_route(
-			'mailpoet-email-editor/v1',
+			'woocommerce-email-editor/v1',
 			'/get_personalization_tags',
 			array(
 				'methods'             => 'GET',
@@ -255,7 +255,7 @@ class Email_Editor {
 	 * @return WP_Theme_JSON
 	 */
 	public function extend_email_theme_styles( WP_Theme_JSON $theme, WP_Post $post ): WP_Theme_JSON {
-		$email_theme = get_post_meta( $post->ID, self::MAILPOET_EMAIL_META_THEME_TYPE, true );
+		$email_theme = get_post_meta( $post->ID, self::WOOCOMMERCE_EMAIL_META_THEME_TYPE, true );
 		if ( $email_theme && is_array( $email_theme ) ) {
 			$theme->merge( new WP_Theme_JSON( $email_theme ) );
 		}

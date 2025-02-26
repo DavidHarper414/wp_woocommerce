@@ -20,7 +20,7 @@ class Templates {
 	 *
 	 * @var string $plugin_slug
 	 */
-	private string $template_prefix = 'mailpoet';
+	private string $template_prefix = 'woocommerce';
 	/**
 	 * The post type.
 	 *

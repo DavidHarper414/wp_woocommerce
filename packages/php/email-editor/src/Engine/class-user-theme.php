@@ -15,7 +15,7 @@ use WP_Theme_JSON;
  * This class is responsible for managing and accessing theme data aka email styles created by users.
  */
 class User_Theme {
-	private const USER_THEME_POST_NAME = 'wp-global-styles-mailpoet-email';
+	private const USER_THEME_POST_NAME = 'wp-global-styles-woocommerce-email';
 	private const INITIAL_THEME_DATA   = array(
 		'version'                     => 3,
 		'isGlobalStylesUserThemeJSON' => true,
