@@ -553,17 +553,10 @@ class CheckoutFields {
 	 * @return array|false The updated $field_data array or false if an error was encountered.
 	 */
 	private function process_checkbox_field( $field_data, $options ) {
-		$id = $options['id'];
-
-		if ( isset( $options['required'] ) && ! is_bool( $options['required'] ) ) {
-			$message = sprintf( 'The required property for field with id: "%s" must be a boolean, you passed %s. The field will not be registered.', $id, gettype( $options['required'] ) );
-			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '9.8.0' );
-			return false;
-		}
-
+		$id                     = $options['id'];
 		$field_data['required'] = $options['required'] ?? false;
 
-		if ( ( ! isset( $field_data['required'] ) || false === $field_data['required'] ) && ! empty( $options['error_message'] ) ) {
+		if ( false === $field_data['required'] && ! empty( $options['error_message'] ) ) {
 			$message = sprintf( 'Passing an error message to a non-required checkbox "%s" will have no effect. The error message has been removed from the field.', $id );
 			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '9.8.0' );
 			unset( $field_data['error_message'] );

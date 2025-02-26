@@ -1230,7 +1230,7 @@ class AdditionalFields extends MockeryTestCase {
 		$doing_it_wrong_mocker->shouldReceive( 'doing_it_wrong_run' )->withArgs(
 			array(
 				'woocommerce_register_additional_checkout_field',
-				\esc_html( sprintf( 'The required property for field with id: "%s" must be a boolean, you passed string. The field will not be registered.', $id ) ),
+				\esc_html( sprintf( 'Unable to register field with id: "%s". required: Rules must be defined as an array.', $id ) ),
 			)
 		)->once();
 
@@ -2479,7 +2479,7 @@ class AdditionalFields extends MockeryTestCase {
 	 * Test for errors when providing the wrong rules schema.
 	 */
 	public function test_invalid_rules_schema() {
-		$doing_it_wrong_mocker = $this->add_doing_it_wrong_error_mocker( 'woocommerce_register_additional_checkout_field', 'Unable to register field with id: "namespace/test-id". The rules must be an array.' );
+		$doing_it_wrong_mocker = $this->add_doing_it_wrong_error_mocker( 'woocommerce_register_additional_checkout_field', 'Unable to register field with id: "namespace/test-id". validation: Rules must be defined as an array.' );
 		\woocommerce_register_additional_checkout_field(
 			array(
 				'id'         => 'namespace/test-id',
@@ -2514,7 +2514,7 @@ class AdditionalFields extends MockeryTestCase {
 		);
 		remove_action( 'doing_it_wrong_run', array( $doing_it_wrong_mocker, 'doing_it_wrong_run' ), 10, 2 );
 
-		$doing_it_wrong_mocker = $this->add_doing_it_wrong_error_mocker( 'woocommerce_register_additional_checkout_field', 'Unable to register field with id: "namespace/test-id". The validation rules must be an array.' );
+		$doing_it_wrong_mocker = $this->add_doing_it_wrong_error_mocker( 'woocommerce_register_additional_checkout_field', 'Unable to register field with id: "namespace/test-id". validation: Rules must be defined as an array.' );
 		\woocommerce_register_additional_checkout_field(
 			array(
 				'id'         => 'namespace/test-id',
@@ -2557,7 +2557,7 @@ class AdditionalFields extends MockeryTestCase {
 	 * Test for errors when providing the wrong required rules schema.
 	 */
 	public function test_invalid_required_rules_schema() {
-		$doing_it_wrong_mocker = $this->add_doing_it_wrong_error_mocker( 'woocommerce_register_additional_checkout_field', 'Unable to register field with id: "namespace/test-id". The required rules must be an array.' );
+		$doing_it_wrong_mocker = $this->add_doing_it_wrong_error_mocker( 'woocommerce_register_additional_checkout_field', 'Unable to register field with id: "namespace/test-id". required: Rules must be defined as an array.' );
 		\woocommerce_register_additional_checkout_field(
 			array(
 				'id'       => 'namespace/test-id',
