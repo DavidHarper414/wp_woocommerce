@@ -9,12 +9,14 @@ import type { ShippingAddress, FormFields } from '@woocommerce/settings';
 import { validationStore, CART_STORE_KEY } from '@woocommerce/block-data';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useFocusReturn } from '@woocommerce/base-utils';
+import { useCheckoutAddress } from '@woocommerce/base-context';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
 import { Form } from '../form';
+import { useFormFields } from '../form/use-form-fields';
 
 interface ShippingCalculatorAddressProps {
 	address: ShippingAddress;
@@ -41,11 +43,18 @@ const ShippingCalculatorAddress = ( {
 			};
 		}
 	);
+	const { defaultFields } = useCheckoutAddress();
+	const formFields = useFormFields(
+		addressFields,
+		defaultFields,
+		'shipping',
+		address.country
+	);
 
 	const hasRequiredFields = () => {
-		const requiredFields = addressFields.filter(
-			( key ) => key === 'city' || key === 'postcode'
-		);
+		const requiredFields = formFields
+			.filter( ( field ) => field.required && ! field.hidden )
+			.map( ( field ) => field.key );
 		return requiredFields.every(
 			( field ) => address[ field ] && address[ field ].trim() !== ''
 		);
