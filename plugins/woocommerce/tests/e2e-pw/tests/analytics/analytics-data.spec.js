@@ -15,12 +15,12 @@ const test = baseTest.extend( {
 		} );
 
 		// Disable the orders report date tour
-		await restApi.post( '${ WC_ADMIN_API_PATH }/options', {
+		await restApi.post( `${ WC_ADMIN_API_PATH }/options`, {
 			woocommerce_orders_report_date_tour_shown: 'yes',
 		} );
 
 		// Disable the revenue report date tour
-		await restApi.post( '${ WC_ADMIN_API_PATH }/options', {
+		await restApi.post( `${ WC_ADMIN_API_PATH }/options`, {
 			woocommerce_revenue_report_date_tour_shown: 'yes',
 		} );
 
