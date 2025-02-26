@@ -9,6 +9,7 @@ import type { ShippingAddress, FormFields } from '@woocommerce/settings';
 import { validationStore, CART_STORE_KEY } from '@woocommerce/block-data';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useFocusReturn } from '@woocommerce/base-utils';
+
 /**
  * Internal dependencies
  */
@@ -34,16 +35,25 @@ const ShippingCalculatorAddress = ( {
 		( select ) => {
 			return {
 				hasValidationErrors:
-					select( validationStore ).hasValidationErrors,
+					select( validationStore ).hasValidationErrors(),
 				isCustomerDataUpdating:
 					select( CART_STORE_KEY ).isCustomerDataUpdating(),
 			};
 		}
 	);
 
+	const hasRequiredFields = () => {
+		const requiredFields = addressFields.filter(
+			( key ) => key === 'city' || key === 'postcode'
+		);
+		return requiredFields.every(
+			( field ) => address[ field ] && address[ field ].trim() !== ''
+		);
+	};
+
 	const validateSubmit = () => {
 		showAllValidationErrors();
-		return ! hasValidationErrors();
+		return ! hasValidationErrors && hasRequiredFields();
 	};
 
 	return (
@@ -62,25 +72,29 @@ const ShippingCalculatorAddress = ( {
 				variant="outlined"
 				onClick={ ( e ) => {
 					e.preventDefault();
+
 					const addressChanged = ! isShallowEqual(
 						address,
 						initialAddress
 					);
-
-					if ( ! addressChanged ) {
-						return onCancel();
-					}
-
 					const isAddressValid = validateSubmit();
 
 					if ( isAddressValid ) {
-						const addressToSubmit = {};
-						addressFields.forEach( ( key ) => {
-							if ( typeof address[ key ] !== 'undefined' ) {
-								addressToSubmit[ key ] = address[ key ];
-							}
-						} );
-						return onUpdate( addressToSubmit );
+						if ( ! addressChanged ) {
+							return onCancel();
+						}
+
+						const addressToSubmit = addressFields.reduce(
+							( acc, key ) => {
+								if ( typeof address[ key ] !== 'undefined' ) {
+									acc[ key ] = address[ key ];
+								}
+								return acc;
+							},
+							{} as ShippingAddress
+						);
+
+						onUpdate( addressToSubmit );
 					}
 				} }
 				type="submit"
