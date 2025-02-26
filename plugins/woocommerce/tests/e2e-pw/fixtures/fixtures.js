@@ -1,12 +1,10 @@
 /**
  * External dependencies
  */
-import wcApi from '@woocommerce/woocommerce-rest-api';
 import {
 	test as baseTest,
 	expect as baseExpect,
 	request as baseRequest,
-	APIRequestContext,
 } from '@playwright/test';
 
 /**
@@ -14,79 +12,31 @@ import {
  */
 import { random } from '../utils/helpers';
 import apiClient from '../utils/api-client';
-import { admin } from '../test-data/data';
 
 export const test = baseTest.extend( {
-	api: async ( {}, use ) => {
+	restApi: async ( {}, use ) => {
 		await use( apiClient() );
-	},
-	wcAdminApi: async ( { baseURL }, use ) => {
-		const wcAdminApi = new wcApi( {
-			url: baseURL,
-			consumerKey: process.env.CONSUMER_KEY,
-			consumerSecret: process.env.CONSUMER_SECRET,
-			version: 'wc-admin', // Use wc-admin namespace
-		} );
-
-		await use( wcAdminApi );
-	},
-
-	/**
-	 * Fixture for interacting with the [WordPress REST API](https://developer.wordpress.org/rest-api/reference/) endpoints.
-	 *
-	 * @param {{baseURL: string}}                          fixtures
-	 * @param {function(APIRequestContext): Promise<void>} use
-	 */
-	wpApi: async ( { baseURL }, use ) => {
-		const wpApi = await baseRequest.newContext( {
-			baseURL,
-			extraHTTPHeaders: {
-				Authorization: `Basic ${ Buffer.from(
-					`${ admin.username }:${ admin.password }`
-				).toString( 'base64' ) }`,
-				cookie: '',
-			},
-		} );
-
-		await use( wpApi );
-	},
-
-	wcbtApi: async ( { baseURL }, use ) => {
-		const wcbtApi = await baseRequest.newContext( {
-			baseURL,
-			extraHTTPHeaders: {
-				Authorization: `Basic ${ Buffer.from(
-					`${ admin.username }:${ admin.password }`
-				).toString( 'base64' ) }`,
-				cookie: '',
-			},
-		} );
-
-		await use( wcbtApi );
 	},
 
 	testPageTitlePrefix: [ '', { option: true } ],
 
-	testPage: async ( { wpApi, testPageTitlePrefix }, use ) => {
+	testPage: async ( { restApi, testPageTitlePrefix }, use ) => {
 		const pageTitle = `${ testPageTitlePrefix } Page ${ random() }`.trim();
 		const pageSlug = pageTitle.replace( / /gi, '-' ).toLowerCase();
 
 		await use( { title: pageTitle, slug: pageSlug } );
 
 		// Cleanup
-		const pages = await wpApi.get(
-			`./wp-json/wp/v2/pages?slug=${ pageSlug }`,
-			{
-				data: {
-					_fields: [ 'id' ],
-				},
-				failOnStatusCode: false,
-			}
-		);
+		const pages = await restApi.get( `wp/v2/pages?slug=${ pageSlug }`, {
+			data: {
+				_fields: [ 'id' ],
+			},
+			failOnStatusCode: false,
+		} );
 
 		for ( const page of await pages.json() ) {
 			console.log( `Deleting page ${ page.id }` );
-			await wpApi.delete( `./wp-json/wp/v2/pages/${ page.id }`, {
+			await restApi.delete( `wp/v2/pages/${ page.id }`, {
 				data: {
 					force: true,
 				},
@@ -96,26 +46,23 @@ export const test = baseTest.extend( {
 
 	testPostTitlePrefix: [ '', { option: true } ],
 
-	testPost: async ( { wpApi, testPostTitlePrefix }, use ) => {
+	testPost: async ( { restApi, testPostTitlePrefix }, use ) => {
 		const postTitle = `${ testPostTitlePrefix } Post ${ random() }`.trim();
 		const postSlug = postTitle.replace( / /gi, '-' ).toLowerCase();
 
 		await use( { title: postTitle, slug: postSlug } );
 
 		// Cleanup
-		const posts = await wpApi.get(
-			`./wp-json/wp/v2/posts?slug=${ postSlug }`,
-			{
-				data: {
-					_fields: [ 'id' ],
-				},
-				failOnStatusCode: false,
-			}
-		);
+		const posts = await restApi.get( `wp/v2/posts?slug=${ postSlug }`, {
+			data: {
+				_fields: [ 'id' ],
+			},
+			failOnStatusCode: false,
+		} );
 
 		for ( const post of await posts.json() ) {
 			console.log( `Deleting post ${ post.id }` );
-			await wpApi.delete( `./wp-json/wp/v2/posts/${ post.id }`, {
+			await restApi.delete( `wp/v2/posts/${ post.id }`, {
 				data: {
 					force: true,
 				},
