@@ -76,7 +76,11 @@ const TEMPLATE: InnerBlockTemplate[] = [
 							],
 						],
 					],
-					[ 'woocommerce/product-review-rating' ],
+					[
+						'core/column',
+						{ width: '80px' },
+						[ [ 'woocommerce/product-review-rating' ] ],
+					],
 				],
 			],
 		],
