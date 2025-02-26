@@ -1,36 +1,22 @@
 /**
  * External dependencies
  */
-import { registerBlockType } from '@wordpress/blocks';
-import { Icon, button } from '@wordpress/icons';
+import { button } from '@wordpress/icons';
 import { getPlugin, registerPlugin } from '@wordpress/plugins';
-import { isExperimentalBlocksEnabled } from '@woocommerce/block-settings';
-import { getSettingWithCoercion } from '@woocommerce/settings';
-import { isBoolean } from '@woocommerce/types';
+import { registerProductBlockType } from '@woocommerce/atomic-utils';
+import type { BlockConfiguration } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
  */
-import registerStore from '../../shared/store';
 import ProductTypeSelectorPlugin from './plugins';
 import metadata from './block.json';
 import AddToCartOptionsEdit from './edit';
-import save from './save';
+import { shouldBlockifiedAddToCartWithOptionsBeRegistered } from './utils';
 import './style.scss';
+import type { Attributes } from './types';
 
-// Pick the value of the "blockify add to cart flag"
-const isBlockifiedAddToCart = getSettingWithCoercion(
-	'isBlockifiedAddToCart',
-	false,
-	isBoolean
-);
-
-export const shouldRegisterBlock =
-	isExperimentalBlocksEnabled() && isBlockifiedAddToCart;
-
-if ( shouldRegisterBlock ) {
-	registerStore();
-
+if ( shouldBlockifiedAddToCartWithOptionsBeRegistered ) {
 	// Register a plugin that adds a product type selector to the template sidebar.
 	const PLUGIN_NAME = 'document-settings-template-selector-pane';
 	if ( ! getPlugin( PLUGIN_NAME ) ) {
@@ -40,9 +26,25 @@ if ( shouldRegisterBlock ) {
 	}
 
 	// Register the block
-	registerBlockType( metadata, {
-		icon: <Icon icon={ button } />,
-		edit: AddToCartOptionsEdit,
-		save,
-	} );
+	registerProductBlockType< Attributes >(
+		{
+			...( metadata as BlockConfiguration< Attributes > ),
+			icon: {
+				src: ( { size }: { size?: number } ) => (
+					<span
+						className="wp-block-woocommerce-add-to-cart-with-options__block-icon"
+						style={ { height: size, width: size } }
+					>
+						{ button }
+					</span>
+				),
+			},
+			edit: AddToCartOptionsEdit,
+			save: () => null,
+			ancestor: [ 'woocommerce/single-product' ],
+		},
+		{
+			isAvailableOnPostEditor: true,
+		}
+	);
 }

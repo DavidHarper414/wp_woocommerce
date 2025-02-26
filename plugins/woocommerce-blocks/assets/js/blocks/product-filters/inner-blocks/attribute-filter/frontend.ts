@@ -6,80 +6,85 @@ import { store, getContext, getElement } from '@woocommerce/interactivity';
 /**
  * Internal dependencies
  */
-import { ProductFiltersContext } from '../../frontend';
+import { ProductFiltersStore } from '../../frontend';
 
-type AttributeFilterContext = {
+type ProductFilterAttributeContext = {
 	attributeSlug: string;
 	queryType: 'or' | 'and';
 	selectType: 'single' | 'multiple';
+	hasFilterOptions: boolean;
+	activeLabelTemplate: string;
 };
 
-store( 'woocommerce/product-filter-attribute', {
-	actions: {
-		toggleFilter: () => {
-			const { ref } = getElement();
-			const targetAttribute =
-				ref.getAttribute( 'data-target-value' ) ?? 'value';
-			const termSlug = ref.getAttribute( targetAttribute );
-
-			if ( ! termSlug ) return;
-
-			const { attributeSlug, queryType } =
-				getContext< AttributeFilterContext >();
-			const productFiltersContext = getContext< ProductFiltersContext >(
+const { state, actions } = store( 'woocommerce/product-filter-attribute', {
+	state: {
+		get selectedFilters() {
+			const context = getContext< ProductFilterAttributeContext >();
+			const productFiltersStore = store< ProductFiltersStore >(
 				'woocommerce/product-filters'
 			);
-
-			if (
-				! (
-					`filter_${ attributeSlug }` in productFiltersContext.params
+			return ( productFiltersStore.state.activeFilters || [] )
+				.filter(
+					( item ) =>
+						item.type === 'attribute' &&
+						item.attribute?.slug === context.attributeSlug
 				)
-			) {
-				productFiltersContext.params = {
-					...productFiltersContext.params,
-					[ `filter_${ attributeSlug }` ]: termSlug,
-					[ `query_type_${ attributeSlug }` ]: queryType,
-				};
-				return;
-			}
-
-			const selectedTerms =
-				productFiltersContext.params[
-					`filter_${ attributeSlug }`
-				].split( ',' );
-			if ( selectedTerms.includes( termSlug ) ) {
-				const remainingSelectedTerms = selectedTerms.filter(
-					( term ) => term !== termSlug
-				);
-				if ( remainingSelectedTerms.length > 0 ) {
-					productFiltersContext.params[
-						`filter_${ attributeSlug }`
-					] = remainingSelectedTerms.join( ',' );
-				} else {
-					const updatedParams = productFiltersContext.params;
-
-					delete updatedParams[ `filter_${ attributeSlug }` ];
-					delete updatedParams[ `query_type_${ attributeSlug }` ];
-
-					productFiltersContext.params = updatedParams;
-				}
-			} else {
-				productFiltersContext.params[ `filter_${ attributeSlug }` ] =
-					selectedTerms.concat( termSlug ).join( ',' );
-			}
+				.map( ( item ) => item.value )
+				.filter( Boolean );
 		},
+		get hasSelectedFilters(): boolean {
+			return state.selectedFilters.length > 0;
+		},
+		get isItemSelected(): boolean {
+			const { props } = getElement();
 
-		clearFilters: () => {
-			const { attributeSlug } = getContext< AttributeFilterContext >();
-			const productFiltersContext = getContext< ProductFiltersContext >(
+			if ( ! props.value ) return false;
+
+			return state.selectedFilters.includes( props.value );
+		},
+	},
+	actions: {
+		getActiveLabel( label: string ) {
+			const { activeLabelTemplate } =
+				getContext< ProductFilterAttributeContext >();
+			return activeLabelTemplate.replace( '{{label}}', label );
+		},
+		toggleFilter: () => {
+			const { props } = getElement();
+			let filterItem = props[ 'data-filter-item' ];
+
+			if ( typeof filterItem === 'string' )
+				filterItem = JSON.parse( filterItem );
+
+			const { ariaLabel, value } = filterItem;
+
+			if ( ! value || ! ariaLabel ) return;
+
+			const context = getContext< ProductFilterAttributeContext >();
+			const productFiltersStore = store< ProductFiltersStore >(
 				'woocommerce/product-filters'
 			);
-			const updatedParams = productFiltersContext.params;
 
-			delete updatedParams[ `filter_${ attributeSlug }` ];
-			delete updatedParams[ `query_type_${ attributeSlug }` ];
+			if ( state.selectedFilters.includes( value ) ) {
+				productFiltersStore.actions.removeActiveFiltersBy(
+					( item ) =>
+						item.value === value &&
+						item.type === 'attribute' &&
+						item.attribute?.slug === context.attributeSlug
+				);
+			} else {
+				productFiltersStore.actions.setActiveFilter( {
+					type: 'attribute',
+					value,
+					label: actions.getActiveLabel( ariaLabel ),
+					attribute: {
+						slug: context.attributeSlug,
+						queryType: 'or',
+					},
+				} );
+			}
 
-			productFiltersContext.params = updatedParams;
+			productFiltersStore.actions.navigate();
 		},
 	},
 } );

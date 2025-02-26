@@ -3,7 +3,6 @@
  */
 import { createElement } from '@wordpress/element';
 /* eslint-disable @woocommerce/dependency-group */
-// @ts-expect-error missing type.
 // eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 import { __experimentalItemGroup as ItemGroup } from '@wordpress/components';
 // @ts-ignore No types for this exist yet.
@@ -20,15 +19,15 @@ const { Icon, ...icons } = IconPackage;
 
 const SidebarNavigationScreenContent = ( {
 	activePage,
-	settingsData,
+	pages,
 }: {
 	activePage: string;
-	settingsData: SettingsData;
+	pages: SettingsPages;
 } ) => {
 	return (
 		<ItemGroup>
-			{ Object.keys( settingsData ).map( ( slug ) => {
-				const { label, icon } = settingsData[ slug ];
+			{ Object.keys( pages ).map( ( slug ) => {
+				const { label, icon } = pages[ slug ];
 				return (
 					<SettingItem
 						key={ slug }
@@ -52,11 +51,11 @@ const SidebarNavigationScreenContent = ( {
 
 export const Sidebar = ( {
 	activePage,
-	settingsData,
+	pages,
 	pageTitle,
 }: {
 	activePage: string;
-	settingsData: SettingsData;
+	pages: SettingsPages;
 	pageTitle: string;
 } ) => {
 	return (
@@ -66,7 +65,7 @@ export const Sidebar = ( {
 			content={
 				<SidebarNavigationScreenContent
 					activePage={ activePage }
-					settingsData={ settingsData }
+					pages={ pages }
 				/>
 			}
 		/>

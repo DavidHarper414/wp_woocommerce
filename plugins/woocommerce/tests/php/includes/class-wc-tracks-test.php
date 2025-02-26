@@ -108,6 +108,25 @@ class WC_Tracks_Test extends \WC_Unit_Test_Case {
 	}
 
 	/**
+	 * Test role properties for non-sequential roles.
+	 */
+	public function test_role_properties_for_non_sequential_roles() {
+		$user = $this->factory->user->create( array( 'role' => 'shop_manager' ) );
+		wp_set_current_user( $user );
+		$current_user = wp_get_current_user();
+		$current_user->add_role( 'administrator' );
+		// Mock the roles to be an associative array to simulate the scenario where the roles are not sequential.
+		$current_user->roles = array(
+			2 => 'administrator',
+		);
+		$properties          = \WC_Tracks::get_role_details( $current_user );
+		$this->assertEquals( 'administrator', $properties['role'] );
+		$this->assertEquals( true, $properties['can_install_plugins'] );
+		$this->assertEquals( true, $properties['can_activate_plugins'] );
+		$this->assertEquals( true, $properties['can_manage_woocommerce'] );
+	}
+
+	/**
 	 * Test the event validation and sanitization with a valid event.
 	 */
 	public function test_event_validation_and_sanitization_valid_event() {
@@ -180,7 +199,7 @@ class WC_Tracks_Test extends \WC_Unit_Test_Case {
 	 * Test that the store_id is added to the properties.
 	 */
 	public function test_store_id_is_added_to_properties() {
-		update_option( \WC_Install::STORE_ID_OPTION, '12345' );
+		$store_id   = get_option( \WC_Install::STORE_ID_OPTION, '12345' );
 		$properties = \WC_Tracks::get_properties(
 			'test_event',
 			array(
@@ -188,7 +207,7 @@ class WC_Tracks_Test extends \WC_Unit_Test_Case {
 			)
 		);
 		$this->assertContains( 'store_id', array_keys( $properties ) );
-		$this->assertEquals( '12345', $properties['store_id'] );
+		$this->assertEquals( $store_id, $properties['store_id'] );
 		delete_option( \WC_Install::STORE_ID_OPTION );
 	}
 }

@@ -5,6 +5,7 @@ import {
 	ValidatedTextInput,
 	type ValidatedTextInputHandle,
 	CheckboxControl,
+	ValidatedCheckboxControl,
 } from '@woocommerce/blocks-components';
 import {
 	BillingCountryInput,
@@ -23,12 +24,13 @@ import { AddressFormValues, ContactFormValues } from '@woocommerce/settings';
 import { objectHasProp } from '@woocommerce/types';
 import { useCheckoutAddress } from '@woocommerce/base-context';
 import fastDeepEqual from 'fast-deep-equal/es6';
+import { decodeEntities } from '@wordpress/html-entities';
 
 /**
  * Internal dependencies
  */
 import { AddressFormProps } from './types';
-import prepareFormFields from './prepare-form-fields';
+import { useFormFields } from './use-form-fields';
 import validateCountry from './validate-country';
 import customValidationHandler from './custom-validation-handler';
 import AddressLineFields from './address-line-fields';
@@ -51,12 +53,11 @@ const Form = < T extends AddressFormValues | ContactFormValues >( {
 	values,
 	children,
 	isEditing,
-	ariaDescribedBy,
+	ariaDescribedBy = '',
 }: AddressFormProps< T > ): JSX.Element => {
 	const instanceId = useInstanceId( Form );
 	const isFirstRender = useRef( true );
-	const { defaultFields } = useCheckoutAddress();
-
+	const { defaultFields } = useCheckoutAddress(); // We read from here because `useCheckoutAddress` can adapt to being in the editor or frontend.
 	// Track incoming props.
 	const currentFields = useShallowEqual( fields );
 	const currentCountry = useShallowEqual(
@@ -64,9 +65,10 @@ const Form = < T extends AddressFormValues | ContactFormValues >( {
 	);
 
 	// Prepare address form fields by combining fields from the locale and default fields.
-	const formFields = prepareFormFields(
+	const formFields = useFormFields(
 		currentFields,
 		defaultFields,
+		addressType,
 		currentCountry
 	);
 
@@ -195,19 +197,32 @@ const Form = < T extends AddressFormValues | ContactFormValues >( {
 				}
 
 				if ( field.type === 'checkbox' ) {
+					const checkboxProps = {
+						checked: Boolean( values[ field.key as keyof T ] ),
+						onChange: ( checked: boolean ) => {
+							onChange( {
+								...values,
+								[ field.key ]: checked,
+							} );
+						},
+						...checkboxFieldProps,
+					};
+					if ( field.required ) {
+						return (
+							<ValidatedCheckboxControl
+								key={ field.key }
+								{ ...( field.errorMessage
+									? { errorMessage: field.errorMessage }
+									: {} ) }
+								{ ...checkboxProps }
+							/>
+						);
+					}
+
 					return (
 						<CheckboxControl
 							key={ field.key }
-							checked={ Boolean(
-								values[ field.key as keyof T ]
-							) }
-							onChange={ ( checked: boolean ) => {
-								onChange( {
-									...values,
-									[ field.key ]: checked,
-								} );
-							} }
-							{ ...checkboxFieldProps }
+							{ ...checkboxProps }
 						/>
 					);
 				}
@@ -342,7 +357,9 @@ const Form = < T extends AddressFormValues | ContactFormValues >( {
 						type={ field.type }
 						ariaDescribedBy={ ariaDescribedBy }
 						value={
-							( values[ field.key as keyof T ] as string ) || ''
+							decodeEntities(
+								values[ field.key as keyof T ] as string
+							) || ''
 						}
 						onChange={ ( newValue: string ) =>
 							onChange( {

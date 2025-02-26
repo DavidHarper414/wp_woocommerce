@@ -8,7 +8,8 @@ use Automattic\WooCommerce\Blueprint\Exporters\ExportInstallPluginSteps;
 use Automattic\WooCommerce\Blueprint\Exporters\ExportInstallThemeSteps;
 use Automattic\WooCommerce\Blueprint\ExportSchema;
 use Automattic\WooCommerce\Blueprint\ImportSchema;
-use Automattic\WooCommerce\Blueprint\JsonResultFormatter;
+use Automattic\WooCommerce\Blueprint\ResultFormatters\JsonResultFormatter;
+use Automattic\WooCommerce\Blueprint\ImportStep;
 use Automattic\WooCommerce\Blueprint\StepProcessorResult;
 use Automattic\WooCommerce\Blueprint\ZipExportedSchema;
 use RecursiveArrayIterator;
@@ -128,6 +129,26 @@ class RestApi {
 						),
 					),
 				),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/blueprint/import-step',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'import_step' ),
+					'permission_callback' => array( $this, 'check_permission' ),
+					'args'                => array(
+						'step_definition' => array(
+							'description' => __( 'The step definition to import', 'woocommerce' ),
+							'type'        => 'object',
+							'required'    => true,
+						),
+					),
+				),
+				'schema' => array( $this, 'get_import_step_response_schema' ),
 			)
 		);
 	}
@@ -369,9 +390,9 @@ class RestApi {
 		// Full validation is performed in the process function.
 		try {
 			if ( 'application/zip' === $mime_type ) {
-				ImportSchema::create_from_zip( $tmp_filepath );
+				$import_schema = ImportSchema::create_from_zip( $tmp_filepath );
 			} else {
-				ImportSchema::create_from_json( $tmp_filepath );
+				$import_schema = ImportSchema::create_from_json( $tmp_filepath );
 			}
 		} catch ( \Exception $e ) {
 			$response['error_type'] = 'schema_validation';
@@ -381,8 +402,9 @@ class RestApi {
 
 		// Same as above, we don't want to sanitize the file name for basename as it expects the raw file name.
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$response['reference']     = basename( $_FILES['file']['tmp_name'] . '.' . $extension );
-		$response['process_nonce'] = wp_create_nonce( $response['reference'] );
+		$response['reference']             = basename( $_FILES['file']['tmp_name'] . '.' . $extension );
+		$response['process_nonce']         = wp_create_nonce( $response['reference'] );
+		$response['settings_to_overwrite'] = $this->get_settings_to_overwrite( $import_schema->get_schema()->get_steps() );
 
 		return $response;
 	}
@@ -482,6 +504,57 @@ class RestApi {
 
 
 	/**
+	 * Get list of settings that will be overridden by the import.
+	 *
+	 * @param array $requested_steps List of steps from the import schema.
+	 * @return array List of settings that will be overridden.
+	 */
+	private function get_settings_to_overwrite( array $requested_steps ): array {
+		$settings_map = array(
+			'setWCSettings'            => __( 'Settings', 'woocommerce' ),
+			'setWCCoreProfilerOptions' => __( 'Core Profiler Options', 'woocommerce' ),
+			'setWCPaymentGateways'     => __( 'Payment Gateways', 'woocommerce' ),
+			'setWCShipping'            => __( 'Shipping', 'woocommerce' ),
+			'setWCTaskOptions'         => __( 'Task Options', 'woocommerce' ),
+			'setWCTaxRates'            => __( 'Tax Rates', 'woocommerce' ),
+			'installPlugin'            => __( 'Plugins', 'woocommerce' ),
+			'installTheme'             => __( 'Themes', 'woocommerce' ),
+		);
+
+		$settings = array();
+		foreach ( $requested_steps as $step ) {
+			$step_name = $step->meta->alias ?? $step->step;
+			if ( isset( $settings_map[ $step_name ] )
+			&& ! in_array( $settings_map[ $step_name ], $settings, true ) ) {
+				$settings[] = $settings_map[ $step_name ];
+			}
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Import a single step.
+	 *
+	 * @param \WP_REST_Request $request The request object.
+	 *
+	 * @return array
+	 */
+	public function import_step( \WP_REST_Request $request ) {
+		// Make sure we're dealing with object.
+		$step_definition = json_decode( wp_json_encode( $request->get_param( 'step_definition' ) ) );
+		$step_importer   = new ImportStep( $step_definition );
+		$result          = $step_importer->import();
+
+		return array(
+			'success'  => $result->is_success(),
+			'messages' => $result->get_messages(),
+		);
+	}
+
+
+
+	/**
 	 * Get the schema for the queue endpoint.
 	 *
 	 * @return array
@@ -492,18 +565,24 @@ class RestApi {
 			'title'      => 'queue',
 			'type'       => 'object',
 			'properties' => array(
-				'reference'     => array(
+				'reference'             => array(
 					'type' => 'string',
 				),
-				'process_nonce' => array(
+				'process_nonce'         => array(
 					'type' => 'string',
 				),
-				'error_type'    => array(
+				'settings_to_overwrite' => array(
+					'type'  => 'array',
+					'items' => array(
+						'type' => 'string',
+					),
+				),
+				'error_type'            => array(
 					'type'    => 'string',
 					'default' => null,
 					'enum'    => array( 'upload', 'schema_validation', 'conflict' ),
 				),
-				'errors'        => array(
+				'errors'                => array(
 					'type'  => 'array',
 					'items' => array(
 						'type' => 'string',
@@ -544,6 +623,41 @@ class RestApi {
 					),
 				),
 			),
+		);
+		return $schema;
+	}
+
+	/**
+	 * Get the schema for the import-step endpoint.
+	 *
+	 * @return array
+	 */
+	public function get_import_step_response_schema() {
+		$schema = array(
+			'$schema'    => 'http://json-schema.org/draft-04/schema#',
+			'title'      => 'import-step',
+			'type'       => 'object',
+			'properties' => array(
+				'success'  => array(
+					'type' => 'boolean',
+				),
+				'messages' => array(
+					'type'  => 'array',
+					'items' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'message' => array(
+								'type' => 'string',
+							),
+							'type'    => array(
+								'type' => 'string',
+							),
+						),
+						'required'   => array( 'message', 'type' ),
+					),
+				),
+			),
+			'required'   => array( 'success', 'messages' ),
 		);
 		return $schema;
 	}

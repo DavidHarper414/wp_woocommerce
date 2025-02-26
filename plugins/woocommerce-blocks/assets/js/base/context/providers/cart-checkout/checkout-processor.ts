@@ -16,11 +16,12 @@ import {
 } from '@woocommerce/base-utils';
 import { useDispatch, useSelect, select as selectStore } from '@wordpress/data';
 import {
-	CHECKOUT_STORE_KEY,
-	PAYMENT_STORE_KEY,
-	VALIDATION_STORE_KEY,
+	checkoutStore,
+	paymentStore,
+	validationStore,
 	CART_STORE_KEY,
 	processErrorResponse,
+	clearCheckoutPutRequests,
 } from '@woocommerce/block-data';
 import {
 	getPaymentMethods,
@@ -62,7 +63,7 @@ const CheckoutProcessor = () => {
 		redirectUrl,
 		shouldCreateAccount,
 	} = useSelect( ( select ) => {
-		const store = select( CHECKOUT_STORE_KEY );
+		const store = select( checkoutStore );
 		return {
 			additionalFields: store.getAdditionalFields(),
 			customerId: store.getCustomerId(),
@@ -79,10 +80,10 @@ const CheckoutProcessor = () => {
 	} );
 
 	const { __internalSetHasError, __internalProcessCheckoutResponse } =
-		useDispatch( CHECKOUT_STORE_KEY );
+		useDispatch( checkoutStore );
 
 	const hasValidationErrors = useSelect(
-		( select ) => select( VALIDATION_STORE_KEY ).hasValidationErrors
+		( select ) => select( validationStore ).hasValidationErrors
 	);
 	const { shippingErrorStatus } = useShippingDataContext();
 
@@ -101,7 +102,7 @@ const CheckoutProcessor = () => {
 		isPaymentReady,
 		shouldSavePayment,
 	} = useSelect( ( select ) => {
-		const store = select( PAYMENT_STORE_KEY );
+		const store = select( paymentStore );
 
 		return {
 			activePaymentMethod: store.getActivePaymentMethod(),
@@ -168,7 +169,7 @@ const CheckoutProcessor = () => {
 		if ( hasValidationErrors() ) {
 			// If there is a shipping rates validation error, return the error message to be displayed.
 			if (
-				selectStore( VALIDATION_STORE_KEY ).getValidationError(
+				selectStore( validationStore ).getValidationError(
 					'shipping-rates-error'
 				) !== undefined
 			) {
@@ -266,6 +267,10 @@ const CheckoutProcessor = () => {
 				: undefined,
 			...paymentData,
 		};
+
+		// Checkout fields are persisted on change, so we want to cancel any pending PUT requests
+		// before placing the order.
+		clearCheckoutPutRequests();
 
 		triggerFetch( {
 			path: '/wc/store/v1/checkout',

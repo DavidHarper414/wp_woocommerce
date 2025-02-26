@@ -6,29 +6,36 @@ import {
 	Button,
 	Notice,
 	ToggleControl,
+	Icon,
 } from '@wordpress/components';
-import { getAdminLink } from '@woocommerce/settings';
 import apiFetch from '@wordpress/api-fetch';
 import {
 	useState,
-	createElement,
 	useEffect,
 	createInterpolateElement,
 } from '@wordpress/element';
 import { registerPlugin } from '@wordpress/plugins';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { CollapsibleContent } from '@woocommerce/components';
+import { settings, plugins, brush } from '@wordpress/icons';
+
 /**
  * Internal dependencies
  */
 import { SETTINGS_SLOT_FILL_CONSTANT } from '../../settings/settings-slots';
+import { BlueprintUploadDropzone } from '../components/BlueprintUploadDropzone';
 import './style.scss';
 
 const { Fill } = createSlotFill( SETTINGS_SLOT_FILL_CONSTANT );
 
+const icons = {
+	plugins,
+	brush,
+	settings,
+};
+
 const Blueprint = () => {
 	const [ exportEnabled, setExportEnabled ] = useState( true );
-	const [ exportAsZip, setExportAsZip ] = useState( false );
 	const [ error, setError ] = useState( null );
 
 	const blueprintStepGroups =
@@ -58,7 +65,6 @@ const Blueprint = () => {
 				method: 'POST',
 				data: {
 					steps: _steps,
-					export_as_zip: exportAsZip,
 				},
 			} );
 			const link = document.createElement( 'a' );
@@ -79,6 +85,7 @@ const Blueprint = () => {
 				link.setAttribute( 'download', 'woo-blueprint.json' );
 			}
 
+			linkContainer.appendChild( document.createElement( 'br' ) );
 			linkContainer.appendChild( link );
 
 			link.click();
@@ -125,100 +132,78 @@ const Blueprint = () => {
 					{ error }
 				</Notice>
 			) }
-			<p className="blueprint-settings-slotfill-description">
-				{ __(
-					'Blueprints are setup files that contain all the installation instructions. including plugins, themes and settings. Ease the setup process, allow teams to apply each others’ changes and much more.',
-					'woocommerce'
-				) }
-			</p>
-			<p>
-				<strong>
-					Please{ ' ' }
-					<a
-						href="https://automattic.survey.fm/woocommerce-blueprint-survey"
-						target="_blank"
-						rel="noreferrer"
-					>
-						complete the survey
-					</a>{ ' ' }
-					to help shape the direction of this feature!
-				</strong>
-			</p>
-			<h3>Import</h3>
-			<p>
-				You can import the schema on the{ ' ' }
-				<a
-					href={ getAdminLink(
-						'admin.php?page=wc-admin&path=%2Fsetup-wizard&step=intro-builder'
-					) }
-				>
-					builder setup page
-				</a>
-				{ ', or use the import WP CLI command ' }
-				<br />
-				<code>wp wc blueprint import path-to-woo-blueprint.json</code>.
-			</p>
-			<p></p>
-			<h3>{ __( 'Export Blueprint', 'woocommerce' ) }</h3>
-			<p className="export-intro">
+			<h3>{ __( 'Blueprint', 'woocommerce' ) }</h3>
+			<p className="blueprint-settings-intro-text">
 				{ createInterpolateElement(
 					__(
-						'Export your blueprint schema. Select the options you want to export, then click on "Export". Want to know more? <docLink/> ',
+						'Blueprints are setup files that contain all the installation instructions, including plugins, themes, and setting. Ease the setup process, allow teams to apply each others’ changes and much more. <docLink />',
 						'woocommerce'
 					),
 					{
 						docLink: (
-							<a href="#tba">
-								{ __(
-									'Check our documentation',
-									'woocommerce'
-								) }
+							<a
+								href="#tba"
+								className="woocommerce-admin-inline-documentation-link"
+							>
+								{ __( 'Learn more', 'woocommerce' ) }
 							</a>
 						),
 					}
 				) }
 			</p>
+			<h4>{ __( 'Import', 'woocommerce' ) }</h4>
+			<p>
+				{ __(
+					'Import a .zip or .json file, max size 50 MB. Only one Blueprint can be imported at a time.',
+					'woocommerce'
+				) }
+			</p>
+			<BlueprintUploadDropzone />
+			<h4>{ __( 'Export', 'woocommerce' ) }</h4>
+			<p className="blueprint-settings-export-intro">
+				{ __(
+					'Choose what you want to include, and export it as a .zip file.',
+					'woocommerce'
+				) }
+			</p>
 			{ blueprintStepGroups.map( ( group, index ) => (
-				<CollapsibleContent
-					key={ index }
-					toggleText={ group.label }
-					initialCollapsed={ index > 0 }
-					hintText={ group.description }
-				>
-					{ group.items.map( ( step ) => (
-						<ToggleControl
-							key={ step.id }
-							label={ step.label }
-							checked={ checkedState[ group.id ][ step.id ] }
-							onChange={ () => {
-								handleOnChange( group.id, step.id );
-							} }
-							help={ step.description }
-						/>
-					) ) }
-				</CollapsibleContent>
+				<div key={ index } className="blueprint-settings-export-group">
+					<Icon
+						icon={ icons[ group.icon ] ?? icons.settings }
+						alt={ sprintf(
+							// translators: %s: icon name. Does not need to be translated.
+							__( 'Blueprint setting icon - %s', 'woocommerce' ),
+							group.icon
+						) }
+					/>
+					<span className="blueprint-settings-export-group-item-count">
+						{ group.items.length }
+					</span>
+
+					<CollapsibleContent
+						key={ index }
+						toggleText={ group.label }
+						initialCollapsed={ true }
+					>
+						{ group.items.map( ( step ) => (
+							<ToggleControl
+								key={ step.id }
+								label={ step.label }
+								checked={ checkedState[ group.id ][ step.id ] }
+								onChange={ () => {
+									handleOnChange( group.id, step.id );
+								} }
+								help={ step.description }
+							/>
+						) ) }
+					</CollapsibleContent>
+				</div>
 			) ) }
 
 			<div id="download-link-container"></div>
-			<h4>{ __( 'Options', 'woocommerce' ) }</h4>
-			<div>
-				<input
-					type="checkbox"
-					id="export-as-zip"
-					name={ 'export-as-zip' }
-					value={ 'yes' }
-					checked={ exportAsZip }
-					onChange={ () => {
-						setExportAsZip( ! exportAsZip );
-					} }
-				/>
-				<label htmlFor="export-as-zip">
-					{ __( 'Export as a zip (Experimental)', 'woocommerce' ) }
-				</label>
-			</div>
-			<br></br>
 			<Button
-				isPrimary
+				className="blueprint-settings-export-button"
+				variant="primary"
 				onClick={ () => {
 					const selectedSteps = Object.entries( checkedState ).reduce(
 						( acc, [ groupId, groupState ] ) => {

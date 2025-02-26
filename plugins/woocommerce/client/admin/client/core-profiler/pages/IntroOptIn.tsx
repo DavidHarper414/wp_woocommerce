@@ -93,23 +93,10 @@ export const IntroOptIn = ( {
 				>
 					{ __( 'Skip guided setup', 'woocommerce' ) }
 				</Button>
-				{ window.wcAdminFeatures?.blueprint && (
-					<Button
-						className="woocommerce-profiler-setup-store__button"
-						variant="tertiary"
-						onClick={ () =>
-							sendEvent( {
-								type: 'INTRO_BUILDER',
-								payload: { optInDataSharing: false },
-							} )
-						}
-					>
-						{ __( 'Builder setup', 'woocommerce' ) }
-					</Button>
-				) }
 				<div className="woocommerce-profiler-intro-opt-in__footer">
 					<CheckboxControl
 						className="core-profiler__checkbox"
+						// @ts-expect-error - Type definition is not correct. Label can be a string or JSX.Element.
 						label={ interpolateComponents( {
 							mixedString: __(
 								'I agree to share my data to tailor my store setup experience, get more relevant content, and help make WooCommerce better for everyone. You can opt out at any time in WooCommerce settings. {{link}}Learn more about usage tracking.{{/link}}',
