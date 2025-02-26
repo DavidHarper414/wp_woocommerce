@@ -92,6 +92,15 @@
 			]
 		},
 		{
+			"dependencies": [
+				"@babel/preset-env"
+			],
+			"pinVersion": "^7.23.5",
+			"packages": [
+				"**"
+			]
+		},
+		{
 			"label": "React-related dependencies: @woocommerce/blocks-library",
 			"dependencies": [
 				"react",
