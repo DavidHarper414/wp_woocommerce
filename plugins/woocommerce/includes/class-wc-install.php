@@ -751,15 +751,37 @@ class WC_Install {
 	private static function update( bool $schedule_with_delay = false ) {
 		$current_db_version = get_option( 'woocommerce_db_version' );
 		$current_wc_version = WC()->version;
-
-		// We add some randomness here prevent overloading servers after an upate has been installed.
-		$scheduled_time = time() + ( $schedule_with_delay ? wp_rand( 1, 15 * MINUTE_IN_SECONDS ) : 0 );
-		$loop           = 0;
+		$scheduled_time     = time();
 
 		wc_get_logger()->info(
 			sprintf( 'Scheduling database updates (from %s to %s)...', $current_db_version, $current_wc_version ),
 			array( 'source' => 'wc-updater' )
 		);
+
+		// We add some randomness here to prevent overloading servers after an upate has been installed.
+		if ( $schedule_with_delay ) {
+			/**
+			 * Filters the maximum delay in seconds to apply to the scheduling of database updates when automatic
+			 * updates are enabled.
+			 *
+			 * @since 9.8.0
+			 *
+			 * @param int $delay The maximum delay in seconds. Default is 1800 (30 minutes).
+			 */
+			$scheduled_time_delay = absint( apply_filters( 'woocommerce_db_update_schedule_delay', 30 * MINUTE_IN_SECONDS ) );
+			$scheduled_time_delay = wp_rand( 0, $scheduled_time_delay );
+
+			if ( $scheduled_time_delay > 0 ) {
+				wc_get_logger()->info(
+					sprintf( '  Updates will begin running in approximately %s.', human_time_diff( 0, $scheduled_time_delay ) ),
+					array( 'source' => 'wc-updater' )
+				);
+
+				$scheduled_time += $scheduled_time_delay;
+			}
+		}
+
+		$loop = 0;
 		foreach ( self::get_db_update_callbacks() as $version => $update_callbacks ) {
 			if ( version_compare( $current_db_version, $version, '<' ) ) {
 				foreach ( $update_callbacks as $update_callback ) {
