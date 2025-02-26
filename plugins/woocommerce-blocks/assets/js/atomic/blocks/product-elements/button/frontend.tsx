@@ -129,7 +129,12 @@ const { state } = store< Store >(
 
 					const { actions: noticeActions } =
 						store< StoreNoticesStore >(
-							'woocommerce/product-collection-notices'
+							'woocommerce/product-collection-notices',
+							{},
+							{
+								// Stores are locked to prevent 3PD usage until the API is stable.
+								lock: 'I acknowledge that using a private store means my plugin will inevitably break on the next store release.',
+							}
 						);
 
 					// Technically as long as the product collection is present, noticeActions

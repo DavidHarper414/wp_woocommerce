@@ -134,5 +134,6 @@ const { state } = store< StoreNoticesStore >(
 				}
 			},
 		},
-	}
+	},
+	{ lock: true }
 );
