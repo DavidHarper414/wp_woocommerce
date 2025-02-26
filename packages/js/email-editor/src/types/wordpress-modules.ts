@@ -153,7 +153,7 @@ declare module '@wordpress/core-data' {
 	): [
 		WPBlock[],
 		( blocks: BlockInstance[] ) => void,
-		( blocks: BlockInstance[] ) => void,
+		( blocks: BlockInstance[] ) => void
 	];
 	export type WPBlock = any;
 
