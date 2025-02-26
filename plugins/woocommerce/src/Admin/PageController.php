@@ -573,7 +573,6 @@ class PageController {
 		// phpcs:enable WordPress.Security.NonceVerification
 	}
 
-
 	/**
 	 * Returns true if we are on a settings page.
 	 */
