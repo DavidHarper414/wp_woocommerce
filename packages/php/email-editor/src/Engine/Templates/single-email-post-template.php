@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the MailPoet Email Editor package.
+ * This file is part of the WooCommerce Email Editor package.
  * Template canvas file to render the emails custom post type.
  *
  * @package Automattic\WooCommerce\EmailEditor
