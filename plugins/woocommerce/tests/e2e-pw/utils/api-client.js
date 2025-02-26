@@ -22,4 +22,8 @@ class ApiClient {
 	}
 }
 
+export const WC_API_PATH = 'wc/v3';
+export const WC_ADMIN_API_PATH = 'wc-admin';
+export const WP_API_PATH = 'wp/v2';
+
 export default ApiClient;

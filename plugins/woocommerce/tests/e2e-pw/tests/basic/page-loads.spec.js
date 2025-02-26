@@ -4,6 +4,7 @@
 import { test, expect, tags } from '../../fixtures/fixtures';
 import { getFakeCustomer, getFakeProduct } from '../../utils/data';
 import { ADMIN_STATE_PATH } from '../../playwright.config';
+import { WC_API_PATH, WC_ADMIN_API_PATH } from '../../utils/api-client';
 
 // a representation of the menu structure for WC
 const wcPages = [
@@ -190,21 +191,26 @@ for ( const currentPage of wcPages ) {
 
 			test.use( { storageState: ADMIN_STATE_PATH } );
 
-			test.beforeAll( async ( { api, wcAdminApi } ) => {
+			test.beforeAll( async ( { restApi } ) => {
 				// skip onboarding
-				const response = await wcAdminApi.post( 'onboarding/profile', {
-					skipped: true,
-				} );
+				const response = await restApi.post(
+					`${ WC_ADMIN_API_PATH }/onboarding/profile`,
+					{
+						skipped: true,
+					}
+				);
 				expect( response.status ).toEqual( 200 );
 
 				// create a simple product
-				await api.post( 'products', product ).then( ( r ) => {
-					product.id = r.data.id;
-				} );
+				await restApi
+					.post( `${ WC_API_PATH }/products`, product )
+					.then( ( r ) => {
+						product.id = r.data.id;
+					} );
 
 				// create an order
-				await api
-					.post( 'orders', {
+				await restApi
+					.post( `${ WC_API_PATH }/orders`, {
 						line_items: [
 							{
 								product_id: product.id,
@@ -217,19 +223,27 @@ for ( const currentPage of wcPages ) {
 					} );
 
 				// create customer
-				await api
-					.post( 'customers', customer )
+				await restApi
+					.post( `${ WC_API_PATH }/customers`, customer )
 					.then( ( r ) => ( customer.id = r.data.id ) );
 			} );
 
-			test.afterAll( async ( { api } ) => {
-				await api.delete( `orders/${ orderId }`, { force: true } );
-				await api.delete( `products/${ product.id }`, {
+			test.afterAll( async ( { restApi } ) => {
+				await restApi.delete( `${ WC_API_PATH }/orders/${ orderId }`, {
 					force: true,
 				} );
-				await api.delete( `customers/${ customer.id }`, {
-					force: true,
-				} );
+				await restApi.delete(
+					`${ WC_API_PATH }/products/${ product.id }`,
+					{
+						force: true,
+					}
+				);
+				await restApi.delete(
+					`${ WC_API_PATH }/customers/${ customer.id }`,
+					{
+						force: true,
+					}
+				);
 			} );
 
 			for ( let i = 0; i < currentPage.subpages.length; i++ ) {
