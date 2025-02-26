@@ -75,7 +75,7 @@ class AdminPreview implements RegisterHooksInterface {
 
 		// Get file path.
 		$file_path = get_attached_file( $attachment_id );
-		if ( ! $file_path || ! file_exists( $file_path ) ) {
+		if ( ! $file_path || ! is_readable( $file_path ) ) {
 			$this->download_error( __( 'File not found', 'woocommerce' ), '', 404 );
 		}
 
@@ -100,7 +100,7 @@ class AdminPreview implements RegisterHooksInterface {
 		if ( $resized && isset( $resized['path'] ) ) {
 			$uploads_dir      = wp_upload_dir();
 			$resized_file_path = $uploads_dir['basedir'] . '/' . $resized['path'];
-			if ( file_exists( $resized_file_path ) ) {
+			if ( is_readable( $resized_file_path ) ) {
 				$file_path = $resized_file_path;
 			}
 		}
