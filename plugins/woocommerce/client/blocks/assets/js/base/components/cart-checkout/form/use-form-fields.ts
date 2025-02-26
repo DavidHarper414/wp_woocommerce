@@ -1,13 +1,13 @@
 /**
  * External dependencies
  */
+import { useSchemaParser } from '@woocommerce/base-hooks';
 import {
 	CURRENT_USER_IS_ADMIN,
 	FormFields,
-	KeyedFormField,
 	FormType,
+	KeyedFormField,
 } from '@woocommerce/settings';
-import { useSchemaParser } from '@woocommerce/base-hooks';
 import { useRef } from '@wordpress/element';
 import fastDeepEqual from 'fast-deep-equal/es6';
 
@@ -41,11 +41,11 @@ export const useFormFields = < T extends keyof FormFields >(
 
 	const updatedFields = formFields.map( ( field ) => {
 		const defaultConfig = defaultFields[ field.key ] || {};
-		if ( defaultConfig.rules && parser ) {
+		if ( parser ) {
 			if ( hasSchemaRules( defaultConfig, 'required' ) ) {
 				let schema = {};
 				if (
-					Object.keys( defaultConfig.rules.required ).some(
+					Object.keys( defaultConfig.required ).some(
 						( key ) =>
 							key === 'cart' ||
 							key === 'checkout' ||
@@ -54,10 +54,10 @@ export const useFormFields = < T extends keyof FormFields >(
 				) {
 					schema = {
 						type: 'object',
-						properties: defaultConfig.rules.required,
+						properties: defaultConfig.required,
 					};
 				} else {
-					schema = defaultConfig.rules.required;
+					schema = defaultConfig.required;
 				}
 
 				try {
@@ -73,7 +73,7 @@ export const useFormFields = < T extends keyof FormFields >(
 			if ( hasSchemaRules( defaultConfig, 'hidden' ) ) {
 				const schema = {
 					type: 'object',
-					properties: defaultConfig.rules.hidden,
+					properties: defaultConfig.hidden,
 				};
 				try {
 					const result = parser.validate( schema, data );

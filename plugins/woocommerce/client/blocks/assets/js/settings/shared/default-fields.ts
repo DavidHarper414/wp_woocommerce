@@ -1,15 +1,15 @@
 /**
  * External dependencies
  */
-import type { AllHTMLAttributes, AriaAttributes } from 'react';
-import type { JSONSchemaType } from 'ajv';
 import type { DocumentObject } from '@woocommerce/base-hooks';
+import type { JSONSchemaType } from 'ajv';
+import type { AllHTMLAttributes, AriaAttributes } from 'react';
 
 /**
  * Internal dependencies
  */
-import { getSetting } from './utils';
 import { SelectOption } from '../../base/components';
+import { getSetting } from './utils';
 
 // A list of attributes that can be added to a custom field when registering it.
 type CustomFieldAttributes = Pick<
@@ -35,10 +35,12 @@ export interface Field {
 	autocomplete: string;
 	// How this field value is capitalized.
 	autocapitalize?: string;
-	// Set to true if the field is required.
-	required: boolean;
-	// Set to true if the field should not be rendered.
-	hidden: boolean;
+	// Set to true if the field is required or a JSON schema object.
+	required: boolean | JSONSchemaType< DocumentObject< 'global' > > | [];
+	// Set to true if the field should not be rendered or a JSON schema object.
+	hidden: boolean | JSONSchemaType< DocumentObject< 'global' > > | [];
+	// A JSON schema object for validation.
+	validation?: JSONSchemaType< DocumentObject< 'global' > > | [];
 	// Fields will be sorted and render in this order, lowest to highest.
 	index: number;
 	// The type of input to render. Defaults to text.
@@ -49,12 +51,6 @@ export interface Field {
 	placeholder?: string;
 	// Additional attributes added when registering a field. String in key is required for data attributes.
 	attributes?: Record< keyof CustomFieldAttributes, string >;
-	// The rules for the field.
-	rules: {
-		required?: JSONSchemaType< DocumentObject< 'global' > > | []; // Empty array because server returns an empty array when no rules are set.
-		validation?: JSONSchemaType< DocumentObject< 'global' > > | [];
-		hidden?: JSONSchemaType< DocumentObject< 'global' > > | [];
-	};
 }
 
 /**
@@ -106,6 +102,8 @@ export type KeyedFormFields = Array<
 	{
 		key: keyof FormFields;
 		errorMessage?: string;
+		required: boolean;
+		hidden: boolean;
 	} & FormFields[ keyof FormFields ]
 >;
 /**

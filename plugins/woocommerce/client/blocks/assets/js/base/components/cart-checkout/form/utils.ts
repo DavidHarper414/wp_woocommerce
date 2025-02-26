@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { DocumentObject } from '@woocommerce/base-hooks';
 import {
 	AddressForm,
 	AddressFormValues,
@@ -9,7 +8,6 @@ import {
 	KeyedFormFields,
 } from '@woocommerce/settings';
 import { isObject, objectHasProp } from '@woocommerce/types';
-import { JSONSchemaType } from 'ajv';
 
 export interface FieldProps {
 	id: string;
@@ -79,15 +77,7 @@ export const getFieldData = < T extends keyof AddressForm >(
 
 export const hasSchemaRules = (
 	field: Field,
-	key: keyof Field[ 'rules' ]
-): field is Field & {
-	rules: {
-		[ k in typeof key ]: JSONSchemaType< DocumentObject< 'global' > >;
-	};
-} => {
-	return (
-		isObject( field.rules ) &&
-		isObject( field.rules[ key ] ) &&
-		Object.keys( field.rules[ key ] ).length > 0
-	);
+	key: 'required' | 'hidden' | 'validation'
+): field is Field => {
+	return isObject( field[ key ] ) && Object.keys( field[ key ] ).length > 0;
 };
