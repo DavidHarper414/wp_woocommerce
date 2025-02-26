@@ -259,6 +259,13 @@ const frontendScriptModuleBlocksToSkip = [
 	'product-gallery-large-image',
 	'store-notices',
 	'product-collection',
+	'product-filters',
+	'product-filter-status',
+	'product-filter-price',
+	'product-filter-attribute',
+	'product-filter-rating',
+	'product-filter-active',
+	'product-filter-removable-chips',
 ];
 
 const frontendEntries = getBlockEntries( 'frontend.{t,j}s{,x}', {

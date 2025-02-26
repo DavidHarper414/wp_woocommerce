@@ -55,7 +55,14 @@ interface Store {
 // TS error should be fixed by https://github.com/woocommerce/gutenberg/pull/1
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-const { state: wooState } = store< WooStore >( 'woocommerce' );
+const { state: wooState } = store< WooStore >(
+	'woocommerce',
+	{},
+	{
+		// Stores are locked to prevent 3PD usage until the API is stable.
+		lock: 'I acknowledge that using a private store means my plugin will inevitably break on the next store release.',
+	}
+);
 
 const { state } = store< Store >(
 	'woocommerce/product-button',

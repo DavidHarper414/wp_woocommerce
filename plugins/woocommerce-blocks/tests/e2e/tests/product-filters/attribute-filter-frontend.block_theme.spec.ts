@@ -76,7 +76,7 @@ test.describe( 'woocommerce/product-filter-attribute - Frontend', () => {
 		} );
 
 		// Skipping these tests until we can move this block to @wordpress/interactivity.
-		test.skip( 'filters the list of products by selecting an attribute', async ( {
+		test( 'filters the list of products by selecting an attribute', async ( {
 			page,
 		} ) => {
 			await page.goto( '/shop' );
