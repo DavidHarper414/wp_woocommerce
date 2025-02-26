@@ -558,8 +558,8 @@ class WC_Abstract_Order_Test extends WC_Unit_Test_Case {
 	 *          hooks dependent on Wc_Order::$status_transition should not be called
 	 */
 	public function test_status_transition_hooks_shouldnot_be_called_when_order_save_canceled() {
-		$initial_status  = 'auto-draft';
-		$refunded_status = 'refunded';
+		$initial_status  = OrderStatus::AUTO_DRAFT;
+		$refunded_status = OrderStatus::REFUNDED;
 
 		// add an action that will cancel the save in case the new status is "refunded".
 		$callback = static function ( WC_Order $order ) use ( $refunded_status ) {
