@@ -9,8 +9,6 @@ const test = baseTest.extend( {
 			'options?options=woocommerce_task_list_hidden'
 		);
 
-		console.log( 'Page fixture' );
-
 		// Ensure task list is visible.
 		await wcAdminApi.put( 'options', {
 			woocommerce_task_list_hidden: 'no',
@@ -33,8 +31,6 @@ const test = baseTest.extend( {
 		await api.put( 'settings/general/woocommerce_default_country', {
 			value: 'AF',
 		} );
-
-		console.log( 'nonSupportedWooPaymentsCountry fixture' );
 
 		await use( page );
 
@@ -86,7 +82,8 @@ test(
 			'wp-admin/admin.php?page=wc-admin'
 		);
 		await nonSupportedWooPaymentsCountryPage
-			.getByRole( 'button', { name: 'Get paid' } )
+			.locator( '.woocommerce-task-list__item' )
+			.filter( { hasText: 'Get paid' } )
 			.click();
 
 		await expect(
