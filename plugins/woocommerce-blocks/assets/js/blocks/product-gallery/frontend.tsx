@@ -74,12 +74,9 @@ const productGallery = {
 			return state.isSelected ? '0' : '-1';
 		},
 		get visibleImageData() {
-			// The thumbnail component preloads all images into cache. If thumbnails are not present,
-			// we only load the first two images initially since users can only navigate one at a time.
-			// Additional images will load when the user interacts with the gallery.
-			// If thumbnail images end up using smaller images, we need to update this logic.
-			// Currently we preload all images into cache via thumbnails, but if thumbnails use
-			// smaller images in the future, we'll need to revisit this lazy loading approach.
+			// The thumbnail block preloads all required images into cache. Without thumbnails, only the first two images load initially,
+			// as users navigate one at a time, with more loading on interaction. If thumbnails later use smaller, separate images, this
+			// logic will need adjustment, as users could jump to an unloaded image by clicking a thumbnail.
 			const { imageData, userHasInteracted } = getContext();
 
 			return imageData.map( ( image, index ) => {
