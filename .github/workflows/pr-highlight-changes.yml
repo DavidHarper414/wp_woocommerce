@@ -31,8 +31,8 @@ jobs:
           GIT_CLONE_PROTECTION_ACTIVE: false
         run: |
           exclude="plugins/woocommerce/tests"
-          version=$(pnpm analyzer major-minor "${{ github.event.pull_request.head.sha }}" "plugins/woocommerce/woocommerce.php" | tail -n 1)
-          pnpm analyzer "${{ github.event.pull_request.head.sha }}" $version --base "${{ github.event.pull_request.base.sha }}" --outputStyle "github" --exclude $exclude
+          version=$(pnpm analyzer major-minor "${{ github.event.pull_request.head.ref }}" "plugins/woocommerce/woocommerce.php" | tail -n 1)
+          pnpm analyzer "${{ github.event.pull_request.head.ref }}" $version --base "${{ github.event.pull_request.base.sha }}" --outputStyle "github" --exclude $exclude
       - uses: 'actions/github-script@v6'
         name: 'Validate'
         with:
