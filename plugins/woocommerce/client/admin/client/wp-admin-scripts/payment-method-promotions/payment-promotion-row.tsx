@@ -4,7 +4,11 @@
 import { Button } from '@wordpress/components';
 import { EllipsisMenu, Link } from '@woocommerce/components';
 import { useState, useEffect } from '@wordpress/element';
-import { pluginsStore, paymentGatewaysStore } from '@woocommerce/data';
+import {
+	pluginsStore,
+	paymentGatewaysStore,
+	paymentSettingsStore,
+} from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { sanitize } from 'dompurify';
@@ -15,7 +19,6 @@ import { WooPaymentsMethodsLogos } from '@woocommerce/onboarding';
  * Internal dependencies
  */
 import './payment-promotion-row.scss';
-import { getAdminSetting } from '~/utils/admin-settings';
 
 function sanitizeHTML( html: string ) {
 	return {
@@ -71,6 +74,11 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 		};
 	}, [] );
 
+	const isWooPayEligible = useSelect( ( select ) => {
+		const store = select( paymentSettingsStore );
+		return store.getIsWooPayEligible();
+	}, [] );
+
 	useEffect( () => {
 		if (
 			gatewayIsActive &&
@@ -114,8 +122,6 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 	if ( ! isVisible ) {
 		return null;
 	}
-
-	const isWooPayEligible = getAdminSetting( 'isWooPayEligible', false );
 
 	return (
 		<>
