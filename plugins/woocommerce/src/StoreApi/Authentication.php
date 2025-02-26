@@ -54,7 +54,7 @@ class Authentication {
 
 	/**
 	 * Expose Store API headers in CORS responses.
-	 * We're expilicity Cart-Token only and not nonce, only one of them is needed.
+	 * We're explicitly exposing the Cart-Token, not the nonce. Only one of them is needed.
 	 *
 	 * @param array $exposed_headers Exposed headers.
 	 * @return array
