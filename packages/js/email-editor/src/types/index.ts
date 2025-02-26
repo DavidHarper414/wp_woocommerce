@@ -101,7 +101,7 @@ declare module '@wordpress/data' {
 	// types for "createRegistrySelector" are not correct
 	export function createRegistrySelector<
 		S extends typeof select,
-		T extends ( state: any, ...args: any ) => any
+		T extends ( state: any, ...args: any ) => any,
 	>( registrySelector: ( select: S ) => T ): T;
 
 	interface StoreMap {

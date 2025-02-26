@@ -11,7 +11,6 @@
 
 // Disable focus outline for buttons in the sidebar
 .edit-post-sidebar {
-
 	.components-button:focus:not(:disabled) {
 		box-shadow: none;
 		outline: none;
