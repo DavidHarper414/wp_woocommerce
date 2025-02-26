@@ -99,7 +99,8 @@ test.describe( `${ blockData.name }`, () => {
 					( el ) => el.style
 				);
 
-				expect( style.transform ).toBe( 'scale(1)' );
+				expect( style.transform ).not.toBe( 'scale(1.3)' );
+				expect( style.transform ).toBe( '' );
 
 				await selectedImage.hover();
 

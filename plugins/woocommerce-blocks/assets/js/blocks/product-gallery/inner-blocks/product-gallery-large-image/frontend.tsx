@@ -20,24 +20,14 @@ type Context = {
 const getContext = ( ns?: string ) => getContextFn< Context >( ns );
 
 type Store = typeof productGalleryLargeImage & StorePart< ProductGallery >;
-const { state, actions } = store< Store >( 'woocommerce/product-gallery' );
+const { actions } = store< Store >( 'woocommerce/product-gallery' );
 
 const productGalleryLargeImage = {
 	state: {
-		get styles() {
-			const { styles } = getContext();
-			const { isSelected } = state;
-			return isSelected
-				? Object.entries( styles ?? [] ).reduce(
-						( acc, [ key, value ] ) => {
-							const style = `${ key }:${ value };`;
-							return acc.length > 0
-								? `${ acc } ${ style }`
-								: style;
-						},
-						''
-				  )
-				: '';
+		get isCurrentImageSelected() {
+			// @ts-expect-error - We are using this in the context of a loop and assigning the context to a variable.
+			const { imageId, largeimage } = getContext();
+			return imageId === largeimage?.id;
 		},
 	},
 	actions: {
@@ -46,28 +36,38 @@ const productGalleryLargeImage = {
 			const isMouseEventFromLargeImage = target.classList.contains(
 				'wc-block-woocommerce-product-gallery-large-image__image'
 			);
+
 			if ( ! isMouseEventFromLargeImage ) {
-				return actions.resetZoom();
+				return actions.resetZoom( event );
 			}
 
 			const element = event.target as HTMLElement;
 			const percentageX = ( event.offsetX / element.clientWidth ) * 100;
 			const percentageY = ( event.offsetY / element.clientHeight ) * 100;
 
-			const { styles } = getContext();
-			if ( styles ) {
-				styles.transform = `scale(1.3)`;
-				styles[
-					'transform-origin'
-				] = `${ percentageX }% ${ percentageY }%`;
+			const { imageId } = getContext();
+
+			if ( imageId === target.getAttribute( 'id' ) ) {
+				target.style.transform = `scale(1.3)`;
+				target.style.transformOrigin = `${ percentageX }% ${ percentageY }%`;
 			}
 		},
-		resetZoom: () => {
-			const context = getContext();
-			if ( context.styles ) {
-				context.styles.transform = `scale(1.0)`;
-				context.styles[ 'transform-origin' ] = '';
+		resetZoom: ( event: MouseEvent ) => {
+			const target = event.target as HTMLElement;
+			if ( ! target ) {
+				return;
 			}
+
+			const image = target.querySelector(
+				'.wc-block-woocommerce-product-gallery-large-image__image'
+			) as HTMLElement;
+
+			if ( ! image ) {
+				return;
+			}
+
+			image.style.transform = `scale(1.0)`;
+			image.style.transformOrigin = '';
 		},
 	},
 };

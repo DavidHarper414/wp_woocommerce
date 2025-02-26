@@ -109,15 +109,13 @@ class ProductGalleryLargeImage extends AbstractBlock {
 	 * @return array
 	 */
 	private function get_main_images_html( $context ) {
-		$attributes   = array();
 		$base_classes = 'wc-block-woocommerce-product-gallery-large-image__image';
 
 		if ( $context['fullScreenOnClick'] ) {
 			$base_classes .= ' wc-block-woocommerce-product-gallery-large-image__image--full-screen-on-click';
 		}
 		if ( $context['hoverZoom'] ) {
-			$base_classes                     .= ' wc-block-woocommerce-product-gallery-large-image__image--hoverZoom';
-			$attributes['data-wc-bind--style'] = 'state.styles';
+			$base_classes .= ' wc-block-woocommerce-product-gallery-large-image__image--hoverZoom';
 		}
 
 		ob_start();
@@ -132,16 +130,11 @@ class ProductGalleryLargeImage extends AbstractBlock {
 						data-wc-bind--id="context.largeimage.id"
 						data-wc-bind--tabindex="state.thumbnailTabIndex"
 						data-wc-on--keydown="actions.onSelectedLargeImageKeyDown"
-						data-wc-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="state.isSelected"
+						data-wc-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="state.isCurrentImageSelected"
 						data-wc-on--touchstart="actions.onTouchStart"
 						data-wc-on--touchmove="actions.onTouchMove"
 						data-wc-on--touchend="actions.onTouchEnd"
 						alt=""
-						<?php if ( ! empty( $attributes ) ) : ?>
-							<?php foreach ( $attributes as $attribute => $value ) : ?>
-								<?php echo esc_attr( $attribute ); ?>="<?php echo esc_attr( $value ); ?>"
-							<?php endforeach; ?>
-						<?php endif; ?>
 					/>
 				</li>
 			</template>
