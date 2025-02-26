@@ -93,16 +93,16 @@ class AdminPreview implements RegisterHooksInterface {
 			$this->download_error( __( 'Invalid file type', 'woocommerce' ), '', 403 );
 		}
 
-		// Handle image size requests.
-		$size = isset( $_GET['size'] ) ? sanitize_text_field( wp_unslash( $_GET['size'] ) ) : 'full';
-		if ( $size !== 'full' ) {
-			$resized = image_get_intermediate_size( $attachment_id, $size );
-			if ( $resized && isset( $resized['path'] ) ) {
-				$uploads_dir      = wp_upload_dir();
-				$resized_file_path = $uploads_dir['basedir'] . '/' . $resized['path'];
-				if ( file_exists( $resized_file_path ) ) {
-					$file_path = $resized_file_path;
-				}
+		// Handle image size requests - use 'large' as maximum size, 'full' can be too large
+		$requested_size = isset( $_GET['size'] ) ? sanitize_text_field( wp_unslash( $_GET['size'] ) ) : 'full';
+		$size = $requested_size === 'full' ? 'large' : $requested_size;
+
+		$resized = image_get_intermediate_size( $attachment_id, $size );
+		if ( $resized && isset( $resized['path'] ) ) {
+			$uploads_dir      = wp_upload_dir();
+			$resized_file_path = $uploads_dir['basedir'] . '/' . $resized['path'];
+			if ( file_exists( $resized_file_path ) ) {
+				$file_path = $resized_file_path;
 			}
 		}
 
