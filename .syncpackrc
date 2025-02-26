@@ -24,9 +24,7 @@
 			"dependencies": [
 				"@actions/*",
 				"@automattic/*",
-				"@babel/*",
 				"@bartekbp/*",
-				"@octokit/*",
 				"@storybook/*",
 				"@testing-library/*",
 				"@types/*",
@@ -113,6 +111,15 @@
 				"@babel/preset-typescript"
 			],
 			"pinVersion": "7.23.3",
+			"packages": [
+				"**"
+			]
+		},
+		{
+			"dependencies": [
+				"@babel/runtime"
+			],
+			"pinVersion": "^7.23.5",
 			"packages": [
 				"**"
 			]
