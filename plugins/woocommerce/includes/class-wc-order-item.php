@@ -576,11 +576,11 @@ class WC_Order_Item extends WC_Data implements ArrayAccess {
 		 * Filter to customize how the Cost of Goods Sold value for an order item gets rendered to HTML.
 		 *
 		 * @param string $html The rendered HTML.
-		 * @param WC_Order_Item $product The order item.
 		 * @param float $value The cost value that is being rendered.
+		 * @param WC_Order_Item $product The order item.
 		 *
 		 * @since 9.9.0
 		 */
-		return apply_filters( 'woocommerce_order_item_cogs_html', $cogs_value_html, $this, $cogs_value );
+		return apply_filters( 'woocommerce_order_item_cogs_html', $cogs_value_html, $cogs_value, $this );
 	}
 }
