@@ -139,7 +139,6 @@ const webpackConfig = {
 							[ '@babel/preset-typescript' ],
 						],
 						plugins: [
-							'@babel/plugin-proposal-class-properties',
 							! isProduction &&
 								isHot &&
 								require.resolve( 'react-refresh/babel' ),
