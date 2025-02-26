@@ -11,7 +11,7 @@ import {
  * Internal dependencies
  */
 import { random } from '../utils/helpers';
-import ApiClient from '../utils/api-client';
+import ApiClient, { WP_API_PATH } from '../utils/api-client';
 
 export const test = baseTest.extend( {
 	restApi: async ( {}, use ) => {
@@ -27,16 +27,18 @@ export const test = baseTest.extend( {
 		await use( { title: pageTitle, slug: pageSlug } );
 
 		// Cleanup
-		const pages = await restApi.get( `wp/v2/pages?slug=${ pageSlug }`, {
-			data: {
-				_fields: [ 'id' ],
-			},
-			failOnStatusCode: false,
-		} );
+		const pages = await restApi.get(
+			`${ WP_API_PATH }/pages?slug=${ pageSlug }`,
+			{
+				data: {
+					_fields: [ 'id' ],
+				},
+				failOnStatusCode: false,
+			}
+		);
 
-		for ( const page of await pages.json() ) {
-			console.log( `Deleting page ${ page.id }` );
-			await restApi.delete( `wp/v2/pages/${ page.id }`, {
+		for ( const page of await pages.data ) {
+			await restApi.delete( `${ WP_API_PATH }/pages/${ page.id }`, {
 				data: {
 					force: true,
 				},
@@ -53,16 +55,18 @@ export const test = baseTest.extend( {
 		await use( { title: postTitle, slug: postSlug } );
 
 		// Cleanup
-		const posts = await restApi.get( `wp/v2/posts?slug=${ postSlug }`, {
-			data: {
-				_fields: [ 'id' ],
-			},
-			failOnStatusCode: false,
-		} );
+		const posts = await restApi.get(
+			`${ WP_API_PATH }/posts?slug=${ postSlug }`,
+			{
+				data: {
+					_fields: [ 'id' ],
+				},
+				failOnStatusCode: false,
+			}
+		);
 
-		for ( const post of await posts.json() ) {
-			console.log( `Deleting post ${ post.id }` );
-			await restApi.delete( `wp/v2/posts/${ post.id }`, {
+		for ( const post of await posts.data ) {
+			await restApi.delete( `${ WP_API_PATH }/posts/${ post.id }`, {
 				data: {
 					force: true,
 				},
