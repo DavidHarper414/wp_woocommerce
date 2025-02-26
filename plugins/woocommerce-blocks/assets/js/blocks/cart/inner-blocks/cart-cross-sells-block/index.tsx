@@ -9,9 +9,8 @@ import { registerBlockType, createBlock } from '@wordpress/blocks';
  */
 import { Edit, Save } from './edit';
 import crossSells from '../../../product-collection/collections/cross-sells';
-import metadata from './block.json';
 
-registerBlockType( metadata, {
+registerBlockType( 'woocommerce/cart-cross-sells-block', {
 	icon: {
 		src: (
 			<Icon
