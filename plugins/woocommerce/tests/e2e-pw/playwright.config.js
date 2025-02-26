@@ -74,6 +74,7 @@ export const setupProjects = [
 		name: 'site setup',
 		testDir: `${ TESTS_ROOT_PATH }/fixtures`,
 		testMatch: `site.setup.js`,
+		dependencies: [ 'global authentication' ],
 	},
 ];
 
