@@ -11,11 +11,11 @@ import {
  * Internal dependencies
  */
 import { random } from '../utils/helpers';
-import apiClient from '../utils/api-client';
+import ApiClient from '../utils/api-client';
 
 export const test = baseTest.extend( {
 	restApi: async ( {}, use ) => {
-		await use( apiClient() );
+		await use( ApiClient.create() );
 	},
 
 	testPageTitlePrefix: [ '', { option: true } ],

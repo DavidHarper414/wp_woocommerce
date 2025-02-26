@@ -9,13 +9,17 @@ import { HTTPClientFactory } from '@woocommerce/api';
 import { admin } from '../test-data/data';
 import playwrightConfig from '../playwright.config';
 
-export default function apiClient() {
-	let baseURL = playwrightConfig.use.baseURL;
-	if ( ! baseURL.endsWith( '/' ) ) {
-		baseURL += '/';
+class ApiClient {
+	static create() {
+		let baseURL = playwrightConfig.use.baseURL;
+		if ( ! baseURL.endsWith( '/' ) ) {
+			baseURL += '/';
+		}
+		return HTTPClientFactory.build( baseURL )
+			.withBasicAuth( admin.username, admin.password )
+			.withIndexPermalinks()
+			.create();
 	}
-	return HTTPClientFactory.build( baseURL )
-		.withBasicAuth( admin.username, admin.password )
-		.withIndexPermalinks()
-		.create();
 }
+
+export default ApiClient;

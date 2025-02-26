@@ -1,11 +1,14 @@
-const apiClient = require( './api-client' );
+/**
+ * Internal dependencies
+ */
+import ApiClient from '../utils/api-client';
 
 let api;
 /**
  * Allow explicit construction of api client.
  */
 const constructWith = () => {
-	api = apiClient();
+	api = ApiClient.create();
 };
 
 const throwCustomError = (
