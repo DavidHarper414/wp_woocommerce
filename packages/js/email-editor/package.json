@@ -112,6 +112,10 @@
 			"lint": {
 				"command": "lint",
 				"changes": "src/**/*.{js,ts,tsx}"
+			},
+			"lint:css": {
+				"command": "lint:css",
+				"changes": "src/**/*.{scss,css}"
 			}
 		}
 	}
