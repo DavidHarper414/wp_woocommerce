@@ -96,14 +96,14 @@ class WC_BIS_Install {
 		$max_index_length = 191;
 
 		$tables = "CREATE TABLE {$wpdb->prefix}woocommerce_bis_notifications (
-  `id` bigint UNSIGNED NOT NULL auto_increment,
+  `id` bigint(20) unsigned NOT NULL auto_increment,
   `type` varchar(128) default 'one-time' NOT NULL,
-  `product_id` bigint UNSIGNED NOT NULL,
-  `user_id` bigint UNSIGNED NOT NULL,
+  `product_id` bigint(20) unsigned NOT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
   `user_email` varchar($max_index_length) NOT NULL,
-  `create_date` int UNSIGNED default 0 NOT NULL,
-  `subscribe_date` int UNSIGNED default 0 NOT NULL,
-  `last_notified_date` int UNSIGNED default 0 NOT NULL,
+  `create_date` int(10) unsigned default 0 NOT NULL,
+  `subscribe_date` int(10) unsigned default 0 NOT NULL,
+  `last_notified_date` int(10) unsigned default 0 NOT NULL,
   `is_queued` char(3) default 'off' NOT NULL,
   `is_active` char(3) default 'off' NOT NULL,
   `is_verified` char(3) default 'yes' NOT NULL,
@@ -118,8 +118,8 @@ class WC_BIS_Install {
 
 ) $collate;
 CREATE TABLE {$wpdb->prefix}woocommerce_bis_notificationsmeta (
-  meta_id bigint UNSIGNED NOT NULL auto_increment,
-  bis_notifications_id bigint UNSIGNED NOT NULL,
+  meta_id bigint(20) unsigned NOT NULL auto_increment,
+  bis_notifications_id bigint(20) unsigned NOT NULL,
   meta_key varchar($max_index_length) default NULL,
   meta_value longtext NULL,
   PRIMARY KEY  (meta_id),
@@ -127,14 +127,14 @@ CREATE TABLE {$wpdb->prefix}woocommerce_bis_notificationsmeta (
   KEY meta_key (meta_key($max_index_length))
 ) $collate;
 CREATE TABLE {$wpdb->prefix}woocommerce_bis_activity (
-  `id` bigint UNSIGNED NOT NULL auto_increment,
-  `notification_id` bigint UNSIGNED NOT NULL,
-  `product_id` bigint UNSIGNED NOT NULL,
+  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `notification_id` bigint(20) unsigned NOT NULL,
+  `product_id` bigint(20) unsigned NOT NULL,
   `type` varchar(20) NOT NULL,
-  `user_id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
   `user_email` varchar(255) NOT NULL,
-  `object_id` bigint UNSIGNED default 0 NOT NULL,
-  `date` int UNSIGNED NOT NULL,
+  `object_id` bigint(20) unsigned default 0 NOT NULL,
+  `date` int(10) unsigned NOT NULL,
   `note` text NULL,
   PRIMARY KEY  (`id`),
   KEY `notification_id` (`notification_id`),
