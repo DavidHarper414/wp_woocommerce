@@ -32,6 +32,11 @@ class WC_Admin_Log_Table_List extends WP_List_Table {
 	public const SOURCE_CACHE_OPTION_KEY = 'woocommerce_status_log_db_sources';
 
 	/**
+	 * If the number of log entries is over this number, cache the query that gets the total count.
+	 */
+	private const ITEM_COUNT_CACHE_THRESHOLD = 100000;
+
+	/**
 	 * Initialize the log table list.
 	 */
 	public function __construct() {
@@ -383,10 +388,15 @@ class WC_Admin_Log_Table_List extends WP_List_Table {
 		global $wpdb;
 
 		$where         = $this->get_items_query_where();
+		$version       = \WC_Cache_Helper::get_transient_version( 'logs-db' );
 		$transient_key = 'wc-log-total-items-count-' . md5( $where );
-		$count         = get_transient( $transient_key );
-		if ( false !== $count ) {
-			return $count;
+		$transient     = get_transient( $transient_key );
+		if (
+			false !== $transient
+			&& isset( $transient['value'], $transient['version'] )
+			&& $transient['version'] === $version
+		) {
+			return $transient['value'];
 		}
 
 		$count_query = "
@@ -398,8 +408,13 @@ class WC_Admin_Log_Table_List extends WP_List_Table {
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- The where clause is prepared in a separate method.
 		$count = intval( $wpdb->get_var( $count_query ) );
 
-		if ( $count > 100000 ) {
-			set_transient( $transient_key, $count, 10 * MINUTE_IN_SECONDS );
+		if ( $count > self::ITEM_COUNT_CACHE_THRESHOLD ) {
+			$transient = array(
+				'value'   => $count,
+				'version' => \WC_Cache_Helper::get_transient_version( 'logs-db', true ),
+			);
+
+			set_transient( $transient_key, $transient, 10 * MINUTE_IN_SECONDS );
 		} else {
 			delete_transient( $transient_key );
 		}

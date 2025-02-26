@@ -138,7 +138,24 @@ class WC_Log_Handler_DB extends WC_Log_Handler {
 
 		$format   = array_fill( 0, count( $log_ids ), '%d' );
 		$query_in = '(' . implode( ',', $format ) . ')';
-		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}woocommerce_log WHERE log_id IN {$query_in}", $log_ids ) ); // @codingStandardsIgnoreLine.
+
+		$result = $wpdb->query(
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->prepare(
+				"
+					DELETE FROM {$wpdb->prefix}woocommerce_log
+					WHERE log_id IN {$query_in}
+				",
+				$log_ids
+			)
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		);
+
+		if ( false !== $result ) {
+			\WC_Cache_Helper::get_transient_version( 'logs-db', true );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -160,6 +177,8 @@ class WC_Log_Handler_DB extends WC_Log_Handler {
 				date( 'Y-m-d H:i:s', $timestamp )
 			)
 		);
+
+		\WC_Cache_Helper::get_transient_version( 'logs-db', true );
 	}
 
 	/**
