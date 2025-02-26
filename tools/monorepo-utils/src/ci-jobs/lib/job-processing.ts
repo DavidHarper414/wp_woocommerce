@@ -279,7 +279,7 @@ async function createJobsForProject(
 		test: [],
 	};
 
-	let dependencyChanges = false;
+	const dependenciesWithChanges = [];
 
 	for ( const dependency of node.dependencies ) {
 		const dependencyJobs = await createJobsForProject(
@@ -288,18 +288,19 @@ async function createJobsForProject(
 			options
 		);
 
-		if ( dependencyChanges === false ) {
-			// First line of detection: implicit changes list points to the dependency.
-			dependencyChanges = ( changes[ dependency.name ] || [] ).length > 0;
-			if ( dependencyChanges === false ) {
-				// Second line of detection: the dependency spawns jobs.
-				dependencyChanges =
-					dependencyJobs.test.length + dependencyJobs.lint.length > 0;
-			}
-		}
-
 		newJobs.lint.push( ...dependencyJobs.lint );
 		newJobs.test.push( ...dependencyJobs.test );
+
+		// First line of detection: implicit changes list points to the dependency.
+		const dependencyHasChanges =
+			( changes[ dependency.name ] || [] ).length > 0;
+		// Second line of detection: the dependency spawns jobs.
+		const dependencySpawnsJobs =
+			dependencyJobs.test.length + dependencyJobs.lint.length > 0;
+
+		if ( dependencyHasChanges || dependencySpawnsJobs ) {
+			dependenciesWithChanges.push( dependency.name );
+		}
 	}
 
 	// Projects that don't have any CI configuration don't have any potential jobs for us to check for.
@@ -357,7 +358,7 @@ async function createJobsForProject(
 			}
 			case JobType.Test: {
 				// If there are dependency changes, we need to trigger the job
-				if ( dependencyChanges ) {
+				if ( dependenciesWithChanges.length > 0 ) {
 					projectChanges = true;
 				}
 
