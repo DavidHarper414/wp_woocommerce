@@ -64,7 +64,6 @@
 		"@wordpress/core-data": "wp-6.6",
 		"@wordpress/data": "wp-6.6",
 		"@wordpress/data-controls": "wp-6.6",
-		"@wordpress/edit-post": "wp-6.6",
 		"@wordpress/editor": "wp-6.6",
 		"@wordpress/element": "wp-6.6",
 		"@wordpress/format-library": "wp-6.6",
@@ -105,8 +104,6 @@
 		"@wordpress/prettier-config": "2.17.0",
 		"@wordpress/scripts": "wp-6.6",
 		"@wordpress/stylelint-config": "^21.36.0",
-		"core-js": "^3.37.1",
-		"eslint-import-resolver-typescript": "^3.7.0",
 		"prettier": "npm:wp-prettier@^3.0.3",
 		"wp-types": "^3.65.0"
 	},
