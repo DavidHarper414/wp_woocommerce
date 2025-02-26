@@ -87,7 +87,6 @@ class AdminPreview implements RegisterHooksInterface {
 			'image/png',
 			'image/gif',
 			'image/webp',
-			'image/svg+xml',
 		);
 		if ( ! in_array( $mime_type, $allowed_mime_types, true ) ) {
 			$this->download_error( __( 'Invalid file type', 'woocommerce' ), '', 403 );
