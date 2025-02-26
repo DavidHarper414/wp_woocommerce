@@ -789,7 +789,7 @@ describe( 'Job Processing', () => {
 								events: [],
 								changes: [ /test.js$/ ],
 								command: 'test-cmd',
-								ignoreDependencies: [ 'test-a' ],
+								ignoreDependenciesChanged: true,
 							},
 						],
 					},

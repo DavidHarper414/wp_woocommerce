@@ -357,16 +357,11 @@ async function createJobsForProject(
 				break;
 			}
 			case JobType.Test: {
-				// Filter out dependencies with changes that we need to ignore
-				const dependenciesToIgnore = jobConfig.ignoreDependencies || [];
-				const dependenciesWithChangesFiltered =
-					dependenciesWithChanges.filter(
-						( dependency ) =>
-							! dependenciesToIgnore.includes( dependency )
-					);
-
 				// If there are dependency changes, we need to trigger the job
-				if ( dependenciesWithChangesFiltered.length > 0 ) {
+				if (
+					dependenciesWithChanges.length > 0 &&
+					! jobConfig.ignoreDependenciesChanged
+				) {
 					projectChanges = true;
 				}
 

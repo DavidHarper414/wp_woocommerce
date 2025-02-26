@@ -72,11 +72,6 @@ interface BaseJobConfig {
 	optional?: boolean;
 
 	/**
-	 * A list of dependencies names which changed status should be ignored.
-	 */
-	ignoreDependencies?: string[];
-
-	/**
 	 * Indicates whether a job has been created for this config.
 	 */
 	jobCreated?: boolean;
@@ -214,7 +209,6 @@ function parseBaseJobConfig( raw: any ): BaseJobConfig {
 		changes: parseChangesConfig( raw.changes, [ 'package.json' ] ),
 		command: raw.command,
 		events: raw.events || [],
-		ignoreDependencies: raw.ignoreDependencies || [],
 		optional,
 	};
 }
@@ -347,6 +341,11 @@ export interface TestJobConfig extends BaseJobConfig {
 	 * The configuration for the report if one is needed.
 	 */
 	report?: ReportConfig;
+
+	/**
+	 * Whether to ignore dependencies being changed. The job will not be triggered if only dependencies have changed.
+	 */
+	ignoreDependenciesChanged?: boolean;
 }
 
 /**
@@ -371,12 +370,23 @@ function parseTestJobConfig( raw: any ): TestJobConfig {
 		testType = raw.testType.toLowerCase();
 	}
 
+	let ignoreDependenciesChanged = false;
+	if ( raw.ignoreDependenciesChanged ) {
+		if ( typeof raw.ignoreDependenciesChanged !== 'boolean' ) {
+			throw new ConfigError(
+				'The "ignoreDependenciesChanged" property must be a boolean.'
+			);
+		}
+		ignoreDependenciesChanged = raw.ignoreDependenciesChanged;
+	}
+
 	const config: TestJobConfig = {
 		...baseJob,
 		type: JobType.Test,
 		testType,
 		shardingArguments: raw.shardingArguments || [],
 		name: raw.name,
+		ignoreDependenciesChanged,
 	};
 
 	if ( raw.testEnv ) {
