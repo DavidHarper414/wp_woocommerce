@@ -1,28 +1,11 @@
-const wcApi = require( '@woocommerce/woocommerce-rest-api' ).default;
-const config = require( '../playwright.config' ).default;
+const apiClient = require( './api-client' );
 
 let api;
-
-// Ensure that global-setup.js runs before creating api client
-if ( process.env.CONSUMER_KEY && process.env.CONSUMER_SECRET ) {
-	api = new wcApi( {
-		url: config.use.baseURL,
-		consumerKey: process.env.CONSUMER_KEY,
-		consumerSecret: process.env.CONSUMER_SECRET,
-		version: 'wc/v3',
-	} );
-}
-
 /**
  * Allow explicit construction of api client.
  */
-const constructWith = ( consumerKey, consumerSecret ) => {
-	api = new wcApi( {
-		url: config.use.baseURL,
-		consumerKey,
-		consumerSecret,
-		version: 'wc/v3',
-	} );
+const constructWith = () => {
+	api = apiClient();
 };
 
 const throwCustomError = (
