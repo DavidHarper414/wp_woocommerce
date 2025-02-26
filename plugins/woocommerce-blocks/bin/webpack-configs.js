@@ -103,7 +103,7 @@ const getCoreConfig = ( options = {} ) => {
 							presets: [ '@wordpress/babel-preset-default' ],
 							plugins: [
 								'@babel/plugin-proposal-optional-chaining',
-								'@babel/plugin-proposal-class-properties',
+								'@babel/plugin-transform-class-properties',
 							],
 							cacheDirectory: path.resolve(
 								__dirname,
@@ -202,7 +202,7 @@ const getMainConfig = ( options = {} ) => {
 									  )
 									: false,
 								'@babel/plugin-proposal-optional-chaining',
-								'@babel/plugin-proposal-class-properties',
+								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
 							cacheDirectory: path.resolve(
 								__dirname,
@@ -338,7 +338,7 @@ const getFrontConfig = ( options = {} ) => {
 									  )
 									: false,
 								'@babel/plugin-proposal-optional-chaining',
-								'@babel/plugin-proposal-class-properties',
+								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
 							cacheDirectory: path.resolve(
 								__dirname,
@@ -442,7 +442,7 @@ const getPaymentsConfig = ( options = {} ) => {
 									  )
 									: false,
 								'@babel/plugin-proposal-optional-chaining',
-								'@babel/plugin-proposal-class-properties',
+								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
 							cacheDirectory: path.resolve(
 								__dirname,
@@ -535,7 +535,7 @@ const getExtensionsConfig = ( options = {} ) => {
 									  )
 									: false,
 								'@babel/plugin-proposal-optional-chaining',
-								'@babel/plugin-proposal-class-properties',
+								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
 							cacheDirectory: path.resolve(
 								__dirname,
@@ -760,7 +760,7 @@ const getStylingConfig = ( options = {} ) => {
 									  )
 									: false,
 								'@babel/plugin-proposal-optional-chaining',
-								'@babel/plugin-proposal-class-properties',
+								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
 							cacheDirectory: path.resolve(
 								__dirname,
@@ -889,7 +889,7 @@ const getInteractivityAPIConfig = ( options = {} ) => {
 								// Required until Webpack is updated to ^5.0.0
 								plugins: [
 									'@babel/plugin-proposal-optional-chaining',
-									'@babel/plugin-proposal-class-properties',
+									'@babel/plugin-transform-class-properties',
 								],
 								cacheDirectory: path.resolve(
 									__dirname,
@@ -975,7 +975,7 @@ const getCartAndCheckoutFrontendConfig = ( options = {} ) => {
 									  )
 									: false,
 								'@babel/plugin-proposal-optional-chaining',
-								'@babel/plugin-proposal-class-properties',
+								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
 							cacheDirectory: path.resolve(
 								__dirname,
