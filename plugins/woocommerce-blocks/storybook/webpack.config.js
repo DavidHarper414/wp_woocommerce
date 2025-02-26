@@ -16,11 +16,13 @@ const tsConfig = require( '../tsconfig.base.json' );
 
 const aliases = Object.keys( tsConfig.compilerOptions.paths ).reduce(
 	( acc, key ) => {
-		const currentPath = tsConfig.compilerOptions.paths[ key ][ 0 ];
-		acc[ key.replace( '/*', '' ) ] = path.resolve(
-			__dirname,
-			'../' + currentPath.replace( '/*', '/' )
-		);
+		if ( ! key.startsWith( '@wordpress' ) ) {
+			const currentPath = tsConfig.compilerOptions.paths[ key ][ 0 ];
+			acc[ key.replace( '/*', '' ) ] = path.resolve(
+				__dirname,
+				'../' + currentPath.replace( '/*', '/' )
+			);
+		}
 		return acc;
 	},
 	{}
