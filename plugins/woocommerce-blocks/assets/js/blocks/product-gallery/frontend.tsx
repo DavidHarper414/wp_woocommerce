@@ -110,6 +110,7 @@ const productGallery = {
 			const imageIndex = newImageNumber - 1;
 			const imageId = imageData[ imageIndex ].id;
 			if ( imageIndex !== -1 ) {
+				context.imageId = imageId;
 				scrollImageIntoView( imageId );
 			}
 		},

@@ -20,7 +20,7 @@ type Context = {
 const getContext = ( ns?: string ) => getContextFn< Context >( ns );
 
 type Store = typeof productGalleryLargeImage & StorePart< ProductGallery >;
-const { actions } = store< Store >( 'woocommerce/product-gallery' );
+const { state, actions } = store< Store >( 'woocommerce/product-gallery' );
 
 const productGalleryLargeImage = {
 	state: {
@@ -55,7 +55,6 @@ const productGalleryLargeImage = {
 			const percentageY = ( event.offsetY / element.clientHeight ) * 100;
 
 			const { styles } = getContext();
-
 			if ( styles ) {
 				styles.transform = `scale(1.3)`;
 				styles[

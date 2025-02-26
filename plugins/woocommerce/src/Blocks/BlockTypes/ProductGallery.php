@@ -108,6 +108,8 @@ class ProductGallery extends AbstractBlock {
 
 		$product_gallery_thumbnail_images = ProductGalleryUtils::get_product_gallery_images( $post_id, 'thumbnail', array() );
 		$product_gallery_full_images      = ProductGalleryUtils::get_product_gallery_images( $post_id, 'full', array() );
+		$image_src_data                   = ProductGalleryUtils::get_product_gallery_image_data( $product );
+		$image_id                         = count( $image_src_data ) > 0 ? $image_src_data[0]['id'] : -1;
 		$classname_single_image           = '';
 
 		if ( count( $product_gallery_thumbnail_images ) < 2 ) {
@@ -119,13 +121,14 @@ class ProductGallery extends AbstractBlock {
 		$product_id          = strval( $product->get_id() );
 		$gallery_with_dialog = $this->inject_dialog( $content, $this->render_dialog( $product_gallery_full_images ) );
 		$p                   = new \WP_HTML_Tag_Processor( $gallery_with_dialog );
+
 		if ( $p->next_tag() ) {
 			$p->set_attribute( 'data-wc-interactive', wp_json_encode( array( 'namespace' => 'woocommerce/product-gallery' ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) );
 			$p->set_attribute(
 				'data-wc-context',
 				wp_json_encode(
 					array(
-						'imageData'           => ProductGalleryUtils::get_product_gallery_image_data( $product ),
+						'imageData'           => $image_src_data,
 						'selectedImageNumber' => 1,
 						'isDialogOpen'        => false,
 						'disableLeft'         => true,
@@ -135,6 +138,7 @@ class ProductGallery extends AbstractBlock {
 						'touchCurrentX'       => 0,
 						'productId'           => $product_id,
 						'imageIds'            => ProductGalleryUtils::get_product_gallery_image_ids( $product, null, false ),
+						'imageId'             => $image_id,
 						'userHasInteracted'   => false,
 					),
 					JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
