@@ -773,6 +773,69 @@ describe( 'Job Processing', () => {
 			} );
 		} );
 
+		it( 'should not trigger test job for ignored dependency', async () => {
+			const testType = 'unit';
+			const jobs = await createJobsForChanges(
+				{
+					name: 'test',
+					path: 'test',
+					ciConfig: {
+						jobs: [
+							{
+								type: JobType.Test,
+								testType,
+								name: 'Default',
+								shardingArguments: [],
+								events: [],
+								changes: [ /test.js$/ ],
+								command: 'test-cmd',
+								ignoreDependencies: [ 'test-a' ],
+							},
+						],
+					},
+					dependencies: [
+						{
+							name: 'test-a',
+							path: 'test-a',
+							ciConfig: {
+								jobs: [
+									{
+										type: JobType.Test,
+										testType: 'unit',
+										name: 'Default A',
+										shardingArguments: [],
+										events: [],
+										changes: [ /test-a.js$/ ],
+										command: 'test-cmd-a',
+									},
+								],
+							},
+							dependencies: [],
+						},
+					],
+				},
+				{
+					'test-a': [ 'test-a.js' ],
+				},
+				{}
+			);
+
+			expect( jobs.lint ).toHaveLength( 0 );
+			expect( jobs.test ).toHaveLength( 1 );
+			expect( jobs.test ).toContainEqual( {
+				projectName: 'test-a',
+				projectPath: 'test-a',
+				name: 'Default A',
+				command: 'test-cmd-a',
+				shardNumber: 0,
+				testEnv: {
+					shouldCreate: false,
+					envVars: {},
+				},
+				testType,
+			} );
+		} );
+
 		it( 'should isolate dependency cascade keys to prevent cross-dependency matching', async () => {
 			const testType = 'unit';
 			const jobs = await createJobsForChanges(

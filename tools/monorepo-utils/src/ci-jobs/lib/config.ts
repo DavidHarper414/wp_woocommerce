@@ -72,7 +72,12 @@ interface BaseJobConfig {
 	optional?: boolean;
 
 	/**
-	 * Indicates whether or not a job has been created for this config.
+	 * A list of dependencies names which changed status should be ignored.
+	 */
+	ignoreDependencies?: string[];
+
+	/**
+	 * Indicates whether a job has been created for this config.
 	 */
 	jobCreated?: boolean;
 }
@@ -209,6 +214,7 @@ function parseBaseJobConfig( raw: any ): BaseJobConfig {
 		changes: parseChangesConfig( raw.changes, [ 'package.json' ] ),
 		command: raw.command,
 		events: raw.events || [],
+		ignoreDependencies: raw.ignoreDependencies || [],
 		optional,
 	};
 }
