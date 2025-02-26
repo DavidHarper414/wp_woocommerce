@@ -1,0 +1,21 @@
+<?php
+declare(strict_types=1);
+
+namespace Automattic\WooCommerce\Blocks\BlockTypes;
+
+use Automattic\WooCommerce\Admin\Features\Features;
+use Automattic\WooCommerce\Blocks\Utils\StyleAttributesUtils;
+use WP_Block;
+
+/**
+ * Block type for variation selector item in add to cart with options.
+ * It's responsible to render each child attribute in a form of a list item.
+ */
+class AddToCartWithOptionsVariationSelectorItemTemplate extends AbstractBlock {
+	/**
+	 * Block name.
+	 *
+	 * @var string
+	 */
+	protected $block_name = 'add-to-cart-with-options-variation-selector-item';
+}
