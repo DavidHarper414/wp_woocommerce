@@ -10,15 +10,6 @@
 	"versionGroups": [
 		{
 			"dependencies": [
-				"pnpm"
-			],
-			"pinVersion": "9.1.3",
-			"packages": [
-				"**"
-			]
-		},
-		{
-			"dependencies": [
 				"node"
 			],
 			"dependencyTypes": [
@@ -33,9 +24,7 @@
 			"dependencies": [
 				"@actions/*",
 				"@automattic/*",
-				"@babel/*",
 				"@bartekbp/*",
-				"@octokit/*",
 				"@storybook/*",
 				"@testing-library/*",
 				"@types/*",
@@ -60,7 +49,6 @@
 				"@wordpress/dom",
 				"@wordpress/dom-ready",
 				"@wordpress/e2e-test-utils",
-				"@wordpress/e2e-test-utils-playwright",
 				"@wordpress/e2e-tests",
 				"@wordpress/element",
 				"@wordpress/html-entities",
@@ -73,6 +61,7 @@
 				"@wordpress/postcss-themes",
 				"@wordpress/prettier-config",
 				"@wordpress/primitives",
+				"@wordpress/private-apis",
 				"@wordpress/scripts",
 				"@wordpress/server-side-render",
 				"@wordpress/style-engine",
@@ -86,8 +75,7 @@
 				"webpack*"
 			],
 			"packages": [
-				"@woocommerce/block-library",
-				"@woocommerce/storybook"
+				"@woocommerce/block-library"
 			],
 			"isIgnored": true
 		},
@@ -96,6 +84,42 @@
 				"@typescript-eslint/**"
 			],
 			"pinVersion": "^5.62.0",
+			"packages": [
+				"**"
+			]
+		},
+		{
+			"dependencies": [
+				"@babel/preset-env"
+			],
+			"pinVersion": "^7.23.5",
+			"packages": [
+				"**"
+			]
+		},
+		{
+			"dependencies": [
+				"@babel/preset-react"
+			],
+			"pinVersion": "7.23.3",
+			"packages": [
+				"**"
+			]
+		},
+		{
+			"dependencies": [
+				"@babel/preset-typescript"
+			],
+			"pinVersion": "7.23.3",
+			"packages": [
+				"**"
+			]
+		},
+		{
+			"dependencies": [
+				"@babel/runtime"
+			],
+			"pinVersion": "^7.23.5",
 			"packages": [
 				"**"
 			]
@@ -198,7 +222,7 @@
 			"packages": [
 				"**"
 			],
-			"pinVersion": "^1.46.1"
+			"pinVersion": "^1.50.1"
 		},
 		{
 			"dependencies": [
@@ -273,7 +297,7 @@
 				"@woocommerce/block-library",
 				"**"
 			],
-			"pinVersion": "10.14.0"
+			"pinVersion": "10.17.0"
 		},
 		{
 			"dependencies": [
@@ -282,7 +306,7 @@
 			"packages": [
 				"**"
 			],
-			"pinVersion": "wp-6.6"
+			"pinVersion": "^1.15.0"
 		},
 		{
 			"dependencies": [
@@ -454,7 +478,7 @@
 			"packages": [
 				"**"
 			],
-			"pinVersion": "0.14.3"
+			"pinVersion": "0.14.10"
 		},
 		{
 			"dependencies": [
@@ -476,7 +500,6 @@
 				"config",
 				"eslint",
 				"node",
-				"pnpm",
 				"postcss",
 				"postcss-loader"
 			],

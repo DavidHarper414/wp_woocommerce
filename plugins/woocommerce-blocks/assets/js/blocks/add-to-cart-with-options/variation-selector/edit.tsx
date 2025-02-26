@@ -12,6 +12,11 @@ import {
 	SelectControl,
 } from '@wordpress/components';
 
+/**
+ * Internal dependencies
+ */
+import useProductTypeSelector from '../hooks/use-product-type-selector';
+
 interface Attributes {
 	className?: string;
 }
@@ -21,14 +26,20 @@ const AddToCartWithOptionsVariationSelectorEdit = (
 ) => {
 	const { className } = props.attributes;
 	const { product } = useProductDataContext();
+	const { current: currentProductType } = useProductTypeSelector();
 
 	const blockProps = useBlockProps( {
 		className,
 	} );
 
-	if ( product.type !== 'variable' ) {
+	const productType =
+		product.id === 0 ? currentProductType?.slug : product.type;
+
+	if ( productType !== 'variable' ) {
 		return null;
 	}
+
+	const isInTemplate = product.id === 0;
 
 	const renderAttributeSelectors = () => {
 		return Object.entries( product.attributes ).map(
@@ -63,11 +74,46 @@ const AddToCartWithOptionsVariationSelectorEdit = (
 		);
 	};
 
+	const renderDefaultVariationSelector = () => {
+		return [
+			__( 'Color', 'woocommerce' ),
+			__( 'Size', 'woocommerce' ),
+		].map( ( attribute ) => (
+			<div
+				className="wc-block-variation-selector__wrapper"
+				key={ attribute }
+			>
+				<Heading
+					className="wc-block-variation-selector__label"
+					level="3"
+				>
+					{ attribute }
+				</Heading>
+				<SelectControl
+					value=""
+					options={ [
+						{
+							label: __( 'Choose an option', 'woocommerce' ),
+							value: '',
+							disabled: true,
+						},
+					] }
+					disabled
+					// eslint-disable-next-line @typescript-eslint/no-empty-function
+					onChange={ () => {} }
+					className="wc-block-variation-selector__select"
+				/>
+			</div>
+		) );
+	};
+
 	return (
 		<>
 			<div { ...blockProps }>
 				<div className="wc-block-variation-selector">
-					{ renderAttributeSelectors() }
+					{ isInTemplate
+						? renderDefaultVariationSelector()
+						: renderAttributeSelectors() }
 				</div>
 			</div>
 		</>

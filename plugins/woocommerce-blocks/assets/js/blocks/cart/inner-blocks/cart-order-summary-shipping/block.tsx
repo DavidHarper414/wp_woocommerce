@@ -13,6 +13,7 @@ import {
 	allRatesAreCollectable,
 } from '@woocommerce/base-utils';
 import { getSetting } from '@woocommerce/settings';
+import { SHIPPING_METHODS_EXIST } from '@woocommerce/block-settings';
 
 /**
  * Internal dependencies
@@ -33,10 +34,9 @@ const Block = ( { className }: { className: string } ): JSX.Element | null => {
 		return null;
 	}
 
-	const showCalculator = getSetting< boolean >(
-		'isShippingCalculatorEnabled',
-		true
-	);
+	const showCalculator =
+		getSetting< boolean >( 'isShippingCalculatorEnabled', true ) &&
+		SHIPPING_METHODS_EXIST;
 
 	const hasSelectedCollectionOnly =
 		selectedRatesAreCollectable( shippingRates );
@@ -54,7 +54,7 @@ const Block = ( { className }: { className: string } ): JSX.Element | null => {
 				<TotalsShipping
 					label={
 						hasSelectedCollectionOnly
-							? __( 'Collection', 'woocommerce' )
+							? __( 'Pickup', 'woocommerce' )
 							: __( 'Delivery', 'woocommerce' )
 					}
 					placeholder={

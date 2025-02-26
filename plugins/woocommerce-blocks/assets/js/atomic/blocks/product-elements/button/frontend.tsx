@@ -3,10 +3,11 @@
  */
 import { store, getContext as getContextFn } from '@woocommerce/interactivity';
 import { select, subscribe, dispatch } from '@wordpress/data';
-import { CART_STORE_KEY as storeKey } from '@woocommerce/block-data';
+import { cartStore } from '@woocommerce/block-data';
 import { Cart } from '@woocommerce/type-defs/cart';
 import { createRoot } from '@wordpress/element';
 import NoticeBanner from '@woocommerce/base-components/notice-banner';
+import { decodeEntities } from '@wordpress/html-entities';
 
 interface Context {
 	isLoading: boolean;
@@ -137,7 +138,7 @@ const { state } = store< Store >( 'woocommerce/product-button', {
 			context.isLoading = true;
 
 			try {
-				yield dispatch( storeKey ).addItemToCart(
+				yield dispatch( cartStore ).addItemToCart(
 					productId,
 					quantityToAdd
 				);
@@ -158,8 +159,10 @@ const { state } = store< Store >( 'woocommerce/product-button', {
 					storeNoticeBlock ??
 					document.querySelector( storeNoticeClass );
 
+				const message = ( error as Error ).message;
+
 				if ( domNode ) {
-					injectNotice( domNode, ( error as Error ).message );
+					injectNotice( domNode, decodeEntities( message ) );
 				}
 
 				// We don't care about errors blocking execution, but will
@@ -218,13 +221,15 @@ const { state } = store< Store >( 'woocommerce/product-button', {
 
 // Subscribe to changes in Cart data.
 subscribe( () => {
-	const cartData = select( storeKey ).getCartData();
-	const isResolutionFinished =
-		select( storeKey ).hasFinishedResolution( 'getCartData' );
+	const cartData = select( cartStore ).getCartData();
+	const isResolutionFinished = select( cartStore ).hasFinishedResolution(
+		'getCartData',
+		[]
+	);
 	if ( isResolutionFinished ) {
 		state.cart = cartData;
 	}
-}, storeKey );
+}, cartStore );
 
 // RequestIdleCallback is not available in Safari, so we use setTimeout as an alternative.
 const callIdleCallback =
@@ -234,6 +239,6 @@ const callIdleCallback =
 // `requestIdleCallback` to avoid potential performance issues.
 callIdleCallback( () => {
 	if ( ! state.hasCartLoaded ) {
-		select( storeKey ).getCartData();
+		select( cartStore ).getCartData();
 	}
 } );

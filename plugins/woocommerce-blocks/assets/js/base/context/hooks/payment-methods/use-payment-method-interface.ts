@@ -12,9 +12,9 @@ import LoadingMask from '@woocommerce/base-components/loading-mask';
 import type { PaymentMethodInterface } from '@woocommerce/types';
 import { useSelect, useDispatch } from '@wordpress/data';
 import {
-	CHECKOUT_STORE_KEY,
-	PAYMENT_STORE_KEY,
-	CART_STORE_KEY,
+	checkoutStore,
+	paymentStore,
+	cartStore,
 } from '@woocommerce/block-data';
 import { ValidationInputError } from '@woocommerce/blocks-components';
 
@@ -47,7 +47,7 @@ export const usePaymentMethodInterface = (): PaymentMethodInterface => {
 
 	const { isCalculating, isComplete, isIdle, isProcessing, customerId } =
 		useSelect( ( select ) => {
-			const store = select( CHECKOUT_STORE_KEY );
+			const store = select( checkoutStore );
 			return {
 				isComplete: store.isComplete(),
 				isIdle: store.isIdle(),
@@ -58,7 +58,7 @@ export const usePaymentMethodInterface = (): PaymentMethodInterface => {
 		} );
 	const { paymentStatus, activePaymentMethod, shouldSavePayment } = useSelect(
 		( select ) => {
-			const store = select( PAYMENT_STORE_KEY );
+			const store = select( paymentStore );
 
 			return {
 				// The paymentStatus is exposed to third parties via the payment method interface so the API must not be changed
@@ -111,8 +111,7 @@ export const usePaymentMethodInterface = (): PaymentMethodInterface => {
 		}
 	);
 
-	const { __internalSetExpressPaymentError } =
-		useDispatch( PAYMENT_STORE_KEY );
+	const { __internalSetExpressPaymentError } = useDispatch( paymentStore );
 
 	const { onPaymentProcessing, onPaymentSetup } = usePaymentEventsContext();
 	const {
@@ -133,9 +132,9 @@ export const usePaymentMethodInterface = (): PaymentMethodInterface => {
 	} = useShippingData();
 
 	const { billingAddress, shippingAddress } = useSelect( ( select ) =>
-		select( CART_STORE_KEY ).getCustomerData()
+		select( cartStore ).getCustomerData()
 	);
-	const { setShippingAddress } = useDispatch( CART_STORE_KEY );
+	const { setShippingAddress } = useDispatch( cartStore );
 	const { cartItems, cartFees, cartTotals, extensions } = useStoreCart();
 	const { appliedCoupons } = useStoreCartCoupons();
 	const currentCartTotals = useRef(

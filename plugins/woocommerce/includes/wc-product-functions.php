@@ -9,7 +9,10 @@
  */
 
 use Automattic\Jetpack\Constants;
+use Automattic\WooCommerce\Enums\ProductStatus;
+use Automattic\WooCommerce\Enums\ProductStockStatus;
 use Automattic\WooCommerce\Enums\ProductType;
+use Automattic\WooCommerce\Enums\CatalogVisibility;
 use Automattic\WooCommerce\Proxies\LegacyProxy;
 use Automattic\WooCommerce\Utilities\ArrayUtil;
 use Automattic\WooCommerce\Utilities\NumberUtil;
@@ -303,6 +306,7 @@ function wc_product_canonical_redirect(): void {
 
 	// In the event we are dealing with ugly permalinks, this will be empty.
 	$specified_category_slug = get_query_var( 'product_cat' );
+	$specified_category_slug = urldecode( $specified_category_slug );
 
 	if ( ! is_string( $specified_category_slug ) || strlen( $specified_category_slug ) < 1 ) {
 		return;
@@ -311,6 +315,7 @@ function wc_product_canonical_redirect(): void {
 	// What category slug did we expect? Normally this maps back to the first assigned product_cat
 	// term. However, this is filterable so we use the relevant helper function to figure this out.
 	$expected_category_slug = wc_product_post_type_link( '%product_cat%', get_post( get_the_ID() ) );
+	$expected_category_slug = urldecode( $expected_category_slug );
 
 	if ( $specified_category_slug === $expected_category_slug ) {
 		return;
@@ -955,10 +960,10 @@ function wc_get_product_visibility_options() {
 	return apply_filters(
 		'woocommerce_product_visibility_options',
 		array(
-			'visible' => __( 'Shop and search results', 'woocommerce' ),
-			'catalog' => __( 'Shop only', 'woocommerce' ),
-			'search'  => __( 'Search results only', 'woocommerce' ),
-			'hidden'  => __( 'Hidden', 'woocommerce' ),
+			CatalogVisibility::VISIBLE => __( 'Shop and search results', 'woocommerce' ),
+			CatalogVisibility::CATALOG => __( 'Shop only', 'woocommerce' ),
+			CatalogVisibility::SEARCH  => __( 'Search results only', 'woocommerce' ),
+			CatalogVisibility::HIDDEN  => __( 'Hidden', 'woocommerce' ),
 		)
 	);
 }
@@ -992,9 +997,9 @@ function wc_get_product_stock_status_options() {
 	return apply_filters(
 		'woocommerce_product_stock_status_options',
 		array(
-			'instock'     => __( 'In stock', 'woocommerce' ),
-			'outofstock'  => __( 'Out of stock', 'woocommerce' ),
-			'onbackorder' => __( 'On backorder', 'woocommerce' ),
+			ProductStockStatus::IN_STOCK     => __( 'In stock', 'woocommerce' ),
+			ProductStockStatus::OUT_OF_STOCK => __( 'Out of stock', 'woocommerce' ),
+			ProductStockStatus::ON_BACKORDER => __( 'On backorder', 'woocommerce' ),
 		)
 	);
 }
@@ -1187,6 +1192,10 @@ function wc_get_price_including_tax( $product, $args = array() ) {
  * @return float|string Price with tax excluded, or an empty string if price calculation failed.
  */
 function wc_get_price_excluding_tax( $product, $args = array() ) {
+	if ( ! ( $product instanceof WC_Product ) ) {
+		return '';
+	}
+
 	$args = wp_parse_args(
 		$args,
 		array(
@@ -1313,7 +1322,7 @@ function wc_products_array_filter_visible( $product ) {
  * @return bool
  */
 function wc_products_array_filter_visible_grouped( $product ) {
-	return $product && is_a( $product, 'WC_Product' ) && ( 'publish' === $product->get_status() || current_user_can( 'edit_product', $product->get_id() ) );
+	return $product && is_a( $product, 'WC_Product' ) && ( ProductStatus::PUBLISH === $product->get_status() || current_user_can( 'edit_product', $product->get_id() ) );
 }
 
 /**

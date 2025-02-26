@@ -6,7 +6,7 @@
 import fastDeepEqual from 'fast-deep-equal/es6';
 import { useRef } from '@wordpress/element';
 import {
-	CART_STORE_KEY as storeKey,
+	cartStore,
 	EMPTY_CART_COUPONS,
 	EMPTY_CART_ITEMS,
 	EMPTY_CART_CROSS_SELLS,
@@ -23,6 +23,7 @@ import { useSelect } from '@wordpress/data';
 import { decodeEntities } from '@wordpress/html-entities';
 import type {
 	StoreCart,
+	CartResponse,
 	CartResponseTotals,
 	CartResponseFeeItem,
 	CartResponseBillingAddress,
@@ -81,15 +82,16 @@ const defaultCartTotals: CartResponseTotals = {
 	currency_suffix: '',
 };
 
-const decodeValues = (
-	object: Record< string, unknown >
-): Record< string, unknown > =>
-	Object.fromEntries(
+const decodeValues = < T extends Record< string, unknown > >(
+	object: T
+): T => {
+	return Object.fromEntries(
 		Object.entries( object ).map( ( [ key, value ] ) => [
 			key,
 			decodeEntities( value ),
 		] )
-	);
+	) as T;
+};
 
 /**
  * @constant
@@ -108,6 +110,7 @@ export const defaultCartData: StoreCart = {
 	cartTotals: defaultCartTotals,
 	cartIsLoading: true,
 	cartErrors: EMPTY_CART_ERRORS,
+	billingData: defaultBillingAddress,
 	billingAddress: defaultBillingAddress,
 	shippingAddress: defaultShippingAddress,
 	shippingRates: EMPTY_SHIPPING_RATES,
@@ -136,10 +139,15 @@ export const defaultCartData: StoreCart = {
 export const useStoreCart = (
 	options: { shouldSelect: boolean } = { shouldSelect: true }
 ): StoreCart => {
-	const { isEditor, previewData } = useEditorContext();
-	const previewCart = previewData?.previewCart;
 	const { shouldSelect } = options;
+	const { isEditor, previewData } = useEditorContext();
+	const previewCart = previewData?.previewCart as unknown as CartResponse & {
+		receiveCart?: ( cart: CartResponse ) => void;
+		receiveCartContents?: ( cart: CartResponse ) => void;
+	};
 	const currentResults = useRef();
+	const billingAddressRef = useRef( defaultBillingAddress );
+	const shippingAddressRef = useRef( defaultShippingAddress );
 
 	// This will keep track of jQuery and DOM events that invalidate the store resolution.
 	useStoreCartEventListeners();
@@ -152,6 +160,7 @@ export const useStoreCart = (
 
 			if ( isEditor ) {
 				return {
+					...defaultCartData,
 					cartCoupons: previewCart.coupons,
 					cartItems: previewCart.items,
 					crossSellsProducts: previewCart.cross_sells,
@@ -160,19 +169,13 @@ export const useStoreCart = (
 					cartItemsWeight: previewCart.items_weight,
 					cartNeedsPayment: previewCart.needs_payment,
 					cartNeedsShipping: previewCart.needs_shipping,
-					cartItemErrors: EMPTY_CART_ITEM_ERRORS,
 					cartTotals: previewCart.totals,
-					cartIsLoading: false,
-					cartErrors: EMPTY_CART_ERRORS,
-					billingData: defaultBillingAddress,
-					billingAddress: defaultBillingAddress,
-					shippingAddress: defaultShippingAddress,
-					extensions: EMPTY_EXTENSIONS,
 					shippingRates: previewCart.shipping_rates,
-					isLoadingRates: false,
 					cartHasCalculatedShipping:
 						previewCart.has_calculated_shipping,
-					paymentRequirements: previewCart.paymentRequirements,
+					paymentMethods: previewCart.payment_methods,
+					paymentRequirements: previewCart.payment_requirements,
+					cartIsLoading: false,
 					receiveCart:
 						typeof previewCart?.receiveCart === 'function'
 							? previewCart.receiveCart
@@ -184,19 +187,17 @@ export const useStoreCart = (
 				};
 			}
 
-			const store = select( storeKey );
+			const store = select( cartStore );
 			const cartData = store.getCartData();
 			const cartErrors = store.getCartErrors();
 			const cartTotals = store.getCartTotals();
 			const cartIsLoading =
+				// @ts-expect-error `hasFinishedResolution` is not typed in @wordpress/data yet.
 				! store.hasFinishedResolution( 'getCartData' );
 
 			const isLoadingRates = store.isCustomerDataUpdating();
-			const { receiveCart, receiveCartContents } = dispatch( storeKey );
-			const billingAddress = decodeValues( cartData.billingAddress );
-			const shippingAddress = cartData.needsShipping
-				? decodeValues( cartData.shippingAddress )
-				: billingAddress;
+			const { receiveCart, receiveCartContents } = dispatch( cartStore );
+
 			const cartFees =
 				cartData.fees.length > 0
 					? cartData.fees.map( ( fee: CartResponseFeeItem ) =>
@@ -217,6 +218,28 @@ export const useStoreCart = (
 					  )
 					: EMPTY_CART_COUPONS;
 
+			// Update refs to keep the hook stable.
+			const billingAddress = emptyHiddenAddressFields(
+				decodeValues( cartData.billingAddress )
+			);
+			const shippingAddress = cartData.needsShipping
+				? emptyHiddenAddressFields(
+						decodeValues( cartData.shippingAddress )
+				  )
+				: billingAddress;
+
+			if (
+				! fastDeepEqual( billingAddress, billingAddressRef.current )
+			) {
+				billingAddressRef.current = billingAddress;
+			}
+
+			if (
+				! fastDeepEqual( shippingAddress, shippingAddressRef.current )
+			) {
+				shippingAddressRef.current = shippingAddress;
+			}
+
 			return {
 				cartCoupons,
 				cartItems: cartData.items,
@@ -230,9 +253,9 @@ export const useStoreCart = (
 				cartTotals,
 				cartIsLoading,
 				cartErrors,
-				billingData: emptyHiddenAddressFields( billingAddress ),
-				billingAddress: emptyHiddenAddressFields( billingAddress ),
-				shippingAddress: emptyHiddenAddressFields( shippingAddress ),
+				billingData: billingAddressRef.current,
+				billingAddress: billingAddressRef.current,
+				shippingAddress: shippingAddressRef.current,
 				extensions: cartData.extensions,
 				shippingRates: cartData.shippingRates,
 				isLoadingRates,
@@ -242,7 +265,7 @@ export const useStoreCart = (
 				receiveCartContents,
 			};
 		},
-		[ shouldSelect ]
+		[ shouldSelect, isEditor ]
 	);
 
 	if (

@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import {
 	formatShippingAddress,
 	hasShippingRate,
+	isAddressComplete,
 } from '@woocommerce/base-utils';
 import { useStoreCart } from '@woocommerce/base-context';
 import {
@@ -12,8 +13,9 @@ import {
 	ShippingCalculatorContext,
 } from '@woocommerce/base-components/cart-checkout';
 import { useSelect } from '@wordpress/data';
-import { CHECKOUT_STORE_KEY } from '@woocommerce/block-data';
+import { checkoutStore } from '@woocommerce/block-data';
 import { createInterpolateElement, useContext } from '@wordpress/element';
+import { getSetting } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -23,7 +25,7 @@ import { getPickupLocation } from './utils';
 export const ShippingAddress = (): JSX.Element => {
 	const { shippingRates, shippingAddress } = useStoreCart();
 	const prefersCollection = useSelect( ( select ) =>
-		select( CHECKOUT_STORE_KEY ).prefersCollection()
+		select( checkoutStore ).prefersCollection()
 	);
 
 	const hasRates = hasShippingRate( shippingRates );
@@ -40,6 +42,21 @@ export const ShippingAddress = (): JSX.Element => {
 		: // Translators: <address/> is the formatted shipping address.
 		  __( 'No delivery options available for <address/>', 'woocommerce' );
 
+	const addressComplete = isAddressComplete( shippingAddress, [
+		'state',
+		'city',
+		'country',
+		'postcode',
+	] );
+
+	const shippingCostRequiresAddress = getSetting< boolean >(
+		'shippingCostRequiresAddress',
+		false
+	);
+
+	const showEnterAddressMessage =
+		shippingCostRequiresAddress && ! addressComplete;
+
 	const addressLabel = prefersCollection
 		? // Translators: <address/> is the pickup location.
 		  __( 'Collection from <address/>', 'woocommerce' )
@@ -47,7 +64,7 @@ export const ShippingAddress = (): JSX.Element => {
 
 	const title = (
 		<p className="wc-block-components-totals-shipping-address-summary">
-			{ !! formattedAddress ? (
+			{ !! formattedAddress && ! showEnterAddressMessage ? (
 				createInterpolateElement( addressLabel, {
 					address: <strong>{ formattedAddress }</strong>,
 				} )
