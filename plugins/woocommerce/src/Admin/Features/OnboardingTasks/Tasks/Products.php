@@ -24,10 +24,9 @@ class Products extends Task {
 		add_action( 'admin_enqueue_scripts', array( $this, 'possibly_add_import_return_notice_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'possibly_add_load_sample_return_notice_script' ) );
 
-		add_action( 'woocommerce_update_product', array( $this, 'delete_product_count_cache' ) );
-		add_action( 'woocommerce_new_product', array( $this, 'delete_product_count_cache' ) );
-		add_action( 'wp_trash_post', array( $this, 'delete_product_count_cache' ) );
-		add_action( 'untrashed_post', array( $this, 'delete_product_count_cache' ) );
+		add_action( 'woocommerce_update_product', array( $this, 'maybe_set_has_product_transient' ), 10, 2 );
+		add_action( 'woocommerce_new_product', array( $this, 'maybe_set_has_product_transient' ), 10, 2 );
+		add_action( 'untrashed_post', array( $this, 'maybe_set_has_product_transient_on_untrashed_post' ) );
 		add_action( 'current_screen', array( $this, 'maybe_redirect_to_add_product_tasklist' ), 30, 0 );
 	}
 
@@ -177,12 +176,40 @@ class Products extends Task {
 	}
 
 	/**
-	 * Delete the product count transient used in has_products() method to refresh the cache.
+	 * Set the has products transient if the post qualifies as a user created product.
 	 *
-	 * @return void
+	 * @param int $post_id Post ID.
 	 */
-	public static function delete_product_count_cache() {
-		delete_transient( self::HAS_PRODUCT_TRANSIENT );
+	public function maybe_set_has_product_transient_on_untrashed_post( $post_id ) {
+		if ( get_post_type( $post_id ) !== 'product' ) {
+			return;
+		}
+
+		$this->maybe_set_has_product_transient( $post_id, wc_get_product( $post_id ) );
+	}
+
+	/**
+	 * Set the has products transient if the product qualifies as a user created product.
+	 *
+	 * @param int $product_id Product ID.
+	 * @param WC_Product $product Product object.
+	 */
+	public function maybe_set_has_product_transient( $product_id, $product ) {
+		if ( ! $this->has_previously_completed() && $this->is_valid_product( $product ) ) {
+			set_transient( self::HAS_PRODUCT_TRANSIENT, 'yes' );
+		}
+	}
+
+	/**
+	 * Check if the product qualifies as a user created product.
+	 *
+	 * @param WC_Product $product Product object.
+	 * @return bool
+	 */
+	private function is_valid_product( $product ) {
+		return ProductStatus::PUBLISH === $product->get_status() &&
+			! $product->get_meta( '_headstart_post' ) &&
+			get_post_meta( $product->get_id(), '_edit_last', true );
 	}
 
 	/**
