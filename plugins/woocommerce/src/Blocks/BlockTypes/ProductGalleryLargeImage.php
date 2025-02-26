@@ -120,22 +120,22 @@ class ProductGalleryLargeImage extends AbstractBlock {
 
 		ob_start();
 		?>
-		<template data-wc-each--largeimage="context.imageData" data-wc-each-key="context.largeimage.src">
-			<li class="wc-block-product-gallery-large-image__wrapper">
-				<img
-					class="<?php echo esc_attr( $base_classes ); ?>"
-					data-wc-bind--src="context.largeimage.src"
-					data-wc-bind--srcset="context.largeimage.srcSet"
-					data-wc-bind--sizes="context.largeimage.sizes"
-					data-wc-bind--id="context.largeimage.id"
-					data-wc-bind--tabindex="state.thumbnailTabIndex"
-					data-wc-on--keydown="actions.onSelectedLargeImageKeyDown"
-					data-wc-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="state.isSelected"
-					data-wc-on--touchstart="actions.onTouchStart"
-					data-wc-on--touchmove="actions.onTouchMove"
-					data-wc-on--touchend="actions.onTouchEnd"
-					alt=""
-				/>
+			<template data-wc-each--largeimage="state.visibleImageData" data-wc-each-key="context.largeimage.id">
+				<li class="wc-block-product-gallery-large-image__wrapper">
+					<img
+						class="<?php echo esc_attr( $base_classes ); ?>"
+						data-wc-bind--src="context.largeimage.src"
+						data-wc-bind--srcset="context.largeimage.srcSet"
+						data-wc-bind--sizes="context.largeimage.sizes"
+						data-wc-bind--id="context.largeimage.id"
+						data-wc-bind--tabindex="state.thumbnailTabIndex"
+						data-wc-on--keydown="actions.onSelectedLargeImageKeyDown"
+						data-wc-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="state.isSelected"
+						data-wc-on--touchstart="actions.onTouchStart"
+						data-wc-on--touchmove="actions.onTouchMove"
+						data-wc-on--touchend="actions.onTouchEnd"
+						alt=""
+					/>
 				</li>
 			</template>
 		<?php

@@ -73,23 +73,26 @@ const productGallery = {
 		get thumbnailTabIndex(): string {
 			return state.isSelected ? '0' : '-1';
 		},
-		get currentImageData() {
-			const { imageData, selectedImageNumber, userHasInteracted } =
-				getContext();
-			const index = selectedImageNumber - 1;
+		get visibleImageData() {
+			// The thumbnail component preloads all images into cache. If thumbnails are not present,
+			// we only load the first two images initially since users can only navigate one at a time.
+			// Additional images will load when the user interacts with the gallery.
+			// If thumbnail images end up using smaller images, we need to update this logic.
+			// Currently we preload all images into cache via thumbnails, but if thumbnails use
+			// smaller images in the future, we'll need to revisit this lazy loading approach.
+			const { imageData, userHasInteracted } = getContext();
 
-			// Return empty image data if no user interaction and not first two images.
-			if ( ! userHasInteracted && index > 1 ) {
-				return {
-					id: '',
-					src: '',
-					srcSet: '',
-					sizes: '',
-				};
-			}
-
-			// For first two images or after user interaction, return the actual image data.
-			return imageData[ index ] || imageData[ 0 ];
+			return imageData.map( ( image, index ) => {
+				if ( ! userHasInteracted && index >= 2 ) {
+					// Return a copy with empty src and srcSet for images beyond the first two
+					return {
+						...image,
+						src: '',
+						srcSet: '',
+					};
+				}
+				return image;
+			} );
 		},
 	},
 	actions: {
