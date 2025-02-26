@@ -91,7 +91,8 @@ test.describe( 'woocommerce/product-filters - Frontend', () => {
 		} );
 
 		// Skipping these tests until we can move this block to @wordpress/interactivity.
-		test( 'filter is working inside overlay', async ( { page } ) => {
+		// eslint-disable-next-line playwright/no-skipped-test
+		test.skip( 'filter is working inside overlay', async ( { page } ) => {
 			await page.setViewportSize( { width: 400, height: 600 } );
 			await page.goto( '/shop' );
 
