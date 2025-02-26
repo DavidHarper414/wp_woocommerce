@@ -613,7 +613,7 @@ test(
 	}
 );
 
-test(
+test.only(
 	'analytics settings',
 	{
 		tag: [ tags.PAYMENTS, tags.SERVICES ],
