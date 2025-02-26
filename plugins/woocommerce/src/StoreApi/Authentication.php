@@ -53,7 +53,7 @@ class Authentication {
 	}
 
 	/**
-	 * Add exposed cors headers for store API headers.
+	 * Expose Store API headers in CORS responses.
 	 * We're expilicity Cart-Token only and not nonce, only one of them is needed.
 	 *
 	 * @param array $exposed_headers Exposed headers.
