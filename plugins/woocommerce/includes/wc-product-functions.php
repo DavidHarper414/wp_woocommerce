@@ -136,13 +136,12 @@ function wc_delete_product_transients( $post_id = 0 ) {
 	foreach ( $transients_to_clear as $transient ) {
 		delete_transient( $transient );
 	}
-
+	
 	if ( $post_id > 0 ) {
 		// Transient names that include an ID - since they are dynamic they cannot be cleaned in bulk without the ID.
 		$post_transient_names = array(
 			'wc_product_children_',
 			'wc_var_prices_',
-			'wc_related_',
 			'wc_child_has_weight_',
 			'wc_child_has_dimensions_',
 		);
@@ -150,6 +149,7 @@ function wc_delete_product_transients( $post_id = 0 ) {
 		foreach ( $post_transient_names as $transient ) {
 			delete_transient( $transient . $post_id );
 		}
+		wc_delete_related_product_transients( $post_id );
 	}
 
 	// Increments the transient version to invalidate cache.
@@ -1042,7 +1042,7 @@ function wc_get_related_products( $product_id, $limit = 5, $exclude_ids = array(
 
 	$transient     = get_transient( $transient_name );
 	$related_posts = $transient && is_array( $transient ) && isset( $transient[ $query_args ] ) ? $transient[ $query_args ] : false;
-
+	
 	// Query related posts if they are not cached
 	// Should happen only once per day due to transient expiriation set to 1 DAY_IN_SECONDS, to avoid performance issues
 	if ( false === $related_posts ) {
@@ -1862,7 +1862,3 @@ function wc_delete_related_product_transients( $product_id ) {
 		)
 	);
 }
-add_action( 'woocommerce_update_product', 'wc_delete_related_product_transients' );
-add_action( 'woocommerce_new_product', 'wc_delete_related_product_transients' );
-// If a product doesn't exist it won't get rendered. Leaving the below commented out for posterity.
-// add_action( 'woocommerce_delete_product', 'wc_delete_related_product_transients' ); 
