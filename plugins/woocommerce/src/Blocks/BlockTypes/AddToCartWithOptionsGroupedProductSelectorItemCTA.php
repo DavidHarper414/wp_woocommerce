@@ -117,7 +117,7 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 			}
 		}
 
-		var_dump( $block->context['postId'] ); // @todo, investigate why $block->context['postId'] is the post ID at the beginning.
+		// var_dump( $block->context['postId'] ); // @todo, investigate why $block->context['postId'] is the post ID at the beginning.
 		return '';
 	}
 }

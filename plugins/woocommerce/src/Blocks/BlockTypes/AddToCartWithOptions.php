@@ -75,10 +75,11 @@ class AddToCartWithOptions extends AbstractBlock {
 			$template_part = get_block_template( $template_slug_to_load . '//' . $slug, 'wp_template_part' );
 
 			if ( $template_part && ! empty( $template_part->content ) ) {
-				$template_part_contents = do_blocks( $template_part->content );
+				$template_part_contents = do_blocks( $template_part->content ); // here
 			}
 
 			if ( '' === $template_part_contents ) {
+				echo 'INPRODUCT ID: ' . $product->get_id() . '<br>'; // Why the ID here...
 				$template_part_contents = do_blocks( file_get_contents( Package::get_path() . 'templates/' . BlockTemplateUtils::DIRECTORY_NAMES['TEMPLATE_PARTS'] . '/' . $slug . '.html' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 			}
 
@@ -200,7 +201,7 @@ class AddToCartWithOptions extends AbstractBlock {
 				$hooks_after,
 			);
 
-			$product = $previous_product;
+			$product = $previous_product; // @todo why is this inside an if?
 		} else {
 			ob_start();
 
