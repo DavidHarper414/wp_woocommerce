@@ -30,7 +30,7 @@
 		"@octokit/graphql": "4.8.0"
 	},
 	"devDependencies": {
-		"@octokit/request-error": "^3.0.3",
+		"@octokit/request-error": "^5.1.1",
 		"@types/node": "20.x.x",
 		"@woocommerce/eslint-plugin": "workspace:*",
 		"eslint": "^8.55.0",
