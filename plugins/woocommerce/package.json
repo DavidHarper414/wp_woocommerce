@@ -703,6 +703,7 @@
 					"changes": [],
 					"events": [
 						"on-demand",
+						"release-checks",
 						"core-e2e-pressable"
 					],
 					"report": {
@@ -719,6 +720,7 @@
 					"changes": [],
 					"events": [
 						"on-demand",
+						"release-checks",
 						"core-e2e-wpcom"
 					],
 					"report": {
@@ -733,7 +735,7 @@
 	"devDependencies": {
 		"@babel/cli": "7.12.8",
 		"@babel/core": "7.12.9",
-		"@babel/preset-env": "7.12.7",
+		"@babel/preset-env": "^7.23.5",
 		"@babel/register": "7.12.1",
 		"@faker-js/faker": "^9.3.0",
 		"@playwright/test": "^1.50.1",
@@ -765,9 +767,7 @@
 		"eslint-config-wpcalypso": "5.0.0",
 		"eslint-plugin-jest": "23.20.0",
 		"eslint-plugin-playwright": "0.22.1",
-		"istanbul": "1.0.0-alpha.2",
 		"jest": "27.5.x",
-		"mocha": "7.2.0",
 		"nodemon": "^3.0.2",
 		"prettier": "npm:wp-prettier@^2.8.5",
 		"rimraf": "5.0.5",

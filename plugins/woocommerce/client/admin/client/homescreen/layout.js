@@ -16,7 +16,7 @@ import {
 	useUserPreferences,
 	notesStore,
 	onboardingStore,
-	OPTIONS_STORE_NAME,
+	optionsStore,
 } from '@woocommerce/data';
 import { __ } from '@wordpress/i18n';
 
@@ -41,6 +41,7 @@ import {
 	isTaskListVisible,
 	useTaskListsState,
 } from '~/hooks/use-tasklists-state';
+import { hasTwoColumnLayout } from './utils';
 
 const TaskLists = lazy( () =>
 	import( /* webpackChunkName: "tasks" */ '../task-lists' ).then(
@@ -49,20 +50,6 @@ const TaskLists = lazy( () =>
 		} )
 	)
 );
-
-export const hasTwoColumnLayout = (
-	userPrefLayout,
-	defaultHomescreenLayout,
-	isSetupTaskListActive
-) => {
-	const hasTwoColumnContent =
-		! isSetupTaskListActive || window.wcAdminFeatures.analytics;
-
-	return (
-		( userPrefLayout || defaultHomescreenLayout ) === 'two_columns' &&
-		hasTwoColumnContent
-	);
-};
 
 export const Layout = ( {
 	defaultHomescreenLayout,
@@ -193,7 +180,7 @@ Layout.propTypes = {
 export default compose(
 	withSelect( ( select ) => {
 		const { isNotesRequesting } = select( notesStore );
-		const { getOption } = select( OPTIONS_STORE_NAME );
+		const { getOption } = select( optionsStore );
 		const defaultHomescreenLayout =
 			getOption( 'woocommerce_default_homepage_layout' ) ||
 			'single_column';
