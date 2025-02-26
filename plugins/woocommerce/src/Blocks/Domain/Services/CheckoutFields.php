@@ -463,6 +463,12 @@ class CheckoutFields {
 
 					$valid = Validation::is_valid_schema( $options[ $rule_field ] );
 
+					if ( is_wp_error( $valid ) ) {
+						$message = sprintf( 'Unable to register field with id: "%s". %s', $options['id'], $rule_field . ': ' . $valid->get_error_message() );
+						_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
+						return false;
+					}
+				}
 			}
 		}
 
