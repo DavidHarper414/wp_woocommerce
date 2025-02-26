@@ -9,13 +9,6 @@ import { CustomerEffortScoreTracksContainer } from '@woocommerce/customer-effort
 import { createRoot } from '@wordpress/element';
 import debugFactory from 'debug';
 
-/**
- * Internal dependencies
- */
-import { initRemoteLogging } from './lib/init-remote-logging';
-// Initialize remote logging early to log any errors that occur during initialization.
-initRemoteLogging();
-
 const debug = debugFactory( 'wc-admin:client' );
 
 export const renderCustomerEffortScoreTracks = ( root: HTMLElement ) => {

@@ -10,6 +10,13 @@ import {
 /**
  * Internal dependencies
  */
+import { initRemoteLogging } from './lib/init-remote-logging';
+// Initialize remote logging early to log any errors that occur during initialization.
+initRemoteLogging();
+
+/**
+ * Internal dependencies
+ */
 import './stylesheets/_index.scss';
 import './xstate.js';
 

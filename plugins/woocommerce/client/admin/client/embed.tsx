@@ -1,6 +1,13 @@
 /**
  * Internal dependencies
  */
+import { initRemoteLogging } from './lib/init-remote-logging';
+// Initialize remote logging early to log any errors that occur during initialization.
+initRemoteLogging();
+
+/**
+ * Internal dependencies
+ */
 import './stylesheets/_embed.scss';
 import { renderCustomerEffortScoreTracks } from './shared';
 import { getAdminSetting } from '~/utils/admin-settings';
