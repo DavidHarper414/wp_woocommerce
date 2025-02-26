@@ -599,9 +599,9 @@ class OrdersTableQueryTests extends \WC_Unit_Test_Case {
 	}
 
 	/**
-	 * @testDox The get_args method returns the initial args sent.
+	 * @testDox The get_query_args method returns the initial args sent.
 	 */
-	public function test_get_args() {
+	public function test_get_query_args() {
 		$args = array(
 			's' => 'test',
 		);
