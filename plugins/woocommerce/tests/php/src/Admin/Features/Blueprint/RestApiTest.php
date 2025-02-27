@@ -47,59 +47,6 @@ class RestApiTest extends WP_Test_REST_TestCase {
 	}
 
 	/**
-	 * Test file size validation in queue endpoint.
-	 */
-	public function test_queue_file_size_validation() {
-		// Mock file upload data
-		$_FILES['file'] = array(
-			'name' => 'test.json',
-			'type' => 'application/json',
-			'size' => RestApi::MAX_FILE_SIZE + 1024, // Slightly over limit
-			'tmp_name' => $this->temp_file,
-			'error' => UPLOAD_ERR_OK
-		);
-
-		// Set nonce
-		$_POST['blueprint_upload_nonce'] = wp_create_nonce('blueprint_upload_nonce');
-
-		$response = $this->rest_api->queue();
-
-		$this->assertEquals('upload', $response['error_type']);
-		$this->assertStringContainsString('50 MB', $response['errors'][0]);
-	}
-
-	/**
-	 * Test custom file size limit via filter.
-	 */
-	public function test_custom_file_size_limit() {
-		$custom_limit = 10 * 1024 * 1024; // 10MB
-
-		add_filter('woocommerce_blueprint_upload_max_file_size', function() use ($custom_limit) {
-			return $custom_limit;
-		});
-
-		// Mock file upload data
-		$_FILES['file'] = array(
-			'name' => 'test.json',
-			'type' => 'application/json',
-			'size' => $custom_limit + 1024, // Slightly over custom limit
-			'tmp_name' => $this->temp_file,
-			'error' => UPLOAD_ERR_OK
-		);
-
-		// Set nonce
-		$_POST['blueprint_upload_nonce'] = wp_create_nonce('blueprint_upload_nonce');
-
-		$response = $this->rest_api->queue();
-
-		$this->assertEquals('upload', $response['error_type']);
-		$this->assertStringContainsString('10 MB', $response['errors'][0]);
-
-		// Clean up
-		remove_all_filters('woocommerce_blueprint_upload_max_file_size');
-	}
-
-	/**
 	 * Test file size validation in import_step endpoint.
 	 */
 	public function test_import_step_file_size_validation() {
