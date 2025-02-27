@@ -196,6 +196,7 @@ describe( 'createDeprecatedObjectProxy', () => {
 			false: 'false prop is deprecated',
 		} );
 
+		// eslint-disable-next-line dot-notation
 		expect( proxiedObj[ true ] ).toBe( 'true value' );
 		expect( consoleWarnSpy ).toHaveBeenCalledWith(
 			'true prop is deprecated'
@@ -203,6 +204,7 @@ describe( 'createDeprecatedObjectProxy', () => {
 
 		consoleWarnSpy.mockClear();
 
+		// eslint-disable-next-line dot-notation
 		expect( proxiedObj[ false ] ).toBe( 'false value' );
 		expect( consoleWarnSpy ).toHaveBeenCalledWith(
 			'false prop is deprecated'
@@ -238,7 +240,7 @@ describe( 'createDeprecatedObjectProxy', () => {
 
 		const obj = {
 			[ testSymbol ]: 'symbol value',
-			[ iteratorSymbol ]: function* () {
+			*[ iteratorSymbol ]() {
 				yield 1;
 				yield 2;
 			},
