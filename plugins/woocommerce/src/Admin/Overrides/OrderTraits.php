@@ -118,11 +118,8 @@ trait OrderTraits {
 		$cart_tax_amount = 0.0;
 
 		foreach ( $order_taxes as $tax_item ) {
-			$tax_item_id = $tax_item->get_rate_id();
-			if ( isset( $tax_data['total'][ $tax_item_id ] ) ) {
-				$cart_tax_amount = (float) $tax_data['total'][ $tax_item_id ];
-				break;
-			}
+			$tax_item_id      = $tax_item->get_rate_id();
+			$cart_tax_amount += isset( $tax_data['total'][ $tax_item_id ] ) ? (float) $tax_data['total'][ $tax_item_id ] : 0;
 		}
 
 		return $cart_tax_amount;
