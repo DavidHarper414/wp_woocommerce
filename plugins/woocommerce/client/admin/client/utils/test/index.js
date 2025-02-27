@@ -271,4 +271,47 @@ describe( 'createDeprecatedPropertiesProxy', () => {
 			'regular prop is deprecated'
 		);
 	} );
+
+	it( 'should handle undefined and null properties correctly', () => {
+		const obj = {
+			undefinedProp: undefined,
+			nullProp: null,
+			nested: {
+				undefinedChild: undefined,
+				nullChild: null,
+			},
+		};
+
+		const proxiedObj = createDeprecatedPropertiesProxy( obj, {
+			undefinedProp: 'undefined prop is deprecated',
+			nullProp: 'null prop is deprecated',
+			nested: {
+				undefinedChild: 'undefined child is deprecated',
+				nullChild: 'null child is deprecated',
+			},
+		} );
+
+		expect( proxiedObj.undefinedProp ).toBeUndefined();
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'undefined prop is deprecated'
+		);
+
+		consoleWarnSpy.mockClear();
+		expect( proxiedObj.nullProp ).toBeNull();
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'null prop is deprecated'
+		);
+
+		consoleWarnSpy.mockClear();
+		expect( proxiedObj.nested.undefinedChild ).toBeUndefined();
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'undefined child is deprecated'
+		);
+
+		consoleWarnSpy.mockClear();
+		expect( proxiedObj.nested.nullChild ).toBeNull();
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'null child is deprecated'
+		);
+	} );
 } );
