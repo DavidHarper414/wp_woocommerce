@@ -270,7 +270,7 @@ class CheckoutFields {
 		if ( $document_object && $this->contains_valid_rules( $field['hidden'] ) ) {
 			return true === Validation::validate_document_object( $document_object, $field['hidden'] );
 		}
-		return true === $field['hidden'];
+		return false; // Fields cannot be registered as hidden.
 	}
 
 	/**
@@ -448,6 +448,13 @@ class CheckoutFields {
 			$message = sprintf( 'Unable to register field with id: "%s". %s', $id, 'The validate_callback must be a valid callback.' );
 			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
 			return false;
+		}
+
+		if ( ! empty( $options['hidden'] ) && true === $options['hidden'] ) {
+			// Hidden fields are not supported right now. They will be registered with hidden => false.
+			$message = sprintf( 'Registering a field with hidden set to true is not supported. The field "%s" will be registered as visible.', $id );
+			_doing_it_wrong( 'woocommerce_register_additional_checkout_field', esc_html( $message ), '8.6.0' );
+			// Don't return here unlike the other fields because this is not an issue that will prevent registration.
 		}
 
 		// If experimental blocks are enabled, we need to validate schema based rules.

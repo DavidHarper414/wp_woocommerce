@@ -1344,6 +1344,61 @@ class AdditionalFields extends MockeryTestCase {
 	}
 
 	/**
+	 * Ensure an error is triggered when a field is registered with hidden set to true.
+	 */
+	public function test_register_hidden_field_error() {
+		$id                    = 'plugin-namespace/hidden-field';
+		$doing_it_wrong_mocker = \Mockery::mock( 'ActionCallback' );
+		$doing_it_wrong_mocker->shouldReceive( 'doing_it_wrong_run' )->withArgs(
+			array(
+				'woocommerce_register_additional_checkout_field',
+				\esc_html( sprintf( 'Registering a field with hidden set to true is not supported. The field "%s" will be registered as visible.', $id ) ),
+			)
+		)->once();
+
+		add_action(
+			'doing_it_wrong_run',
+			array(
+				$doing_it_wrong_mocker,
+				'doing_it_wrong_run',
+			),
+			10,
+			2
+		);
+
+		\woocommerce_register_additional_checkout_field(
+			array(
+				'id'       => $id,
+				'label'    => 'Hidden Field',
+				'location' => 'address',
+				'type'     => 'text',
+				'hidden'   => true,
+			)
+		);
+
+		// Fields should still be registered regardless of the error, but not hidden.
+		$request  = new \WP_REST_Request( 'OPTIONS', '/wc/store/v1/checkout' );
+		$response = rest_get_server()->dispatch( $request );
+
+		$data = $response->get_data();
+
+		$this->assertArrayHasKey( $id, $data['schema']['properties']['billing_address']['properties'] );
+
+		\remove_action(
+			'doing_it_wrong_run',
+			array(
+				$doing_it_wrong_mocker,
+				'doing_it_wrong_run',
+			)
+		);
+
+		\__internal_woocommerce_blocks_deregister_checkout_field( $id );
+
+		// Ensures the field isn't registered.
+		$this->assertFalse( $this->controller->is_field( $id ), \sprintf( '%s is still registered', $id ) );
+	}
+
+	/**
 	 * Ensures that placing an order with the correct values actually work.
 	 */
 	public function test_placing_order_with_valid_fields() {
