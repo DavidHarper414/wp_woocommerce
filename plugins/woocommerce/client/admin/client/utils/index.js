@@ -148,7 +148,11 @@ export const useFullScreen = ( classes ) => {
  * @param {string} [basePath=''] - Internal tracking for property paths.
  * @return {Proxy} A proxied object with deprecation warnings.
  */
-export function createDeprecatedObjectProxy( obj, messages, basePath = '' ) {
+export function createDeprecatedPropertiesProxy(
+	obj,
+	messages,
+	basePath = ''
+) {
 	// If not a plain object or array, return as is
 	if ( typeof obj !== 'object' || obj === null ) {
 		return obj;
@@ -194,7 +198,7 @@ export function createDeprecatedObjectProxy( obj, messages, basePath = '' ) {
 
 			// Recursively wrap objects to maintain deprecation checks
 			return value && typeof value === 'object'
-				? createDeprecatedObjectProxy( value, messages, nextPath )
+				? createDeprecatedPropertiesProxy( value, messages, nextPath )
 				: value;
 		},
 	} );

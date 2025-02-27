@@ -4,7 +4,7 @@
 import {
 	getUrlParams,
 	getTimeFrame,
-	createDeprecatedObjectProxy,
+	createDeprecatedPropertiesProxy,
 } from '../index';
 
 describe( 'getUrlParams', () => {
@@ -56,7 +56,7 @@ describe( 'getTimeFrame', () => {
 	);
 } );
 
-describe( 'createDeprecatedObjectProxy', () => {
+describe( 'createDeprecatedPropertiesProxy', () => {
 	let consoleWarnSpy;
 	let wcSettings;
 	let proxiedSettings;
@@ -77,7 +77,7 @@ describe( 'createDeprecatedObjectProxy', () => {
 			},
 		};
 
-		proxiedSettings = createDeprecatedObjectProxy( wcSettings, {
+		proxiedSettings = createDeprecatedPropertiesProxy( wcSettings, {
 			admin: {
 				onboarding: {
 					profile:
@@ -92,11 +92,15 @@ describe( 'createDeprecatedObjectProxy', () => {
 	} );
 
 	it( 'should return non-object values as is', () => {
-		expect( createDeprecatedObjectProxy( null, {} ) ).toBeNull();
-		expect( createDeprecatedObjectProxy( undefined, {} ) ).toBeUndefined();
-		expect( createDeprecatedObjectProxy( 42, {} ) ).toBe( 42 );
-		expect( createDeprecatedObjectProxy( 'string', {} ) ).toBe( 'string' );
-		expect( createDeprecatedObjectProxy( true, {} ) ).toBe( true );
+		expect( createDeprecatedPropertiesProxy( null, {} ) ).toBeNull();
+		expect(
+			createDeprecatedPropertiesProxy( undefined, {} )
+		).toBeUndefined();
+		expect( createDeprecatedPropertiesProxy( 42, {} ) ).toBe( 42 );
+		expect( createDeprecatedPropertiesProxy( 'string', {} ) ).toBe(
+			'string'
+		);
+		expect( createDeprecatedPropertiesProxy( true, {} ) ).toBe( true );
 	} );
 
 	it( 'should handle wcSettings deprecation warnings', () => {
@@ -133,7 +137,7 @@ describe( 'createDeprecatedObjectProxy', () => {
 			},
 		};
 
-		const proxiedObj = createDeprecatedObjectProxy( obj, {
+		const proxiedObj = createDeprecatedPropertiesProxy( obj, {
 			foo: {
 				bar: 'foo.bar is deprecated',
 			},
@@ -148,7 +152,7 @@ describe( 'createDeprecatedObjectProxy', () => {
 
 	it( 'should handle array methods correctly', () => {
 		const arr = [ 1, 2, 3 ];
-		const proxiedArr = createDeprecatedObjectProxy( arr, {
+		const proxiedArr = createDeprecatedPropertiesProxy( arr, {
 			1: 'accessing index 1 is deprecated',
 		} );
 
@@ -175,7 +179,7 @@ describe( 'createDeprecatedObjectProxy', () => {
 			2: 'two',
 		};
 
-		const proxiedObj = createDeprecatedObjectProxy( obj, {
+		const proxiedObj = createDeprecatedPropertiesProxy( obj, {
 			1: 'numeric property 1 is deprecated',
 		} );
 
@@ -191,7 +195,7 @@ describe( 'createDeprecatedObjectProxy', () => {
 			[ false ]: 'false value',
 		};
 
-		const proxiedObj = createDeprecatedObjectProxy( obj, {
+		const proxiedObj = createDeprecatedPropertiesProxy( obj, {
 			true: 'true prop is deprecated',
 			false: 'false prop is deprecated',
 		} );
@@ -216,7 +220,7 @@ describe( 'createDeprecatedObjectProxy', () => {
 			items: [ { id: 1 }, { id: 2 } ],
 		};
 
-		const proxiedObj = createDeprecatedObjectProxy( obj, {
+		const proxiedObj = createDeprecatedPropertiesProxy( obj, {
 			items: {
 				0: {
 					id: 'first item id is deprecated',
@@ -247,7 +251,7 @@ describe( 'createDeprecatedObjectProxy', () => {
 			regularProp: 'regular value',
 		};
 
-		const proxiedObj = createDeprecatedObjectProxy( obj, {
+		const proxiedObj = createDeprecatedPropertiesProxy( obj, {
 			regularProp: 'regular prop is deprecated',
 			[ testSymbol.description ]: 'should not trigger for symbol',
 			Symbol: 'should not trigger for symbol without description',
