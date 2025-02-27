@@ -161,10 +161,11 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 		/**
 		 * Used to add custom report controllers.
 		 *
-		 * @params array $controller_map - A report type to report controller class map.
-		 *
 		 * @since x.x.x
-		 * @returns array - Report type to report controller class map.
+		 *
+		 * @params array $controller_map A report type to report controller class map.
+		 *
+		 * @returns array Report type to report controller class map.
 		 */
 		$controller_map = apply_filters(
 			'woocommerce_map_report_controller',
@@ -249,11 +250,12 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 		/**
 		 * Used to add/overwrite report data endpoint.
 		 *
-		 * @param string $endpoint - The report's data endpoint.
-		 * @param string $type     - The report's type.
-		 *
 		 * @since x.x.x
-		 * @returns string - The report's endpoint.
+		 *
+		 * @param string $endpoint The report's data endpoint.
+		 * @param string $type     The report's type.
+		 *
+		 * @returns string The report's endpoint.
 		 */
 		$report_endpoint = apply_filters(
 			'woocommerce_analytics_report_data_endpoint',
