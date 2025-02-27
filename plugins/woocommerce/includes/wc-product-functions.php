@@ -156,8 +156,8 @@ function wc_delete_product_transients( $post_id = 0 ) {
 			wc_delete_related_product_transients( $post_id );
 		} else {
 			// Schedule the async deletion of related product transients.
-			// This should run async cause it also fetches the
-			// related products of the current product.
+			// This should run async cause it also fetches all related products
+			// of the current product to be deleted which we can can't be sure how many there are.
 			WC()->queue()->schedule_single(
 				time(),
 				'wc_delete_related_product_transients_async',
@@ -177,7 +177,7 @@ function wc_delete_product_transients( $post_id = 0 ) {
  * Asynchronously delete related product transients when a product is changed.
  * This is necessary because changing one product might affect many related products.
  *
- * @since 9.8.1
+ * @since 9.8.0
  * @param array $post_id Arguments passed from the async scheduler.
  */
 function wc_delete_related_product_transients( $post_id ) {
@@ -191,7 +191,7 @@ function wc_delete_related_product_transients( $post_id ) {
 	$old_transient        = get_transient( $transient_name );
 	$old_related_products = array();
 
-	if ( is_array( $old_transient ) ) {
+	if ( is_array( $old_transient ) && ! empty( $old_transient ) ) {
 		$old_related_products = $old_transient[ array_key_first( $old_transient ) ];
 	}
 
@@ -220,16 +220,21 @@ function wc_delete_related_product_transients( $post_id ) {
 		$transient_names[] = '_transient_wc_related_' . $id;
 	}
 
-	// Create placeholders for the IN clause.
-	$placeholders = implode( ',', array_fill( 0, count( $transient_names ), '%s' ) );
-
-	// Delete specific timeout and transient entries in a single query.
-	$wpdb->query(
-		$wpdb->prepare(
-			"DELETE FROM {$wpdb->options} WHERE option_name IN ($placeholders)",
-			$transient_names
-		)
-	);
+	// Delete specific timeout and transient entries.
+	if ( wp_using_ext_object_cache() ) {
+		// When using external object cache, we need to delete each transient individually.
+		foreach ( $related_product_ids as $id ) {
+			delete_transient( 'wc_related_' . $id );
+		}
+	} else {
+		// For database storage, we can use a single query for better performance.
+		$wpdb->query(
+			$wpdb->prepare(
+				'DELETE FROM ' . $wpdb->options . ' WHERE option_name IN ( ' . implode( ', ', array_fill( 0, count( $transient_names ), '%s' ) ) . ' )',
+				$transient_names
+			)
+		);
+	}
 }
 
 add_action( 'wc_delete_related_product_transients_async', 'wc_delete_related_product_transients' );
@@ -533,7 +538,7 @@ function wc_get_formatted_variation( $variation, $flat = false, $include_names =
 					$variation_list[] = '<dt>' . wc_attribute_label( $name, $product ) . ':</dt><dd>' . rawurldecode( $value ) . '</dd>';
 				}
 			} elseif ( $flat ) {
-					$variation_list[] = rawurldecode( $value );
+				$variation_list[] = rawurldecode( $value );
 			} else {
 				$variation_list[] = '<li>' . rawurldecode( $value ) . '</li>';
 			}
@@ -1118,7 +1123,7 @@ function wc_get_related_products( $product_id, $limit = 5, $exclude_ids = array(
 	$related_posts = $transient && is_array( $transient ) && isset( $transient[ $query_args ] ) ? $transient[ $query_args ] : false;
 
 	// Query related posts if they are not cached
-	// Should happen only once per day due to transient expiriation set to 1 DAY_IN_SECONDS, to avoid performance issues
+	// Should happen only once per day due to transient expiration set to 1 DAY_IN_SECONDS, to avoid performance issues.
 	if ( false === $related_posts ) {
 
 		$cats_array = apply_filters( 'woocommerce_product_related_posts_relate_by_category', true, $product_id ) ? apply_filters( 'woocommerce_get_related_product_cat_terms', wc_get_product_term_ids( $product_id, 'product_cat' ), $product_id ) : array();
