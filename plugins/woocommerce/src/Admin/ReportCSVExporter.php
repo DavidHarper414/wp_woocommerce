@@ -168,7 +168,7 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 		 * @returns array Report type to report controller class map.
 		 */
 		$controller_map = apply_filters(
-			'woocommerce_map_report_controller',
+			'woocommerce_export_report_controller_map',
 			array(
 				'products'   => 'Automattic\WooCommerce\Admin\API\Reports\Products\Controller',
 				'variations' => 'Automattic\WooCommerce\Admin\API\Reports\Variations\Controller',
