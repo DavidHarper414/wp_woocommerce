@@ -2193,7 +2193,11 @@ class WC_Order extends WC_Abstract_Order {
 			return $cached_data;
 		}
 
-		$total_shipping_tax_refunded = $this->data_store->get_total_shipping_tax_refunded( $this );
+		$total_shipping_tax_refunded = 0;
+
+		if ( method_exists( $this->data_store, 'get_total_shipping_tax_refunded' ) ) {
+			$total_shipping_tax_refunded = $this->data_store->get_total_shipping_tax_refunded( $this );
+		}
 
 		wp_cache_set( $cache_key, $total_shipping_tax_refunded, $this->cache_group );
 
