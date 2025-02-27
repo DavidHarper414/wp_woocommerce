@@ -35,7 +35,7 @@ export function KeyboardShortcuts(): null {
 
 	useEffect( () => {
 		void registerShortcut( {
-			name: 'mailpoet/email-editor/toggle-fullscreen',
+			name: 'woocommerce/email-editor/toggle-fullscreen',
 			category: 'global',
 			description: __( 'Toggle fullscreen mode.', 'woocommerce' ),
 			keyCombination: {
@@ -45,7 +45,7 @@ export function KeyboardShortcuts(): null {
 		} );
 
 		void registerShortcut( {
-			name: 'mailpoet/email-editor/toggle-sidebar',
+			name: 'woocommerce/email-editor/toggle-sidebar',
 			category: 'global',
 			description: __(
 				'Show or hide the settings sidebar.',
@@ -58,7 +58,7 @@ export function KeyboardShortcuts(): null {
 		} );
 
 		void registerShortcut( {
-			name: 'mailpoet/email-editor/save',
+			name: 'woocommerce/email-editor/save',
 			category: 'global',
 			description: __( 'Save your changes.', 'woocommerce' ),
 			keyCombination: {
@@ -68,7 +68,7 @@ export function KeyboardShortcuts(): null {
 		} );
 
 		void registerShortcut( {
-			name: 'mailpoet/email-editor/undo',
+			name: 'woocommerce/email-editor/undo',
 			category: 'block',
 			description: __( 'Undo your last changes.', 'woocommerce' ),
 			keyCombination: {
@@ -78,7 +78,7 @@ export function KeyboardShortcuts(): null {
 		} );
 
 		void registerShortcut( {
-			name: 'mailpoet/email-editor/redo',
+			name: 'woocommerce/email-editor/redo',
 			category: 'block',
 			description: __( 'Redo your last undo.', 'woocommerce' ),
 			keyCombination: {
@@ -88,12 +88,12 @@ export function KeyboardShortcuts(): null {
 		} );
 	}, [ registerShortcut ] );
 
-	useShortcut( 'mailpoet/email-editor/toggle-fullscreen', () => {
+	useShortcut( 'woocommerce/email-editor/toggle-fullscreen', () => {
 		recordEvent( 'keyboard_shortcuts_toggle_fullscreen' );
 		void toggleFeature( 'fullscreenMode' );
 	} );
 
-	useShortcut( 'mailpoet/email-editor/toggle-sidebar', ( event ) => {
+	useShortcut( 'woocommerce/email-editor/toggle-sidebar', ( event ) => {
 		recordEvent( 'keyboard_shortcuts_toggle_sidebar' );
 		event.preventDefault();
 
@@ -104,7 +104,7 @@ export function KeyboardShortcuts(): null {
 		}
 	} );
 
-	useShortcut( 'mailpoet/email-editor/save', ( event ) => {
+	useShortcut( 'woocommerce/email-editor/save', ( event ) => {
 		recordEvent( 'keyboard_shortcuts_save' );
 		event.preventDefault();
 		if ( ! hasEdits || isSaving ) {
@@ -115,7 +115,7 @@ export function KeyboardShortcuts(): null {
 
 	useShortcut(
 		// Shortcut name
-		'mailpoet/email-editor/undo',
+		'woocommerce/email-editor/undo',
 		// Shortcut callback
 		( event ): void => {
 			void undoAction();
@@ -125,7 +125,7 @@ export function KeyboardShortcuts(): null {
 
 	useShortcut(
 		// Shortcut name
-		'mailpoet/email-editor/redo',
+		'woocommerce/email-editor/redo',
 		// Shortcut callback
 		( event ): void => {
 			void redoAction();
