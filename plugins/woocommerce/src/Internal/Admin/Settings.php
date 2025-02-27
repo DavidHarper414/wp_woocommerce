@@ -6,8 +6,9 @@
 namespace Automattic\WooCommerce\Internal\Admin;
 
 use Automattic\WooCommerce\Admin\API\Plugins;
-use Automattic\WooCommerce\Admin\PageController;
 use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore;
+use Automattic\WooCommerce\Admin\Features\Features;
+use Automattic\WooCommerce\Admin\PageController;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use WC_Marketplace_Suggestions;
@@ -207,10 +208,14 @@ class Settings {
 		// WooCommerce Branding is an example of this - so pass through the translation of
 		// 'WooCommerce' to wcSettings.
 		$settings['woocommerceTranslation'] = __( 'WooCommerce', 'woocommerce' );
-		// We may have synced orders with a now-unregistered status.
-		// E.g An extension that added statuses is now inactive or removed.
-		if ( PageController::is_admin_page() ) {
-			$settings['unregisteredOrderStatuses'] = $this->get_unregistered_order_statuses();
+
+		if ( PageController::is_admin_page() && Features::is_enabled( 'analytics' ) ) {
+			$is_analytics_page = str_starts_with( wc_clean( wp_unslash( $_GET['path'] ?? '' ) ), '/analytics/' );
+			if ( $is_analytics_page ) {
+				// We may have synced orders with a now-unregistered status.
+				// E.g. an extension that added statuses is now inactive or removed.
+				$settings['unregisteredOrderStatuses'] = $this->get_unregistered_order_statuses();
+			}
 		}
 
 		// The separator used for attributes found in Variation titles.

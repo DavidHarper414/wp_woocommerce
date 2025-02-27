@@ -10,7 +10,6 @@ use Automattic\WooCommerce\Admin\PageController;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 use Automattic\WooCommerce\Internal\Admin\ProductReviews\Reviews;
 use Automattic\WooCommerce\Internal\Admin\ProductReviews\ReviewsCommentsOverrides;
-use Automattic\WooCommerce\Internal\Admin\Settings;
 
 /**
  * Loader Class.
@@ -408,9 +407,16 @@ class Loader {
 		// WooCommerce Branding is an example of this - so pass through the translation of
 		// 'WooCommerce' to wcSettings.
 		$settings['woocommerceTranslation'] = __( 'WooCommerce', 'woocommerce' );
-		// We may have synced orders with a now-unregistered status.
-		// E.g An extension that added statuses is now inactive or removed.
-		$settings['unregisteredOrderStatuses'] = self::get_unregistered_order_statuses();
+
+		if ( PageController::is_admin_page() && Features::is_enabled( 'analytics' ) ) {
+			$is_analytics_page = str_starts_with( wc_clean( wp_unslash( $_GET['path'] ?? '' ) ), '/analytics/' );
+			if ( $is_analytics_page ) {
+				// We may have synced orders with a now-unregistered status.
+				// E.g. an extension that added statuses is now inactive or removed.
+				$settings['unregisteredOrderStatuses'] = self::get_unregistered_order_statuses();
+			}
+		}
+
 		// The separator used for attributes found in Variation titles.
 		/* phpcs:ignore */
 		$settings['variationTitleAttributesSeparator'] = apply_filters( 'woocommerce_product_variation_title_attributes_separator', ' - ', new \WC_Product() );
