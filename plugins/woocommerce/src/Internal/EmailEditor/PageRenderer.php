@@ -121,7 +121,7 @@ class PageRenderer {
 		$current_user_email = wp_get_current_user()->user_email;
 		wp_localize_script(
 			'woocommerce_email_editor',
-			'MailPoetEmailEditor',
+			'WooCommerceEmailEditor',
 			array(
 				'current_post_type'     => esc_js( $post->post_type ),
 				'current_post_id'       => $post->ID,
