@@ -7,6 +7,7 @@
  */
 
 use Automattic\WooCommerce\Internal\Admin\EmailPreview\EmailPreview;
+use Automattic\WooCommerce\Internal\Email\EmailColors;
 use Automattic\WooCommerce\Internal\Email\EmailFont;
 use Automattic\WooCommerce\Internal\Features\FeaturesController;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
@@ -102,7 +103,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 			'body_bg_color_default' => $body_bg_color_default,
 			'body_text_color_default' => $body_text_color_default,
 			'footer_text_color_default' => $footer_text_color_default,
-		) = $this->get_email_default_colors();
+		) = EmailColors::get_default_colors();
 
 		$base_color_title = __( 'Base color', 'woocommerce' );
 		/* translators: %s: default color */
@@ -418,52 +419,6 @@ class WC_Settings_Emails extends WC_Settings_Page {
 		$settings = array_filter( $settings );
 
 		return apply_filters( 'woocommerce_email_settings', $settings );
-	}
-
-	/**
-	 * Get default colors for emails.
-	 */
-	private function get_email_default_colors() {
-		$base_color_default        = '#720eec';
-		$bg_color_default          = '#f7f7f7';
-		$body_bg_color_default     = '#ffffff';
-		$body_text_color_default   = '#3c3c3c';
-		$footer_text_color_default = '#3c3c3c';
-
-		if ( FeaturesUtil::feature_is_enabled( 'email_improvements' ) ) {
-			$base_color_default        = '#8526ff';
-			$bg_color_default          = '#ffffff';
-			$body_bg_color_default     = '#ffffff';
-			$body_text_color_default   = '#1e1e1e';
-			$footer_text_color_default = '#787c82';
-
-			if ( wc_current_theme_is_fse_theme() && function_exists( 'wp_get_global_styles' ) ) {
-				$global_styles             = wp_get_global_styles( array(), array( 'transforms' => array( 'resolve-variables' ) ) );
-				$base_color_global         = isset( $global_styles['elements']['button']['color']['text'] )
-					? sanitize_hex_color( $global_styles['elements']['button']['color']['text'] ) : '';
-				$bg_color_global           = isset( $global_styles['color']['background'] )
-					? sanitize_hex_color( $global_styles['color']['background'] ) : '';
-				$body_bg_color_global      = isset( $global_styles['color']['background'] )
-					? sanitize_hex_color( $global_styles['color']['background'] ) : '';
-				$body_text_color_global    = isset( $global_styles['color']['text'] )
-					? sanitize_hex_color( $global_styles['color']['text'] ) : '';
-				$footer_text_color_global  = isset( $global_styles['elements']['caption']['color']['text'] )
-					? sanitize_hex_color( $global_styles['elements']['caption']['color']['text'] ) : '';
-				$base_color_default        = $base_color_global ? $base_color_global : $base_color_default;
-				$bg_color_default          = $bg_color_global ? $bg_color_global : $bg_color_default;
-				$body_bg_color_default     = $body_bg_color_global ? $body_bg_color_global : $body_bg_color_default;
-				$body_text_color_default   = $body_text_color_global ? $body_text_color_global : $body_text_color_default;
-				$footer_text_color_default = $footer_text_color_global ? $footer_text_color_global : $footer_text_color_default;
-			}
-		}
-
-		return compact(
-			'base_color_default',
-			'bg_color_default',
-			'body_bg_color_default',
-			'body_text_color_default',
-			'footer_text_color_default',
-		);
 	}
 
 	/**
@@ -842,7 +797,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 	 * @param array $value Field value array.
 	 */
 	public function email_color_palette( $value ) {
-		$default_colors = $this->get_email_default_colors();
+		$default_colors = EmailColors::get_default_colors();
 
 		?>
 		<hr class="wc-settings-email-color-palette-separator" />
