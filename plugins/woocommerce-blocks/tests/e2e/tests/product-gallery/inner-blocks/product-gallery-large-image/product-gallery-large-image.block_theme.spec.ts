@@ -206,6 +206,10 @@ test.describe( `${ blockData.name }`, () => {
 		await addToCartWithOptionsColorSelector.selectOption( 'Green' );
 		await addToCartWithOptionsSizeSelector.selectOption( 'No' );
 
+		// We trigger img srcs to be set after the mutation observer is triggered.
+		// eslint-disable-next-line playwright/no-wait-for-timeout, no-restricted-syntax
+		await page.waitForTimeout( 500 );
+
 		const largeImageElementAfterSelectingVariation =
 			largeImageBlockOnFrontend.locator(
 				'.wc-block-woocommerce-product-gallery-large-image__image--active-image-slide'

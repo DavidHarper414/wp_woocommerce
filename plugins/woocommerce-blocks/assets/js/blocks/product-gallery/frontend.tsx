@@ -256,6 +256,7 @@ const productGallery = {
 					context.imageIds.length
 				);
 				context.selectedImageNumber = newImageNumber;
+				context.imageId = context.imageIds[ newImageNumber - 1 ];
 				context.disableLeft = disableLeft;
 				context.disableRight = disableRight;
 				scrollImageIntoView( context.imageIds[ newImageNumber - 1 ] );
@@ -263,8 +264,20 @@ const productGallery = {
 
 			const selectFirstImage = () => selectImage( 1 );
 
+			// Initial mutation is triggered when the page is loaded.
+			// We don't want to set `userHasInteracted` to true on initial mutation
+			let isInitialMutation = true;
+
 			const observer = new MutationObserver( function ( mutations ) {
 				for ( const mutation of mutations ) {
+					if ( ! isInitialMutation ) {
+						context.userHasInteracted = true;
+					}
+
+					if ( isInitialMutation ) {
+						isInitialMutation = false;
+					}
+
 					const mutationTarget = mutation.target as HTMLElement;
 					const currentImageAttribute =
 						mutationTarget.getAttribute( 'current-image' );
