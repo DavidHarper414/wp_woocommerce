@@ -134,4 +134,51 @@ describe( 'createDeprecatedObjectProxy', () => {
 			'Deprecated: wcSettings.admin.onboarding.profile is deprecated. It is planned to be released in WooCommerce 10.0.0. Please use `getProfileItems` from the onboarding store. See https://github.com/woocommerce/woocommerce/tree/trunk/packages/js/data/src/onboarding for more information.'
 		);
 	} );
+
+	it( 'should handle Symbol properties and show deprecation messages', () => {
+		const testSymbol = Symbol( 'testSymbol' );
+		const objWithSymbol = {
+			[ testSymbol ]: 'symbol value',
+			regularProp: 'regular value',
+		};
+
+		const proxiedObj = createDeprecatedObjectProxy( objWithSymbol, {
+			regularProp: 'regular prop deprecated',
+			testSymbol: 'symbol prop deprecated',
+		} );
+
+		// Should not throw when accessing Symbol property
+		expect( () => proxiedObj[ testSymbol ] ).not.toThrow();
+		expect( proxiedObj[ testSymbol ] ).toBe( 'symbol value' );
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'symbol prop deprecated'
+		);
+
+		// Reset console spy
+		consoleWarnSpy.mockClear();
+
+		// Should still work normally for regular properties
+		expect( proxiedObj.regularProp ).toBe( 'regular value' );
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'regular prop deprecated'
+		);
+
+		// Test Symbol without description
+		const noDescSymbol = Symbol();
+		const objWithNoDescSymbol = {
+			[ noDescSymbol ]: 'no desc value',
+		};
+		const proxiedObjNoDesc = createDeprecatedObjectProxy(
+			objWithNoDescSymbol,
+			{
+				Symbol: 'symbol with no desc deprecated',
+			}
+		);
+
+		consoleWarnSpy.mockClear();
+		expect( proxiedObjNoDesc[ noDescSymbol ] ).toBe( 'no desc value' );
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'symbol with no desc deprecated'
+		);
+	} );
 } );
