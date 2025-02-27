@@ -317,7 +317,7 @@
               "menu_title": "Checkout Flow and Events",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/checkout-payment-methods/checkout-flow-and-events.md",
-              "hash": "59cb71c113f7d5c5e619b5ca0b5d0f903f31987155a3f4273c203a138f944f1a",
+              "hash": "7f8ec447923e8056c629faabb13aa9d80444afdad8c0b80d28bb564bfbda959b",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/checkout-payment-methods/checkout-flow-and-events.md",
               "id": "499384cbb48ed96a2e12653cd68bd82d123a20a1",
               "links": {
@@ -1548,10 +1548,20 @@
       "categories": []
     },
     {
-      "content": "\n**The Store API provides public Rest API endpoints for the development of customer-facing cart, checkout, and product functionality. It follows many of the patterns used in the [WordPress REST API](https://developer.wordpress.org/rest-api/key-concepts/).**\n\n In contrast to the WooCommerce REST API, the Store API is unauthenticated and does not provide access to sensitive store data or other customer information.\n\nPlease see the [Store API Documentation on GitHub](https://github.com/woocommerce/woocommerce/tree/trunk/plugins/woocommerce/src/StoreApi/README.md) for more information.\n",
+      "content": "",
       "category_slug": "store-api",
       "category_title": "Store API",
-      "posts": [],
+      "posts": [
+        {
+          "post_title": "Store API",
+          "menu_title": "Store API",
+          "tags": "reference",
+          "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/store-api/store-api.md",
+          "hash": "bc8585cefbbafd2532c3a3fbe952d981dd5df1873bfa579b941f66ad4fd1b687",
+          "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/store-api/store-api.md",
+          "id": "08887875ea9deb8c29e4ed87cfcdf41ce9372955"
+        }
+      ],
       "categories": []
     },
     {
@@ -1958,5 +1968,5 @@
       "categories": []
     }
   ],
-  "hash": "9b9e00cb06b79532555fcf0e2a1ae5d4c3e6e55aca953c29f319055029477357"
+  "hash": "12d33e698ab4390ff0babdc4307036ee9b764663528ec2019a7f3e2eb4d3e6c0"
 }
