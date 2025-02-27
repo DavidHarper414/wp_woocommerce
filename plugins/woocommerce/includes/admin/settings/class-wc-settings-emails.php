@@ -9,6 +9,7 @@
 use Automattic\WooCommerce\Internal\Admin\EmailPreview\EmailPreview;
 use Automattic\WooCommerce\Internal\Email\EmailColors;
 use Automattic\WooCommerce\Internal\Email\EmailFont;
+use Automattic\WooCommerce\Internal\Email\EmailStyleSync;
 use Automattic\WooCommerce\Internal\Features\FeaturesController;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
@@ -807,6 +808,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 	 */
 	public function email_color_palette( $value ) {
 		$default_colors = EmailColors::get_default_colors();
+		$auto_sync = get_option( EmailStyleSync::AUTO_SYNC_OPTION, 'no' );
 
 		?>
 		<hr class="wc-settings-email-color-palette-separator" />
