@@ -1,9 +1,9 @@
 /**
  * External dependencies
  */
-import { useBlockProps } from '@wordpress/block-editor';
 import { type BlockEditProps } from '@wordpress/blocks';
 import {
+	useBlockProps,
 	__experimentalUseColorProps as useColorProps,
 	getTypographyClassesAndStyles as useTypographyProps,
 	__experimentalGetSpacingClassesAndStyles as useSpacingProps,

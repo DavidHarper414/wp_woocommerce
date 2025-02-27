@@ -8,5 +8,6 @@ export default function AttributeNameSave() {
 	const innerBlocksProps = useInnerBlocksProps.save( {
 		...blockProps,
 	} );
+	// eslint-disable-next-line jsx-a11y/label-has-associated-control
 	return <label { ...innerBlocksProps } />;
 }
