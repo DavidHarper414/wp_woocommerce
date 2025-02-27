@@ -163,15 +163,11 @@ export function createDeprecatedObjectProxy( obj, messages, basePath = '' ) {
 				}
 			}
 
+			const propString =
+				typeof prop === 'symbol' ? prop.description || 'Symbol' : prop;
 			const nextPath = basePath
-				? `${ basePath }.${
-						typeof prop === 'symbol'
-							? prop.description || 'Symbol'
-							: prop
-				  }`
-				: typeof prop === 'symbol'
-				? prop.description || 'Symbol'
-				: prop;
+				? `${ basePath }.${ propString }`
+				: propString;
 
 			// Retrieve the deprecation message (if exists)
 			const deprecationMessage = nextPath
