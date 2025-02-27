@@ -11,21 +11,27 @@ import {
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
+import { useCustomDataContext } from '@woocommerce/shared-context';
+import type { ProductResponseAttributeItem } from '@woocommerce/types';
 import clsx from 'clsx';
-
-/**
- * Internal dependencies
- */
-import { useAttributeContext } from '../contexts/attribute-context';
 
 interface Attributes {
 	className?: string;
 	style?: 'pills' | 'dropdown';
 }
 
-function Pills( { options }: { options: SelectControl.Option[] } ) {
+function Pills( {
+	id,
+	options,
+}: {
+	id: string;
+	options: SelectControl.Option[];
+} ) {
 	return (
-		<ul className="wp-block-woocommerce-add-to-cart-with-options-variation-selector-attribute-options__pills">
+		<ul
+			id={ id }
+			className="wp-block-woocommerce-add-to-cart-with-options-variation-selector-attribute-options__pills"
+		>
 			{ options.map( ( option, index ) => (
 				<li
 					key={ option.value }
@@ -56,7 +62,8 @@ export default function AttributeOptionsEdit(
 		className,
 	} );
 
-	const { attribute } = useAttributeContext();
+	const { data: attribute } =
+		useCustomDataContext< ProductResponseAttributeItem >( 'attribute' );
 
 	if ( ! attribute ) return;
 
@@ -67,7 +74,7 @@ export default function AttributeOptionsEdit(
 	} ) );
 
 	return (
-		<div { ...blockProps } role="list">
+		<div { ...blockProps }>
 			<InspectorControls>
 				<PanelBody title={ __( 'Style', 'woocommerce' ) }>
 					<ToggleGroupControl
@@ -92,10 +99,11 @@ export default function AttributeOptionsEdit(
 			</InspectorControls>
 
 			{ style === 'pills' ? (
-				<Pills options={ options } />
+				<Pills id={ attribute.taxonomy } options={ options } />
 			) : (
 				<Disabled>
 					<SelectControl
+						id={ attribute.taxonomy }
 						options={ options }
 						hideLabelFromVision
 						__nextHasNoMarginBottom

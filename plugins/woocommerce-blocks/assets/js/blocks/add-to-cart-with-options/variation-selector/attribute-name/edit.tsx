@@ -9,11 +9,8 @@ import {
 	__experimentalGetSpacingClassesAndStyles as useSpacingProps,
 	useSettings,
 } from '@wordpress/block-editor';
-
-/**
- * Internal dependencies
- */
-import { useAttributeContext } from '../contexts/attribute-context';
+import { useCustomDataContext } from '@woocommerce/shared-context';
+import type { ProductResponseAttributeItem } from '@woocommerce/types';
 import clsx from 'clsx';
 
 interface Attributes {
@@ -57,9 +54,14 @@ export default function AttributeNameEdit(
 		},
 	} );
 
-	const { attribute } = useAttributeContext();
+	const { data: attribute } =
+		useCustomDataContext< ProductResponseAttributeItem >( 'attribute' );
 
 	if ( ! attribute ) return;
 
-	return <label { ...blockProps }>{ attribute.name }</label>;
+	return (
+		<label { ...blockProps } htmlFor={ attribute.taxonomy }>
+			{ attribute.name }
+		</label>
+	);
 }

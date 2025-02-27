@@ -9,13 +9,11 @@ import {
 	__experimentalUseBlockPreview as useBlockPreview,
 } from '@wordpress/block-editor';
 import { BlockInstance, type BlockEditProps } from '@wordpress/blocks';
-import { useProductDataContext } from '@woocommerce/shared-context';
+import {
+	CustomDataProvider,
+	useProductDataContext,
+} from '@woocommerce/shared-context';
 import { useSelect } from '@wordpress/data';
-
-/**
- * Internal dependencies
- */
-import { AttributeProvider } from '../contexts/attribute-context';
 
 interface Attributes {
 	className?: string;
@@ -82,7 +80,11 @@ export default function AttributeItemTemplateEdit(
 	return (
 		<div { ...blockProps } role="list">
 			{ product.attributes.map( ( attribute ) => (
-				<AttributeProvider key={ attribute.id } attribute={ attribute }>
+				<CustomDataProvider
+					key={ attribute.id }
+					id="attribute"
+					data={ attribute }
+				>
 					<AttributeItem
 						blocks={ blocks }
 						isSelected={
@@ -93,7 +95,7 @@ export default function AttributeItemTemplateEdit(
 							setSelectedAttributeItem( attribute.id )
 						}
 					/>
-				</AttributeProvider>
+				</CustomDataProvider>
 			) ) }
 		</div>
 	);
