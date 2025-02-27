@@ -236,6 +236,17 @@ const PaymentMethodComponent = ( { eventRegistration } ) => {
 };
 ```
 
+_For anything else:_
+
+```jsx
+const { onCheckoutValidation } = wc.blocksCheckoutEvents;
+
+useEffect( () => {
+  const unsubscribe = onCheckoutValidation( () => true );
+  return unsubscribe;
+}, [ onCheckoutValidation ] );
+```
+
 ### ~~`onPaymentProcessing`~~
 
 This is now deprecated and replaced by the `onPaymentSetup` event emitter.
@@ -403,6 +414,17 @@ const PaymentMethodComponent = ( { eventRegistration } ) => {
 };
 ```
 
+_For anything else:_
+
+```jsx
+const { onCheckoutSuccess } = wc.blocksCheckoutEvents;
+
+useEffect( () => {
+  const unsubscribe = onCheckoutSuccess( () => true );
+  return unsubscribe;
+}, [ onCheckoutSuccess ] );
+```
+
 ### `onCheckoutFail`
 
 This event emitter is fired when the checkout status is `AFTER_PROCESSING` and the checkout `hasError` state is `true`. The `AFTER_PROCESSING` status is set by the `CheckoutProcessor` component after receiving a response from the server for the checkout processing request.
@@ -443,6 +465,17 @@ const PaymentMethodComponent = ( { eventRegistration } ) => {
 		return unsubscribe;
 	}, [ onCheckoutFail ] );
 };
+```
+
+_For anything else:_
+
+```jsx
+const { onCheckoutFail } = wc.blocksCheckoutEvents;
+
+useEffect( () => {
+  const unsubscribe = onCheckoutFail( () => true );
+  return unsubscribe;
+}, [ onCheckoutFail ] );
 ```
 
 ### `onShippingRateSuccess`
