@@ -1,5 +1,11 @@
 <?php
+/**
+ * Email Editor Container class file.
+ *
+ * @package Automattic\WooCommerce\EmailEditor
+ */
 
+declare( strict_types = 1 );
 namespace Automattic\WooCommerce\EmailEditor;
 
 use Automattic\WooCommerce\Blocks\Registry\Container;
@@ -32,7 +38,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Main package class.
  */
-class EmailEditorContainer {
+class Email_Editor_Container {
 	/**
 	 * Init method.
 	 */
@@ -175,7 +181,7 @@ class EmailEditorContainer {
 					$container->get( Process_Manager::class ),
 					$container->get( Blocks_Registry::class ),
 					$container->get( Settings_Controller::class ),
-					new EmailCssInliner(),
+					new Email_Css_Inliner(),
 					$container->get( Theme_Controller::class ),
 				);
 			}
@@ -186,7 +192,7 @@ class EmailEditorContainer {
 				return new Renderer(
 					$container->get( Content_Renderer::class ),
 					$container->get( Templates::class ),
-					new EmailCssInliner(),
+					new Email_Css_Inliner(),
 					$container->get( Theme_Controller::class ),
 				);
 			}
@@ -247,8 +253,8 @@ class EmailEditorContainer {
 			Bootstrap::class,
 			function ( $container ) {
 				return new Bootstrap(
-					$container->get(Email_Editor::class),
-					$container->get(Initializer::class),
+					$container->get( Email_Editor::class ),
+					$container->get( Initializer::class ),
 				);
 			}
 		);

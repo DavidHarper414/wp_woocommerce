@@ -4,7 +4,7 @@ declare( strict_types=1 );
 
 namespace Automattic\WooCommerce\Internal\EmailEditor;
 
-use Automattic\WooCommerce\EmailEditor\EmailEditorContainer;
+use Automattic\WooCommerce\EmailEditor\Email_Editor_Container;
 use Automattic\WooCommerce\EmailEditor\Engine\Dependency_Check;
 use Automattic\WooCommerce\Internal\EmailEditor\EmailPatterns\PatternsController;
 use Automattic\WooCommerce\Internal\EmailEditor\EmailTemplates\TemplatesController;
@@ -35,7 +35,7 @@ class Integration {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$editor_container       = EmailEditorContainer::container();
+		$editor_container       = Email_Editor_Container::container();
 		$this->dependency_check = $editor_container->get( Dependency_Check::class );
 	}
 

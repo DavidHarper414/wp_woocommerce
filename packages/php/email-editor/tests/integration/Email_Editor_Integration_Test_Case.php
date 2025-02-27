@@ -8,7 +8,7 @@
 declare(strict_types = 1);
 
 use Automattic\WooCommerce\EmailEditor\Container;
-use Automattic\WooCommerce\EmailEditor\EmailCssInliner;
+use Automattic\WooCommerce\EmailEditor\Email_Css_Inliner;
 use Automattic\WooCommerce\EmailEditor\Engine\Dependency_Check;
 use Automattic\WooCommerce\EmailEditor\Engine\Email_Api_Controller;
 use Automattic\WooCommerce\EmailEditor\Engine\Email_Editor;
@@ -99,9 +99,9 @@ abstract class Email_Editor_Integration_Test_Case extends \WP_UnitTestCase {
 	protected function initContainer(): void {
 		$container = new Container();
 		$container->set(
-      EmailCssInliner::class,
+      Email_Css_Inliner::class,
 			function () {
-				return new EmailCssInliner();
+				return new Email_Css_Inliner();
 			}
 		);
 		$container->set(
@@ -214,7 +214,7 @@ abstract class Email_Editor_Integration_Test_Case extends \WP_UnitTestCase {
 					$container->get( Process_Manager::class ),
 					$container->get( Blocks_Registry::class ),
 					$container->get( Settings_Controller::class ),
-					$container->get( EmailCssInliner::class ),
+					$container->get( Email_Css_Inliner::class ),
 					$container->get( Theme_Controller::class ),
 				);
 			}
@@ -225,7 +225,7 @@ abstract class Email_Editor_Integration_Test_Case extends \WP_UnitTestCase {
 				return new Renderer(
 					$container->get( Content_Renderer::class ),
 					$container->get( Templates::class ),
-					$container->get( EmailCssInliner::class ),
+					$container->get( Email_Css_Inliner::class ),
 					$container->get( Theme_Controller::class ),
 				);
 			}

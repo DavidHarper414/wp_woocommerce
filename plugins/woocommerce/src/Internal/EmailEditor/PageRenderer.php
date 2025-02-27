@@ -7,7 +7,7 @@ namespace Automattic\WooCommerce\Internal\EmailEditor;
 use Automattic\WooCommerce\EmailEditor\Engine\Settings_Controller;
 use Automattic\WooCommerce\EmailEditor\Engine\Theme_Controller;
 use Automattic\WooCommerce\EmailEditor\Engine\User_Theme;
-use Automattic\WooCommerce\EmailEditor\EmailEditorContainer;
+use Automattic\WooCommerce\EmailEditor\Email_Editor_Container;
 use Automattic\WooCommerce\Internal\Admin\WCAdminAssets;
 
 defined( 'ABSPATH' ) || exit;
@@ -41,7 +41,7 @@ class PageRenderer {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$editor_container          = EmailEditorContainer::container();
+		$editor_container          = Email_Editor_Container::container();
 		$this->settings_controller = $editor_container->get( Settings_Controller::class );
 		$this->theme_controller    = $editor_container->get( Theme_Controller::class );
 		$this->user_theme          = $editor_container->get( User_Theme::class );
