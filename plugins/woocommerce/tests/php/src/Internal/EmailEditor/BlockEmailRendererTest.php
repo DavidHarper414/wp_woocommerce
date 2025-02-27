@@ -23,7 +23,7 @@ class BlockEmailRendererTest extends \WC_Unit_Test_Case {
 	 * @var string $email_post_content
 	 */
 	private $email_post_content = '<!-- wp:paragraph -->
-<p>Test Paragraph.</p>
+<p>Test Paragraph. <!--[woocommerce/shopper-email]--></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:woo/email-content {"lock":{"move":false,"remove":true}} -->
@@ -66,12 +66,17 @@ class BlockEmailRendererTest extends \WC_Unit_Test_Case {
 	 * Test that the BlockEmailRenderer can render email and replaces Woo Content.
 	 */
 	public function testItRendersAnEmail(): void {
-		$test_woo_content = 'Test Woo Content';
-		$wc_mail_mock     = new \WC_Email();
-		$wc_mail_mock->id = 'test_email';
-		$rendered_email   = $this->block_email_renderer->render_block_email( $this->email_post, $test_woo_content, $wc_mail_mock );
+		$test_woo_content        = 'Test Woo Content';
+		$wc_mail_mock            = new \WC_Email();
+		$wc_mail_mock->id        = 'test_email';
+		$wc_mail_mock->recipient = 'customer@test.com';
+		$rendered_email          = $this->block_email_renderer->render_block_email( $this->email_post, $test_woo_content, $wc_mail_mock );
+		// Check that the Woo content placeholder was replaced.
 		$this->assertStringContainsString( $test_woo_content, $rendered_email );
+		// Check that the email standard block content was rendered correctly.
 		$this->assertStringContainsString( 'Test Paragraph.', $rendered_email );
+		// Check that the personalized tag was replaced.
+		$this->assertStringContainsString( 'customer@test.com', $rendered_email );
 	}
 
 	/**

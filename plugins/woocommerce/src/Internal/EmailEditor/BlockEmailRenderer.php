@@ -5,6 +5,7 @@ declare( strict_types=1 );
 namespace Automattic\WooCommerce\Internal\EmailEditor;
 
 use Automattic\WooCommerce\Internal\EmailEditor\Renderer\Blocks\WooContent;
+use MailPoet\EmailEditor\Engine\Personalizer;
 use MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\Blocks_Registry;
 use MailPoet\EmailEditor\Engine\Renderer\Renderer as MailPoetRenderer;
 use MailPoet\EmailEditor\EmailEditorContainer;
@@ -24,11 +25,20 @@ class BlockEmailRenderer {
 	private $renderer;
 
 	/**
+	 * Service for personalization of emails
+	 * It replaces personalization tags with actual values
+	 *
+	 * @var Personalizer
+	 */
+	private $personalizer;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
-		$editor_container = EmailEditorContainer::container();
-		$this->renderer   = $editor_container->get( MailPoetRenderer::class );
+		$editor_container   = EmailEditorContainer::container();
+		$this->renderer     = $editor_container->get( MailPoetRenderer::class );
+		$this->personalizer = $editor_container->get( Personalizer::class );
 	}
 
 	/**
@@ -59,8 +69,10 @@ class BlockEmailRenderer {
 		$subject   = $wc_email->get_subject(); // We will get subject from $email_post after we add it to the editor.
 		$preheader = ''; // We will get the preheader from $email_post after we add it to the editor.
 		try {
+			$this->personalizer->set_context( $this->prepare_context_data( $wc_email ) );
 			$rendered_email_data = $this->renderer->render( $email_post, $subject, $preheader, 'en' );
-			$rendered_email      = str_replace( self::WOO_EMAIL_CONTENT_PLACEHOLDER, $woo_content, $rendered_email_data['html'] );
+			$personalized_email  = $this->personalizer->personalize_content( $rendered_email_data['html'] );
+			$rendered_email      = str_replace( self::WOO_EMAIL_CONTENT_PLACEHOLDER, $woo_content, $personalized_email );
 			return $rendered_email;
 		} catch ( \Exception $e ) {
 			wc_caught_exception( $e, __METHOD__, array( $email_post, $woo_content, $wc_email ) );
@@ -89,5 +101,17 @@ class BlockEmailRenderer {
 		}
 
 		return $posts[0];
+	}
+
+	/**
+	 * Prepare context data for personalization.
+	 *
+	 * @param \WC_Email $wc_email WooCommerce email.
+	 * @return array
+	 */
+	private function prepare_context_data( \WC_Email $wc_email ): array {
+		$context                    = array();
+		$context['recipient_email'] = $wc_email->get_recipient();
+		return $context;
 	}
 }
