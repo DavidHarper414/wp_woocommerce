@@ -1,21 +1,23 @@
-# MailPoet Email Editor
+# WooCommerce Email Editor
 
-This folder contains the code for the MailPoet Email Editor PHP Package.
+This folder contains the code for the WooCommerce Email Editor PHP Package.
 We aim to extract the engine as an independent library, so it can be used in other projects.
-As we are still in an exploration phase, we keep it together with the MailPoet codebase.
+As we are still in an exploration phase, we keep it together with the WooCommerce codebase.
 
 You can locate the JS package here `packages/js/email-editor`
 
 ## Workflow Commands
 
 We use `composer` run scripts to run the commands. You can run them using `composer run <command>`.
-If you don't have `composer` installed globally, you can use the `composer.phar` file in `../mailpoet/tools/vendor`.
+If you don't have `composer` installed globally, you need to install it globally. Please check ho to do it [here](https://getcomposer.org/doc/00-intro.md).
 
 ```bash
-composer run unit-test                             # runs all the unit tests
-composer run unit-test -- [path_to_tests]          # runs a single unit test or a directory of tests
-composer run integration-test                      # runs all the integrations tests
-composer run integration-test -- [path_to_tests]   # run a single integration test or a directory of tests
+composer run env:start                             # start testing environment
+composer run env:stop                              # stop testing environment
+composer run test:unit                             # runs all the unit tests
+composer run test:unit -- [path_to_tests]          # runs a single unit test or a directory of tests
+composer run test:integration                      # runs all the integrations tests
+composer run test:integration -- [path_to_tests]   # run a single integration test or a directory of tests
 composer code-style                                # checks the code style
 ```
 
@@ -30,7 +32,7 @@ composer run integration-test -- tests/integration/Engine/Theme_Controller_Test.
 
 The **PHP** package is divided into `engine` and `integrations` subdirectories.
 Engine consist of code for the editor core and integrations are for extending the functionality.
-Anything **MailPoet** specific should be in the `mailpoet/lib/EmailEditor/Integrations` folder.
+Anything **WooCommerce** specific should be in the `plugins/woocommerce/src/Internal/EmailEditor` folder.
 
 Please avoid using MailPoet-specific services and modules in the Email editor package.
 
@@ -70,12 +72,12 @@ We may add, update and delete any of them.
 
 ### Filters
 
-| Name                                             | Argument                                  | Return                                                       | Description                                                                                                                                                         |
-| ------------------------------------------------ | ----------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `woocommerce_email_editor_post_types`            | `Array` $postTypes                        | `Array` EmailPostType                                        | Applied to the list of post types used by the `getPostTypes` method                                                                                                 |
-| `woocommerce_email_editor_theme_json`            | `WP_Theme_JSON` $coreThemeData            | `WP_Theme_JSON` $themeJson                                   | Applied to the theme json data. This theme json data is created from the merging of the `WP_Theme_JSON_Resolver::get_core_data` and MailPoet owns `theme.json` file |
-| `woocommerce_email_renderer_styles`              | `string` $templateStyles, `WP_Post` $post | `string` $templateStyles                                     | Applied to the email editor template styles.                                                                                                                        |
-| `woocommerce_email_content_renderer_styles`      | `string` $contentStyles, `WP_Post` $post  | `string` $contentStyles                                      | Applied to the inline content styles prior to use by the CSS Inliner.                                                                                               |
-| `woocommerce_is_email_editor_page`               | `boolean` $isEditorPage                   | `boolean`                                                    | Check current page is the email editor page                                                                                                                         |
-| `woocommerce_email_editor_send_preview_email`    | `Array` $postData                         | `boolean` Result of processing. Was email sent successfully? | Allows override of the send preview mail function. Folks may choose to use custom implementation                                                                    |
-| `woocommerce_email_editor_post_sent_status_args` | `Array` `sent` post status args           | `Array` register_post_status args                            | Allows update of the argument for the sent post status                                                                                                              |
+| Name                                             | Argument                                  | Return                                                       | Description                                                                                                                                                            |
+| ------------------------------------------------ | ----------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `woocommerce_email_editor_post_types`            | `Array` $postTypes                        | `Array` EmailPostType                                        | Applied to the list of post types used by the `getPostTypes` method                                                                                                    |
+| `woocommerce_email_editor_theme_json`            | `WP_Theme_JSON` $coreThemeData            | `WP_Theme_JSON` $themeJson                                   | Applied to the theme json data. This theme json data is created from the merging of the `WP_Theme_JSON_Resolver::get_core_data` and WooCommerce owns `theme.json` file |
+| `woocommerce_email_renderer_styles`              | `string` $templateStyles, `WP_Post` $post | `string` $templateStyles                                     | Applied to the email editor template styles.                                                                                                                           |
+| `woocommerce_email_content_renderer_styles`      | `string` $contentStyles, `WP_Post` $post  | `string` $contentStyles                                      | Applied to the inline content styles prior to use by the CSS Inliner.                                                                                                  |
+| `woocommerce_is_email_editor_page`               | `boolean` $isEditorPage                   | `boolean`                                                    | Check current page is the email editor page                                                                                                                            |
+| `woocommerce_email_editor_send_preview_email`    | `Array` $postData                         | `boolean` Result of processing. Was email sent successfully? | Allows override of the send preview mail function. Folks may choose to use custom implementation                                                                       |
+| `woocommerce_email_editor_post_sent_status_args` | `Array` `sent` post status args           | `Array` register_post_status args                            | Allows update of the argument for the sent post status                                                                                                                 |
