@@ -12,11 +12,7 @@ import {
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
 import clsx from 'clsx';
-
-/**
- * Internal dependencies
- */
-import { useAttributeContext } from '../contexts/attribute-context';
+import { useAttributeDataContext } from '@woocommerce/shared-context';
 
 interface Attributes {
 	className?: string;
@@ -56,7 +52,7 @@ export default function AttributeOptionsEdit(
 		className,
 	} );
 
-	const { attribute } = useAttributeContext();
+	const { attribute } = useAttributeDataContext();
 
 	if ( ! attribute ) return;
 

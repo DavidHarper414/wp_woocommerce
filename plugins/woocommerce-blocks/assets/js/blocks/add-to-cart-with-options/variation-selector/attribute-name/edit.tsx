@@ -9,11 +9,11 @@ import {
 	__experimentalGetSpacingClassesAndStyles as useSpacingProps,
 	useSettings,
 } from '@wordpress/block-editor';
+import { useAttributeDataContext } from '@woocommerce/shared-context';
 
 /**
  * Internal dependencies
  */
-import { useAttributeContext } from '../contexts/attribute-context';
 import clsx from 'clsx';
 
 interface Attributes {
@@ -57,7 +57,7 @@ export default function AttributeNameEdit(
 		},
 	} );
 
-	const { attribute } = useAttributeContext();
+	const { attribute } = useAttributeDataContext();
 
 	if ( ! attribute ) return;
 
