@@ -83,6 +83,10 @@ class WC_Brands {
 
 		// Product Editor compatibility.
 		add_action( 'woocommerce_layout_template_after_instantiation', array( $this, 'wc_brands_on_block_template_register' ), 10, 3 );
+
+		// Block theme integration
+		add_filter( 'hooked_block_types', array( $this, 'hook_product_brand_block' ), 10, 4 );
+		add_filter( 'hooked_block_core/post-terms', array( $this, 'configure_product_brand_block' ), 10, 5 );
 	}
 
 	/**
@@ -396,9 +400,7 @@ class WC_Brands {
 	public function show_brand() {
 		global $post;
 
-		$has_block_template = apply_filters( 'woocommerce_has_block_template', false, 'taxonomy-product_brand' ); // phpcs:ignore WooCommerce.Commenting.CommentHooks.MissingHookComment
-
-		if ( is_singular( 'product' ) && ! $has_block_template ) {
+		if ( is_singular( 'product' ) && ! wc_current_theme_is_fse_theme() ) {
 			$terms       = get_the_terms( $post->ID, 'product_brand' );
 			$brand_count = is_array( $terms ) ? count( $terms ) : 0;
 
@@ -1092,6 +1094,44 @@ class WC_Brands {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Hooks the product brand terms block into single product templates.
+	 */
+	public function hook_product_brand_block( $hooked_block_types, $relative_position, $anchor_block_type, $context ) {
+		// Only add the block as the last child of the product meta block
+		if ( 'woocommerce/product-meta' === $anchor_block_type && 
+			 'last_child' === $relative_position &&
+			 $context instanceof WP_Block_Template &&
+			 'single-product' === $context->slug ) {
+				
+			// Simply add the core/post-terms block type
+			$hooked_block_types[] = 'core/post-terms';
+		}
+		
+		return $hooked_block_types;
+	}
+
+	/**
+	 * Configures the attributes for the hooked product brand terms block.
+	 */
+	public function configure_product_brand_block( $parsed_hooked_block, $hooked_block_type, $relative_position, $parsed_anchor_block, $context ) {
+		if ( is_null( $parsed_hooked_block ) ) {
+			return $parsed_hooked_block;
+		}
+		
+		if ( 'core/post-terms' === $hooked_block_type && 
+			 'last_child' === $relative_position &&
+			 'woocommerce/product-meta' === $parsed_anchor_block['blockName'] ) {
+				
+			$parsed_hooked_block['attrs'] = array(
+				'term' 	 => 'product_brand',
+				'prefix' => __( 'Brands: ', 'woocommerce' ),
+			);
+		}
+		
+		return $parsed_hooked_block;
 	}
 }
 
