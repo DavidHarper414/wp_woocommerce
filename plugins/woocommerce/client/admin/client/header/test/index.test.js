@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { render, fireEvent } from '@testing-library/react';
+import React from 'react';
 
 /**
  * Internal dependencies
@@ -36,12 +37,14 @@ jest.mock( '~/hooks/use-tasklists-state', () => ( {
 } ) );
 
 jest.mock( '@woocommerce/navigation', () => ( {
+	...jest.requireActual( '@woocommerce/navigation' ),
 	isWCAdmin: () => true,
 	getScreenFromPath: () => 'homescreen',
 	getPath: () => '/analytics/overview',
 } ) );
 
 global.window.wcNavigation = {};
+global.window.wcAdminFeatures = { 'activity-panels': false };
 
 const encodedBreadcrumb = [
 	[ 'admin.php?page=wc-settings', 'Settings' ],
@@ -56,11 +59,6 @@ describe( 'Header', () => {
 				cb();
 			}
 		);
-
-		// Mock user preferences to avoid testing the MobileAppBanner here
-
-		// Disable the ActivityPanel so it isn't tested here
-		window.wcAdminFeatures = { 'activity-panels': false };
 	} );
 
 	afterEach( () => {
