@@ -88,7 +88,6 @@ class OrderCountCache extends ObjectCache {
 	 * @throws CacheException Invalid parameter, or null id was passed and get_object_id returns null too.
 	 */
 	public function set( $object, $id = null, int $expiration = self::DEFAULT_EXPIRATION ): bool {
-		$this->validate_order_type( $id );
 		return parent::set( $object, $id, $expiration );
 	}
 
@@ -106,19 +105,6 @@ class OrderCountCache extends ObjectCache {
 	 * @throws CacheException Invalid id parameter.
 	 */
 	public function get( $id, int $expiration = self::DEFAULT_EXPIRATION, ?callable $get_from_datastore_callback = null ) {
-		$this->validate_order_type( $id );
 		return parent::get( $id, $expiration );
-	}
-
-	/**
-	 * Throws an exception if an invalid order type is given.
-	 *
-	 * @throws CacheException Invalid id parameter.
-	 */
-	public function validate_order_type( $id ) {
-		$valid_types = wc_get_order_types( 'order-count' );
-		if ( ! in_array( $id, $valid_types, true ) ) {
-			throw new CacheException( sprintf( "%s is not a valid order type.", $id ), $this, $id );
-		}
 	}
 }
