@@ -31,16 +31,16 @@ class EmailStyleSync implements RegisterHooksInterface {
 		// Hook into theme change events.
 		add_action( 'after_switch_theme', array( $this, 'sync_email_styles_with_theme' ) );
 		add_action( 'customize_save_after', array( $this, 'sync_email_styles_with_theme' ) );
-		
+
 		// Hook into theme.json and global styles changes.
 		add_action( 'wp_theme_json_data_updated', array( $this, 'sync_email_styles_with_theme' ) );
 		add_action( 'rest_after_insert_global_styles', array( $this, 'sync_email_styles_with_theme' ) );
 		add_action( 'update_option_wp_global_styles', array( $this, 'sync_email_styles_with_theme' ) );
 		add_action( 'save_post_wp_global_styles', array( $this, 'sync_email_styles_with_theme' ) );
-		
+
 		// Hook into the theme editor save action.
 		add_action( 'wp_ajax_wp_save_styles', array( $this, 'sync_email_styles_with_theme' ), 999 );
-		
+
 		// Hook into auto-sync option update to trigger sync when enabled.
 		add_action( 'update_option_' . self::AUTO_SYNC_OPTION, array( $this, 'maybe_sync_on_option_update' ), 10, 3 );
 	}
@@ -85,7 +85,7 @@ class EmailStyleSync implements RegisterHooksInterface {
 
 	/**
 	 * Sync email styles with theme styles if auto-sync is enabled.
-	 * 
+	 *
 	 * Uses a flag to prevent recursive calls.
 	 */
 	public function sync_email_styles_with_theme() {
@@ -105,7 +105,7 @@ class EmailStyleSync implements RegisterHooksInterface {
 	/**
 	 * Update email colors from theme colors.
 	 */
-	private function update_email_colors() {
+	protected function update_email_colors() {
 		$colors = $this->get_theme_colors();
 		if ( empty( $colors ) ) {
 			return;
@@ -114,19 +114,19 @@ class EmailStyleSync implements RegisterHooksInterface {
 		if ( ! empty( $colors['base_color'] ) ) {
 			update_option( 'woocommerce_email_base_color', $colors['base_color'] );
 		}
-		
+
 		if ( ! empty( $colors['bg_color'] ) ) {
 			update_option( 'woocommerce_email_background_color', $colors['bg_color'] );
 		}
-		
+
 		if ( ! empty( $colors['body_bg_color'] ) ) {
 			update_option( 'woocommerce_email_body_background_color', $colors['body_bg_color'] );
 		}
-		
+
 		if ( ! empty( $colors['body_text_color'] ) ) {
 			update_option( 'woocommerce_email_text_color', $colors['body_text_color'] );
 		}
-		
+
 		if ( ! empty( $colors['footer_text_color'] ) ) {
 			update_option( 'woocommerce_email_footer_text_color', $colors['footer_text_color'] );
 		}
@@ -135,40 +135,41 @@ class EmailStyleSync implements RegisterHooksInterface {
 	/**
 	 * Get theme colors from theme.json.
 	 *
+	 * @param array|null $override_styles Optional array of styles to override.
 	 * @return array Array of theme colors.
 	 */
-	private function get_theme_colors() {
+	protected function get_theme_colors( ?array $override_styles = null ) {
 		if ( ! function_exists( 'wp_get_global_styles' ) ) {
 			return array();
 		}
 
-		$global_styles = wp_get_global_styles( array(), array( 'transforms' => array( 'resolve-variables' ) ) );
-		
+		$global_styles = $override_styles ?: wp_get_global_styles( array(), array( 'transforms' => array( 'resolve-variables' ) ) );
+
 		$default_colors = EmailColors::get_default_colors();
 		$base_color_default = $default_colors['base_color_default'];
 		$bg_color_default = $default_colors['bg_color_default'];
 		$body_bg_color_default = $default_colors['body_bg_color_default'];
 		$body_text_color_default = $default_colors['body_text_color_default'];
 		$footer_text_color_default = $default_colors['footer_text_color_default'];
-		
+
 		$base_color = ! empty( $global_styles['elements']['button']['color']['text'] )
-			? sanitize_hex_color( $global_styles['elements']['button']['color']['text'] ) 
+			? sanitize_hex_color( $global_styles['elements']['button']['color']['text'] )
 			: $base_color_default;
-			
+
 		$bg_color = ! empty( $global_styles['color']['background'] )
-			? sanitize_hex_color( $global_styles['color']['background'] ) 
+			? sanitize_hex_color( $global_styles['color']['background'] )
 			: $bg_color_default;
-			
+
 		$body_bg_color = ! empty( $global_styles['color']['background'] )
-			? sanitize_hex_color( $global_styles['color']['background'] ) 
+			? sanitize_hex_color( $global_styles['color']['background'] )
 			: $body_bg_color_default;
-			
+
 		$body_text_color = ! empty( $global_styles['color']['text'] )
-			? sanitize_hex_color( $global_styles['color']['text'] ) 
+			? sanitize_hex_color( $global_styles['color']['text'] )
 			: $body_text_color_default;
-			
+
 		$footer_text_color = ! empty( $global_styles['elements']['caption']['color']['text'] )
-			? sanitize_hex_color( $global_styles['elements']['caption']['color']['text'] ) 
+			? sanitize_hex_color( $global_styles['elements']['caption']['color']['text'] )
 			: $footer_text_color_default;
 
 		return array(
