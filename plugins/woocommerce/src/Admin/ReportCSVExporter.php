@@ -258,7 +258,7 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 		 * @returns string The report's endpoint.
 		 */
 		$report_endpoint = apply_filters(
-			'woocommerce_analytics_report_data_endpoint',
+			'woocommerce_export_report_data_endpoint',
 			"/wc-analytics/reports/{$this->report_type}",
 			$this->report_type
 		);
