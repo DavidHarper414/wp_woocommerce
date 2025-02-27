@@ -1,0 +1,4 @@
+Significance: patch
+Type: performance
+
+Performance: limit unregistered order statuses population to analytics pages only.
