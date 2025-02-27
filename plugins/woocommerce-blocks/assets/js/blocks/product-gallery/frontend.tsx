@@ -77,18 +77,25 @@ const productGallery = {
 			// The thumbnail block preloads all required images into cache. Without thumbnails, only the first two images load initially,
 			// as users navigate one at a time, with more loading on interaction. If thumbnails later use smaller, separate images, this
 			// logic will need adjustment, as users could jump to an unloaded image by clicking a thumbnail.
-			const { imageData, userHasInteracted } = getContext();
+			const { imageData, userHasInteracted, selectedImageNumber } =
+				getContext();
 
 			return imageData.map( ( image, index ) => {
+				const isActive = selectedImageNumber === index + 1;
+
 				if ( ! userHasInteracted && index >= 2 ) {
 					// Return a copy with empty src and srcSet for images beyond the first two
 					return {
 						...image,
+						isActive,
 						src: '',
 						srcSet: '',
 					};
 				}
-				return image;
+				return {
+					...image,
+					isActive,
+				};
 			} );
 		},
 	},

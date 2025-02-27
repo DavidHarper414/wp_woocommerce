@@ -130,7 +130,7 @@ class ProductGalleryLargeImage extends AbstractBlock {
 						data-wc-bind--id="context.largeimage.id"
 						data-wc-bind--tabindex="state.thumbnailTabIndex"
 						data-wc-on--keydown="actions.onSelectedLargeImageKeyDown"
-						data-wc-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="state.isCurrentImageSelected"
+						data-wc-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="context.largeimage.isActive"
 						data-wc-on--touchstart="actions.onTouchStart"
 						data-wc-on--touchmove="actions.onTouchMove"
 						data-wc-on--touchend="actions.onTouchEnd"

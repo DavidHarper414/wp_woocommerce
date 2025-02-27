@@ -23,13 +23,6 @@ type Store = typeof productGalleryLargeImage & StorePart< ProductGallery >;
 const { actions } = store< Store >( 'woocommerce/product-gallery' );
 
 const productGalleryLargeImage = {
-	state: {
-		get isCurrentImageSelected() {
-			// @ts-expect-error - We are using this in the context of a loop and assigning the context to a variable.
-			const { imageId, largeimage } = getContext();
-			return imageId === largeimage?.id;
-		},
-	},
 	actions: {
 		startZoom: ( event: MouseEvent ) => {
 			const target = event.target as HTMLElement;

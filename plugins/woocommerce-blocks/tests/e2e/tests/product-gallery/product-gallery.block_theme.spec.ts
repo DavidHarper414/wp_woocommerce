@@ -43,13 +43,8 @@ export const getVisibleLargeImageId = async (
 		'.wc-block-woocommerce-product-gallery-large-image__image--active-image-slide'
 	);
 
-	const mainImageContext = ( await mainImage.getAttribute(
-		'data-wc-context'
-	) ) as string;
-
-	const mainImageParsedContext = JSON.parse( mainImageContext );
-
-	return mainImageParsedContext.imageId;
+	const mainImageId = await mainImage.getAttribute( 'id' );
+	return mainImageId;
 };
 
 export const getIsDialogOpen = async (
