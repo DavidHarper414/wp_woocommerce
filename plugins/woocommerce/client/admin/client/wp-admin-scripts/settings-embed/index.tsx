@@ -23,6 +23,7 @@ import { registerPaymentsSettingsBannerFill } from '../../payments/payments-sett
 import { registerSiteVisibilitySlotFill } from '../../launch-your-store';
 import { registerBlueprintSlotfill } from '../../blueprint';
 import { registerSettingsEmailColorPaletteFill } from '../../settings-email/settings-email-color-palette-slotfill';
+import { registerSettingsEmailAutoSyncFill } from '../../settings-email/settings-email-auto-sync-slotfill';
 import { registerSettingsEmailImageUrlFill } from '../../settings-email/settings-email-image-url-slotfill';
 import { registerSettingsEmailPreviewFill } from '../../settings-email/settings-email-preview-slotfill';
 import { registerSettingsEmailFeedbackFill } from '~/settings-email/settings-email-feedback-slotfill';
@@ -91,6 +92,7 @@ const registerSlotFills = () => {
 	if ( isFeatureEnabled( 'email_improvements' ) ) {
 		registerSettingsEmailPreviewFill( true );
 		registerSettingsEmailColorPaletteFill();
+		registerSettingsEmailAutoSyncFill();
 		registerSettingsEmailImageUrlFill();
 	} else {
 		registerSettingsEmailPreviewFill( false );

@@ -42,6 +42,10 @@ export const possiblyRenderSettingsSlots = () => {
 			id: 'wc_settings_email_color_palette_slotfill',
 			scope: 'woocommerce-email-color-palette-settings',
 		},
+		{
+			id: 'wc_settings_email_auto_sync_slotfill',
+			scope: 'woocommerce-email-auto-sync-settings',
+		},
 	];
 
 	slots.forEach( ( slot ) => {

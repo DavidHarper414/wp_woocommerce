@@ -389,6 +389,15 @@ class WC_Settings_Emails extends WC_Settings_Page {
 
 				$footer_text_color_setting_in_palette,
 
+				array(
+					'title'    => __( 'Auto-sync with theme', 'woocommerce' ),
+					'desc'     => __( 'Automatically update email styles when theme styles change', 'woocommerce' ),
+					'id'       => 'woocommerce_email_auto_sync_with_theme',
+					'type'     => 'hidden',
+					'default'  => 'no',
+					'autoload' => false,
+				),
+
 				$color_palette_section_end,
 
 				array( 'type' => 'email_preview' ),
@@ -808,6 +817,15 @@ class WC_Settings_Emails extends WC_Settings_Page {
 			data-default-colors="<?php echo esc_attr( wp_json_encode( $default_colors ) ); ?>"
 			<?php echo wp_theme_has_theme_json() ? 'data-has-theme-json' : ''; ?>
 		></div>
+		<?php if ( wp_theme_has_theme_json() ) : ?>
+		<div id="wc_settings_email_auto_sync_slotfill"></div>
+		<?php endif; ?>
+		<input
+			type="hidden"
+			name="woocommerce_email_auto_sync_with_theme"
+			id="woocommerce_email_auto_sync_with_theme"
+			value="<?php echo esc_attr( $auto_sync ); ?>"
+		/>
 		<table class="form-table">
 		<?php
 	}
