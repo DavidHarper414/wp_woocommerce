@@ -168,10 +168,14 @@ export function createDeprecatedObjectProxy( obj, messages, basePath = '' ) {
 
 			let nextPath = basePath;
 
-			// Only handle deprecation warnings for string and number property names
-			if ( typeof prop === 'string' || typeof prop === 'number' ) {
+			// Only handle deprecation warnings for string, number, and boolean property names
+			if (
+				typeof prop === 'string' ||
+				typeof prop === 'number' ||
+				typeof prop === 'boolean'
+			) {
 				nextPath = basePath
-					? `${ basePath }.${ prop }`
+					? `${ basePath }.${ String( prop ) }`
 					: String( prop );
 
 				// Retrieve the deprecation message (if exists)

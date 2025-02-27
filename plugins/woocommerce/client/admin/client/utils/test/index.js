@@ -185,6 +185,30 @@ describe( 'createDeprecatedObjectProxy', () => {
 		);
 	} );
 
+	it( 'should handle boolean property names', () => {
+		const obj = {
+			[ true ]: 'true value',
+			[ false ]: 'false value',
+		};
+
+		const proxiedObj = createDeprecatedObjectProxy( obj, {
+			true: 'true prop is deprecated',
+			false: 'false prop is deprecated',
+		} );
+
+		expect( proxiedObj[ true ] ).toBe( 'true value' );
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'true prop is deprecated'
+		);
+
+		consoleWarnSpy.mockClear();
+
+		expect( proxiedObj[ false ] ).toBe( 'false value' );
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'false prop is deprecated'
+		);
+	} );
+
 	it( 'should handle nested objects with arrays', () => {
 		const obj = {
 			items: [ { id: 1 }, { id: 2 } ],
