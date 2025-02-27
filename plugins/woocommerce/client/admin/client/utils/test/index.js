@@ -91,94 +91,154 @@ describe( 'createDeprecatedObjectProxy', () => {
 		consoleWarnSpy.mockRestore();
 	} );
 
-	it( 'should log a warning when accessing a deprecated property', () => {
+	it( 'should return non-object values as is', () => {
+		expect( createDeprecatedObjectProxy( null, {} ) ).toBeNull();
+		expect( createDeprecatedObjectProxy( undefined, {} ) ).toBeUndefined();
+		expect( createDeprecatedObjectProxy( 42, {} ) ).toBe( 42 );
+		expect( createDeprecatedObjectProxy( 'string', {} ) ).toBe( 'string' );
+		expect( createDeprecatedObjectProxy( true, {} ) ).toBe( true );
+	} );
+
+	it( 'should handle wcSettings deprecation warnings', () => {
 		expect( consoleWarnSpy ).not.toHaveBeenCalled();
 		expect( proxiedSettings.admin.onboarding.profile.name ).toBe( 'hello' );
 		expect( consoleWarnSpy ).toHaveBeenCalledWith(
 			'Deprecated: wcSettings.admin.onboarding.profile is deprecated. It is planned to be released in WooCommerce 10.0.0. Please use `getProfileItems` from the onboarding store. See https://github.com/woocommerce/woocommerce/tree/trunk/packages/js/data/src/onboarding for more information.'
 		);
-	} );
 
-	it( 'should not log a warning when accessing a non-deprecated property', () => {
-		expect( proxiedSettings.admin ).toBeDefined();
-		expect( consoleWarnSpy ).not.toHaveBeenCalled();
-	} );
+		// Reset spy for next test
+		consoleWarnSpy.mockClear();
 
-	it( 'should retain array prototype methods', () => {
-		expect( proxiedSettings.admin.onboarding.profile.arr.length ).toEqual(
-			3
-		);
-
-		// Array destructuring.
-		const copiedArray = [ ...proxiedSettings.admin.onboarding.profile.arr ];
-		expect( copiedArray.length ).toEqual( 3 );
-
-		// Array method forEach.
-		proxiedSettings.admin.onboarding.profile.arr.forEach( ( item ) => {
-			expect( copiedArray.includes( item ) ).toBe( true );
-		} );
-
-		// Array method push.
-		proxiedSettings.admin.onboarding.profile.arr.push( 'four' );
-		expect( proxiedSettings.admin.onboarding.profile.arr.length ).toEqual(
-			4
-		);
-	} );
-
-	it( 'should log a warning when accessing a deprecated array', () => {
-		expect( consoleWarnSpy ).not.toHaveBeenCalled();
-		expect( proxiedSettings.admin.onboarding.profile.arr.length ).toEqual(
-			3
-		);
+		// Array methods should work on wcSettings
+		expect( proxiedSettings.admin.onboarding.profile.arr.length ).toBe( 3 );
+		expect( [ ...proxiedSettings.admin.onboarding.profile.arr ] ).toEqual( [
+			'one',
+			'two',
+			'three',
+		] );
 		expect( consoleWarnSpy ).toHaveBeenCalledWith(
 			'Deprecated: wcSettings.admin.onboarding.profile is deprecated. It is planned to be released in WooCommerce 10.0.0. Please use `getProfileItems` from the onboarding store. See https://github.com/woocommerce/woocommerce/tree/trunk/packages/js/data/src/onboarding for more information.'
 		);
 	} );
 
-	it( 'should handle Symbol properties and show deprecation messages', () => {
-		const testSymbol = Symbol( 'testSymbol' );
-		const objWithSymbol = {
+	it( 'should not log a warning when accessing non-deprecated wcSettings properties', () => {
+		expect( proxiedSettings.admin ).toBeDefined();
+		expect( consoleWarnSpy ).not.toHaveBeenCalled();
+	} );
+
+	it( 'should log a warning when accessing a deprecated property', () => {
+		const obj = {
+			foo: {
+				bar: 'test',
+			},
+		};
+
+		const proxiedObj = createDeprecatedObjectProxy( obj, {
+			foo: {
+				bar: 'foo.bar is deprecated',
+			},
+		} );
+
+		expect( consoleWarnSpy ).not.toHaveBeenCalled();
+		expect( proxiedObj.foo.bar ).toBe( 'test' );
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'foo.bar is deprecated'
+		);
+	} );
+
+	it( 'should handle array methods correctly', () => {
+		const arr = [ 1, 2, 3 ];
+		const proxiedArr = createDeprecatedObjectProxy( arr, {
+			1: 'accessing index 1 is deprecated',
+		} );
+
+		// Reset spy
+		consoleWarnSpy.mockClear();
+
+		// Test array spreading
+		expect( [ ...proxiedArr ] ).toEqual( [ 1, 2, 3 ] );
+		expect( consoleWarnSpy ).toHaveBeenCalled(); // Symbol.iterator should trigger warning
+
+		// Reset spy
+		consoleWarnSpy.mockClear();
+
+		// Test accessing deprecated index
+		expect( proxiedArr[ 1 ] ).toBe( 2 );
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'accessing index 1 is deprecated'
+		);
+	} );
+
+	it( 'should handle numeric property names', () => {
+		const obj = {
+			1: 'one',
+			2: 'two',
+		};
+
+		const proxiedObj = createDeprecatedObjectProxy( obj, {
+			1: 'numeric property 1 is deprecated',
+		} );
+
+		expect( proxiedObj[ 1 ] ).toBe( 'one' );
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'numeric property 1 is deprecated'
+		);
+	} );
+
+	it( 'should handle nested objects with arrays', () => {
+		const obj = {
+			items: [ { id: 1 }, { id: 2 } ],
+		};
+
+		const proxiedObj = createDeprecatedObjectProxy( obj, {
+			items: {
+				0: {
+					id: 'first item id is deprecated',
+				},
+			},
+		} );
+
+		expect( proxiedObj.items[ 0 ].id ).toBe( 1 );
+		expect( consoleWarnSpy ).toHaveBeenCalledWith(
+			'first item id is deprecated'
+		);
+
+		// Array methods should work
+		expect( proxiedObj.items.length ).toBe( 2 );
+		expect( [ ...proxiedObj.items ] ).toEqual( [ { id: 1 }, { id: 2 } ] );
+	} );
+
+	it( 'should handle Symbol properties without triggering deprecation warnings', () => {
+		const testSymbol = Symbol( 'test' );
+		const iteratorSymbol = Symbol.iterator;
+
+		const obj = {
 			[ testSymbol ]: 'symbol value',
+			[ iteratorSymbol ]: function* () {
+				yield 1;
+				yield 2;
+			},
 			regularProp: 'regular value',
 		};
 
-		const proxiedObj = createDeprecatedObjectProxy( objWithSymbol, {
-			regularProp: 'regular prop deprecated',
-			testSymbol: 'symbol prop deprecated',
+		const proxiedObj = createDeprecatedObjectProxy( obj, {
+			regularProp: 'regular prop is deprecated',
+			[ testSymbol.description ]: 'should not trigger for symbol',
+			Symbol: 'should not trigger for symbol without description',
 		} );
 
-		// Should not throw when accessing Symbol property
-		expect( () => proxiedObj[ testSymbol ] ).not.toThrow();
+		// Custom Symbol access should not trigger warning
 		expect( proxiedObj[ testSymbol ] ).toBe( 'symbol value' );
-		expect( consoleWarnSpy ).toHaveBeenCalledWith(
-			'symbol prop deprecated'
-		);
+		expect( consoleWarnSpy ).not.toHaveBeenCalled();
 
-		// Reset console spy
-		consoleWarnSpy.mockClear();
+		// Built-in Symbol access should not trigger warning
+		expect( typeof proxiedObj[ iteratorSymbol ] ).toBe( 'function' );
+		expect( consoleWarnSpy ).not.toHaveBeenCalled();
 
-		// Should still work normally for regular properties
+		// Regular property should still trigger warning
 		expect( proxiedObj.regularProp ).toBe( 'regular value' );
 		expect( consoleWarnSpy ).toHaveBeenCalledWith(
-			'regular prop deprecated'
-		);
-
-		// Test Symbol without description
-		const noDescSymbol = Symbol();
-		const objWithNoDescSymbol = {
-			[ noDescSymbol ]: 'no desc value',
-		};
-		const proxiedObjNoDesc = createDeprecatedObjectProxy(
-			objWithNoDescSymbol,
-			{
-				Symbol: 'symbol with no desc deprecated',
-			}
-		);
-
-		consoleWarnSpy.mockClear();
-		expect( proxiedObjNoDesc[ noDescSymbol ] ).toBe( 'no desc value' );
-		expect( consoleWarnSpy ).toHaveBeenCalledWith(
-			'symbol with no desc deprecated'
+			'regular prop is deprecated'
 		);
 	} );
 } );

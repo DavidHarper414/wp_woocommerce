@@ -149,40 +149,44 @@ export const useFullScreen = ( classes ) => {
  * @return {Proxy} A proxied object with deprecation warnings.
  */
 export function createDeprecatedObjectProxy( obj, messages, basePath = '' ) {
+	// If not a plain object or array, return as is
+	if ( typeof obj !== 'object' || obj === null ) {
+		return obj;
+	}
+
 	return new Proxy( obj, {
 		get( target, prop, receiver ) {
-			// Handle array methods and properties
-			if ( Array.isArray( target ) ) {
-				// Support array length property
-				if ( prop === 'length' ) {
-					return target.length;
-				}
-				// Support array iterator for destructuring
-				if ( prop === Symbol.iterator ) {
-					return target[ Symbol.iterator ].bind( target );
-				}
-			}
-
-			const propString =
-				typeof prop === 'symbol' ? prop.description || 'Symbol' : prop;
-			const nextPath = basePath
-				? `${ basePath }.${ propString }`
-				: propString;
-
-			// Retrieve the deprecation message (if exists)
-			const deprecationMessage = nextPath
-				.split( '.' )
-				.reduce( ( acc, key ) => {
-					return acc && typeof acc === 'object'
-						? acc[ key ]
-						: undefined;
-				}, messages );
-
-			if ( typeof deprecationMessage === 'string' ) {
-				console.warn( deprecationMessage ); // eslint-disable-line no-console
-			}
-
 			const value = Reflect.get( target, prop, receiver );
+
+			// Handle array methods and properties
+			if (
+				Array.isArray( target ) &&
+				( prop === 'length' || prop === Symbol.iterator )
+			) {
+				return value;
+			}
+
+			let nextPath = basePath;
+
+			// Only handle deprecation warnings for string and number property names
+			if ( typeof prop === 'string' || typeof prop === 'number' ) {
+				nextPath = basePath
+					? `${ basePath }.${ prop }`
+					: String( prop );
+
+				// Retrieve the deprecation message (if exists)
+				const deprecationMessage = nextPath
+					.split( '.' )
+					.reduce( ( acc, key ) => {
+						return acc && typeof acc === 'object'
+							? acc[ key ]
+							: undefined;
+					}, messages );
+
+				if ( typeof deprecationMessage === 'string' ) {
+					console.warn( deprecationMessage ); // eslint-disable-line no-console
+				}
+			}
 
 			// Recursively wrap objects to maintain deprecation checks
 			return value && typeof value === 'object'
