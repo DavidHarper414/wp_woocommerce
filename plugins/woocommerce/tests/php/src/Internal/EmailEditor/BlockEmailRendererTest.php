@@ -9,6 +9,7 @@ use Automattic\WooCommerce\Internal\EmailEditor\Integration;
 use Automattic\WooCommerce\Internal\EmailEditor\Package;
 use MailPoet\EmailEditor\Bootstrap;
 use MailPoet\EmailEditor\EmailEditorContainer;
+use MailPoet\EmailEditor\Engine\Dependency_Check;
 
 /**
  * Tests for the BlockEmailRenderer class.
@@ -66,6 +67,8 @@ class BlockEmailRendererTest extends \WC_Unit_Test_Case {
 	 * Test that the BlockEmailRenderer can render email and replaces Woo Content.
 	 */
 	public function testItRendersAnEmail(): void {
+		$this->skip_if_unsupported_environment();
+
 		$test_woo_content        = 'Test Woo Content';
 		$wc_mail_mock            = new \WC_Email();
 		$wc_mail_mock->id        = 'test_email';
@@ -85,5 +88,14 @@ class BlockEmailRendererTest extends \WC_Unit_Test_Case {
 	public function tearDown(): void {
 		parent::tearDown();
 		update_option( 'woocommerce_feature_block_email_editor_enabled', 'no' );
+	}
+
+	/**
+	 * Skip test if the environment doesn't fulfill minimal requirements.
+	 */
+	private function skip_if_unsupported_environment() {
+		if ( ! EmailEditorContainer::container()->get( Dependency_Check::class )->are_dependencies_met() ) {
+			$this->markTestSkipped( 'This test because the test environment does not fulfill minimal requirements for the block email editor.' );
+		}
 	}
 }
