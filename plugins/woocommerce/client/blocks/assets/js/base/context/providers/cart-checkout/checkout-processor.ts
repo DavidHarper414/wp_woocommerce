@@ -62,6 +62,7 @@ const CheckoutProcessor = () => {
 		orderNotes,
 		redirectUrl,
 		shouldCreateAccount,
+		prefersCollection,
 	} = useSelect( ( select ) => {
 		const store = select( checkoutStore );
 		return {
@@ -76,6 +77,7 @@ const CheckoutProcessor = () => {
 			orderNotes: store.getOrderNotes(),
 			redirectUrl: store.getRedirectUrl(),
 			shouldCreateAccount: store.getShouldCreateAccount(),
+			prefersCollection: store.prefersCollection(),
 		};
 	} );
 
@@ -263,7 +265,11 @@ const CheckoutProcessor = () => {
 			customer_password: customerPassword,
 			extensions: { ...extensionData },
 			shipping_address: cartNeedsShipping
-				? emptyHiddenAddressFields( currentShippingAddress.current )
+				? emptyHiddenAddressFields(
+						!! prefersCollection
+							? currentBillingAddress.current
+							: currentShippingAddress.current
+				  )
 				: undefined,
 			...paymentData,
 		};
