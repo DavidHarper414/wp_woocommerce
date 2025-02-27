@@ -37,7 +37,7 @@ export function KeyboardShortcuts(): null {
 		void registerShortcut( {
 			name: 'mailpoet/email-editor/toggle-fullscreen',
 			category: 'global',
-			description: __( 'Toggle fullscreen mode.', 'mailpoet' ),
+			description: __( 'Toggle fullscreen mode.', 'woocommerce' ),
 			keyCombination: {
 				modifier: 'secondary',
 				character: 'f',
@@ -47,7 +47,10 @@ export function KeyboardShortcuts(): null {
 		void registerShortcut( {
 			name: 'mailpoet/email-editor/toggle-sidebar',
 			category: 'global',
-			description: __( 'Show or hide the settings sidebar.', 'mailpoet' ),
+			description: __(
+				'Show or hide the settings sidebar.',
+				'woocommerce'
+			),
 			keyCombination: {
 				modifier: 'primaryShift',
 				character: ',',
@@ -57,7 +60,7 @@ export function KeyboardShortcuts(): null {
 		void registerShortcut( {
 			name: 'mailpoet/email-editor/save',
 			category: 'global',
-			description: __( 'Save your changes.', 'mailpoet' ),
+			description: __( 'Save your changes.', 'woocommerce' ),
 			keyCombination: {
 				modifier: 'primary',
 				character: 's',
@@ -67,7 +70,7 @@ export function KeyboardShortcuts(): null {
 		void registerShortcut( {
 			name: 'mailpoet/email-editor/undo',
 			category: 'block',
-			description: __( 'Undo your last changes.', 'mailpoet' ),
+			description: __( 'Undo your last changes.', 'woocommerce' ),
 			keyCombination: {
 				modifier: 'primary',
 				character: 'z',
@@ -77,7 +80,7 @@ export function KeyboardShortcuts(): null {
 		void registerShortcut( {
 			name: 'mailpoet/email-editor/redo',
 			category: 'block',
-			description: __( 'Redo your last undo.', 'mailpoet' ),
+			description: __( 'Redo your last undo.', 'woocommerce' ),
 			keyCombination: {
 				modifier: 'primaryShift',
 				character: 'z',

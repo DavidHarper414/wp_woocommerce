@@ -19,7 +19,7 @@ const SidebarExtensionComponent = applyFilters(
 export function DetailsPanel() {
 	return (
 		<PanelBody
-			title={ __( 'Details', 'mailpoet' ) }
+			title={ __( 'Details', 'woocommerce' ) }
 			className="woocommerce-email-editor__settings-panel"
 			onToggle={ ( data ) =>
 				recordEvent( 'details_panel_body_toggle', { opened: data } )

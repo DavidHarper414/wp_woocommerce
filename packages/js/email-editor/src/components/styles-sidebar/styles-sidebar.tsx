@@ -30,11 +30,11 @@ export function RawStylesSidebar( props: Props ): JSX.Element {
 		<ComplementaryArea
 			identifier={ stylesSidebarId }
 			className="woocommerce-email-editor-styles-panel"
-			header={ __( 'Styles', 'mailpoet' ) }
-			closeLabel={ __( 'Close styles sidebar', 'mailpoet' ) }
+			header={ __( 'Styles', 'woocommerce' ) }
+			closeLabel={ __( 'Close styles sidebar', 'woocommerce' ) }
 			icon={ styles }
 			scope={ storeName }
-			smallScreenTitle={ __( 'No title', 'mailpoet' ) }
+			smallScreenTitle={ __( 'No title', 'woocommerce' ) }
 			{ ...props }
 		>
 			<NavigatorProvider initialPath="/">

@@ -64,7 +64,7 @@ export function CampaignName() {
 						>
 							<Text size="body" as="h1">
 								<VisuallyHidden as="span">
-									{ __( 'Editing email:', 'mailpoet' ) }
+									{ __( 'Editing email:', 'woocommerce' ) }
 								</VisuallyHidden>
 								{ emailTitle }
 							</Text>
@@ -81,16 +81,19 @@ export function CampaignName() {
 									{ isOpen }
 								);
 							} }
-							label={ __( 'Change campaign name', 'mailpoet' ) }
+							label={ __(
+								'Change campaign name',
+								'woocommerce'
+							) }
 						>
-							{ showIconLabels && __( 'Rename', 'mailpoet' ) }
+							{ showIconLabels && __( 'Rename', 'woocommerce' ) }
 						</Button>
 					</>
 				) }
 				renderContent={ () => (
 					<div className="woocommerce-email-editor-email-title-edit">
 						<TextControl
-							label={ __( 'Campaign name', 'mailpoet' ) }
+							label={ __( 'Campaign name', 'woocommerce' ) }
 							value={ emailTitle }
 							onChange={ ( newTitle ) => {
 								setTitle( newTitle );
@@ -101,7 +104,7 @@ export function CampaignName() {
 							name="campaign_name"
 							help={ __(
 								`Name your email campaign to indicate its purpose. This would only be visible to you and not shown to your subscribers.`,
-								'mailpoet'
+								'woocommerce'
 							) }
 						/>
 					</div>

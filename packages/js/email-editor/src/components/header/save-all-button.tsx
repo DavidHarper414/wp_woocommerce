@@ -28,13 +28,14 @@ const SaveAllContent = ( { onToggle } ) => {
 			);
 			if (
 				titleButton &&
-				titleButton.textContent.trim() === __( 'Templates', 'mailpoet' )
+				titleButton.textContent.trim() ===
+					__( 'Templates', 'woocommerce' )
 			) {
 				const rows = panel.querySelectorAll( '.components-panel__row' );
 				if ( rows.length ) {
 					rows[ 0 ].textContent = __(
 						'This change will affect emails that use this template.',
-						'mailpoet'
+						'woocommerce'
 					);
 				}
 			}
@@ -53,9 +54,9 @@ export function SaveAllButton() {
 
 	const buttonRef = useRef( null );
 
-	let label = __( 'Save', 'mailpoet' );
+	let label = __( 'Save', 'woocommerce' );
 	if ( isSaving ) {
-		label = __( 'Saving', 'mailpoet' );
+		label = __( 'Saving', 'woocommerce' );
 	}
 
 	return (

@@ -45,11 +45,11 @@ export function EmailTypeInfo() {
 							<Icon icon={ megaphone } />
 						</span>
 						<div className="woocommerce-email-type-info-content">
-							<h2>{ __( 'Newsletter', 'mailpoet' ) }</h2>
+							<h2>{ __( 'Newsletter', 'woocommerce' ) }</h2>
 							<span>
 								{ __(
 									'Send or schedule a newsletter to connect with your subscribers.',
-									'mailpoet'
+									'woocommerce'
 								) }
 							</span>
 						</div>
@@ -58,7 +58,7 @@ export function EmailTypeInfo() {
 						<PanelRow>
 							<Flex justify={ 'start' }>
 								<FlexItem className="editor-post-panel__row-label">
-									{ __( 'Template', 'mailpoet' ) }
+									{ __( 'Template', 'woocommerce' ) }
 								</FlexItem>
 								<FlexItem>
 									<DropdownMenu
@@ -67,7 +67,7 @@ export function EmailTypeInfo() {
 										toggleProps={ { variant: 'tertiary' } }
 										label={ __(
 											'Template actions',
-											'mailpoet'
+											'woocommerce'
 										) }
 										onToggle={ ( isOpen ) =>
 											recordEvent(
@@ -95,7 +95,7 @@ export function EmailTypeInfo() {
 												>
 													{ __(
 														'Edit template',
-														'mailpoet'
+														'woocommerce'
 													) }
 												</MenuItem>
 												<MenuItem
@@ -111,7 +111,7 @@ export function EmailTypeInfo() {
 												>
 													{ __(
 														'Swap template',
-														'mailpoet'
+														'woocommerce'
 													) }
 												</MenuItem>
 											</>

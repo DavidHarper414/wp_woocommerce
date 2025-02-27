@@ -124,7 +124,7 @@ function PersonalizationTagsButton( { contentRef }: Props ) {
 			<ToolbarGroup>
 				<ToolbarButton
 					icon="shortcode"
-					title={ __( 'Personalization Tags', 'mailpoet' ) }
+					title={ __( 'Personalization Tags', 'woocommerce' ) }
 					onClick={ () => {
 						setIsModalOpened( true );
 						recordEvent(
@@ -190,7 +190,7 @@ function PersonalizationTagsButton( { contentRef }: Props ) {
 function extendRichTextFormats() {
 	registerFormatType( 'woocommerce-email-editor/shortcode', {
 		name: 'woocommerce-email-editor/shortcode',
-		title: __( 'Personalization Tags', 'mailpoet' ),
+		title: __( 'Personalization Tags', 'woocommerce' ),
 		className: 'woocommerce-email-editor-personalization-tags',
 		tagName: 'span',
 		// @ts-expect-error attributes property is missing in build type for WPFormat type
@@ -201,7 +201,7 @@ function extendRichTextFormats() {
 	// Register format type for using personalization tags as link attributes
 	registerFormatType( 'woocommerce-email-editor/link-shortcode', {
 		name: 'woocommerce-email-editor/link-shortcode',
-		title: __( 'Personalization Tags Link', 'mailpoet' ),
+		title: __( 'Personalization Tags Link', 'woocommerce' ),
 		className: 'woocommerce-email-editor-personalization-tags-link',
 		tagName: 'a',
 		// @ts-expect-error attributes property is missing in build type for WPFormat type

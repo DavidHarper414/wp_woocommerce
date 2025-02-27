@@ -49,7 +49,7 @@ export function BlockCompatibilityWarnings(): JSX.Element {
 					>
 						{ __(
 							'Border display may vary or be unsupported in some email clients.',
-							'mailpoet'
+							'woocommerce'
 						) }
 					</Notice>
 				</Fill>
@@ -63,7 +63,7 @@ export function BlockCompatibilityWarnings(): JSX.Element {
 					>
 						{ __(
 							'Select a background color for email clients that do not support background images.',
-							'mailpoet'
+							'woocommerce'
 						) }
 					</Notice>
 				</Fill>

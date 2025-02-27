@@ -21,7 +21,8 @@ export function getInitialState(): State {
 		editorSettings: getEditorSettings(),
 		theme: getEditorTheme(),
 		styles: {
-			globalStylesPostId: window.WooCommerceEmailEditor.user_theme_post_id,
+			globalStylesPostId:
+				window.WooCommerceEmailEditor.user_theme_post_id,
 		},
 		autosaveInterval: 60,
 		urls: getUrls(),

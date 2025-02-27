@@ -41,13 +41,13 @@ export function TemplateInfo() {
 							<div className="woocommerce-email-type-info-content-heading">
 								<h2>
 									{ template?.title ||
-										__( 'Template', 'mailpoet' ) }
+										__( 'Template', 'woocommerce' ) }
 								</h2>
 								<DropdownMenu
 									icon={ moreVertical }
 									label={ __(
 										'Template actions',
-										'mailpoet'
+										'woocommerce'
 									) }
 								>
 									{ ( { onClose } ) => (
@@ -58,10 +58,10 @@ export function TemplateInfo() {
 											} }
 											info={ __(
 												'Reset to default to clear all customizations',
-												'mailpoet'
+												'woocommerce'
 											) }
 										>
-											{ __( 'Reset', 'mailpoet' ) }
+											{ __( 'Reset', 'woocommerce' ) }
 										</MenuItem>
 									) }
 								</DropdownMenu>
@@ -70,7 +70,7 @@ export function TemplateInfo() {
 							<p>
 								{ __(
 									'Edit this template to be used across multiple emails.',
-									'mailpoet'
+									'woocommerce'
 								) }
 							</p>
 						</div>

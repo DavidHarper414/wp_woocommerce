@@ -110,7 +110,7 @@ export function* saveEditedEmail() {
 
 	result.then( () => {
 		void dispatch( noticesStore ).createErrorNotice(
-			__( 'Email saved!', 'mailpoet' ),
+			__( 'Email saved!', 'woocommerce' ),
 			{
 				type: 'snackbar',
 				isDismissible: true,
@@ -123,7 +123,7 @@ export function* saveEditedEmail() {
 		void dispatch( noticesStore ).createErrorNotice(
 			__(
 				'The email could not be saved. Please, clear browser cache and reload the page. If the problem persists, duplicate the email and try again.',
-				'mailpoet'
+				'woocommerce'
 			),
 			{
 				type: 'default',
@@ -245,7 +245,7 @@ export function revertAndSaveTemplate( template ) {
 			void registry.dispatch( noticesStore ).createSuccessNotice(
 				sprintf(
 					/* translators: The template/part's name. */
-					__( '"%s" reset.', 'mailpoet' ),
+					__( '"%s" reset.', 'woocommerce' ),
 					decodeEntities( template.title )
 				),
 				{
@@ -259,7 +259,7 @@ export function revertAndSaveTemplate( template ) {
 				.createErrorNotice(
 					__(
 						'An error occurred while reverting the template.',
-						'mailpoet'
+						'woocommerce'
 					),
 					{
 						type: 'snackbar',

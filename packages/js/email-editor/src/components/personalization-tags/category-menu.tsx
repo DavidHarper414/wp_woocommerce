@@ -25,7 +25,7 @@ const CategoryMenu = ( {
 				onClick={ () => onCategorySelect( null ) }
 				className={ getMenuItemClass( null ) }
 			>
-				{ __( 'All', 'mailpoet' ) }
+				{ __( 'All', 'woocommerce' ) }
 			</MenuItem>
 			<div
 				className="woocommerce-personalization-tags-modal-menu-separator"

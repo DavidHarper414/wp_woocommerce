@@ -39,7 +39,7 @@ export function ScreenHeader( { title, description, onBack }: Props ) {
 							size="small"
 							aria-label={ __(
 								'Navigate to the previous view',
-								'mailpoet'
+								'woocommerce'
 							) }
 							onClick={ onBack }
 						/>

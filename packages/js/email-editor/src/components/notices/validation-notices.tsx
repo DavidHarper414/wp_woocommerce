@@ -23,7 +23,9 @@ export function ValidationNotices() {
 			isDismissible={ false }
 		>
 			<>
-				<strong>{ __( 'Fix errors to continue:', 'mailpoet' ) }</strong>
+				<strong>
+					{ __( 'Fix errors to continue:', 'woocommerce' ) }
+				</strong>
 				<ul>
 					{ notices.map( ( { id, content, actions } ) => (
 						<li key={ id }>

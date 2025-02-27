@@ -74,7 +74,7 @@ const PersonalizationTagsPopover = ( {
 				>
 					<div className="woocommerce-personalization-tag-popover-content">
 						<TextControl
-							label={ __( 'Personalization Tag', 'mailpoet' ) }
+							label={ __( 'Personalization Tag', 'woocommerce' ) }
 							value={ updatedValue }
 							onChange={ ( value ) => setUpdatedValue( value ) }
 							__nextHasNoMarginBottom // To avoid warning about deprecation in console
@@ -87,7 +87,7 @@ const PersonalizationTagsPopover = ( {
 									setIsPopoverVisible( false );
 								} }
 							>
-								{ __( 'Cancel', 'mailpoet' ) }
+								{ __( 'Cancel', 'woocommerce' ) }
 							</Button>
 							<Button
 								isPrimary
@@ -96,7 +96,7 @@ const PersonalizationTagsPopover = ( {
 									setIsPopoverVisible( false );
 								} }
 							>
-								{ __( 'Update', 'mailpoet' ) }
+								{ __( 'Update', 'woocommerce' ) }
 							</Button>
 						</div>
 					</div>

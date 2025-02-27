@@ -75,7 +75,7 @@ const PersonalizationTagsModal = ( {
 	return (
 		<Modal
 			size="medium"
-			title={ __( 'Personalization Tags', 'mailpoet' ) }
+			title={ __( 'Personalization Tags', 'woocommerce' ) }
 			onRequestClose={ () => {
 				closeCallback();
 				recordEvent( 'personalization_tags_modal_closed', {
@@ -87,7 +87,7 @@ const PersonalizationTagsModal = ( {
 			<p>
 				{ __(
 					'Insert personalization tags to dynamically fill in information and personalize your emails.',
-					'mailpoet'
+					'woocommerce'
 				) }{ ' ' }
 				<ExternalLink
 					href="https://kb.mailpoet.com/article/435-a-guide-to-personalisation-tags-for-tailored-newsletters#list"
@@ -98,7 +98,7 @@ const PersonalizationTagsModal = ( {
 						)
 					}
 				>
-					{ __( 'Learn more', 'mailpoet' ) }
+					{ __( 'Learn more', 'woocommerce' ) }
 				</ExternalLink>
 			</p>
 			<SearchControl

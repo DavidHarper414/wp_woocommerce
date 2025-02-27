@@ -46,7 +46,7 @@ export function SendButton( { validateContent, isContentInvalid } ) {
 
 	const label = applyFilters(
 		'woocommerce_email_editor_send_button_label',
-		__( 'Send', 'mailpoet' )
+		__( 'Send', 'woocommerce' )
 	) as string;
 
 	return (
