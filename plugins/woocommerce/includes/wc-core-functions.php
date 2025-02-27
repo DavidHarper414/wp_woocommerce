@@ -2686,3 +2686,78 @@ function wc_cache_get_multiple( $keys, $group = '', $force = false ) {
 	}
 	return $values;
 }
+
+/**
+ * Delete multiple transients in a single operation.
+ *
+ * This function efficiently deletes multiple transients at once, using a direct
+ * database query when possible for better performance.
+ *
+ * @since 9.9.0
+ * @param array $transients Array of transient names to delete (without the '_transient_' prefix).
+ * @return bool True on success, false on failure.
+ */
+function wc_delete_transients( $transients ) {
+	global $wpdb;
+
+	if ( empty( $transients ) || ! is_array( $transients ) ) {
+		return false;
+	}
+
+	// If using external object cache, delete each transient individually.
+	if ( wp_using_ext_object_cache() ) {
+		foreach ( $transients as $transient ) {
+			delete_transient( $transient );
+		}
+		return true;
+	} else {
+		// For database storage, create a list of transient option names.
+		$transient_names = array();
+		foreach ( $transients as $transient ) {
+			$transient_names[] = '_transient_timeout_' . $transient;
+			$transient_names[] = '_transient_' . $transient;
+		}
+
+		// Limit the number of items in a single query to avoid exceeding database query parameter limits.
+		if ( count( $transient_names ) > 999 ) {
+			// Process in chunks of 1000 option names (500 transients).
+			$chunks  = array_chunk( $transients, 500 );
+			$success = true;
+
+			foreach ( $chunks as $chunk ) {
+				$result = wc_delete_transients( $chunk );
+				if ( ! $result ) {
+					$success = false;
+				}
+			}
+
+			return $success;
+		}
+
+		try {
+			// Use a single query for better performance.
+			$result = $wpdb->query(
+				$wpdb->prepare(
+					'DELETE FROM ' . $wpdb->options . ' WHERE option_name IN ( ' . implode( ', ', array_fill( 0, count( $transient_names ), '%s' ) ) . ' )',
+					$transient_names
+				)
+			);
+
+			if ( false === $result ) {
+				wc_get_logger()->error(
+					sprintf( 'Database error when deleting transients: %s', $wpdb->last_error ),
+					array( 'source' => 'wc_delete_transients' )
+				);
+				return false;
+			}
+
+			return true;
+		} catch ( Exception $e ) {
+			wc_get_logger()->error(
+				sprintf( 'Exception when deleting transients: %s', $e->getMessage() ),
+				array( 'source' => 'wc_delete_transients' )
+			);
+			return false;
+		}
+	}
+}
