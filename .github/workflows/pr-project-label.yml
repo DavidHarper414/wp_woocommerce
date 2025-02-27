@@ -34,6 +34,14 @@ jobs:
             with:
               ref: refs/pull/${{ github.event.pull_request.number }}/merge  # Ensures only merged changes are used
               fetch-depth: 0
+
+          - name: Validate Trusted Execution
+            run: |
+              if [[ "$GITHUB_REF" != "refs/pull/${{ github.event.pull_request.number }}/merge" ]]; then
+                echo "Error: Running on an untrusted PR branch. Exiting."
+                exit 1
+              fi
+              
           - name: Detect changelog types from content
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -67,6 +75,12 @@ jobs:
                   # Extract the type from file content
                   TYPE=$(grep -iE '^Type: (fix|add|update|tweak|enhancement|performance|dev)' "$FULL_PATH" | awk -F': ' '{print tolower($2)}' | head -n 1)
                   echo "Type: $TYPE"
+
+                  # Validate extracted type
+                  if [[ ! "${LABEL_MAP[$TYPE]}" ]]; then
+                    echo "Invalid changelog type found in $FULL_PATH: '$TYPE'. Skipping."
+                    continue
+                  fi
     
                   # Map the type to a label if it exists
                   LABEL="${LABEL_MAP[$TYPE]}"
@@ -84,7 +98,10 @@ jobs:
               # Apply labels if any were found
               if [ ${#APPLIED_LABELS[@]} -ne 0 ]; then
                 echo "Applying labels: ${APPLIED_LABELS[*]}"
-                gh pr edit "$PR_NUMBER" --add-label "${APPLIED_LABELS[@]}"
+                gh pr edit "$PR_NUMBER" --add-label "${APPLIED_LABELS[@]}" || {
+                  echo "Error: Failed to apply labels via GitHub CLI."
+                  exit 1
+                }
               else
                 echo "No matching changelog types found or no relevant changelog files."
               fi
