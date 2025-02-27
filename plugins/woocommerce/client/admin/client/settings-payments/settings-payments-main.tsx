@@ -13,7 +13,8 @@ import React, { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
-import { Button } from '@wordpress/components';
+import { Button, SlotFillProvider, Slot } from '@wordpress/components';
+import { PluginArea } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
@@ -393,6 +394,9 @@ export const SettingsPaymentsMain = () => {
 		</Button>
 	);
 
+	const SETTINGS_PAYMENTS_SLOT_FILL_CONSTANT =
+		'__EXPERIMENTAL__WcAdminSettingsPaymentsSlots';
+
 	return (
 		<>
 			{ showModalIncentive && incentiveProvider && incentive && (
@@ -474,6 +478,10 @@ export const SettingsPaymentsMain = () => {
 					setPostSandboxAccountSetupModalVisible( false )
 				}
 			/>
+			<SlotFillProvider>
+				<Slot name={ SETTINGS_PAYMENTS_SLOT_FILL_CONSTANT } />
+				<PluginArea scope='woocommerce-settings-payment-woopayments' />
+			</SlotFillProvider>
 		</>
 	);
 };
