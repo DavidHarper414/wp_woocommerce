@@ -89,7 +89,7 @@ On page load, the `wc/store/cart` and `wc/store/checkout` data stores are hydrat
 
 ### Entering customer data into the checkout form
 
-When the shopper enters data into the form, the data is immediately written to the `wc/store/cart` data store, and a debounced method called [`pushChanges`](https://github.com/woocommerce/woocommerce/blob/4861ec250ef1789f814f4209755165e8abe7b838/plugins/woocommerce/client/blocks/assets/js/data/cart/push-changes.ts#L167) is called. This method sends the customer data to the server where it is persisted against the customer. The full cart is sent back as a response, and the data store is updated with this. 
+When the shopper enters data into the form, the data is immediately written to the `wc/store/cart` data store, and a debounced method called [`pushChanges`](https://github.com/woocommerce/woocommerce/blob/4861ec250ef1789f814f4209755165e8abe7b838/plugins/woocommerce-blocks/assets/js/data/cart/push-changes.ts#L167) is called. This method sends the customer data to the server where it is persisted against the customer. The full cart is sent back as a response, and the data store is updated with this. 
 
 This is important to note, because if any code is running on the server that modifies the customer addresses, then it will be reflected in the response.
 
