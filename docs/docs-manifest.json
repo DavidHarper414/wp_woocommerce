@@ -317,7 +317,7 @@
               "menu_title": "Checkout Flow and Events",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/checkout-payment-methods/checkout-flow-and-events.md",
-              "hash": "8da896fc4f27bad91140e6b5779ea70e929f2290e9dd382141af4fa456961b36",
+              "hash": "59cb71c113f7d5c5e619b5ca0b5d0f903f31987155a3f4273c203a138f944f1a",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/checkout-payment-methods/checkout-flow-and-events.md",
               "id": "499384cbb48ed96a2e12653cd68bd82d123a20a1",
               "links": {
@@ -453,9 +453,13 @@
           "menu_title": "Add link to logged data",
           "tags": "code-snippets",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/code-snippets/link-to-logged-data.md",
-          "hash": "4e51c120a6ea7b14c0e43f11e8eb1b785e4447fbe2b997f5789f10b57c485137",
+          "hash": "4f77310efa5acad4d350d58b9e0a9b360ed4c6def69ff6d4c52c5d59965ca4b7",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/code-snippets/link-to-logged-data.md",
-          "id": "34da337f79be5ce857024f541a99d302174ca37d"
+          "id": "34da337f79be5ce857024f541a99d302174ca37d",
+          "links": {
+            "../extension-development/logging.md": "c684e2efba45051a4e1f98eb5e6ef6bab194f25c",
+            "../extension-development/settings-api.md": "ed56b97b9de350074a302373ebaaa5dcce727e8b"
+          }
         },
         {
           "post_title": "Advanced settings and customization for legacy Local Pickup",
@@ -1954,5 +1958,5 @@
       "categories": []
     }
   ],
-  "hash": "b3d613ab1d3bbc6eea01b17d9fb239892ce048f268cb8656bf805dfe700ae04b"
+  "hash": "9b9e00cb06b79532555fcf0e2a1ae5d4c3e6e55aca953c29f319055029477357"
 }
