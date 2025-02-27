@@ -17,8 +17,9 @@
 		"build:zip": "./bin/build-zip.sh",
 		"build:project": "pnpm --if-present '/^build:project:.*$/'",
 		"build:project:copy-assets:legacy": "rsync -avhW --checksum --delete --quiet client/legacy/build/css/ assets/css && rsync -avhW --checksum --delete --quiet client/legacy/build/js/ assets/js",
-		"build:project:copy-assets:admin": "rsync -avhW --checksum --delete --quiet client/admin/build/ assets/client/admin",
+		"build:project:copy-assets:admin": "rsync -avhW --checksum --delete --quiet client/admin/build/ assets/client/admin && pnpm email-editor:build:project:copy-assets",
 		"build:project:copy-assets:blocks": "rsync -avhW --checksum --delete --quiet ../woocommerce-blocks/build/ assets/client/blocks && rsync -avhW --checksum --quiet ../woocommerce-blocks/blocks.ini blocks.ini && wp-scripts build-blocks-manifest --input=assets/client/blocks --output=assets/client/blocks/blocks-json.php",
+		"email-editor:build:project:copy-assets": "rsync -avhW --checksum --delete --quiet client/admin/node_modules/@woocommerce/email-editor/build/ assets/client/admin/email-editor && rsync -avhW --checksum --quiet client/admin/node_modules/@woocommerce/email-editor/assets/ assets/client/admin/email-editor",
 		"build:project:actualize-translation-domains": "wireit",
 		"changelog": "XDEBUG_MODE=off composer install --quiet && composer exec -- changelogger",
 		"env:destroy": "pnpm wp-env destroy",
@@ -372,10 +373,7 @@
 						"core-e2e-hpos-disabled"
 					],
 					"testEnv": {
-						"start": "env:test",
-						"config": {
-							"disableHpos": true
-						}
+						"start": "env:test"
 					},
 					"report": {
 						"resultsBlobName": "core-e2e-reports-hpos-disabled",
@@ -529,10 +527,7 @@
 						"core-api-hpos-disabled"
 					],
 					"testEnv": {
-						"start": "env:test",
-						"config": {
-							"disableHpos": true
-						}
+						"start": "env:test"
 					},
 					"report": {
 						"resultsBlobName": "core-api-report-hpos-disabled",
@@ -735,7 +730,7 @@
 	"devDependencies": {
 		"@babel/cli": "7.12.8",
 		"@babel/core": "7.12.9",
-		"@babel/preset-env": "7.12.7",
+		"@babel/preset-env": "^7.23.5",
 		"@babel/register": "7.12.1",
 		"@faker-js/faker": "^9.3.0",
 		"@playwright/test": "^1.50.1",
@@ -767,9 +762,7 @@
 		"eslint-config-wpcalypso": "5.0.0",
 		"eslint-plugin-jest": "23.20.0",
 		"eslint-plugin-playwright": "0.22.1",
-		"istanbul": "1.0.0-alpha.2",
 		"jest": "27.5.x",
-		"mocha": "7.2.0",
 		"nodemon": "^3.0.2",
 		"prettier": "npm:wp-prettier@^2.8.5",
 		"rimraf": "5.0.5",
