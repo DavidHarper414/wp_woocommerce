@@ -11,6 +11,7 @@ import {
  * Internal dependencies
  */
 import type { Store as WooStore } from '../../../../base/stores/cart-items';
+import { StoreNoticesStore } from '../../../../blocks/product-collection/notices-frontend';
 
 interface Context {
 	addToCartText: string;
@@ -118,11 +119,48 @@ const { state } = store< Store >(
 					'../../../../base/stores/cart-items'
 				) ) as WooStore;
 
-				// Question: should this action throw so we can capture the error here?
-				actions.addCartItem( {
-					id: productId,
-					quantity: state.quantity + quantityToAdd,
-				} );
+				try {
+					yield actions.addCartItem( {
+						id: productId,
+						quantity: state.quantity + quantityToAdd,
+					} );
+				} catch ( error ) {
+					const message = ( error as Error ).message;
+
+					const { actions: noticeActions } =
+						store< StoreNoticesStore >(
+							'woocommerce/product-collection-notices',
+							{},
+							{
+								// Stores are locked to prevent 3PD usage until the API is stable.
+								lock: 'I acknowledge that using a private store means my plugin will inevitably break on the next store release.',
+							}
+						);
+
+					// Technically as long as the product collection is present, noticeActions
+					// will be too, but we check for 'addNotice' to guard against possible fatal errors.
+					if ( 'addNotice' in noticeActions ) {
+						// The old implementation always overwrites the last
+						// notice, so we remove the last notice before adding a
+						// new one.
+						if ( state.noticeId !== '' ) {
+							noticeActions.removeNotice( state.noticeId );
+						}
+
+						const noticeId = noticeActions.addNotice( {
+							notice: message,
+							type: 'error',
+							dismissible: true,
+						} );
+
+						state.noticeId = noticeId;
+					}
+
+					// We don't care about errors blocking execution, but will
+					// console.error for troubleshooting.
+					// eslint-disable-next-line no-console
+					console.error( error );
+				}
 
 				context.displayViewCart = true;
 			},
