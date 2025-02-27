@@ -89,7 +89,7 @@ class Send_Preview_Email {
 		$rendered_data = $this->renderer->render(
 			$post,
 			$subject,
-			__( 'Preview', 'mailpoet' ),
+			__( 'Preview', 'woocommerce' ),
 			$language
 		);
 
@@ -155,11 +155,11 @@ class Send_Preview_Email {
 	 */
 	private function validate_data( array $data ) {
 		if ( empty( $data['email'] ) || empty( $data['postId'] ) ) {
-			throw new \InvalidArgumentException( esc_html__( 'Missing required data', 'mailpoet' ) );
+			throw new \InvalidArgumentException( esc_html__( 'Missing required data', 'woocommerce' ) );
 		}
 
 		if ( ! is_email( $data['email'] ) ) {
-			throw new \InvalidArgumentException( esc_html__( 'Invalid email', 'mailpoet' ) );
+			throw new \InvalidArgumentException( esc_html__( 'Invalid email', 'woocommerce' ) );
 		}
 	}
 
@@ -174,7 +174,7 @@ class Send_Preview_Email {
 	private function fetch_post( $post_id ): \WP_Post {
 		$post = get_post( intval( $post_id ) );
 		if ( ! $post instanceof \WP_Post ) {
-			throw new \Exception( esc_html__( 'Invalid post', 'mailpoet' ) );
+			throw new \Exception( esc_html__( 'Invalid post', 'woocommerce' ) );
 		}
 		return $post;
 	}

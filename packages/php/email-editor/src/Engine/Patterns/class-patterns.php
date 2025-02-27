@@ -30,8 +30,8 @@ class Patterns {
 		$categories = array(
 			array(
 				'name'        => 'email-contents',
-				'label'       => _x( 'Email Contents', 'Block pattern category', 'mailpoet' ),
-				'description' => __( 'A collection of email content layouts.', 'mailpoet' ),
+				'label'       => _x( 'Email Contents', 'Block pattern category', 'woocommerce' ),
+				'description' => __( 'A collection of email content layouts.', 'woocommerce' ),
 			),
 		);
 		foreach ( $categories as $category ) {

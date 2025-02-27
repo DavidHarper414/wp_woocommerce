@@ -72,7 +72,7 @@ class User_Theme {
 			return;
 		}
 		$post_data = array(
-			'post_title'   => __( 'Custom Email Styles', 'mailpoet' ),
+			'post_title'   => __( 'Custom Email Styles', 'woocommerce' ),
 			'post_name'    => self::USER_THEME_POST_NAME,
 			'post_content' => (string) wp_json_encode( self::INITIAL_THEME_DATA, JSON_FORCE_OBJECT ),
 			'post_status'  => 'publish',

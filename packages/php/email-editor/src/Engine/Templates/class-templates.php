@@ -87,8 +87,8 @@ class Templates {
 		$general_email = new Template(
 			$this->template_prefix,
 			$general_email_slug,
-			__( 'General Email', 'mailpoet' ),
-			__( 'A general template for emails.', 'mailpoet' ),
+			__( 'General Email', 'woocommerce' ),
+			__( 'A general template for emails.', 'woocommerce' ),
 			(string) file_get_contents( $this->template_directory . $template_filename ),
 			$this->post_types
 		);
