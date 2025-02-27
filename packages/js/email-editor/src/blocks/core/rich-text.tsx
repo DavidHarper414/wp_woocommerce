@@ -191,7 +191,7 @@ function extendRichTextFormats() {
 	registerFormatType( 'woocommerce-email-editor/shortcode', {
 		name: 'woocommerce-email-editor/shortcode',
 		title: __( 'Personalization Tags', 'mailpoet' ),
-		className: 'mailpoet-email-editor-personalization-tags',
+		className: 'woocommerce-email-editor-personalization-tags',
 		tagName: 'span',
 		// @ts-expect-error attributes property is missing in build type for WPFormat type
 		attributes: {},
@@ -202,7 +202,7 @@ function extendRichTextFormats() {
 	registerFormatType( 'woocommerce-email-editor/link-shortcode', {
 		name: 'woocommerce-email-editor/link-shortcode',
 		title: __( 'Personalization Tags Link', 'mailpoet' ),
-		className: 'mailpoet-email-editor-personalization-tags-link',
+		className: 'woocommerce-email-editor-personalization-tags-link',
 		tagName: 'a',
 		// @ts-expect-error attributes property is missing in build type for WPFormat type
 		attributes: {

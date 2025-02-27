@@ -79,9 +79,9 @@ const PersonalizationTagsLinkPopover = ( {
 					position="bottom left"
 					onClose={ () => setIsPopoverVisible( false ) }
 					anchor={ linkElement } // Directly use commentSpan as the anchor
-					className="mailpoet-personalization-tag-popover"
+					className="woocommerce-personalization-tag-popover"
 				>
-					<div className="mailpoet-personalization-tag-popover-content">
+					<div className="woocommerce-personalization-tag-popover-content">
 						<TextControl
 							label={ __( 'Link Text', 'mailpoet' ) }
 							value={ linkText }
@@ -112,7 +112,7 @@ const PersonalizationTagsLinkPopover = ( {
 									};
 								} ) }
 						/>
-						<div className="mailpoet-personalization-tag-popover-content-buttons">
+						<div className="woocommerce-personalization-tag-popover-content-buttons">
 							<Button
 								isTertiary
 								onClick={ () => {

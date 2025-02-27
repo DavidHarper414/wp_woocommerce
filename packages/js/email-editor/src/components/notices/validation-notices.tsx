@@ -19,7 +19,7 @@ export function ValidationNotices() {
 	return (
 		<Notice
 			status="error"
-			className="mailpoet-email-editor-validation-errors components-editor-notices__pinned"
+			className="woocommerce-email-editor-validation-errors components-editor-notices__pinned"
 			isDismissible={ false }
 		>
 			<>

@@ -20,7 +20,7 @@ export function DetailsPanel() {
 	return (
 		<PanelBody
 			title={ __( 'Details', 'mailpoet' ) }
-			className="mailpoet-email-editor__settings-panel"
+			className="woocommerce-email-editor__settings-panel"
 			onToggle={ ( data ) =>
 				recordEvent( 'details_panel_body_toggle', { opened: data } )
 			}

@@ -35,7 +35,7 @@ export function PreviewDropdown() {
 	return (
 		<>
 			<DropdownMenu
-				className="mailpoet-preview-dropdown"
+				className="woocommerce-preview-dropdown"
 				label={ __( 'Preview', 'mailpoet' ) }
 				icon={ deviceIcons[ previewDeviceType.toLowerCase() ] }
 				onToggle={ ( isOpened ) =>

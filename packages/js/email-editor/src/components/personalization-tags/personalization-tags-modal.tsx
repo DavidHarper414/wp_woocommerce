@@ -82,7 +82,7 @@ const PersonalizationTagsModal = ( {
 					openedBy,
 				} );
 			} }
-			className="mailpoet-personalization-tags-modal"
+			className="woocommerce-personalization-tags-modal"
 		>
 			<p>
 				{ __(

@@ -21,7 +21,7 @@ const LinkModal = ( { onInsert, isOpened, closeCallback, tag } ) => {
 			size="small"
 			title={ __( 'Insert Link', 'mailpoet' ) }
 			onRequestClose={ closeCallback }
-			className="mailpoet-personalization-tags-modal"
+			className="woocommerce-personalization-tags-modal"
 		>
 			<TextControl
 				label={ __( 'Link Text', 'mailpoet' ) }

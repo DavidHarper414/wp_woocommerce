@@ -20,7 +20,7 @@ const SaveAllContent = ( { onToggle } ) => {
 	// Hacky way to change the text in the templates row of the save dropdown
 	useEffect( () => {
 		const panels = document.querySelectorAll(
-			'.mailpoet-email-editor-save-button-dropdown  .components-panel__body'
+			'.woocommerce-email-editor-save-button-dropdown  .components-panel__body'
 		);
 		panels.forEach( ( panel ) => {
 			const titleButton = panel.querySelector(
@@ -65,7 +65,7 @@ export function SaveAllButton() {
 					placement: 'bottom',
 					anchor: buttonRef.current,
 				} }
-				contentClassName="mailpoet-email-editor-save-button-dropdown"
+				contentClassName="woocommerce-email-editor-save-button-dropdown"
 				renderToggle={ ( { onToggle } ) => (
 					<Button
 						onClick={ () => {

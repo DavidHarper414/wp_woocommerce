@@ -70,13 +70,13 @@ function RawSendPreviewEmail() {
 
 	return (
 		<Modal
-			className="mailpoet-send-preview-email"
+			className="woocommerce-send-preview-email"
 			title={ __( 'Send a test email', 'mailpoet' ) }
 			onRequestClose={ closeCallback }
 			focusOnMount={ false }
 		>
 			{ sendingPreviewStatus === SendingPreviewStatus.ERROR ? (
-				<div className="mailpoet-send-preview-modal-notice-error">
+				<div className="woocommerce-send-preview-modal-notice-error">
 					<p>
 						{ __(
 							'Sorry, we were unable to send this email.',
@@ -207,12 +207,12 @@ function RawSendPreviewEmail() {
 				required
 			/>
 			{ sendingPreviewStatus === SendingPreviewStatus.SUCCESS ? (
-				<p className="mailpoet-send-preview-modal-notice-success">
+				<p className="woocommerce-send-preview-modal-notice-success">
 					<Icon icon={ check } style={ { fill: '#4AB866' } } />
 					{ __( 'Test email sent successfully!', 'mailpoet' ) }
 				</p>
 			) : null }
-			<div className="mailpoet-send-preview-modal-footer">
+			<div className="woocommerce-send-preview-modal-footer">
 				<Button
 					variant="tertiary"
 					onClick={ () => {

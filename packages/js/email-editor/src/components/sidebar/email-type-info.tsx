@@ -38,13 +38,13 @@ export function EmailTypeInfo() {
 
 	return (
 		<>
-			<Panel className="mailpoet-email-sidebar-email-type-info">
+			<Panel className="woocommerce-email-sidebar-email-type-info">
 				<PanelBody>
 					<PanelRow>
-						<span className="mailpoet-email-type-info-icon">
+						<span className="woocommerce-email-type-info-icon">
 							<Icon icon={ megaphone } />
 						</span>
-						<div className="mailpoet-email-type-info-content">
+						<div className="woocommerce-email-type-info-content">
 							<h2>{ __( 'Newsletter', 'mailpoet' ) }</h2>
 							<span>
 								{ __(

@@ -68,7 +68,7 @@ export function TrashModal( {
 	};
 	return (
 		<Modal
-			className="mailpoet-move-to-trash-modal"
+			className="woocommerce-move-to-trash-modal"
 			title={ __( 'Move to trash', 'mailpoet' ) }
 			onRequestClose={ () => {
 				closeCallback();
@@ -82,7 +82,7 @@ export function TrashModal( {
 					'mailpoet'
 				) }
 			</p>
-			<div className="mailpoet-send-preview-modal-footer">
+			<div className="woocommerce-send-preview-modal-footer">
 				<Button
 					variant="tertiary"
 					onClick={ () => {

@@ -31,14 +31,14 @@ export function TemplateInfo() {
 
 	return (
 		<>
-			<Panel className="mailpoet-email-sidebar-email-type-info">
+			<Panel className="woocommerce-email-sidebar-email-type-info">
 				<PanelBody>
 					<PanelRow>
-						<span className="mailpoet-email-type-info-icon">
+						<span className="woocommerce-email-type-info-icon">
 							<Icon icon={ layout } />
 						</span>
-						<div className="mailpoet-email-type-info-content">
-							<div className="mailpoet-email-type-info-content-heading">
+						<div className="woocommerce-email-type-info-content">
+							<div className="woocommerce-email-type-info-content-heading">
 								<h2>
 									{ template?.title ||
 										__( 'Template', 'mailpoet' ) }
