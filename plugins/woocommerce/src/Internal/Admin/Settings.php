@@ -91,7 +91,11 @@ class Settings {
 	public static function get_currency_settings() {
 		$code = get_woocommerce_currency();
 
-		//phpcs:ignore
+		/**
+		 * The wc_currency_settings hook
+		 *
+		 * @since 6.5.0
+		 */
 		return apply_filters(
 			'wc_currency_settings',
 			array(

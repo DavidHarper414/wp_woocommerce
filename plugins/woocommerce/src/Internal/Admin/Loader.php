@@ -407,16 +407,9 @@ class Loader {
 		// WooCommerce Branding is an example of this - so pass through the translation of
 		// 'WooCommerce' to wcSettings.
 		$settings['woocommerceTranslation'] = __( 'WooCommerce', 'woocommerce' );
-
-		if ( PageController::is_admin_page() && Features::is_enabled( 'analytics' ) ) {
-			$is_analytics_page = str_starts_with( wc_clean( wp_unslash( $_GET['path'] ?? '' ) ), '/analytics/' );
-			if ( $is_analytics_page ) {
-				// We may have synced orders with a now-unregistered status.
-				// E.g. an extension that added statuses is now inactive or removed.
-				$settings['unregisteredOrderStatuses'] = self::get_unregistered_order_statuses();
-			}
-		}
-
+		// We may have synced orders with a now-unregistered status.
+		// E.g An extension that added statuses is now inactive or removed.
+		$settings['unregisteredOrderStatuses'] = self::get_unregistered_order_statuses();
 		// The separator used for attributes found in Variation titles.
 		/* phpcs:ignore */
 		$settings['variationTitleAttributesSeparator'] = apply_filters( 'woocommerce_product_variation_title_attributes_separator', ' - ', new \WC_Product() );
@@ -451,20 +444,19 @@ class Loader {
 	 *
 	 * @param array $statuses Order statuses.
 	 * @return array formatted statuses.
+	 *
+	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function get_order_statuses( $statuses ) {
-		$formatted_statuses = array();
-		foreach ( $statuses as $key => $value ) {
-			$formatted_key                        = preg_replace( '/^wc-/', '', $key );
-			$formatted_statuses[ $formatted_key ] = $value;
-		}
-		return $formatted_statuses;
+		return Settings::get_order_statuses( $statuses );
 	}
 
 	/**
 	 * Get all order statuses present in analytics tables that aren't registered.
 	 *
 	 * @return array Unregistered order statuses.
+	 *
+	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function get_unregistered_order_statuses() {
 		$registered_statuses   = wc_get_order_statuses();
@@ -481,14 +473,11 @@ class Loader {
 	 *
 	 * @param array $groups Array of setting groups.
 	 * @return array
+	 *
+	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function add_settings_group( $groups ) {
-		$groups[] = array(
-			'id'          => 'wc_admin',
-			'label'       => __( 'WooCommerce Admin', 'woocommerce' ),
-			'description' => __( 'Settings for WooCommerce admin reporting.', 'woocommerce' ),
-		);
-		return $groups;
+		return Settings::get_instance()->add_settings_group( $groups );
 	}
 
 	/**
@@ -496,39 +485,11 @@ class Loader {
 	 *
 	 * @param array $settings Array of settings in wc admin group.
 	 * @return array
+	 *
+	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function add_settings( $settings ) {
-		$unregistered_statuses = self::get_unregistered_order_statuses();
-		$registered_statuses   = self::get_order_statuses( wc_get_order_statuses() );
-		$all_statuses          = array_merge( $unregistered_statuses, $registered_statuses );
-
-		$settings[] = array(
-			'id'          => 'woocommerce_excluded_report_order_statuses',
-			'option_key'  => 'woocommerce_excluded_report_order_statuses',
-			'label'       => __( 'Excluded report order statuses', 'woocommerce' ),
-			'description' => __( 'Statuses that should not be included when calculating report totals.', 'woocommerce' ),
-			'default'     => array( 'pending', 'cancelled', 'failed' ),
-			'type'        => 'multiselect',
-			'options'     => $all_statuses,
-		);
-		$settings[] = array(
-			'id'          => 'woocommerce_actionable_order_statuses',
-			'option_key'  => 'woocommerce_actionable_order_statuses',
-			'label'       => __( 'Actionable order statuses', 'woocommerce' ),
-			'description' => __( 'Statuses that require extra action on behalf of the store admin.', 'woocommerce' ),
-			'default'     => array( 'processing', 'on-hold' ),
-			'type'        => 'multiselect',
-			'options'     => $all_statuses,
-		);
-		$settings[] = array(
-			'id'          => 'woocommerce_default_date_range',
-			'option_key'  => 'woocommerce_default_date_range',
-			'label'       => __( 'Default Date Range', 'woocommerce' ),
-			'description' => __( 'Default Date Range', 'woocommerce' ),
-			'default'     => 'period=month&compare=previous_year',
-			'type'        => 'text',
-		);
-		return $settings;
+		return Settings::get_instance()->add_settings( $settings );
 	}
 
 	/**
@@ -536,6 +497,8 @@ class Loader {
 	 *
 	 * @param array $settings Array of settings to merge into.
 	 * @return array
+	 *
+	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function get_custom_settings( $settings ) {
 		$wc_rest_settings_options_controller = new \WC_REST_Setting_Options_Controller();
@@ -560,27 +523,11 @@ class Loader {
 	 *     @type string $precision  Number of decimals.
 	 *     @type string $symbol     Symbol for currency.
 	 * }
+	 *
+	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function get_currency_settings() {
-		$code = get_woocommerce_currency();
-
-		/**
-		 * The wc_currency_settings hook
-		 *
-		 * @since 6.5.0
-		 */
-		return apply_filters(
-			'wc_currency_settings',
-			array(
-				'code'              => $code,
-				'precision'         => wc_get_price_decimals(),
-				'symbol'            => html_entity_decode( get_woocommerce_currency_symbol( $code ) ),
-				'symbolPosition'    => get_option( 'woocommerce_currency_pos' ),
-				'decimalSeparator'  => wc_get_price_decimal_separator(),
-				'thousandSeparator' => wc_get_price_thousand_separator(),
-				'priceFormat'       => html_entity_decode( get_woocommerce_price_format() ),
-			)
-		);
+		return Settings::get_currency_settings();
 	}
 
 	/**
