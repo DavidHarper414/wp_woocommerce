@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WooCommerce Product Functions
  *
@@ -136,7 +137,7 @@ function wc_delete_product_transients( $post_id = 0 ) {
 	foreach ( $transients_to_clear as $transient ) {
 		delete_transient( $transient );
 	}
-	
+
 	if ( $post_id > 0 ) {
 		// Transient names that include an ID - since they are dynamic they cannot be cleaned in bulk without the ID.
 		$post_transient_names = array(
@@ -155,7 +156,7 @@ function wc_delete_product_transients( $post_id = 0 ) {
 			wc_delete_related_product_transients( $post_id );
 		} else {
 			// Schedule the async deletion of related product transients.
-			// This should run async cause it also fetches the 
+			// This should run async cause it also fetches the
 			// related products of the current product.
 			WC()->queue()->schedule_single(
 				time(),
@@ -177,10 +178,11 @@ function wc_delete_product_transients( $post_id = 0 ) {
  * This is necessary because changing one product might affect many related products.
  *
  * @since 9.8.1
- * @param array $args Arguments passed from the async scheduler.
+ * @param array $post_id Arguments passed from the async scheduler.
  */
 function wc_delete_related_product_transients( $post_id ) {
 	global $wpdb;
+
 	if ( ! is_numeric( $post_id ) ) {
 		return;
 	}
@@ -188,43 +190,48 @@ function wc_delete_related_product_transients( $post_id ) {
 	$transient_name       = 'wc_related_' . $post_id;
 	$old_transient        = get_transient( $transient_name );
 	$old_related_products = array();
-	
+
 	if ( is_array( $old_transient ) ) {
 		$old_related_products = $old_transient[ array_key_first( $old_transient ) ];
 	}
-	// Delete current product transient
+
+	// Delete current product transient.
 	delete_transient( $transient_name );
-	// Gets new related products and sets current product transient
+
+	// Gets new related products and sets current product transient.
 	$new_related_products = wc_get_related_products( $post_id, 1000 );
-	
-	// Combine all product IDs that need their transients cleared
-	$related_product_ids = array_unique( array_merge(
-		$old_related_products,
-		$new_related_products
-	) );
+
+	// Combine all product IDs that need their transients cleared.
+	$related_product_ids = array_unique(
+		array_merge(
+			$old_related_products,
+			$new_related_products
+		)
+	);
 
 	if ( empty( $related_product_ids ) ) {
 		return;
 	}
 
-	// Create the list of transient names to delete
+	// Create the list of transient names to delete.
 	$transient_names = array();
 	foreach ( $related_product_ids as $id ) {
 		$transient_names[] = '_transient_timeout_wc_related_' . $id;
 		$transient_names[] = '_transient_wc_related_' . $id;
 	}
 
-	// Create placeholders for the IN clause
+	// Create placeholders for the IN clause.
 	$placeholders = implode( ',', array_fill( 0, count( $transient_names ), '%s' ) );
 
-	// Delete specific timeout and transient entries in a single query
-	$wpdb->query( 
-		$wpdb->prepare( 
+	// Delete specific timeout and transient entries in a single query.
+	$wpdb->query(
+		$wpdb->prepare(
 			"DELETE FROM {$wpdb->options} WHERE option_name IN ($placeholders)",
 			$transient_names
 		)
 	);
 }
+
 add_action( 'wc_delete_related_product_transients_async', 'wc_delete_related_product_transients' );
 
 /**
@@ -525,12 +532,10 @@ function wc_get_formatted_variation( $variation, $flat = false, $include_names =
 				} else {
 					$variation_list[] = '<dt>' . wc_attribute_label( $name, $product ) . ':</dt><dd>' . rawurldecode( $value ) . '</dd>';
 				}
-			} else {
-				if ( $flat ) {
+			} elseif ( $flat ) {
 					$variation_list[] = rawurldecode( $value );
-				} else {
-					$variation_list[] = '<li>' . rawurldecode( $value ) . '</li>';
-				}
+			} else {
+				$variation_list[] = '<li>' . rawurldecode( $value ) . '</li>';
 			}
 		}
 
@@ -1111,7 +1116,7 @@ function wc_get_related_products( $product_id, $limit = 5, $exclude_ids = array(
 
 	$transient     = get_transient( $transient_name );
 	$related_posts = $transient && is_array( $transient ) && isset( $transient[ $query_args ] ) ? $transient[ $query_args ] : false;
-	
+
 	// Query related posts if they are not cached
 	// Should happen only once per day due to transient expiriation set to 1 DAY_IN_SECONDS, to avoid performance issues
 	if ( false === $related_posts ) {
