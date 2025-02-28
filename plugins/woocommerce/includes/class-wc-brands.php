@@ -45,7 +45,10 @@ class WC_Brands {
 		add_action( 'wp_enqueue_scripts', array( $this, 'styles' ) );
 		add_action( 'wp', array( $this, 'body_class' ) );
 
-		add_action( 'woocommerce_product_meta_end', array( $this, 'show_brand' ) );
+		// Only add the PHP output if we're not in a block theme
+		if (!wc_current_theme_is_fse_theme()) {
+			add_action( 'woocommerce_product_meta_end', array( $this, 'show_brand' ) );
+		}
 		add_filter( 'woocommerce_structured_data_product', array( $this, 'add_structured_data' ), 20 );
 
 		// duplicate product brands.
@@ -1100,20 +1103,37 @@ class WC_Brands {
 	 * Hooks the product brand terms block into single product templates.
 	 */
 	public function hook_product_brand_block( $hooked_block_types, $relative_position, $anchor_block_type, $context ) {
+
 		// Only add the block as the last child of the product meta block
-		if ( 'woocommerce/product-meta' === $anchor_block_type && 
+		if ( 'woocommerce/product-meta' === $anchor_block_type &&
 			 'last_child' === $relative_position &&
 			 $context instanceof WP_Block_Template &&
 			 'single-product' === $context->slug ) {
-				
-			// Remove the PHP action to prevent duplication when the block is added.
-			remove_action( 'woocommerce_product_meta_end', array( $this, 'show_brand' ) );
-				
-			// Simply add the core/post-terms block type.
-			$hooked_block_types[] = 'core/post-terms';
+
+				remove_action( 'woocommerce_product_meta_end', array( $this, 'show_brand' ) );
+
+				// Check if the template already has a product brand block
+				if ( ! $this->template_already_has_brand_block( $context ) ) {
+					// Simply add the core/post-terms block type
+					$hooked_block_types[] = 'core/post-terms';
+				}
 		}
 		
 		return $hooked_block_types;
+	}
+
+	/**
+	 * Check if the template already contains a product brand block.
+	 *
+	 * @param WP_Block_Template $template The template object.
+	 * @return boolean True if template contains a brand block.
+	 */
+	private function template_already_has_brand_block( $template ) {
+		if ( ! $template || empty( $template->content ) ) {
+			return false;
+		}
+
+		return strpos( $template->content, '"term":"product_brand"' ) !== false;
 	}
 
 	/**
@@ -1123,17 +1143,17 @@ class WC_Brands {
 		if ( is_null( $parsed_hooked_block ) ) {
 			return $parsed_hooked_block;
 		}
-		
-		if ( 'core/post-terms' === $hooked_block_type && 
+
+		if ( 'core/post-terms' === $hooked_block_type &&
 			 'last_child' === $relative_position &&
 			 'woocommerce/product-meta' === $parsed_anchor_block['blockName'] ) {
-				
+
 			$parsed_hooked_block['attrs'] = array(
-				'term' 	 => 'product_brand',
+				'term'   => 'product_brand',
 				'prefix' => __( 'Brands: ', 'woocommerce' ),
 			);
 		}
-		
+
 		return $parsed_hooked_block;
 	}
 }
