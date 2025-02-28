@@ -512,6 +512,9 @@ function wc_get_formatted_variation( $variation, $flat = false, $include_names =
 				}
 			}
 
+			// Cast to string once before using.
+			$value = (string) $value;
+
 			// Do not list attributes already part of the variation name.
 			if ( '' === $value || ( $skip_attributes_in_name && wc_is_attribute_in_product_name( $value, $variation_name ) ) ) {
 				continue;
