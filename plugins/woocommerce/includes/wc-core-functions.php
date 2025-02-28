@@ -2751,8 +2751,8 @@ function wc_delete_transients( $transients ) {
 			// Use a single query for better performance.
 			$result = $wpdb->query(
 				$wpdb->prepare(
-					'DELETE FROM ' . $wpdb->options . ' WHERE option_name IN ( ' . implode( ', ', array_fill( 0, count( $transient_names ), '%s' ) ) . ' )',
-					$transient_names
+					'DELETE FROM ' . $wpdb->options . ' WHERE option_name IN ( ' . implode( ', ', array_fill( 0, count( $options_to_clear ), '%s' ) ) . ' )',
+					$options_to_clear
 				)
 			);
 
