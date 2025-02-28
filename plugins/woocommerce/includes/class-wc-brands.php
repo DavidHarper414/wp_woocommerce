@@ -46,7 +46,6 @@ class WC_Brands {
 		add_action( 'wp', array( $this, 'body_class' ) );
 
 		add_action( 'woocommerce_product_meta_end', array( $this, 'show_brand' ) );
-
 		add_filter( 'woocommerce_structured_data_product', array( $this, 'add_structured_data' ), 20 );
 
 		// duplicate product brands.
@@ -1099,6 +1098,13 @@ class WC_Brands {
 
 	/**
 	 * Hooks the product brand terms block into single product templates.
+	 * 
+	 * @param array $hooked_block_types The array of hooked block types.
+	 * @param int $relative_position The relative position of the hooked block.
+	 * @param string $anchor_block_type The type of anchor block.
+	 * @param WP_Block_Template $context The context of the block.
+	 * 
+	 * @return array The array of hooked block types.
 	 */
 	public function hook_product_brand_block( $hooked_block_types, $relative_position, $anchor_block_type, $context ) {
 
@@ -1124,6 +1130,7 @@ class WC_Brands {
 	 * Check if the template already contains a product brand block.
 	 *
 	 * @param WP_Block_Template $template The template object.
+	 * 
 	 * @return boolean True if template contains a brand block.
 	 */
 	private function template_already_has_brand_block( $template ) {
@@ -1136,6 +1143,14 @@ class WC_Brands {
 
 	/**
 	 * Configures the attributes for the hooked product brand terms block.
+	 * 	
+	 * @param array $parsed_hooked_block The parsed hooked block.
+	 * @param string $hooked_block_type The type of hooked block.
+	 * @param int $relative_position The relative position of the hooked block.
+	 * @param array $parsed_anchor_block The parsed anchor block.
+	 * @param WP_Block_Template $context The context of the block.
+	 * 
+	 * @return array The parsed hooked block.
 	 */
 	public function configure_product_brand_block( $parsed_hooked_block, $hooked_block_type, $relative_position, $parsed_anchor_block, $context ) {
 		if ( is_null( $parsed_hooked_block ) ) {
@@ -1147,7 +1162,7 @@ class WC_Brands {
 			 'woocommerce/product-meta' === $parsed_anchor_block['blockName'] ) {
 
 			$parsed_hooked_block['attrs'] = array(
-				'term'   => 'product_brand',
+				'term'	 => 'product_brand',
 				'prefix' => __( 'Brands: ', 'woocommerce' ),
 			);
 		}
