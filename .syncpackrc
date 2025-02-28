@@ -307,7 +307,7 @@
 			"pinVersion": "^1.15.0"
 		},
 		{
-		    "label": "@wordpress/* build-dependencies",
+			"label": "@wordpress/* build-dependencies",
 			"dependencies": [
 				"@wordpress/dependency-extraction-webpack-plugin"
 			],
@@ -317,7 +317,7 @@
 			"pinVersion": "latest"
 		},
 		{
-		    "label": "@wordpress/* runtime-dependencies",
+			"label": "@wordpress/* runtime-dependencies",
 			"dependencies": [
 				"@wordpress/**"
 			],
