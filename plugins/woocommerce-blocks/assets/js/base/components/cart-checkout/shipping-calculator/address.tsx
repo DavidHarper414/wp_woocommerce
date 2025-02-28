@@ -72,39 +72,38 @@ const ShippingCalculatorAddress = ( {
 		return true;
 	}, [ formFields, address ] );
 
-	const validateSubmit = useCallback( () => {
-		showAllValidationErrors();
-		return ! hasValidationErrors && hasRequiredFields();
-	}, [ showAllValidationErrors, hasValidationErrors, hasRequiredFields ] );
-
 	const handleClick = useCallback(
 		( e: React.MouseEvent< HTMLButtonElement > ) => {
 			e.preventDefault();
 
-			const addressChanged = ! isShallowEqual( address, initialAddress );
-			const isAddressValid = validateSubmit();
+			showAllValidationErrors();
+
+			const isAddressValid = ! hasValidationErrors && hasRequiredFields();
 
 			if ( isAddressValid ) {
+				const addressChanged = ! isShallowEqual(
+					address,
+					initialAddress
+				);
+
 				if ( ! addressChanged ) {
 					return onCancel();
 				}
 
-				const addressToSubmit = addressFields.reduce<
-					Partial< ShippingAddress >
-				>( ( acc, key ) => {
-					if ( typeof address[ key ] !== 'undefined' ) {
-						// This type incompatibility is due to additional fields being able to contain a boolean
-						// value. We should clean up these types in the future.
-						acc[ key ] = address[ key ];
-					}
-					return acc;
-				}, {} );
+				const addressToSubmit: Partial< ShippingAddress > =
+					Object.fromEntries(
+						addressFields
+							.filter( ( key ) => address[ key ] !== undefined )
+							.map( ( key ) => [ key, address[ key ] ] )
+					);
 
 				onUpdate( addressToSubmit );
 			}
 		},
 		[
-			validateSubmit,
+			showAllValidationErrors,
+			hasValidationErrors,
+			hasRequiredFields,
 			address,
 			initialAddress,
 			addressFields,
