@@ -45,10 +45,8 @@ class WC_Brands {
 		add_action( 'wp_enqueue_scripts', array( $this, 'styles' ) );
 		add_action( 'wp', array( $this, 'body_class' ) );
 
-		// Only add the PHP output if we're not in a block theme
-		if (!wc_current_theme_is_fse_theme()) {
-			add_action( 'woocommerce_product_meta_end', array( $this, 'show_brand' ) );
-		}
+		add_action( 'woocommerce_product_meta_end', array( $this, 'show_brand' ) );
+
 		add_filter( 'woocommerce_structured_data_product', array( $this, 'add_structured_data' ), 20 );
 
 		// duplicate product brands.
