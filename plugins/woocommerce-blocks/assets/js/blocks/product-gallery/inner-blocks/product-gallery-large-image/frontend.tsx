@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import { store, getContext as getContextFn } from '@woocommerce/interactivity';
-import { StorePart } from '@woocommerce/utils';
+import { store, getContext as getContextFn } from '@wordpress/interactivity';
+import type { StorePart } from '@woocommerce/utils';
 
 /**
  * Internal dependencies

@@ -1,7 +1,7 @@
 <?php
-namespace Automattic\WooCommerce\Blocks\BlockTypes;
+declare(strict_types=1);
 
-use Automattic\WooCommerce\Blocks\Utils\ProductGalleryUtils;
+namespace Automattic\WooCommerce\Blocks\BlockTypes;
 
 /**
  * ProductGalleryLargeImage class.
@@ -81,6 +81,7 @@ class ProductGalleryLargeImage extends AbstractBlock {
 			},
 			''
 		);
+		wp_enqueue_script_module( $this->get_full_block_name() );
 
 		$processor = new \WP_HTML_Tag_Processor( $content );
 		$processor->next_tag();
@@ -120,20 +121,20 @@ class ProductGalleryLargeImage extends AbstractBlock {
 
 		ob_start();
 		?>
-			<template data-wc-each--largeimage="state.visibleImageData" data-wc-each-key="context.largeimage.id">
+			<template data-wp-each--largeimage="state.visibleImageData" data-wp-each-key="context.largeimage.id">
 				<li class="wc-block-product-gallery-large-image__wrapper">
 					<img
 						class="<?php echo esc_attr( $base_classes ); ?>"
-						data-wc-bind--src="context.largeimage.src"
-						data-wc-bind--srcset="context.largeimage.srcSet"
-						data-wc-bind--sizes="context.largeimage.sizes"
-						data-wc-bind--id="context.largeimage.id"
-						data-wc-bind--tabindex="state.thumbnailTabIndex"
-						data-wc-on--keydown="actions.onSelectedLargeImageKeyDown"
-						data-wc-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="context.largeimage.isActive"
-						data-wc-on--touchstart="actions.onTouchStart"
-						data-wc-on--touchmove="actions.onTouchMove"
-						data-wc-on--touchend="actions.onTouchEnd"
+						data-wp-bind--src="context.largeimage.src"
+						data-wp-bind--srcset="context.largeimage.srcSet"
+						data-wp-bind--sizes="context.largeimage.sizes"
+						data-wp-bind--id="context.largeimage.id"
+						data-wp-bind--tabindex="state.thumbnailTabIndex"
+						data-wp-on--keydown="actions.onSelectedLargeImageKeyDown"
+						data-wp-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="context.largeimage.isActive"
+						data-wp-on--touchstart="actions.onTouchStart"
+						data-wp-on--touchmove="actions.onTouchMove"
+						data-wp-on--touchend="actions.onTouchEnd"
 						alt=""
 					/>
 				</li>
@@ -169,18 +170,11 @@ class ProductGalleryLargeImage extends AbstractBlock {
 		if ( ! $block_context['hoverZoom'] ) {
 			return array();
 		}
-		$context = array(
-			'styles' => array(
-				'transform'        => 'scale(1.0)',
-				'transform-origin' => '',
-			),
-		);
 
 		return array(
-			'data-wc-interactive'    => wp_json_encode( array( 'namespace' => 'woocommerce/product-gallery' ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
-			'data-wc-context'        => wp_json_encode( $context, JSON_NUMERIC_CHECK | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
-			'data-wc-on--mousemove'  => 'actions.startZoom',
-			'data-wc-on--mouseleave' => 'actions.resetZoom',
+			'data-wp-interactive'    => 'woocommerce/product-gallery',
+			'data-wp-on--mousemove'  => 'actions.startZoom',
+			'data-wp-on--mouseleave' => 'actions.resetZoom',
 		);
 	}
 
@@ -197,7 +191,18 @@ class ProductGalleryLargeImage extends AbstractBlock {
 		}
 
 		return array(
-			'data-wc-on--click' => 'actions.openDialog',
+			'data-wp-on--click' => 'actions.openDialog',
 		);
+	}
+
+	/**
+	 * Disable the block type script, this uses script modules.
+	 *
+	 * @param string|null $key The key.
+	 *
+	 * @return null
+	 */
+	protected function get_block_type_script( $key = null ) {
+		return null;
 	}
 }

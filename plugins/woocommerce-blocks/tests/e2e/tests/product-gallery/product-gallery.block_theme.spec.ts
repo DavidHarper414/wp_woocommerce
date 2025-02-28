@@ -51,7 +51,7 @@ export const getIsDialogOpen = async (
 	productGalleryBlock: Locator
 ): Promise< boolean > => {
 	const productGalleryBlockContext = ( await productGalleryBlock.getAttribute(
-		'data-wc-context'
+		'data-wp-context'
 	) ) as string;
 
 	const productGalleryBlockParsedContext = JSON.parse(
@@ -68,7 +68,7 @@ const getThumbnailImageIdByNth = async (
 	const image = thumbnailsLocator.locator( 'img' ).nth( nth );
 
 	const imageContext = ( await image.getAttribute(
-		'data-wc-context'
+		'data-wp-context'
 	) ) as string;
 
 	const imageId = JSON.parse( imageContext ).imageId;
