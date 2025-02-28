@@ -33,7 +33,7 @@ const getContext = ( ns?: string ) =>
 	getContextFn< ProductGalleryContext >( ns );
 
 type Store = typeof productGallery & StorePart< ProductGallery >;
-const { state, actions } = store< Store >( 'woocommerce/product-gallery' );
+const { actions } = store< Store >( 'woocommerce/product-gallery' );
 
 const getArrowsState = ( imageNumber: number, totalImages: number ) => ( {
 	// One-based index so it ranges from 1 to imagesIds.length.
@@ -108,7 +108,7 @@ const productGallery = {
 				context.imageIds.length
 			);
 
-			context.userHasInteracted = true;
+			actions.userHasInteracted();
 			context.selectedImageNumber = newImageNumber;
 			context.disableLeft = disableLeft;
 			context.disableRight = disableRight;
@@ -288,7 +288,7 @@ const productGallery = {
 			const observer = new MutationObserver( function ( mutations ) {
 				for ( const mutation of mutations ) {
 					if ( ! isInitialMutation ) {
-						context.userHasInteracted = true;
+						actions.userHasInteracted();
 					}
 
 					if ( isInitialMutation ) {
