@@ -3,7 +3,7 @@
  */
 import { render, screen, within } from '@testing-library/react';
 import ShippingAddress from '@woocommerce/base-components/cart-checkout/totals/shipping/shipping-address';
-import { CART_STORE_KEY, checkoutStore } from '@woocommerce/block-data';
+import { cartStore, checkoutStore } from '@woocommerce/block-data';
 import { ShippingCalculatorContext } from '@woocommerce/base-components/cart-checkout';
 import { dispatch } from '@wordpress/data';
 import { previewCart } from '@woocommerce/resource-previews';
@@ -22,6 +22,22 @@ jest.mock( '@woocommerce/settings', () => {
 			}
 			if ( setting === 'collectableMethodIds' ) {
 				return [ 'pickup_location' ];
+			}
+			if ( setting === 'localPickupLocations' ) {
+				return {
+					'1': {
+						enabled: true,
+						name: 'Local pickup #1',
+						formatted_address: '123 Easy Street',
+						details: 'Details for Local pickup #1',
+					},
+					'2': {
+						enabled: true,
+						name: 'Local pickup #2',
+						formatted_address: '456 Main St',
+						details: 'Details for Local pickup #2',
+					},
+				};
 			}
 			return originalModule.getSetting( setting, ...rest );
 		},
@@ -113,7 +129,7 @@ describe( 'ShippingAddress', () => {
 			pickupRateIndex
 		].selected = true;
 
-		dispatch( CART_STORE_KEY ).receiveCart( previewCart );
+		dispatch( cartStore ).receiveCart( previewCart );
 
 		render(
 			<ShippingCalculatorContext.Provider
@@ -158,7 +174,7 @@ describe( 'ShippingAddress', () => {
 			pickupRateIndex
 		].selected = true;
 
-		dispatch( CART_STORE_KEY ).receiveCart( previewCart );
+		dispatch( cartStore ).receiveCart( previewCart );
 
 		render(
 			<ShippingCalculatorContext.Provider
@@ -212,7 +228,7 @@ describe( 'ShippingAddress', () => {
 			pickupRateIndex
 		].meta_data[ addressKeyIndex ].value = '';
 
-		dispatch( CART_STORE_KEY ).receiveCart( previewCart );
+		dispatch( cartStore ).receiveCart( previewCart );
 
 		render( <ShippingAddress /> );
 		expect(

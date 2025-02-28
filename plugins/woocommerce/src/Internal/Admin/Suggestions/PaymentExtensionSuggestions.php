@@ -30,7 +30,7 @@ class PaymentExtensionSuggestions {
 	const PAYSTACK          = 'paystack';
 	const PAYU_INDIA        = 'payu_india';
 	const RAZORPAY          = 'razorpay';
-	const SQUARE_IN_PERSON  = 'square_in_person';
+	const SQUARE            = 'square';
 	const STRIPE            = 'stripe';
 	const TILOPAY           = 'tilopay';
 	const VIVA_WALLET       = 'viva_wallet';
@@ -41,6 +41,7 @@ class PaymentExtensionSuggestions {
 	const CLEARPAY          = 'clearpay';
 	const KLARNA            = 'klarna';
 	const HELIOPAY          = 'heliopay';
+	const MONEI             = 'monei';
 
 	/*
 	 * The extension types.
@@ -132,7 +133,7 @@ class PaymentExtensionSuggestions {
 			self::WOOPAYMENTS,
 			self::PAYPAL_FULL_STACK,
 			self::STRIPE,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -149,7 +150,7 @@ class PaymentExtensionSuggestions {
 			self::PAYPAL_WALLET,
 			self::AFFIRM,
 			self::AFTERPAY,
-			self::KLARNA           => array(
+			self::KLARNA => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -173,7 +174,7 @@ class PaymentExtensionSuggestions {
 			self::PAYPAL_FULL_STACK,
 			self::STRIPE,
 			self::AIRWALLEX,
-			self::SQUARE_IN_PERSON, // Use the default details.
+			self::SQUARE, // Use the default details.
 			self::PAYPAL_WALLET,
 			self::AMAZON_PAY,
 			self::AFFIRM,
@@ -189,7 +190,7 @@ class PaymentExtensionSuggestions {
 			self::MOLLIE,
 			self::AIRWALLEX,
 			self::VIVA_WALLET,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -206,7 +207,7 @@ class PaymentExtensionSuggestions {
 			self::PAYPAL_WALLET,
 			self::AMAZON_PAY,
 			self::CLEARPAY,
-			self::KLARNA           => array(
+			self::KLARNA => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -229,6 +230,7 @@ class PaymentExtensionSuggestions {
 			),
 		),
 		'AD' => array(
+			self::MONEI,
 			self::PAYPAL_WALLET => array(
 				'_append' => array(
 					'tags' => array( self::TAG_PREFERRED ),
@@ -400,7 +402,7 @@ class PaymentExtensionSuggestions {
 			self::MOLLIE,
 			self::AIRWALLEX,
 			self::VIVA_WALLET,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -416,7 +418,7 @@ class PaymentExtensionSuggestions {
 			),
 			self::PAYPAL_WALLET,
 			self::AMAZON_PAY,
-			self::KLARNA           => array(
+			self::KLARNA => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -539,7 +541,7 @@ class PaymentExtensionSuggestions {
 			self::MOLLIE,
 			self::AIRWALLEX,
 			self::VIVA_WALLET,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -555,7 +557,7 @@ class PaymentExtensionSuggestions {
 			),
 			self::PAYPAL_WALLET,
 			self::AMAZON_PAY,
-			self::KLARNA           => array(
+			self::KLARNA => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -804,9 +806,10 @@ class PaymentExtensionSuggestions {
 			self::PAYPAL_FULL_STACK,
 			self::STRIPE,
 			self::MOLLIE,
+			self::MONEI,
 			self::AIRWALLEX,
 			self::VIVA_WALLET,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -822,7 +825,7 @@ class PaymentExtensionSuggestions {
 			),
 			self::PAYPAL_WALLET,
 			self::AMAZON_PAY,
-			self::KLARNA           => array(
+			self::KLARNA => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -1249,7 +1252,7 @@ class PaymentExtensionSuggestions {
 			self::STRIPE,
 			self::AIRWALLEX,
 			self::ANTOM,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -1265,7 +1268,7 @@ class PaymentExtensionSuggestions {
 			),
 			self::PAYPAL_WALLET,
 			self::AFTERPAY,
-			self::KLARNA           => array(
+			self::KLARNA => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -1339,7 +1342,7 @@ class PaymentExtensionSuggestions {
 			self::PAYPAL_FULL_STACK,
 			self::STRIPE,
 			self::ANTOM,
-			self::SQUARE_IN_PERSON => array(
+			self::SQUARE => array(
 				'_merge_on_type' => array(
 					'links' => array(
 						array(
@@ -1844,17 +1847,8 @@ class PaymentExtensionSuggestions {
 	 *              Defaults to true if there is no specific logic for the extension.
 	 */
 	private function is_extension_allowed( string $extension_id, string $country_code, string $context = '' ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
-
-		/*
-		 * For now, we only need to run logic for the Square In-Person extension.
-		 * If more extensions need to be filtered out, we can add more logic here until we decide to abstract it.
-		 */
-
-		if ( self::SQUARE_IN_PERSON === $extension_id ) {
-			// Square (In-Person) is only allowed if the merchant is selling offline.
-			return $this->is_merchant_selling_offline();
-		}
-
+		// Add per-extension exclusion logic here.
+		// Returning true for now to avoid excluding any extensions.
 		return true;
 	}
 
@@ -2511,7 +2505,7 @@ class PaymentExtensionSuggestions {
 					),
 				),
 			),
-			self::SQUARE_IN_PERSON  => array(
+			self::SQUARE            => array(
 				'_type'       => self::TYPE_PSP,
 				'title'       => esc_html__( 'Square', 'woocommerce' ),
 				'description' => esc_html__( 'Securely accept credit and debit cards with one low rate, no surprise fees (custom rates available). Sell in store and track sales and inventory in one place.', 'woocommerce' ),
@@ -2647,7 +2641,7 @@ class PaymentExtensionSuggestions {
 			self::WOOPAYMENTS       => array(
 				'_type'       => self::TYPE_PSP,
 				'title'       => esc_html__( 'Accept payments with Woo', 'woocommerce' ),
-				'description' => esc_html__( 'Credit/debit cards, Apple Pay, Google Pay and more.', 'woocommerce' ),
+				'description' => esc_html__( 'Credit/debit cards, Apple Pay, Google Pay, and more.', 'woocommerce' ),
 				'image'       => plugins_url( 'assets/images/onboarding/woopayments.svg', WC_PLUGIN_FILE ),
 				'icon'        => plugins_url( 'assets/images/onboarding/icons/woo.svg', WC_PLUGIN_FILE ),
 				'plugin'      => array(
@@ -2873,6 +2867,38 @@ class PaymentExtensionSuggestions {
 					array(
 						'_type' => self::LINK_TYPE_SUPPORT,
 						'url'   => 'https://woocommerce.com/my-account/contact-support/?select=helio-pay',
+					),
+				),
+			),
+			self::MONEI             => array(
+				'_type'       => self::TYPE_PSP,
+				'title'       => esc_html__( 'MONEI', 'woocommerce' ),
+				'description' => esc_html__( 'Accept Cards, Apple Pay, Google Pay, Bizum, PayPal, and many more payment methods in your store.', 'woocommerce' ),
+				'icon'        => plugins_url( 'assets/images/onboarding/icons/monei.svg', WC_PLUGIN_FILE ),
+				'plugin'      => array(
+					'_type' => self::PLUGIN_TYPE_WPORG,
+					'slug'  => 'monei',
+				),
+				'links'       => array(
+					array(
+						'_type' => self::LINK_TYPE_PRICING,
+						'url'   => 'https://monei.com/pricing/',
+					),
+					array(
+						'_type' => self::LINK_TYPE_ABOUT,
+						'url'   => 'https://monei.com/',
+					),
+					array(
+						'_type' => self::LINK_TYPE_TERMS,
+						'url'   => 'https://monei.com/legal-notice/',
+					),
+					array(
+						'_type' => self::LINK_TYPE_DOCS,
+						'url'   => 'https://support.monei.com/hc/en-us/articles/360017801677-Get-started-with-MONEI',
+					),
+					array(
+						'_type' => self::LINK_TYPE_SUPPORT,
+						'url'   => 'https://support.monei.com/hc/en-us/requests/new',
 					),
 				),
 			),

@@ -30,6 +30,15 @@ const blocks = {
 		customDir: 'add-to-cart-with-options/variation-selector',
 		isExperimental: true,
 	},
+	'add-to-cart-with-options-grouped-product-selector': {
+		customDir: 'add-to-cart-with-options/grouped-product-selector',
+		isExperimental: true,
+	},
+	'add-to-cart-with-options-grouped-product-selector-item': {
+		customDir:
+			'add-to-cart-with-options/grouped-product-selector/product-item-template',
+		isExperimental: true,
+	},
 	'all-products': {
 		customDir: 'products/all-products',
 	},
@@ -38,6 +47,10 @@ const blocks = {
 	},
 	'attribute-filter': {},
 	breadcrumbs: {},
+	'blockified-product-details': {
+		isExperimental: true,
+		customDir: 'product-details',
+	},
 	'catalog-sorting': {},
 	'coming-soon': {},
 	'customer-account': {},
@@ -257,31 +270,21 @@ const entries = {
 			...cartAndCheckoutBlocks,
 		} ),
 
-		// Interactivity component styling
-		'wc-interactivity-checkbox-list':
-			'./packages/interactivity-components/checkbox-list/index.ts',
-		'wc-interactivity-dropdown':
-			'./packages/interactivity-components/dropdown/index.ts',
-
 		// Templates
 		'wc-blocks-classic-template-revert-button-style':
 			'./assets/js/templates/revert-button/index.tsx',
 	},
 	core: {
 		wcBlocksRegistry: './assets/js/blocks-registry/index.js',
+		blocksCheckoutEvents: './assets/js/events/index.ts',
 		wcSettings: './assets/js/settings/shared/index.ts',
 		wcBlocksData: './assets/js/data/index.ts',
 		wcBlocksMiddleware: './assets/js/middleware/index.js',
 		wcBlocksSharedContext: './assets/js/shared/context/index.js',
 		wcBlocksSharedHocs: './assets/js/shared/hocs/index.js',
+		wcSchemaParser: './assets/js/utils/schema-parser/index.ts',
 		priceFormat: './packages/prices/index.js',
 		wcTypes: './assets/js/types/index.ts',
-
-		// interactivity components, exported as separate entries for now
-		'wc-interactivity-dropdown':
-			'./packages/interactivity-components/dropdown/index.ts',
-		'wc-interactivity-checkbox-list':
-			'./packages/interactivity-components/checkbox-list/index.ts',
 	},
 	main: {
 		// Shared blocks code

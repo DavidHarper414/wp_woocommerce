@@ -48,10 +48,8 @@
 		"changelog": "XDEBUG_MODE=off composer install --quiet && composer exec -- changelogger",
 		"build": "pnpm --if-present --workspace-concurrency=Infinity --stream --filter=\"$npm_package_name...\" '/^build:project:.*$/'",
 		"build:project": "pnpm --if-present '/^build:project:.*$/'",
-		"build:project:validate-blocks-manifests": "wireit",
 		"build:project:bundle": "wireit",
-		"build:project:blocks-json-to-php": "wireit",
-		"build:check-assets": "rimraf build/* && cross-env ASSET_CHECK=true BABEL_ENV=default NODE_ENV=production webpack",
+		"build:check-assets": "npx ajv validate -s bin/block.json-validation-schema.json -d assets/js/**/block.json && rimraf build/* && cross-env ASSET_CHECK=true BABEL_ENV=default NODE_ENV=production webpack",
 		"prebuild:docs": "rimraf docs/extensibility/actions.md & rimraf docs/extensibility/filters.md",
 		"build:docs": "./vendor/bin/wp-hooks-generator --input=src --output=bin/hook-docs/data && node ./bin/hook-docs && pnpm build:docs:block-references",
 		"build:docs:block-references": "node ./bin/gen-block-list-doc.js",
@@ -104,21 +102,20 @@
 		"wp-env:config": "echo 'wp-env:config is no more. Use env:start instead.'",
 		"watch:build": "pnpm --if-present --workspace-concurrency=Infinity --filter=\"$npm_package_name...\" --parallel '/^watch:build:project:.*$/'",
 		"watch:build:project": "pnpm --if-present run '/^watch:build:project:.*$/'",
-		"watch:build:project:bundle": "wireit",
-		"watch:build:project:blocks-json-to-php": "pnpm run build:project:blocks-json-to-php --watch"
+		"watch:build:project:bundle": "wireit"
 	},
 	"devDependencies": {
-		"@automattic/color-studio": "2.5.0",
+		"@automattic/color-studio": "4.0.0",
 		"@babel/cli": "7.23.0",
 		"@babel/core": "7.23.2",
-		"@babel/plugin-proposal-class-properties": "7.18.6",
-		"@babel/plugin-proposal-optional-chaining": "7.21.0",
 		"@babel/plugin-syntax-jsx": "7.22.5",
+		"@babel/plugin-transform-class-properties": "^7.23.3",
+		"@babel/plugin-transform-optional-chaining": "^7.23.4",
 		"@babel/polyfill": "7.12.1",
 		"@babel/preset-react": "7.23.3",
-		"@babel/preset-typescript": "7.23.2",
+		"@babel/preset-typescript": "7.23.3",
 		"@bartekbp/typescript-checkstyle": "5.0.0",
-		"@playwright/test": "^1.49.1",
+		"@playwright/test": "^1.50.1",
 		"@storybook/addon-a11y": "7.5.2",
 		"@storybook/addon-actions": "^7.6.4",
 		"@storybook/addon-docs": "^7.6.4",
@@ -148,12 +145,15 @@
 		"@types/react-dom": "18.0.10",
 		"@types/react-transition-group": "^4.4.10",
 		"@types/wordpress__block-editor": "6.0.6",
+		"@types/wordpress__block-library": "2.6.3",
 		"@types/wordpress__blocks": "11.0.9",
 		"@types/wordpress__components": "^23.0.10",
 		"@types/wordpress__core-data": "^2.4.5",
 		"@types/wordpress__data": "^6.0.2",
 		"@types/wordpress__data-controls": "2.2.0",
 		"@types/wordpress__editor": "^13.6.7",
+		"@types/wordpress__notices": "3.3.0",
+		"@types/wordpress__rich-text": "6.10.0",
 		"@types/wordpress__wordcount": "^2.4.5",
 		"@typescript-eslint/eslint-plugin": "5.56.0",
 		"@typescript-eslint/parser": "5.56.0",
@@ -165,8 +165,9 @@
 		"@wordpress/api-fetch": "6.21.0",
 		"@wordpress/babel-preset-default": "7.28.0",
 		"@wordpress/base-styles": "4.35.0",
-		"@wordpress/block-editor": "8.2.0",
-		"@wordpress/blocks": "11.1.5",
+		"@wordpress/block-editor": "wp-6.6",
+		"@wordpress/block-library": "wp-6.6",
+		"@wordpress/blocks": "wp-6.6",
 		"@wordpress/browserslist-config": "5.21.0",
 		"@wordpress/components": "19.17.0",
 		"@wordpress/core-data": "5.5.0",
@@ -176,18 +177,22 @@
 		"@wordpress/dom": "3.27.0",
 		"@wordpress/dom-ready": "3.27.0",
 		"@wordpress/e2e-test-utils": "10.12.0",
-		"@wordpress/e2e-test-utils-playwright": "wp-6.6",
+		"@wordpress/e2e-test-utils-playwright": "^1.15.0",
 		"@wordpress/e2e-tests": "^4.9.2",
 		"@wordpress/editor": "wp-6.7",
 		"@wordpress/element": "5.22.0",
-		"@wordpress/env": "10.14.0",
+		"@wordpress/env": "10.17.0",
+		"@wordpress/format-library": "wp-6.6",
 		"@wordpress/hooks": "wp-6.6",
 		"@wordpress/html-entities": "3.24.0",
 		"@wordpress/i18n": "4.45.0",
 		"@wordpress/is-shallow-equal": "4.24.0",
+		"@wordpress/jest-preset-default": "8.5.2",
 		"@wordpress/postcss-plugins-preset": "1.6.0",
 		"@wordpress/postcss-themes": "1.0.5",
 		"@wordpress/prettier-config": "1.4.0",
+		"@wordpress/private-apis": "1.16.0",
+		"@wordpress/rich-text": "wp-6.6",
 		"@wordpress/scripts": "30.6.0",
 		"@wordpress/stylelint-config": "^21.36.0",
 		"ajv-cli": "3.3.x",
@@ -217,7 +222,7 @@
 		"eslint-plugin-woocommerce": "file:bin/eslint-plugin-woocommerce",
 		"eslint-plugin-you-dont-need-lodash-underscore": "6.12.0",
 		"fs-extra": "11.1.1",
-		"gh-pages": "4.0.0",
+		"gh-pages": "5.0.0",
 		"github-label-sync": "^2.3.1",
 		"glob": "7.2.3",
 		"glob-promise": "4.2.2",
@@ -250,13 +255,13 @@
 		"storybook": "^7.6.4",
 		"storybook-addon-react-docgen": "1.2.44",
 		"stylelint": "^14.16.1",
-		"terser-webpack-plugin": "5.3.6",
+		"terser-webpack-plugin": "5.3.11",
 		"typescript": "5.7.x",
 		"utility-types": "3.10.0",
 		"webpack": "5.91.0",
 		"webpack-bundle-analyzer": "4.7.0",
 		"webpack-cli": "5.1.4",
-		"wireit": "0.14.3",
+		"wireit": "0.14.10",
 		"wordpress-data-wp-6-7": "npm:@wordpress/data@wp-6.7",
 		"wp-types": "3.63.0"
 	},
@@ -283,6 +288,9 @@
 		"@wordpress/style-engine": "^1.30.0",
 		"@wordpress/url": "3.13.0",
 		"@wordpress/wordcount": "3.47.0",
+		"ajv": "^8.17.1",
+		"ajv-errors": "^3.0.0",
+		"ajv-formats": "^3.0.1",
 		"change-case": "^4.1.2",
 		"check-password-strength": "^2.0.10",
 		"clsx": "^2.1.1",
@@ -360,7 +368,6 @@
 						"tests/js/**/*.{js,ts,tsx,scss,json}",
 						"tests/utils/**/.{js,ts,tsx,scss,json}"
 					],
-					"cascade": "test:js",
 					"events": [
 						"pull_request",
 						"push"
@@ -394,20 +401,11 @@
 			],
 			"output": [
 				"build",
-				"blocks.ini",
-				"!build/blocks-json.php"
+				"blocks.ini"
 			],
 			"dependencies": [
 				"dependencyOutputs"
 			]
-		},
-		"build:project:validate-blocks-manifests": {
-			"command": "npx ajv validate -s bin/block.json-validation-schema.json -d assets/js/**/block.json",
-			"clean": "if-file-deleted",
-			"files": [
-				"assets/js/**/block.json"
-			],
-			"output": []
 		},
 		"build:storybook": {
 			"command": "storybook build  -c ./storybook -o ./storybook/dist",
@@ -436,37 +434,23 @@
 			"command": "storybook dev  -c ./storybook -p 6006 --ci",
 			"service": true
 		},
-		"build:project:blocks-json-to-php": {
-			"command": "wp-scripts build-blocks-manifest --input=build --output=build/blocks-json.php",
-			"dependencies": [
-				"build:project:bundle",
-				"dependencyOutputs"
-			],
-			"files": [
-				"assets/js/blocks/**/block.json",
-				"build/**/block.json"
-			],
-			"output": [
-				"build/blocks-json.php"
-			]
-		},
 		"dependencyOutputs": {
 			"allowUsuallyExcludedPaths": true,
 			"files": [
-				"node_modules/@woocommerce/eslint-plugin/configs",
-				"node_modules/@woocommerce/eslint-plugin/rules",
-				"node_modules/@woocommerce/eslint-plugin/index.js",
-				"node_modules/@woocommerce/data/build",
-				"node_modules/@woocommerce/data/build-module",
-				"node_modules/@woocommerce/data/build-types",
+				"package.json",
+				"node_modules/@woocommerce/tracks/build",
+				"node_modules/@woocommerce/tracks/build-module",
+				"node_modules/@woocommerce/tracks/build-types",
 				"node_modules/@woocommerce/customer-effort-score/build",
 				"node_modules/@woocommerce/customer-effort-score/build-module",
 				"node_modules/@woocommerce/customer-effort-score/build-style",
 				"node_modules/@woocommerce/customer-effort-score/build-types",
-				"node_modules/@woocommerce/tracks/build",
-				"node_modules/@woocommerce/tracks/build-module",
-				"node_modules/@woocommerce/tracks/build-types",
-				"package.json"
+				"node_modules/@woocommerce/data/build",
+				"node_modules/@woocommerce/data/build-module",
+				"node_modules/@woocommerce/data/build-types",
+				"node_modules/@woocommerce/eslint-plugin/configs",
+				"node_modules/@woocommerce/eslint-plugin/rules",
+				"node_modules/@woocommerce/eslint-plugin/index.js"
 			]
 		}
 	}
