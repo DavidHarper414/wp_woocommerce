@@ -4,7 +4,15 @@
 import { store as noticesStore } from '@wordpress/notices';
 import deprecated from '@wordpress/deprecated';
 import type { BillingAddress, ShippingAddress } from '@woocommerce/settings';
-import { isObject, isString, objectHasProp } from '@woocommerce/types';
+import {
+	isObject,
+	isString,
+	objectHasProp,
+	ObserverResponse,
+	isErrorResponse,
+	isFailResponse,
+	isSuccessResponse,
+} from '@woocommerce/types';
 import type {
 	ActionCreatorsOf,
 	ConfigOf,
@@ -19,15 +27,11 @@ import { paymentStore } from '@woocommerce/block-data';
  */
 import {
 	emitEventWithAbort,
-	isErrorResponse,
-	isFailResponse,
-	isSuccessResponse,
 	noticeContexts,
-	ObserverResponse,
 } from '../../base/context/event-emit';
 import { EMIT_TYPES } from '../../base/context/providers/cart-checkout/payment-events/event-emit';
 import type { emitProcessingEventType } from './types';
-import { CART_STORE_KEY } from '../cart';
+import { store as cartStore } from '../cart';
 import {
 	isBillingAddress,
 	isShippingAddress,
@@ -143,7 +147,7 @@ export const __internalEmitPaymentProcessingEvent: emitProcessingEventType = (
 			} );
 
 			const { setBillingAddress, setShippingAddress } =
-				registry.dispatch( CART_STORE_KEY );
+				registry.dispatch( cartStore );
 
 			// Observer returned success, we sync the payment method data and billing address.
 			if ( isObserverResponse( successResponse ) && ! errorResponse ) {
