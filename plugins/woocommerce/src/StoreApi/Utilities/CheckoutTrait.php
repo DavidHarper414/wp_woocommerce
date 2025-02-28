@@ -210,9 +210,13 @@ trait CheckoutTrait {
 		if ( Features::is_enabled( 'experimental-blocks' ) ) {
 			$document_object = $this->get_document_object_from_rest_request( $request );
 			$document_object->set_context( 'order' );
-			$additional_fields = $this->additional_fields_controller->get_contextual_fields_for_location( 'order', $document_object );
+			$additional_fields_order   = $this->additional_fields_controller->get_contextual_fields_for_location( 'order', $document_object );
+			$additional_fields_contact = $this->additional_fields_controller->get_contextual_fields_for_location( 'contact', $document_object );
+			$additional_fields         = array_merge( $additional_fields_order, $additional_fields_contact );
 		} else {
-			$additional_fields = $this->additional_fields_controller->get_fields_for_location( 'order' );
+			$additional_fields_order   = $this->additional_fields_controller->get_fields_for_location( 'order' );
+			$additional_fields_contact = $this->additional_fields_controller->get_fields_for_location( 'contact' );
+			$additional_fields         = array_merge( $additional_fields_order, $additional_fields_contact );
 		}
 
 		$field_values = (array) $request['additional_fields'] ?? [];
