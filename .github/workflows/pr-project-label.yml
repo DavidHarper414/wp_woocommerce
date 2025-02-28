@@ -37,7 +37,7 @@ jobs:
 
           - name: Validate Trusted Execution
             run: |
-              if [[ ! "$GITHUB_REF" =~ refs/pull/.+/merge ]]; then
+              if [[ ! "$GITHUB_REF" =~ refs/pull/.+/merge && ! "$GITHUB_REF" =~ refs/heads/.+ ]]; then
                 echo "Error: Unexpected ref format ($GITHUB_REF). Exiting."
                 exit 1
               fi
