@@ -62,21 +62,11 @@ const scrollImageIntoView = ( imageId: string ) => {
 
 const productGallery = {
 	state: {
-		get isSelected() {
-			const { selectedImageNumber, imageIds, selectedImageId } =
-				getContext();
-			return (
-				selectedImageNumber === imageIds.indexOf( selectedImageId ) + 1
-			);
-		},
 		get imageIndex(): number {
 			const { imageIds, selectedImageId } = getContext();
 			return imageIds.indexOf( selectedImageId );
 		},
-		get thumbnailTabIndex(): string {
-			return state.isSelected ? '0' : '-1';
-		},
-		get visibleImageData() {
+		get processedImageData() {
 			// The thumbnail block preloads all required images into cache. Without thumbnails, only the first two images load initially,
 			// as users navigate one at a time, with more loading on interaction. If thumbnails later use smaller, separate images, this
 			// logic will need adjustment, as users could jump to an unloaded image by clicking a thumbnail.
@@ -85,12 +75,14 @@ const productGallery = {
 
 			return imageData.map( ( image, index ) => {
 				const isActive = selectedImageNumber === index + 1;
+				const tabIndex = isActive ? '0' : '-1';
 
 				if ( ! userHasInteracted && index >= 2 ) {
 					// Return a copy with empty src and srcSet for images beyond the first two
 					return {
 						...image,
 						isActive,
+						tabIndex,
 						src: '',
 						srcSet: '',
 					};
@@ -98,11 +90,16 @@ const productGallery = {
 				return {
 					...image,
 					isActive,
+					tabIndex,
 				};
 			} );
 		},
 	},
 	actions: {
+		userHasInteracted: () => {
+			const context = getContext();
+			context.userHasInteracted = true;
+		},
 		selectImage: ( newImageNumber: number ) => {
 			const context = getContext();
 
@@ -161,7 +158,7 @@ const productGallery = {
 		},
 		onSelectedLargeImageKeyDown: ( event: KeyboardEvent ) => {
 			if (
-				( state.isSelected && event.code === 'Enter' ) ||
+				event.code === 'Enter' ||
 				event.code === 'Space' ||
 				event.code === 'NumpadEnter'
 			) {

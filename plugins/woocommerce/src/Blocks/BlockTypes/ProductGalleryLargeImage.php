@@ -124,19 +124,19 @@ class ProductGalleryLargeImage extends AbstractBlock {
 		ob_start();
 		?>
 			<ul class="wc-block-product-gallery-large-image__container" tabindex="-1">
-				<template data-wp-each--largeimage="state.visibleImageData" data-wp-each-key="context.largeimage.id">
+				<template data-wp-each--image="state.processedImageData" data-wp-each-key="context.image.id">
 					<?php // No need to use wp_kses on $directives_html because this markup is built internally. ?>
 					<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<li class="wc-block-product-gallery-large-image__wrapper" <?php echo $directives_html; ?>>
 						<img
 							class="<?php echo esc_attr( $base_classes ); ?>"
-							data-wp-bind--src="context.largeimage.src"
-							data-wp-bind--srcset="context.largeimage.srcSet"
-							data-wp-bind--sizes="context.largeimage.sizes"
-							data-wp-bind--id="context.largeimage.id"
-							data-wp-bind--tabindex="state.thumbnailTabIndex"
+							data-wp-bind--src="context.image.src"
+							data-wp-bind--srcset="context.image.srcSet"
+							data-wp-bind--sizes="context.image.sizes"
+							data-wp-bind--id="context.image.id"
+							data-wp-bind--tabindex="context.image.tabIndex"
 							data-wp-on--keydown="actions.onSelectedLargeImageKeyDown"
-							data-wp-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="context.largeimage.isActive"
+							data-wp-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="context.image.isActive"
 							data-wp-on--touchstart="actions.onTouchStart"
 							data-wp-on--touchmove="actions.onTouchMove"
 							data-wp-on--touchend="actions.onTouchEnd"
