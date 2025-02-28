@@ -254,11 +254,7 @@ export function IframeEditor( {
 						<SecondarySidebar />
 						<BlockTools
 							className={ classNames(
-								'woocommerce-iframe-editor__content',
-								{
-									'old-fixed-toolbar-shown':
-										! inlineFixedBlockToolbar,
-								}
+								'woocommerce-iframe-editor__content'
 							) }
 							onClick={ (
 								event: React.MouseEvent<
