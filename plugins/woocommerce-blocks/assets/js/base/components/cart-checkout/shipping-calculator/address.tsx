@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import Button from '@woocommerce/base-components/button';
-import { useState } from '@wordpress/element';
+import { useState, useCallback } from '@wordpress/element';
 import isShallowEqual from '@wordpress/is-shallow-equal';
 import type { ShippingAddress, AddressForm } from '@woocommerce/settings';
 import { validationStore, cartStore } from '@woocommerce/block-data';
@@ -52,23 +52,25 @@ const ShippingCalculatorAddress = ( {
 		address.country
 	);
 
-	const hasRequiredFields = () => {
-		const requiredFields = formFields
-			.filter( ( field ) => field.required && ! field.hidden )
-			.map( ( field ) => field.key );
+	const hasRequiredFields = useCallback( () => {
+		for ( const field of formFields ) {
+			if ( field.required && ! field.hidden ) {
+				const value = address[ field.key ];
 
-		return requiredFields.every( ( field ) => {
-			const value = address[ field ];
+				if ( typeof value === 'string' ) {
+					if ( value.trim() === '' ) {
+						return false;
+					}
+					continue;
+				}
 
-			// In the CoreAddress type, additional fields can be boolean.
-			// TODO: You should find out, whether these additional fields need to be considered in this code.
-			if ( typeof value === 'string' ) {
-				return value.trim() !== '';
+				// TODO: Handle boolean fields if needed
+				// Currently, any non-string value fails validation
+				return false;
 			}
-
-			return false;
-		} );
-	};
+		}
+		return true;
+	}, [ formFields, address ] );
 
 	const validateSubmit = () => {
 		showAllValidationErrors();
