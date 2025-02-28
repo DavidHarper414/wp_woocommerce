@@ -19,7 +19,6 @@ import {
 	checkoutStore,
 	paymentStore,
 	validationStore,
-	cartStore,
 	processErrorResponse,
 	clearCheckoutPutRequests,
 } from '@woocommerce/block-data';
@@ -32,6 +31,7 @@ import {
 	CheckoutResponseSuccess,
 	CheckoutResponseError,
 	assertResponseIsValid,
+	responseTypes,
 } from '@woocommerce/types';
 import { checkoutEvents } from '@woocommerce/blocks-checkout-events';
 
@@ -41,6 +41,7 @@ import { checkoutEvents } from '@woocommerce/blocks-checkout-events';
 import { preparePaymentData, processCheckoutResponseHeaders } from './utils';
 import { useShippingDataContext } from './shipping';
 import { useStoreCart } from '../../hooks/cart/use-store-cart';
+import { useCheckoutAddress } from '../../hooks/use-checkout-address';
 
 /**
  * CheckoutProcessor component.
@@ -62,7 +63,6 @@ const CheckoutProcessor = () => {
 		orderNotes,
 		redirectUrl,
 		shouldCreateAccount,
-		prefersCollection,
 	} = useSelect( ( select ) => {
 		const store = select( checkoutStore );
 		return {
@@ -77,21 +77,20 @@ const CheckoutProcessor = () => {
 			orderNotes: store.getOrderNotes(),
 			redirectUrl: store.getRedirectUrl(),
 			shouldCreateAccount: store.getShouldCreateAccount(),
-			prefersCollection: store.prefersCollection(),
 		};
-	} );
+	}, [] );
 
 	const { __internalSetHasError, __internalProcessCheckoutResponse } =
 		useDispatch( checkoutStore );
 
 	const hasValidationErrors = useSelect(
-		( select ) => select( validationStore ).hasValidationErrors
+		( select ) => select( validationStore ).hasValidationErrors,
+		[]
 	);
 	const { shippingErrorStatus } = useShippingDataContext();
 
-	const { billingAddress, shippingAddress } = useSelect( ( select ) =>
-		select( cartStore ).getCustomerData()
-	);
+	const { shippingAddress, billingAddress, useBillingAsShipping } =
+		useCheckoutAddress();
 
 	const { cartNeedsPayment, cartNeedsShipping, receiveCartContents } =
 		useStoreCart();
@@ -176,6 +175,7 @@ const CheckoutProcessor = () => {
 				) !== undefined
 			) {
 				return {
+					type: responseTypes.ERROR,
 					errorMessage: __(
 						'Sorry, this order requires a shipping option.',
 						'woocommerce'
@@ -186,6 +186,7 @@ const CheckoutProcessor = () => {
 		}
 		if ( hasPaymentError ) {
 			return {
+				type: responseTypes.ERROR,
 				errorMessage: __(
 					'There was a problem with your payment option.',
 					'woocommerce'
@@ -195,6 +196,7 @@ const CheckoutProcessor = () => {
 		}
 		if ( shippingErrorStatus.hasError ) {
 			return {
+				type: responseTypes.ERROR,
 				errorMessage: __(
 					'There was a problem with your shipping option.',
 					'woocommerce'
@@ -255,21 +257,23 @@ const CheckoutProcessor = () => {
 			  }
 			: {};
 
+		const billingAddressData = emptyHiddenAddressFields(
+			currentBillingAddress.current
+		);
+
+		const shippingAddressData = useBillingAsShipping
+			? billingAddressData
+			: emptyHiddenAddressFields( currentShippingAddress.current );
+
 		const data = {
 			additional_fields: additionalFields,
-			billing_address: emptyHiddenAddressFields(
-				currentBillingAddress.current
-			),
+			billing_address: billingAddressData,
 			create_account: shouldCreateAccount,
 			customer_note: orderNotes,
 			customer_password: customerPassword,
 			extensions: { ...extensionData },
 			shipping_address: cartNeedsShipping
-				? emptyHiddenAddressFields(
-						!! prefersCollection
-							? currentBillingAddress.current
-							: currentShippingAddress.current
-				  )
+				? shippingAddressData
 				: undefined,
 			...paymentData,
 		};
@@ -352,6 +356,7 @@ const CheckoutProcessor = () => {
 		receiveCartContents,
 		__internalSetHasError,
 		__internalProcessCheckoutResponse,
+		useBillingAsShipping,
 	] );
 
 	// Process order if conditions are good.
