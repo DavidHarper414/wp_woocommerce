@@ -10,4 +10,9 @@
 	@import "node_modules/wordpress-components/src/tooltip/style";
 	@import "node_modules/wordpress-components/src/form-token-field/style";
 	/* stylelint-enable no-invalid-position-at-import-rule */
+
+	// Override WordPress components form-token-field style to fix Dart Sass division deprecation
+	.components-form-token-field__token {
+		padding: calc($grid-unit-05 / 2) $grid-unit-05;
+	}
 }

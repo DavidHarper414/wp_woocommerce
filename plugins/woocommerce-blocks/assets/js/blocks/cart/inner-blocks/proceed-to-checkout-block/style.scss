@@ -39,7 +39,8 @@
 	}
 }
 
-@include breakpoint(">=782px") {
+// Setting the breakpoint to 781px, as the breakpoint mixin does not support >=.
+@include breakpoint(">781px") {
 	.wc-block-cart .wc-block-cart__submit-container--sticky {
 		display: none;
 	}
