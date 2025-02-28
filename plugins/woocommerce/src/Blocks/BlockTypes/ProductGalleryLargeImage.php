@@ -74,6 +74,8 @@ class ProductGalleryLargeImage extends AbstractBlock {
 		$images_html = $this->get_main_images_html( $block->context, $post_id );
 		wp_enqueue_script_module( $this->get_full_block_name() );
 
+		$allowed_html = $this->get_allowed_directives_html();
+
 		$processor = new \WP_HTML_Tag_Processor( $content );
 		$processor->next_tag();
 		$processor->remove_class( 'wp-block-woocommerce-product-gallery-large-image' );
@@ -82,10 +84,8 @@ class ProductGalleryLargeImage extends AbstractBlock {
 		ob_start();
 		?>
 			<div class="wc-block-product-gallery-large-image wp-block-woocommerce-product-gallery-large-image">
-				<ul class="wc-block-product-gallery-large-image__container" tabindex="-1">
-					<?php echo $images_html; ?>
-				</ul>
-				<?php echo $content; ?>
+				<?php echo wp_kses( $images_html, $allowed_html ); ?>
+				<?php echo wp_kses( $content, $allowed_html ); ?>
 			</div>
 		<?php
 		$html = ob_get_clean();
@@ -102,6 +102,7 @@ class ProductGalleryLargeImage extends AbstractBlock {
 	 */
 	private function get_main_images_html( $context ) {
 		$base_classes = 'wc-block-woocommerce-product-gallery-large-image__image';
+		$allowed_html = $this->get_allowed_directives_html();
 
 		$directives      = $this->get_directives( $context );
 		$directives_html = array_reduce(
@@ -121,24 +122,26 @@ class ProductGalleryLargeImage extends AbstractBlock {
 
 		ob_start();
 		?>
-			<template data-wp-each--largeimage="state.visibleImageData" data-wp-each-key="context.largeimage.id">
-				<li class="wc-block-product-gallery-large-image__wrapper" <?php echo $directives_html; ?>>
-					<img
-						class="<?php echo esc_attr( $base_classes ); ?>"
-						data-wp-bind--src="context.largeimage.src"
-						data-wp-bind--srcset="context.largeimage.srcSet"
-						data-wp-bind--sizes="context.largeimage.sizes"
-						data-wp-bind--id="context.largeimage.id"
-						data-wp-bind--tabindex="state.thumbnailTabIndex"
-						data-wp-on--keydown="actions.onSelectedLargeImageKeyDown"
-						data-wp-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="context.largeimage.isActive"
-						data-wp-on--touchstart="actions.onTouchStart"
-						data-wp-on--touchmove="actions.onTouchMove"
-						data-wp-on--touchend="actions.onTouchEnd"
-						alt=""
-					/>
-				</li>
-			</template>
+			<ul class="wc-block-product-gallery-large-image__container" tabindex="-1">
+				<template data-wp-each--largeimage="state.visibleImageData" data-wp-each-key="context.largeimage.id">
+					<li class="wc-block-product-gallery-large-image__wrapper" <?php echo wp_kses( $directives_html, $allowed_html ); ?>>
+						<img
+							class="<?php echo esc_attr( $base_classes ); ?>"
+							data-wp-bind--src="context.largeimage.src"
+							data-wp-bind--srcset="context.largeimage.srcSet"
+							data-wp-bind--sizes="context.largeimage.sizes"
+							data-wp-bind--id="context.largeimage.id"
+							data-wp-bind--tabindex="state.thumbnailTabIndex"
+							data-wp-on--keydown="actions.onSelectedLargeImageKeyDown"
+							data-wp-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="context.largeimage.isActive"
+							data-wp-on--touchstart="actions.onTouchStart"
+							data-wp-on--touchmove="actions.onTouchMove"
+							data-wp-on--touchend="actions.onTouchEnd"
+							alt=""
+						/>
+					</li>
+				</template>
+			</ul>
 		<?php
 		$template = ob_get_clean();
 
@@ -204,5 +207,52 @@ class ProductGalleryLargeImage extends AbstractBlock {
 	 */
 	protected function get_block_type_script( $key = null ) {
 		return null;
+	}
+
+	/**
+	 * Returns an array of allowed HTML for wp_kses that includes directives.
+	 *
+	 * @return array
+	 */
+	private function get_allowed_directives_html() {
+		// Get the default allowed HTML.
+		$allowed_post_html  = wp_kses_allowed_html( 'post' );
+		$allowed_image_html = wp_kses_allowed_html( 'img' );
+
+		$allowed_html = array_merge( $allowed_post_html, $allowed_image_html );
+
+		// Add the directives as allowed attributes for all elements.
+		$directive_attributes = array(
+			'data-wp-interactive'      => true,
+			'data-wp-on--mousemove'    => true,
+			'data-wp-on--mouseleave'   => true,
+			'data-wp-on--click'        => true,
+			'data-wp-each--largeimage' => true,
+			'data-wp-each-key'         => true,
+			'data-wp-bind--src'        => true,
+			'data-wp-bind--srcset'     => true,
+			'data-wp-bind--sizes'      => true,
+			'data-wp-bind--id'         => true,
+			'data-wp-bind--tabindex'   => true,
+			'data-wp-on--keydown'      => true,
+			'data-wp-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide' => true,
+			'data-wp-on--touchstart'   => true,
+			'data-wp-on--touchmove'    => true,
+			'data-wp-on--touchend'     => true,
+			'data-wp-context'          => true,
+		);
+
+		// Make sure template element is allowed.
+		$allowed_html['template'] = array_merge(
+			isset( $allowed_html['template'] ) ? $allowed_html['template'] : array(),
+			$directive_attributes
+		);
+
+		// Apply these attributes to all allowed elements.
+		foreach ( $allowed_html as $tag => $attributes ) {
+			$allowed_html[ $tag ] = array_merge( $attributes, $directive_attributes );
+		}
+
+		return $allowed_html;
 	}
 }
