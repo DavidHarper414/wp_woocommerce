@@ -2,8 +2,6 @@
  * External dependencies
  */
 import type {
-	AddressFormValues,
-	ContactFormValues,
 	FormFields,
 	FormType,
 	KeyedFormField,
