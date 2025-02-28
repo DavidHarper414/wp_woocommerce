@@ -175,11 +175,11 @@ function wc_delete_product_transients( $post_id = 0 ) {
 }
 
 /**
- * Asynchronously delete related product transients when a product is changed.
- * This is necessary because changing one product might affect many related products.
+ * Delete all related products transients when a product is updated/created.
+ * This is necessary because changing one product affects all related products too.
  *
  * @since 9.8.0
- * @param array $post_id Arguments passed from the async scheduler.
+ * @param int $post_id The product ID updated/created.
  */
 function wc_delete_related_product_transients( $post_id ) {
 	global $wpdb;
