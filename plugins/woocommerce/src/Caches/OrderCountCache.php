@@ -4,7 +4,6 @@ declare( strict_types=1 );
 
 namespace Automattic\WooCommerce\Caches;
 
-use Automattic\WooCommerce\Caching\CacheException;
 use Automattic\WooCommerce\Caching\ObjectCache;
 use Automattic\WooCommerce\Enums\OrderStatus;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
@@ -42,7 +41,7 @@ class OrderCountCache {
 		$invalid_statuses = array_diff( $statuses, $valid_statuses );
 
 		if ( ! empty( $invalid_statuses ) ) {
-			throw new CacheException( sprintf( __( '%s is not one of: %s', 'woocommerce' ), implode( ', ', $invalid_statuses ), implode( ', ', $valid_statuses ) ) );
+			throw new \Exception( sprintf( __( '%s is not one of: %s', 'woocommerce' ), implode( ', ', $invalid_statuses ), implode( ', ', $valid_statuses ) ) );
 		}
 	}
 
@@ -167,5 +166,24 @@ class OrderCountCache {
 		$this->validate( array( $order_status ) );
 		$cache_key = $this->get_cache_key( $order_type, $order_status );
 		return wp_cache_decr( $cache_key, $offset );
+	}
+
+	/**
+	 * Flush the cache for a given order type and statuses.
+	 *
+	 * @param string $order_type The type of order.
+	 * @param string[] $order_statuses The statuses of the order.
+	 * @return void
+	 */
+	public function flush( $order_type = 'shop_order', $order_statuses = array() ) {
+		if ( empty( $order_statuses ) ) {
+			$order_statuses = $this->get_default_statuses();
+		}
+
+		$cache_keys = array_map( function( $order_statuses ) use ( $order_type ) {
+			return $this->get_cache_key( $order_type, $order_statuses );
+		}, $order_statuses );
+
+		wp_cache_delete_multiple( $cache_keys );
 	}
 }

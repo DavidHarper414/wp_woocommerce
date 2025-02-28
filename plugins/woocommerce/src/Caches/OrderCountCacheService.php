@@ -71,11 +71,11 @@ class OrderCountCacheService {
 	 * @param WC_Order $order The order.
 	 */
 	public function update_on_order_deleted( $order_id, $order ) {
-		if ( ! $this->order_count_cache->is_cached( $order->get_type(), OrderStatus::TRASH ) ) {
+		if ( ! $this->order_count_cache->is_cached( $order->get_type(), $this->get_prefixed_status( $order->get_status() ) ) ) {
 			return;
 		}
 
-		$this->order_count_cache->decrement( $order->get_type(), OrderStatus::TRASH );
+		$this->order_count_cache->decrement( $order->get_type(), $this->get_prefixed_status( $order->get_status() ) );
 	}
 
 	/**
