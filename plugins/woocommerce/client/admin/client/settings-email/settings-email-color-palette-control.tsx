@@ -89,6 +89,7 @@ export const ResetStylesControl: React.FC< ResetStylesControlProps > = ( {
 					) }
 					checked={ isAutoSyncEnabled }
 					onChange={ handleAutoSyncToggle }
+					className="wc-settings-email-color-palette-auto-sync"
 				/>
 			) }
 			{ isResetShown && (

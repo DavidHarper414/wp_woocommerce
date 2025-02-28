@@ -40,6 +40,13 @@ test.describe( 'Email Style Sync', () => {
 		await setFeatureFlag( baseURL, 'yes' );
 		// Ensure auto-sync is disabled by default
 		await setAutoSyncFlag( baseURL, 'no' );
+		// Ensure color palette is not synced with theme
+		await setOption(
+			request,
+			baseURL,
+			'woocommerce_email_base_color',
+			'#123456'
+		);
 	} );
 
 	test.afterAll( async ( { baseURL } ) => {
@@ -54,12 +61,18 @@ test.describe( 'Email Style Sync', () => {
 		// Navigate to WooCommerce email settings
 		await page.goto( 'wp-admin/admin.php?page=wc-settings&tab=email' );
 
-		// Then find the auto-sync toggle below it
 		const autoSyncToggle = page.locator(
 			'.wc-settings-email-color-palette-auto-sync input[type="checkbox"]'
 		);
 
+		// Auto-sync is not available when theme is not in sync
+		await expect( autoSyncToggle ).toBeHidden();
+
+		// Sync color palette with theme
+		await page.getByRole( 'button', { name: 'Sync with theme' } ).click();
+
 		// Check initial state (should be disabled by default)
+		await expect( autoSyncToggle ).toBeVisible();
 		await expect( autoSyncToggle ).not.toBeChecked();
 
 		// Toggle it on
@@ -71,11 +84,17 @@ test.describe( 'Email Style Sync', () => {
 
 		// Reload page and check if setting persisted
 		await page.reload();
+		await expect( autoSyncToggle ).toBeVisible();
 		await expect( autoSyncToggle ).toBeChecked();
 
 		// Toggle it back off
 		await autoSyncToggle.click();
 		await expect( autoSyncToggle ).not.toBeChecked();
+
+		// Change any color to check that auto-sync is hidden
+		await page.locator( '#woocommerce_email_base_color' ).fill( '#123456' );
+		await page.locator( '#woocommerce_email_base_color' ).blur();
+		await expect( autoSyncToggle ).toBeHidden();
 
 		// Save settings
 		await page.locator( 'button.woocommerce-save-button' ).click();
