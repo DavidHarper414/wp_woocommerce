@@ -12,7 +12,7 @@ import {
 	usePaymentMethodInterface,
 	useStoreEvents,
 } from '@woocommerce/base-context/hooks';
-import { PAYMENT_STORE_KEY } from '@woocommerce/block-data';
+import { paymentStore } from '@woocommerce/block-data';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { getPaymentMethods } from '@woocommerce/blocks-registry';
 import { isNull } from '@woocommerce/types';
@@ -69,22 +69,16 @@ const getDefaultLabel = ( {
 };
 
 const SavedPaymentMethodOptions = () => {
-	const {
-		activeSavedToken,
-		activePaymentMethod,
-		savedPaymentMethods,
-		paymentMethodsInitialized,
-	} = useSelect( ( select ) => {
-		const store = select( PAYMENT_STORE_KEY );
-		return {
-			activeSavedToken: store.getActiveSavedToken(),
-			activePaymentMethod: store.getActivePaymentMethod(),
-			savedPaymentMethods: store.getSavedPaymentMethods(),
-			paymentMethodsInitialized: store.paymentMethodsInitialized(),
-		};
-	} );
-	const { __internalSetActivePaymentMethod } =
-		useDispatch( PAYMENT_STORE_KEY );
+	const { activeSavedToken, activePaymentMethod, savedPaymentMethods } =
+		useSelect( ( select ) => {
+			const store = select( paymentStore );
+			return {
+				activeSavedToken: store.getActiveSavedToken(),
+				activePaymentMethod: store.getActivePaymentMethod(),
+				savedPaymentMethods: store.getSavedPaymentMethods(),
+			};
+		} );
+	const { __internalSetActivePaymentMethod } = useDispatch( paymentStore );
 	const canMakePaymentArg = getCanMakePaymentArg();
 	const paymentMethods = getPaymentMethods();
 	const paymentMethodInterface = usePaymentMethodInterface();
@@ -158,7 +152,6 @@ const SavedPaymentMethodOptions = () => {
 		dispatchCheckoutEvent,
 		canMakePaymentArg,
 	] );
-
 	const savedPaymentMethodHandler =
 		!! activeSavedToken &&
 		paymentMethods[ activePaymentMethod ] &&
@@ -173,16 +166,12 @@ const SavedPaymentMethodOptions = () => {
 			  )
 			: null;
 
-	const selected = paymentMethodsInitialized
-		? activeSavedToken
-		: options[ 0 ].value;
-
 	return options.length > 0 ? (
 		<>
 			<RadioControl
 				highlightChecked={ true }
 				id={ 'wc-payment-method-saved-tokens' }
-				selected={ selected }
+				selected={ activeSavedToken }
 				options={ options }
 				onChange={ () => void 0 }
 			/>

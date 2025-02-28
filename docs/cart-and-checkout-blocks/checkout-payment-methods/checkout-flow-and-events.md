@@ -41,11 +41,11 @@ You can use them in your component like so
 
 ```jsx
 const { useSelect } = window.wp.data;
-const { CHECKOUT_STORE_KEY } = window.wc.wcBlocksData;
+const { checkoutStore } = window.wc.wcBlocksData;
 
 const MyComponent = ( props ) => {
 	const isComplete = useSelect( ( select ) =>
-		select( CHECKOUT_STORE_KEY ).isComplete()
+		select( checkoutStore ).isComplete()
 	);
 	// do something with isComplete
 };
@@ -89,16 +89,16 @@ The status of the payment lives in the payment data store. You can query the sta
 
 ```jsx
 const { select } = window.wp.data;
-const { PAYMENT_STORE_KEY } = window.wc.wcBlocksData;
+const { paymentStore } = window.wc.wcBlocksData;
 
 const MyComponent = ( props ) => {
-	const isPaymentIdle = select( PAYMENT_STORE_KEY ).isPaymentIdle();
+	const isPaymentIdle = select( paymentStore ).isPaymentIdle();
 	const isExpressPaymentStarted =
-		select( PAYMENT_STORE_KEY ).isExpressPaymentStarted();
+		select( paymentStore ).isExpressPaymentStarted();
 	const isPaymentProcessing =
-		select( PAYMENT_STORE_KEY ).isPaymentProcessing();
-	const isPaymentReady = select( PAYMENT_STORE_KEY ).isPaymentReady();
-	const hasPaymentError = select( PAYMENT_STORE_KEY ).hasPaymentError();
+		select( paymentStore ).isPaymentProcessing();
+	const isPaymentReady = select( paymentStore ).isPaymentReady();
+	const hasPaymentError = select( paymentStore ).hasPaymentError();
 
 	// do something with the boolean values
 };
@@ -161,14 +161,15 @@ There are a bunch of utility methods that can be used related to events. These a
 
 ```jsx
 import {
-	isSuccessResponse,
-	isErrorResponse,
-	isFailResponse,
-	noticeContexts,
-	responseTypes,
-	shouldRetry,
+  noticeContexts,
+  responseTypes,
+  shouldRetry,
 } from '@woocommerce/base-context';
-};
+import {
+  isSuccessResponse,
+  isErrorResponse,
+  isFailResponse,
+} from '@woocommerce/types';
 ```
 
 The helper functions are described below:
@@ -233,6 +234,17 @@ const PaymentMethodComponent = ( { eventRegistration } ) => {
 		return unsubscribe;
 	}, [ onCheckoutValidation ] );
 };
+```
+
+_For anything else:_
+
+```jsx
+const { onCheckoutValidation } = wc.blocksCheckoutEvents;
+
+useEffect( () => {
+  const unsubscribe = onCheckoutValidation( () => true );
+  return unsubscribe;
+}, [ onCheckoutValidation ] );
 ```
 
 ### ~~`onPaymentProcessing`~~
@@ -402,6 +414,17 @@ const PaymentMethodComponent = ( { eventRegistration } ) => {
 };
 ```
 
+_For anything else:_
+
+```jsx
+const { onCheckoutSuccess } = wc.blocksCheckoutEvents;
+
+useEffect( () => {
+  const unsubscribe = onCheckoutSuccess( () => true );
+  return unsubscribe;
+}, [ onCheckoutSuccess ] );
+```
+
 ### `onCheckoutFail`
 
 This event emitter is fired when the checkout status is `AFTER_PROCESSING` and the checkout `hasError` state is `true`. The `AFTER_PROCESSING` status is set by the `CheckoutProcessor` component after receiving a response from the server for the checkout processing request.
@@ -442,6 +465,17 @@ const PaymentMethodComponent = ( { eventRegistration } ) => {
 		return unsubscribe;
 	}, [ onCheckoutFail ] );
 };
+```
+
+_For anything else:_
+
+```jsx
+const { onCheckoutFail } = wc.blocksCheckoutEvents;
+
+useEffect( () => {
+  const unsubscribe = onCheckoutFail( () => true );
+  return unsubscribe;
+}, [ onCheckoutFail ] );
 ```
 
 ### `onShippingRateSuccess`

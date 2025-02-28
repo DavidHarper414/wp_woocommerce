@@ -5,8 +5,6 @@ import {
 	CanMakePaymentArgument,
 	ExpressPaymentMethodConfigInstance,
 	PaymentMethodConfigInstance,
-	PlainExpressPaymentMethods,
-	PlainPaymentMethods,
 } from '@woocommerce/types';
 import { CURRENT_USER_IS_ADMIN, getSetting } from '@woocommerce/settings';
 import { dispatch, select } from '@wordpress/data';
@@ -20,12 +18,19 @@ import {
 	getPaymentMethods,
 } from '@woocommerce/blocks-registry';
 import { previewCart } from '@woocommerce/resource-previews';
+import {
+	ActionCreatorsOf,
+	ConfigOf,
+	CurriedSelectorsOf,
+} from '@wordpress/data/build-types/types';
 
 /**
  * Internal dependencies
  */
 import { STORE_KEY as CART_STORE_KEY } from '../../cart/constants';
 import { STORE_KEY as PAYMENT_STORE_KEY } from '../constants';
+import type { PaymentStoreDescriptor } from '../index';
+import type { CartStoreDescriptor } from '../../cart';
 import { noticeContexts } from '../../../base/context/event-emit';
 import {
 	EMPTY_CART_ERRORS,
@@ -42,10 +47,13 @@ export const getCanMakePaymentArg = (): CanMakePaymentArgument => {
 	let canPayArgument: CanMakePaymentArgument;
 
 	if ( ! isEditor ) {
-		const store = select( CART_STORE_KEY );
+		const store = select(
+			CART_STORE_KEY
+		) as CurriedSelectorsOf< CartStoreDescriptor >;
 		const cart = store.getCartData();
 		const cartErrors = store.getCartErrors();
 		const cartTotals = store.getCartTotals();
+		// @ts-expect-error `hasFinishedResolution` is not typed in @wordpress/data yet.
 		const cartIsLoading = ! store.hasFinishedResolution( 'getCartData' );
 		const isLoadingRates = store.isCustomerDataUpdating();
 		const selectedShippingMethods = deriveSelectedShippingRates(
@@ -73,7 +81,11 @@ export const getCanMakePaymentArg = (): CanMakePaymentArgument => {
 			isLoadingRates,
 			cartHasCalculatedShipping: cart.hasCalculatedShipping,
 			paymentRequirements: cart.paymentRequirements,
-			receiveCart: dispatch( CART_STORE_KEY ).receiveCart,
+			receiveCart: (
+				dispatch( CART_STORE_KEY ) as ActionCreatorsOf<
+					ConfigOf< CartStoreDescriptor >
+				>
+			 ).receiveCart,
 		};
 		canPayArgument = {
 			cart: cartForCanPayArgument,
@@ -153,23 +165,8 @@ const registrationErrorNotice = (
 	} );
 };
 
-const compareAvailablePaymentMethods = (
-	paymentMethods: PlainPaymentMethods | PlainExpressPaymentMethods,
-	availablePaymentMethods: PlainPaymentMethods | PlainExpressPaymentMethods
-) => {
-	const compareKeys1 = Object.keys( paymentMethods );
-	const compareKeys2 = Object.keys( availablePaymentMethods );
-
-	return (
-		compareKeys1.length === compareKeys2.length &&
-		compareKeys1.every( ( current ) => compareKeys2.includes( current ) )
-	);
-};
-
 export const checkPaymentMethodsCanPay = async ( express = false ) => {
-	const availablePaymentMethods:
-		| PlainPaymentMethods
-		| PlainExpressPaymentMethods = {};
+	let availablePaymentMethods = {};
 
 	const paymentMethods = express
 		? getExpressPaymentMethods()
@@ -184,24 +181,30 @@ export const checkPaymentMethodsCanPay = async ( express = false ) => {
 			const { name, title, description, gatewayId, supports } =
 				paymentMethod as ExpressPaymentMethodConfigInstance;
 
-			availablePaymentMethods[ name ] = {
-				name,
-				title,
-				description,
-				gatewayId,
-				supportsStyle: supports?.style || [],
+			availablePaymentMethods = {
+				...availablePaymentMethods,
+				[ paymentMethod.name ]: {
+					name,
+					title,
+					description,
+					gatewayId,
+					supportsStyle: supports?.style,
+				},
 			};
 		} else {
 			const { name } = paymentMethod as PaymentMethodConfigInstance;
 
-			availablePaymentMethods[ name ] = {
-				name,
+			availablePaymentMethods = {
+				...availablePaymentMethods,
+				[ paymentMethod.name ]: {
+					name,
+				},
 			};
 		}
 	};
 
 	// Order payment methods.
-	const sortedPaymentMethods = express
+	const paymentMethodsOrder = express
 		? Object.keys( paymentMethods )
 		: Array.from(
 				new Set( [
@@ -213,9 +216,9 @@ export const checkPaymentMethodsCanPay = async ( express = false ) => {
 	const cartPaymentMethods = canPayArgument.paymentMethods as string[];
 	const isEditor = !! select( 'core/editor' );
 
-	for ( let i = 0; i < sortedPaymentMethods.length; i++ ) {
-		const paymentMethodName = sortedPaymentMethods[ i ];
-		const paymentMethod = paymentMethods[ paymentMethodName ] || {};
+	for ( let i = 0; i < paymentMethodsOrder.length; i++ ) {
+		const paymentMethodName = paymentMethodsOrder[ i ];
+		const paymentMethod = paymentMethods[ paymentMethodName ];
 
 		if ( ! paymentMethod ) {
 			continue;
@@ -235,7 +238,7 @@ export const checkPaymentMethodsCanPay = async ( express = false ) => {
 				  ) );
 
 			if ( canPay ) {
-				if ( typeof canPay === 'object' && canPay?.error ) {
+				if ( typeof canPay === 'object' && canPay.error ) {
 					throw new Error( canPay.error.message );
 				}
 				addAvailablePaymentMethod( paymentMethod );
@@ -247,31 +250,37 @@ export const checkPaymentMethodsCanPay = async ( express = false ) => {
 		}
 	}
 
-	const currentPaymentMethods = express
-		? select( PAYMENT_STORE_KEY ).getAvailableExpressPaymentMethods()
-		: select( PAYMENT_STORE_KEY ).getAvailablePaymentMethods();
+	const paymentSelectors = select(
+		PAYMENT_STORE_KEY
+	) as CurriedSelectorsOf< PaymentStoreDescriptor >;
+
+	const availablePaymentMethodNames = Object.keys( availablePaymentMethods );
+	const currentlyAvailablePaymentMethods = express
+		? paymentSelectors.getAvailableExpressPaymentMethods()
+		: paymentSelectors.getAvailablePaymentMethods();
 
 	if (
-		! compareAvailablePaymentMethods(
-			availablePaymentMethods,
-			currentPaymentMethods
+		Object.keys( currentlyAvailablePaymentMethods ).length ===
+			availablePaymentMethodNames.length &&
+		Object.keys( currentlyAvailablePaymentMethods ).every( ( current ) =>
+			availablePaymentMethodNames.includes( current )
 		)
 	) {
-		const {
-			__internalSetAvailablePaymentMethods,
-			__internalSetAvailableExpressPaymentMethods,
-		} = dispatch( PAYMENT_STORE_KEY );
-
-		if ( express ) {
-			__internalSetAvailableExpressPaymentMethods(
-				availablePaymentMethods as PlainExpressPaymentMethods
-			);
-		} else {
-			__internalSetAvailablePaymentMethods(
-				availablePaymentMethods as PlainPaymentMethods
-			);
-		}
+		// All the names are the same, no need to dispatch more actions.
+		return true;
 	}
 
+	const {
+		__internalSetAvailablePaymentMethods,
+		__internalSetAvailableExpressPaymentMethods,
+	} = dispatch( PAYMENT_STORE_KEY ) as ActionCreatorsOf<
+		ConfigOf< PaymentStoreDescriptor >
+	>;
+
+	const setCallback = express
+		? __internalSetAvailableExpressPaymentMethods
+		: __internalSetAvailablePaymentMethods;
+
+	setCallback( availablePaymentMethods );
 	return true;
 };

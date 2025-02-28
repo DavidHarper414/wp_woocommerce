@@ -9,9 +9,10 @@ import {
 	objectHasProp,
 	isString,
 } from '@woocommerce/types';
-import { FormFieldsConfig, getSetting } from '@woocommerce/settings';
+import { getSetting } from '@woocommerce/settings';
 import { formatAddress } from '@woocommerce/blocks/checkout/utils';
 import { Button } from '@ariakit/react';
+import { decodeEntities } from '@wordpress/html-entities';
 
 /**
  * Internal dependencies
@@ -22,13 +23,11 @@ const AddressCard = ( {
 	address,
 	onEdit,
 	target,
-	fieldConfig,
 	isExpanded,
 }: {
 	address: CartShippingAddress | CartBillingAddress;
 	onEdit: () => void;
 	target: string;
-	fieldConfig: FormFieldsConfig;
 	isExpanded: boolean;
 } ): JSX.Element | null => {
 	const countryData = getSetting< Record< string, CountryData > >(
@@ -62,16 +61,18 @@ const AddressCard = ( {
 		<div className="wc-block-components-address-card">
 			<address>
 				<span className="wc-block-components-address-card__address-section">
-					{ formattedName }
+					{ decodeEntities( formattedName ) }
 				</span>
 				<div className="wc-block-components-address-card__address-section">
 					{ formattedAddress
 						.filter( ( field ) => !! field )
 						.map( ( field, index ) => (
-							<span key={ `address-` + index }>{ field }</span>
+							<span key={ `address-` + index }>
+								{ decodeEntities( field ) }
+							</span>
 						) ) }
 				</div>
-				{ address.phone && ! fieldConfig.phone.hidden ? (
+				{ address.phone ? (
 					<div
 						key={ `address-phone` }
 						className="wc-block-components-address-card__address-section"

@@ -18,8 +18,7 @@ import { getSettingWithCoercion } from '@woocommerce/settings';
 import { isBoolean } from '@woocommerce/types';
 import { useState, useMemo, useEffect } from '@wordpress/element';
 import { withSpokenMessages } from '@wordpress/components';
-import type { BlockEditProps } from '@wordpress/blocks';
-import type { WCStoreV1ProductsCollectionProps } from '@woocommerce/blocks/product-collection/types';
+import type { BlockEditProps, TemplateArray } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
@@ -27,16 +26,15 @@ import type { WCStoreV1ProductsCollectionProps } from '@woocommerce/blocks/produ
 import { previewOptions } from './preview';
 import { getActiveFilters } from './utils';
 import { Inspector } from './components/inspector';
-import { getAllowedBlocks } from '../../utils';
+import { getAllowedBlocks } from '../../utils/get-allowed-blocks';
 import { EXCLUDED_BLOCKS } from '../../constants';
 import { Notice } from '../../components/notice';
 import type { Attributes } from './types';
 import './style.scss';
 import { InitialDisabled } from '../../components/initial-disabled';
-import { useProductFilterClearButtonManager } from '../../hooks/use-product-filter-clear-button-manager';
 
 const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
-	const { attributes, setAttributes } = props;
+	const { attributes, setAttributes, clientId } = props;
 
 	const { isPreview, showCounts, minRating } = attributes;
 
@@ -65,37 +63,21 @@ const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 						[
 							'core/heading',
 							{
-								level: 3,
+								level: 4,
 								content: __( 'Rating', 'woocommerce' ),
 							},
 						],
-						[
-							'woocommerce/product-filter-clear-button',
-							{
-								lock: {
-									remove: true,
-									move: false,
-								},
-							},
-						],
-					],
+					].filter( Boolean ) as unknown as TemplateArray,
 				],
-				[
-					'woocommerce/product-filter-checkbox-list',
-					{
-						lock: {
-							remove: true,
-						},
-					},
-				],
+				[ 'woocommerce/product-filter-checkbox-list' ],
 			],
 		}
 	);
 
 	const [ queryState ] = useQueryStateByContext();
 
-	const { results: collectionFilters, isLoading: filteredCountsLoading } =
-		useCollectionData< WCStoreV1ProductsCollectionProps >( {
+	const { data: collectionFilters, isLoading: filteredCountsLoading } =
+		useCollectionData( {
 			queryRating: true,
 			queryState,
 			isEditor: true,
@@ -127,7 +109,10 @@ const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 			return;
 		}
 
-		if ( collectionFilters?.rating_counts?.length === 0 ) {
+		if (
+			! collectionFilters?.rating_counts ||
+			collectionFilters?.rating_counts?.length === 0
+		) {
 			setDisplayedOptions( previewOptions );
 			return;
 		}
@@ -142,19 +127,22 @@ const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 		 * - Filter out ratings below the minimum rating
 		 * - Map the ratings to the format expected by the filter component
 		 */
-		const productsRating = collectionFilters.rating_counts
-			.sort( ( a, b ) => b.rating - a.rating )
-			.filter( ( { rating } ) => rating >= minimumRating )
-			.map( ( { rating, count } ) => ( {
-				label: (
-					<Rating
-						key={ rating }
-						rating={ rating }
-						ratedProductsCount={ showCounts ? count : null }
-					/>
-				),
-				value: rating?.toString(),
-			} ) );
+		const productsRating = collectionFilters?.rating_counts?.length
+			? collectionFilters.rating_counts
+					.sort( ( a, b ) => b.rating - a.rating )
+					.filter( ( { rating } ) => rating >= minimumRating )
+					.map( ( { rating, count }, index ) => ( {
+						label: (
+							<Rating
+								key={ rating }
+								rating={ rating }
+								ratedProductsCount={ showCounts ? count : null }
+							/>
+						),
+						value: rating?.toString(),
+						selected: index === 0,
+					} ) )
+			: [];
 
 		setDisplayedOptions( productsRating );
 	}, [
@@ -165,11 +153,6 @@ const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 		productRatingsQuery,
 		minRating,
 	] );
-
-	useProductFilterClearButtonManager( {
-		clientId: props.clientId,
-		showClearButton: attributes.clearButton,
-	} );
 
 	if ( ! filteredCountsLoading && displayedOptions.length === 0 ) {
 		return null;
@@ -191,6 +174,7 @@ const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 	return (
 		<>
 			<Inspector
+				clientId={ clientId }
 				attributes={ attributes }
 				setAttributes={ setAttributes }
 			/>

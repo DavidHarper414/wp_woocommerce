@@ -4,8 +4,8 @@
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useCallback, useState, useEffect } from '@wordpress/element';
 import {
-	CART_STORE_KEY,
-	CHECKOUT_STORE_KEY,
+	cartStore,
+	checkoutStore,
 	processErrorResponse,
 } from '@woocommerce/block-data';
 import { useDebounce } from 'use-debounce';
@@ -57,14 +57,14 @@ export const useStoreCartItemQuantity = (
 		verifiedCartItem;
 	const { cartErrors } = useStoreCart();
 	const { __internalIncrementCalculating, __internalDecrementCalculating } =
-		useDispatch( CHECKOUT_STORE_KEY );
+		useDispatch( checkoutStore );
 
 	// Store quantity in hook state. This is used to keep the UI updated while server request is updated.
 	const [ quantity, setQuantity ] = useState< number >( cartItemQuantity );
 	const [ debouncedQuantity ] = useDebounce< number >( quantity, 400 );
 	const previousDebouncedQuantity = usePrevious( debouncedQuantity );
 	const { removeItemFromCart, changeCartItemQuantity } =
-		useDispatch( CART_STORE_KEY );
+		useDispatch( cartStore );
 
 	// Update local state when server updates.
 	useEffect( () => setQuantity( cartItemQuantity ), [ cartItemQuantity ] );
@@ -78,7 +78,7 @@ export const useStoreCartItemQuantity = (
 					delete: false,
 				};
 			}
-			const store = select( CART_STORE_KEY );
+			const store = select( cartStore );
 			return {
 				quantity: store.isItemPendingQuantity( cartItemKey ),
 				delete: store.isItemPendingDelete( cartItemKey ),

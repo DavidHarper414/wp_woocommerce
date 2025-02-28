@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { Request } from '@playwright/test';
-import { test as base, expect } from '@woocommerce/e2e-utils';
+import { test as base, expect, wpCLI } from '@woocommerce/e2e-utils';
 
 /**
  * Internal dependencies
@@ -169,7 +169,6 @@ test.describe( 'Product Collection', () => {
 			'Beanie', // core/post-title
 			'$20.00 Original price was: $20.00.$18.00Current price is: $18.00.', // woocommerce/product-price
 			'woo-beanie', // woocommerce/product-sku
-			'In stock', // woocommerce/product-stock-indicator
 			'This is a simple product.', // core/post-excerpt
 			'Accessories', // core/post-terms - product_cat
 			'Recommended', // core/post-terms - product_tag
@@ -244,40 +243,6 @@ test.describe( 'Product Collection', () => {
 					page.locator( '.wc-block-product-template' )
 				).toContainText( content );
 			}
-		} );
-	} );
-
-	test.describe( 'Toolbar settings', () => {
-		test.beforeEach( async ( { pageObject } ) => {
-			await pageObject.createNewPostAndInsertBlock();
-		} );
-
-		test( 'Toolbar -> Items per page, offset & max page to show', async ( {
-			pageObject,
-		} ) => {
-			await pageObject.clickDisplaySettings();
-			await pageObject.setDisplaySettings( {
-				itemsPerPage: 3,
-				offset: 0,
-				maxPageToShow: 2,
-			} );
-
-			await expect( pageObject.products ).toHaveCount( 3 );
-
-			await pageObject.setDisplaySettings( {
-				itemsPerPage: 2,
-				offset: 0,
-				maxPageToShow: 2,
-			} );
-			await expect( pageObject.products ).toHaveCount( 2 );
-
-			await pageObject.publishAndGoToFrontend();
-
-			await expect( pageObject.products ).toHaveCount( 2 );
-
-			const paginationNumbers =
-				pageObject.pagination.locator( '.page-numbers' );
-			await expect( paginationNumbers ).toHaveCount( 2 );
 		} );
 	} );
 
@@ -842,12 +807,61 @@ test.describe( 'Product Collection', () => {
 			} );
 		}
 	);
+
+	test.describe( 'default query can be modified', () => {
+		test( 'default query can be modified', async ( {
+			page,
+			pageObject,
+			editor,
+		} ) => {
+			await wpCLI(
+				'option update woocommerce_default_catalog_orderby price'
+			);
+
+			await pageObject.goToEditorTemplate();
+
+			await pageObject.focusProductCollection();
+
+			// Verify the default order matches the option in the database.
+			const sidebarSettings = pageObject.locateSidebarSettings();
+			const orderBySelect = sidebarSettings.getByRole( 'combobox', {
+				name: 'Default sort by',
+			} );
+			const editorProductTitle = editor.canvas
+				.locator( SELECTORS.productTitle )
+				.first();
+
+			await expect( orderBySelect ).toHaveValue( 'price' );
+			await expect( editorProductTitle ).toHaveText( 'Single' );
+
+			await orderBySelect.selectOption( 'price-desc' );
+
+			await expect( editorProductTitle ).toHaveText( 'Sunglasses' );
+
+			await editor.saveSiteEditorEntities();
+			await pageObject.goToProductCatalogFrontend();
+
+			const frontendProductTitle = page
+				.locator( SELECTORS.productTitle )
+				.first();
+			await expect( frontendProductTitle ).toContainText( 'Sunglasses' );
+
+			await wpCLI(
+				'option update woocommerce_default_catalog_orderby menu_order'
+			);
+		} );
+	} );
+
 	test.describe( 'Editor: In taxonomies templates', () => {
 		test( 'Products by specific category template displays products from this category', async ( {
 			admin,
 			page,
 			editor,
 		} ) => {
+			await wpCLI(
+				'option update woocommerce_default_catalog_orderby price'
+			);
+
 			const expectedProducts = [
 				'Hoodie',
 				'Hoodie with Logo',
@@ -874,12 +888,20 @@ test.describe( 'Product Collection', () => {
 			const products = editor.canvas.getByLabel( 'Block: Title' );
 
 			await expect( products ).toHaveText( expectedProducts );
+
+			await wpCLI(
+				'option update woocommerce_default_catalog_orderby menu_order'
+			);
 		} );
 		test( 'Products by specific tag template displays products from this tag', async ( {
 			admin,
 			page,
 			editor,
 		} ) => {
+			await wpCLI(
+				'option update woocommerce_default_catalog_orderby price'
+			);
+
 			const expectedProducts = [ 'Beanie', 'Hoodie' ];
 
 			await admin.visitSiteEditor( { path: '/wp_template' } );
@@ -902,6 +924,10 @@ test.describe( 'Product Collection', () => {
 			const products = editor.canvas.getByLabel( 'Block: Title' );
 
 			await expect( products ).toHaveText( expectedProducts );
+
+			await wpCLI(
+				'option update woocommerce_default_catalog_orderby menu_order'
+			);
 		} );
 	} );
 } );

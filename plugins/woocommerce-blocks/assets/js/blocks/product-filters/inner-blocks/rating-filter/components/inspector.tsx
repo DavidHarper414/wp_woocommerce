@@ -43,8 +43,11 @@ function MinimumRatingLabel( {
 export const Inspector = ( {
 	attributes,
 	setAttributes,
-}: Pick< BlockEditProps< Attributes >, 'attributes' | 'setAttributes' > ) => {
-	const { showCounts, minRating, clearButton } = attributes;
+}: Pick<
+	BlockEditProps< Attributes >,
+	'attributes' | 'setAttributes' | 'clientId'
+> ) => {
+	const { showCounts, minRating } = attributes;
 
 	function setCountVisibility( value: boolean ) {
 		setAttributes( {
@@ -59,78 +62,64 @@ export const Inspector = ( {
 	}
 
 	return (
-		<>
-			<InspectorControls key="inspector">
-				<PanelBody title={ __( 'Display', 'woocommerce' ) }>
-					<ToggleControl
-						label={ __( 'Display product count', 'woocommerce' ) }
-						checked={ showCounts }
-						onChange={ setCountVisibility }
-					/>
-				</PanelBody>
+		<InspectorControls key="inspector">
+			<PanelBody title={ __( 'Display', 'woocommerce' ) }>
+				<ToggleControl
+					label={ __( 'Display product count', 'woocommerce' ) }
+					checked={ showCounts }
+					onChange={ setCountVisibility }
+				/>
+			</PanelBody>
 
-				<PanelBody title={ __( 'Minimum rating', 'woocommerce' ) }>
-					<RadioControl
-						selected={ minRating }
-						className="wc-block-rating-filter__rating-control"
-						options={ [
-							{
-								label: (
-									<MinimumRatingLabel
-										stars={ 4 }
-										ariaLabel={ __(
-											'Four stars and up',
-											'woocommerce'
-										) }
-									/>
-								),
-								value: '4',
-							},
-							{
-								label: (
-									<MinimumRatingLabel
-										stars={ 3 }
-										ariaLabel={ __(
-											'Three stars and up',
-											'woocommerce'
-										) }
-									/>
-								),
-								value: '3',
-							},
-							{
-								label: (
-									<MinimumRatingLabel
-										stars={ 2 }
-										ariaLabel={ __(
-											'Two stars and up',
-											'woocommerce'
-										) }
-									/>
-								),
-								value: '2',
-							},
-							{
-								label: __( 'No limit', 'woocommerce' ),
-								value: '0', // no limit
-							},
-						] }
-						onChange={ setMinRating }
-					/>
-				</PanelBody>
-			</InspectorControls>
-
-			<InspectorControls group="styles">
-				<PanelBody title={ __( 'Display', 'woocommerce' ) }>
-					<ToggleControl
-						label={ __( 'Clear button', 'woocommerce' ) }
-						checked={ clearButton }
-						onChange={ ( value ) =>
-							setAttributes( { clearButton: value } )
-						}
-					/>
-				</PanelBody>
-			</InspectorControls>
-		</>
+			<PanelBody title={ __( 'Minimum rating', 'woocommerce' ) }>
+				<RadioControl
+					selected={ minRating }
+					className="wc-block-rating-filter__rating-control"
+					options={ [
+						{
+							label: (
+								<MinimumRatingLabel
+									stars={ 4 }
+									ariaLabel={ __(
+										'Four stars and up',
+										'woocommerce'
+									) }
+								/>
+							),
+							value: '4',
+						},
+						{
+							label: (
+								<MinimumRatingLabel
+									stars={ 3 }
+									ariaLabel={ __(
+										'Three stars and up',
+										'woocommerce'
+									) }
+								/>
+							),
+							value: '3',
+						},
+						{
+							label: (
+								<MinimumRatingLabel
+									stars={ 2 }
+									ariaLabel={ __(
+										'Two stars and up',
+										'woocommerce'
+									) }
+								/>
+							),
+							value: '2',
+						},
+						{
+							label: __( 'No limit', 'woocommerce' ),
+							value: '0', // no limit
+						},
+					] }
+					onChange={ setMinRating }
+				/>
+			</PanelBody>
+		</InspectorControls>
 	);
 };

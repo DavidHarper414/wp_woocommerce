@@ -124,6 +124,7 @@ const restrictedImports = [
 const coreModules = [
 	'@woocommerce/block-data',
 	'@woocommerce/blocks-checkout',
+	'@woocommerce/blocks-checkout-events',
 	'@woocommerce/blocks-components',
 	'@woocommerce/price-format',
 	'@woocommerce/settings',
@@ -131,6 +132,7 @@ const coreModules = [
 	'@woocommerce/shared-hocs',
 	'@woocommerce/tracks',
 	'@woocommerce/data',
+	'@woocommerce/customer-effort-score',
 	'@wordpress/a11y',
 	'@wordpress/api-fetch',
 	'@wordpress/block-editor',

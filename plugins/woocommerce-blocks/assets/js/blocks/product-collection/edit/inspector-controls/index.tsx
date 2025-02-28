@@ -6,7 +6,6 @@ import { __ } from '@wordpress/i18n';
 import { type ElementType, useMemo } from '@wordpress/element';
 import { EditorBlock } from '@woocommerce/types';
 import { addFilter } from '@wordpress/hooks';
-import { ProductCollectionFeedbackPrompt } from '@woocommerce/editor-components/feedback-prompt';
 import {
 	revertMigration,
 	getUpgradeStatus,
@@ -14,6 +13,7 @@ import {
 	UPGRADE_NOTICE_DISPLAY_COUNT_THRESHOLD,
 } from '@woocommerce/blocks/migration-products-to-product-collection';
 import { recordEvent } from '@woocommerce/tracks';
+import { CesFeedbackButton } from '@woocommerce/editor-components/ces-feedback-button';
 import {
 	PanelBody,
 	// @ts-expect-error Using experimental features
@@ -39,7 +39,8 @@ import {
 	InheritQueryControl,
 	FilterableControl,
 } from './use-page-context-control';
-import OrderByControl from './order-by-control';
+import DefaultQueryOrderByControl from './order-by-control/default-query-order-by-control';
+import CustomQueryOrderByControl from './order-by-control/custom-query-order-by-control';
 import OnSaleControl from './on-sale-control';
 import StockStatusControl from './stock-status-control';
 import KeywordControl from './keyword-control';
@@ -55,6 +56,9 @@ import PriceRangeControl from './price-range-control';
 import LinkedProductControl from './linked-product-control';
 import WidthOptionsControl from './width-options-control';
 import RelatedByControl from './related-by-control';
+import ProductsPerPageControl from './products-per-page-control';
+import OffsetControl from './offset-control';
+import MaxPagesToShowControl from './max-pages-to-show-control';
 
 const prepareShouldShowFilter =
 	( hideControls: FilterName[] ) => ( filter: FilterName ) => {
@@ -83,13 +87,22 @@ const ProductCollectionInspectorControls = (
 		tracksLocation === 'product-catalog' ||
 		tracksLocation === 'product-archive';
 
-	const showQueryControls = inherit === false;
+	const showCustomQueryControls = inherit === false;
 	const showInheritQueryControl =
 		isArchiveTemplate && shouldShowFilter( CoreFilterNames.INHERIT );
 	const showFilterableControl =
 		! isArchiveTemplate && shouldShowFilter( CoreFilterNames.FILTERABLE );
-	const showOrderControl =
-		showQueryControls && shouldShowFilter( CoreFilterNames.ORDER );
+	const showCustomOrderControl =
+		showCustomQueryControls && shouldShowFilter( CoreFilterNames.ORDER );
+	const showDefaultOrderControl = ! showCustomQueryControls;
+	const showOffsetControl =
+		showCustomQueryControls && shouldShowFilter( CoreFilterNames.OFFSET );
+	const showMaxPagesToShowControl =
+		showCustomQueryControls &&
+		shouldShowFilter( CoreFilterNames.MAX_PAGES_TO_SHOW );
+	const showProductsPerPageControl =
+		showCustomQueryControls &&
+		shouldShowFilter( CoreFilterNames.PRODUCTS_PER_PAGE );
 	const showOnSaleControl = shouldShowFilter( CoreFilterNames.ON_SALE );
 	const showStockStatusControl = shouldShowFilter(
 		CoreFilterNames.STOCK_STATUS
@@ -146,6 +159,7 @@ const ProductCollectionInspectorControls = (
 					);
 					props.setAttributes( defaultSettings );
 				} }
+				className="wc-block-editor-product-collection__settings_panel"
 			>
 				{ showInheritQueryControl && (
 					<InheritQueryControl { ...queryControlProps } />
@@ -153,26 +167,29 @@ const ProductCollectionInspectorControls = (
 				{ showFilterableControl && (
 					<FilterableControl { ...queryControlProps } />
 				) }
+				{ showCustomOrderControl && (
+					<CustomQueryOrderByControl { ...queryControlProps } />
+				) }
+				{ showDefaultOrderControl && (
+					<DefaultQueryOrderByControl
+						trackInteraction={ trackInteraction }
+					/>
+				) }
 				<LayoutOptionsControl { ...displayControlProps } />
+				<WidthOptionsControl { ...dimensionsControlProps } />
+				{ showProductsPerPageControl && (
+					<ProductsPerPageControl { ...queryControlProps } />
+				) }
 				<ColumnsControl { ...displayControlProps } />
-				{ showOrderControl && (
-					<OrderByControl { ...queryControlProps } />
+				{ showOffsetControl && (
+					<OffsetControl { ...queryControlProps } />
+				) }
+				{ showMaxPagesToShowControl && (
+					<MaxPagesToShowControl { ...queryControlProps } />
 				) }
 			</ToolsPanel>
 
-			<ToolsPanel
-				label={ __( 'Dimensions', 'woocommerce' ) }
-				resetAll={ () => {
-					const defaultSettings = getDefaultSettings(
-						props.attributes
-					);
-					props.setAttributes( defaultSettings );
-				} }
-			>
-				<WidthOptionsControl { ...dimensionsControlProps } />
-			</ToolsPanel>
-
-			{ showQueryControls ? (
+			{ showCustomQueryControls ? (
 				<ToolsPanel
 					label={ __( 'Filters', 'woocommerce' ) }
 					resetAll={ ( resetAllFilters: ( () => void )[] ) => {
@@ -211,7 +228,10 @@ const ProductCollectionInspectorControls = (
 					) }
 				</ToolsPanel>
 			) : null }
-			<ProductCollectionFeedbackPrompt />
+			<CesFeedbackButton
+				blockName={ `${ metadata.title } block` }
+				wrapper={ PanelBody }
+			/>
 		</InspectorControls>
 	);
 };

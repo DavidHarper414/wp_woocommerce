@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import React from 'react';
 import { createElement, useState } from '@wordpress/element';
 /**
  * Internal dependencies
@@ -168,6 +167,6 @@ const SelectControlExample = () => {
 export const Basic = () => <SelectControlExample />;
 
 export default {
-	title: 'WooCommerce Admin/components/SelectControl',
+	title: 'Components/SelectControl',
 	component: SelectControl,
 };

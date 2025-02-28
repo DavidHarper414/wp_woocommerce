@@ -19,7 +19,6 @@ jest.mock( '../../../providers/editor-context', () => ( {
 jest.mock( '@woocommerce/block-data', () => ( {
 	...jest.requireActual( '@woocommerce/block-data' ),
 	__esModule: true,
-	CART_STORE_KEY: 'test/store',
 } ) );
 
 describe( 'useStoreCart', () => {
@@ -83,6 +82,8 @@ describe( 'useStoreCart', () => {
 		extensions: {},
 		isLoadingRates: false,
 		cartHasCalculatedShipping: true,
+		paymentMethods: previewCart.payment_methods,
+		paymentRequirements: previewCart.payment_requirements,
 	};
 
 	const mockCartItems = [ { key: '1', id: 1, name: 'Lorem Ipsum' } ];

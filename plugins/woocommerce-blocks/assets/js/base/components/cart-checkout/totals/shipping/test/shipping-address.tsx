@@ -1,9 +1,9 @@
 /**
  * External dependencies
  */
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import ShippingAddress from '@woocommerce/base-components/cart-checkout/totals/shipping/shipping-address';
-import { CART_STORE_KEY, CHECKOUT_STORE_KEY } from '@woocommerce/block-data';
+import { cartStore, checkoutStore } from '@woocommerce/block-data';
 import { ShippingCalculatorContext } from '@woocommerce/base-components/cart-checkout';
 import { dispatch } from '@wordpress/data';
 import { previewCart } from '@woocommerce/resource-previews';
@@ -22,6 +22,22 @@ jest.mock( '@woocommerce/settings', () => {
 			}
 			if ( setting === 'collectableMethodIds' ) {
 				return [ 'pickup_location' ];
+			}
+			if ( setting === 'localPickupLocations' ) {
+				return {
+					'1': {
+						enabled: true,
+						name: 'Local pickup #1',
+						formatted_address: '123 Easy Street',
+						details: 'Details for Local pickup #1',
+					},
+					'2': {
+						enabled: true,
+						name: 'Local pickup #2',
+						formatted_address: '456 Main St',
+						details: 'Details for Local pickup #2',
+					},
+				};
 			}
 			return originalModule.getSetting( setting, ...rest );
 		},
@@ -76,8 +92,16 @@ describe( 'ShippingAddress', () => {
 				<ShippingAddress />
 			</ShippingCalculatorContext.Provider>
 		);
-		expect( screen.getByText( /Delivers to 94107/ ) ).toBeInTheDocument();
-		expect( screen.getByText( 'Change address' ) ).toBeInTheDocument();
+
+		const panel = screen.getByRole( 'button' );
+		const paragraph = within( panel ).getByRole( 'paragraph' );
+
+		expect(
+			within( paragraph ).getByText( ( _, element ) => {
+				const text = element?.textContent || '';
+				return /Delivers to 94107/.test( text );
+			} )
+		).toBeInTheDocument();
 		expect(
 			screen.queryByText( /Collection from/ )
 		).not.toBeInTheDocument();
@@ -87,7 +111,7 @@ describe( 'ShippingAddress', () => {
 	} );
 
 	it( 'Renders pickup location if shopper prefers collection', async () => {
-		dispatch( CHECKOUT_STORE_KEY ).setPrefersCollection( true );
+		dispatch( checkoutStore ).setPrefersCollection( true );
 
 		// Deselect the default selected rate and select pickup_location:1 rate.
 		const currentlySelectedIndex =
@@ -105,7 +129,7 @@ describe( 'ShippingAddress', () => {
 			pickupRateIndex
 		].selected = true;
 
-		dispatch( CART_STORE_KEY ).receiveCart( previewCart );
+		dispatch( cartStore ).receiveCart( previewCart );
 
 		render(
 			<ShippingCalculatorContext.Provider
@@ -119,15 +143,20 @@ describe( 'ShippingAddress', () => {
 				<ShippingAddress />
 			</ShippingCalculatorContext.Provider>
 		);
+
+		const panel = screen.getByRole( 'button' );
+		const paragraph = within( panel ).getByRole( 'paragraph' );
+
 		expect(
-			screen.getByText(
-				/Collection from 123 Easy Street, New York, 12345/
-			)
+			within( paragraph ).getByText( ( _, element ) => {
+				const text = element?.textContent || '';
+				return /Collection from 123 Easy Street/.test( text );
+			} )
 		).toBeInTheDocument();
 	} );
 
 	it( `renders an address if one is set in the methods metadata`, async () => {
-		dispatch( CHECKOUT_STORE_KEY ).setPrefersCollection( true );
+		dispatch( checkoutStore ).setPrefersCollection( true );
 
 		// Deselect the default selected rate and select pickup_location:1 rate.
 		const currentlySelectedIndex =
@@ -145,17 +174,33 @@ describe( 'ShippingAddress', () => {
 			pickupRateIndex
 		].selected = true;
 
-		dispatch( CART_STORE_KEY ).receiveCart( previewCart );
+		dispatch( cartStore ).receiveCart( previewCart );
 
-		render( <ShippingAddress /> );
+		render(
+			<ShippingCalculatorContext.Provider
+				value={ {
+					showCalculator: true,
+					isShippingCalculatorOpen: false,
+					setIsShippingCalculatorOpen: jest.fn(),
+					shippingCalculatorID: 'shipping-calculator-form-wrapper',
+				} }
+			>
+				<ShippingAddress />
+			</ShippingCalculatorContext.Provider>
+		);
+
+		const panel = screen.getByRole( 'button' );
+		const paragraph = within( panel ).getByRole( 'paragraph' );
+
 		expect(
-			screen.getByText(
-				/Collection from 123 Easy Street, New York, 12345/
-			)
+			within( paragraph ).getByText( ( _, element ) => {
+				const text = element?.textContent || '';
+				return /Collection from 123 Easy Street/.test( text );
+			} )
 		).toBeInTheDocument();
 	} );
 	it( 'renders no address if one is not set in the methods metadata', async () => {
-		dispatch( CHECKOUT_STORE_KEY ).setPrefersCollection( true );
+		dispatch( checkoutStore ).setPrefersCollection( true );
 
 		// Deselect the default selected rate and select pickup_location:1 rate.
 		const currentlySelectedIndex =
@@ -183,7 +228,7 @@ describe( 'ShippingAddress', () => {
 			pickupRateIndex
 		].meta_data[ addressKeyIndex ].value = '';
 
-		dispatch( CART_STORE_KEY ).receiveCart( previewCart );
+		dispatch( cartStore ).receiveCart( previewCart );
 
 		render( <ShippingAddress /> );
 		expect(

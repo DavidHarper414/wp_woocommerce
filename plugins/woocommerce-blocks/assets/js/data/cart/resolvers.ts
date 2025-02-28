@@ -9,6 +9,7 @@ import { CartResponse } from '@woocommerce/types';
  */
 import { CART_API_ERROR } from './constants';
 import type { CartDispatchFromMap, CartResolveSelectFromMap } from './index';
+import { setTriggerStoreSyncEvent } from './utils';
 
 /**
  * Resolver for retrieving all cart data.
@@ -16,18 +17,37 @@ import type { CartDispatchFromMap, CartResolveSelectFromMap } from './index';
 export const getCartData =
 	() =>
 	async ( { dispatch }: { dispatch: CartDispatchFromMap } ) => {
-		const cartData = await apiFetch< CartResponse >( {
+		const response = await apiFetch< Response >( {
 			path: '/wc/store/v1/cart',
 			method: 'GET',
 			cache: 'no-store',
+			parse: false,
 		} );
 
-		const { receiveCart, receiveError } = dispatch;
-		if ( ! cartData ) {
-			receiveError( CART_API_ERROR );
-			return;
+		if (
+			// @ts-expect-error setCartHash exists but is not typed
+			typeof apiFetch.setCartHash === 'function'
+		) {
+			// @ts-expect-error setCartHash exists but is not typed
+			apiFetch.setCartHash( response?.headers );
 		}
-		receiveCart( cartData );
+
+		try {
+			const cartData: CartResponse = await response.json();
+			const { receiveCart, receiveError } = dispatch;
+
+			if ( ! cartData ) {
+				receiveError( CART_API_ERROR );
+				return;
+			}
+
+			setTriggerStoreSyncEvent( false );
+			receiveCart( cartData );
+			setTriggerStoreSyncEvent( true );
+		} catch ( error ) {
+			const { receiveError } = dispatch;
+			receiveError( CART_API_ERROR );
+		}
 	};
 
 /**

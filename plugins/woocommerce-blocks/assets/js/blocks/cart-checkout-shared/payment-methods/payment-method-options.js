@@ -11,14 +11,13 @@ import clsx from 'clsx';
 import { RadioControlAccordion } from '@woocommerce/blocks-components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { getPaymentMethods } from '@woocommerce/blocks-registry';
-import { getSetting } from '@woocommerce/settings';
+import { paymentStore } from '@woocommerce/block-data';
 
 /**
  * Internal dependencies
  */
 import PaymentMethodCard from './payment-method-card';
 import { noticeContexts } from '../../../base/context/event-emit';
-import { STORE_KEY as PAYMENT_STORE_KEY } from '../../../data/payment/constants';
 
 /**
  * Component used to render all non-saved payment method options.
@@ -29,19 +28,20 @@ const PaymentMethodOptions = () => {
 	const {
 		activeSavedToken,
 		activePaymentMethod,
+		isExpressPaymentMethodActive,
 		savedPaymentMethods,
 		availablePaymentMethods,
 	} = useSelect( ( select ) => {
-		const store = select( PAYMENT_STORE_KEY );
+		const store = select( paymentStore );
 		return {
 			activeSavedToken: store.getActiveSavedToken(),
 			activePaymentMethod: store.getActivePaymentMethod(),
+			isExpressPaymentMethodActive: store.isExpressPaymentMethodActive(),
 			savedPaymentMethods: store.getSavedPaymentMethods(),
 			availablePaymentMethods: store.getAvailablePaymentMethods(),
 		};
 	} );
-	const { __internalSetActivePaymentMethod } =
-		useDispatch( PAYMENT_STORE_KEY );
+	const { __internalSetActivePaymentMethod } = useDispatch( paymentStore );
 	const paymentMethods = getPaymentMethods();
 	const { ...paymentMethodInterface } = usePaymentMethodInterface();
 	const { removeNotice } = useDispatch( 'core/notices' );
@@ -61,9 +61,7 @@ const PaymentMethodOptions = () => {
 					  } ),
 			name: `wc-saved-payment-method-token-${ name }`,
 			content: (
-				<PaymentMethodCard
-					showSaveOption={ !! supports.showSaveOption }
-				>
+				<PaymentMethodCard showSaveOption={ supports.showSaveOption }>
 					{ cloneElement( component, {
 						__internalSetActivePaymentMethod,
 						...paymentMethodInterface,
@@ -78,7 +76,7 @@ const PaymentMethodOptions = () => {
 			__internalSetActivePaymentMethod( value );
 			removeNotice( 'wc-payment-error', noticeContexts.PAYMENTS );
 			dispatchCheckoutEvent( 'set-active-payment-method', {
-				value,
+				paymentMethodSlug: value,
 			} );
 		},
 		[
@@ -95,22 +93,7 @@ const PaymentMethodOptions = () => {
 	const singleOptionClass = clsx( {
 		'disable-radio-control': isSinglePaymentMethod,
 	} );
-
-	const globalPaymentMethods = getSetting( 'globalPaymentMethods' );
-
-	if ( Object.keys( options ).length === 0 ) {
-		return (
-			<div
-				className="wc-payment-method-options-placeholder"
-				style={ {
-					minHeight:
-						Object.keys( globalPaymentMethods ).length * 3 + 'em',
-				} }
-			></div>
-		);
-	}
-
-	return (
+	return isExpressPaymentMethodActive ? null : (
 		<RadioControlAccordion
 			highlightChecked={ true }
 			id={ 'wc-payment-method-options' }

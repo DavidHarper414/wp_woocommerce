@@ -23,12 +23,25 @@ const test = base.extend< { templateCompiler: TemplateCompiler } >( {
 
 test.describe( 'woocommerce/product-filter-attribute - Frontend', () => {
 	test.describe( 'With default display style', () => {
-		test.beforeEach( async ( { requestUtils, templateCompiler } ) => {
+		test.beforeEach( async ( { requestUtils, templateCompiler, page } ) => {
 			await requestUtils.setFeatureFlag( 'experimental-blocks', true );
 			await templateCompiler.compile( {
 				attributes: {
 					attributeId: 1,
 				},
+			} );
+
+			await page.addInitScript( () => {
+				// Mock the wc global variable.
+				if ( typeof window.wc === 'undefined' ) {
+					window.wc = {
+						wcSettings: {
+							getSetting() {
+								return true;
+							},
+						},
+					};
+				}
 			} );
 		} );
 
@@ -37,7 +50,9 @@ test.describe( 'woocommerce/product-filter-attribute - Frontend', () => {
 		} ) => {
 			await page.goto( '/shop' );
 
-			const button = page.getByRole( 'button', { name: 'Clear' } );
+			const button = page.getByRole( 'button', {
+				name: 'Clear filters',
+			} );
 
 			await expect( button ).toBeHidden();
 		} );
@@ -60,6 +75,7 @@ test.describe( 'woocommerce/product-filter-attribute - Frontend', () => {
 			}
 		} );
 
+		// Skipping these tests until we can move this block to @wordpress/interactivity.
 		test( 'filters the list of products by selecting an attribute', async ( {
 			page,
 		} ) => {
@@ -87,7 +103,9 @@ test.describe( 'woocommerce/product-filter-attribute - Frontend', () => {
 			// wait for navigation
 			await page.waitForURL( /.*filter_color=gray.*/ );
 
-			const button = page.getByRole( 'button', { name: 'Clear' } );
+			const button = page.getByRole( 'button', {
+				name: 'Clear filters',
+			} );
 
 			await expect( button ).toBeVisible();
 		} );
@@ -105,7 +123,9 @@ test.describe( 'woocommerce/product-filter-attribute - Frontend', () => {
 
 			await grayCheckbox.click();
 
-			const button = page.getByRole( 'button', { name: 'Clear' } );
+			const button = page.getByRole( 'button', {
+				name: 'Clear filters',
+			} );
 
 			await expect( button ).toBeHidden();
 		} );
@@ -121,7 +141,9 @@ test.describe( 'woocommerce/product-filter-attribute - Frontend', () => {
 			// wait for navigation
 			await page.waitForURL( /.*filter_color=gray.*/ );
 
-			const button = page.getByRole( 'button', { name: 'Clear' } );
+			const button = page.getByRole( 'button', {
+				name: 'Clear filters',
+			} );
 
 			await button.click();
 

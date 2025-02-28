@@ -10,10 +10,12 @@ import {
 	Cart,
 	CartResponse,
 } from '@woocommerce/types';
+import { CurriedSelectorsOf } from '@wordpress/data/build-types/types';
 
 /**
  * Internal dependencies
  */
+import type { ValidationStoreDescriptor } from '../validation';
 import { STORE_KEY as VALIDATION_STORE_KEY } from '../validation/constants';
 
 export const mapCartResponseToCart = ( responseCart: CartResponse ): Cart => {
@@ -21,7 +23,9 @@ export const mapCartResponseToCart = ( responseCart: CartResponse ): Cart => {
 };
 
 export const shippingAddressHasValidationErrors = () => {
-	const validationStore = select( VALIDATION_STORE_KEY );
+	const validationStore = select(
+		VALIDATION_STORE_KEY
+	) as CurriedSelectorsOf< ValidationStoreDescriptor >;
 	// Check if the shipping address form has validation errors - if not then we know the full required
 	// address has been pushed to the server.
 	const stateValidationErrors =
@@ -97,7 +101,9 @@ export const validateDirtyProps = ( dirtyProps: {
 	billingAddress: BaseAddressKey[];
 	shippingAddress: BaseAddressKey[];
 } ): boolean => {
-	const validationStore = select( VALIDATION_STORE_KEY );
+	const validationStore = select(
+		VALIDATION_STORE_KEY
+	) as CurriedSelectorsOf< ValidationStoreDescriptor >;
 
 	const invalidProps = [
 		...dirtyProps.billingAddress.filter( ( key ) => {
@@ -140,3 +146,14 @@ export const setIsCustomerDataDirty = debounce(
 	},
 	300
 );
+
+/**
+ * Sets whether it should trigger the event to sync with the Interactivity API
+ * store. It's used to prevent emiting the `wc-blocks_store_sync_required`
+ * event and causing an infinite loop.
+ */
+let triggerStoreSyncEvent = true;
+export const setTriggerStoreSyncEvent = ( value: boolean ) => {
+	triggerStoreSyncEvent = value;
+};
+export const getTriggerStoreSyncEvent = () => triggerStoreSyncEvent;

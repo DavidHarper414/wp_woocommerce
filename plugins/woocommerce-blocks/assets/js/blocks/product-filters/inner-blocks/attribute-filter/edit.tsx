@@ -19,6 +19,7 @@ import { withSpokenMessages } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { getSetting } from '@woocommerce/settings';
+import type { TemplateArray } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
@@ -28,17 +29,16 @@ import { attributeOptionsPreview } from './constants';
 import './style.scss';
 import { EditProps, isAttributeCounts } from './types';
 import { getAttributeFromId } from './utils';
-import { getAllowedBlocks } from '../../utils';
+import { getAllowedBlocks } from '../../utils/get-allowed-blocks';
 import { EXCLUDED_BLOCKS } from '../../constants';
 import { FilterOptionItem } from '../../types';
 import { InitialDisabled } from '../../components/initial-disabled';
 import { Notice } from '../../components/notice';
-import { useProductFilterClearButtonManager } from '../../hooks/use-product-filter-clear-button-manager';
 
 const ATTRIBUTES = getSetting< AttributeSetting[] >( 'attributes', [] );
 
 const Edit = ( props: EditProps ) => {
-	const { attributes: blockAttributes, clientId } = props;
+	const { attributes: blockAttributes } = props;
 
 	const {
 		attributeId,
@@ -48,7 +48,6 @@ const Edit = ( props: EditProps ) => {
 		showCounts,
 		sortOrder,
 		hideEmpty,
-		clearButton,
 	} = blockAttributes;
 
 	const attributeObject = getAttributeFromId( attributeId );
@@ -59,13 +58,8 @@ const Edit = ( props: EditProps ) => {
 	const [ isOptionsLoading, setIsOptionsLoading ] =
 		useState< boolean >( true );
 
-	useProductFilterClearButtonManager( {
-		clientId,
-		showClearButton: clearButton,
-	} );
-
 	const { results: attributeTerms, isLoading: isTermsLoading } =
-		useCollection< AttributeTerm[] >( {
+		useCollection< AttributeTerm >( {
 			namespace: '/wc/store/v1',
 			resourceName: 'products/attributes/terms',
 			resourceValues: [ attributeObject?.id || 0 ],
@@ -73,7 +67,7 @@ const Edit = ( props: EditProps ) => {
 			query: { orderby: 'menu_order', hide_empty: hideEmpty },
 		} );
 
-	const { results: filteredCounts, isLoading: isFilterCountsLoading } =
+	const { data: filteredCounts, isLoading: isFilterCountsLoading } =
 		useCollectionData( {
 			queryAttribute: {
 				taxonomy: attributeObject?.taxonomy || '',
@@ -120,7 +114,7 @@ const Edit = ( props: EditProps ) => {
 							? `${ term.name } (${ term.count })`
 							: term.name,
 						value: term.id.toString(),
-						selected: index === 1,
+						selected: index === 0,
 						rawData: term,
 					} ) )
 			);
@@ -162,31 +156,15 @@ const Edit = ( props: EditProps ) => {
 						[
 							'core/heading',
 							{
-								level: 3,
+								level: 4,
 								content:
 									attributeObject?.label ||
 									__( 'Attribute', 'woocommerce' ),
 							},
 						],
-						[
-							'woocommerce/product-filter-clear-button',
-							{
-								lock: {
-									remove: true,
-									move: false,
-								},
-							},
-						],
-					],
+					].filter( Boolean ) as unknown as TemplateArray,
 				],
-				[
-					displayStyle,
-					{
-						lock: {
-							remove: true,
-						},
-					},
-				],
+				[ displayStyle ],
 			],
 		}
 	);

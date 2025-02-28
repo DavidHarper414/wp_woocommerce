@@ -15,15 +15,18 @@ import { usePrevious } from '@woocommerce/base-hooks';
 import deprecated from '@wordpress/deprecated';
 import { useDispatch, useSelect } from '@wordpress/data';
 import {
-	CHECKOUT_STORE_KEY,
-	PAYMENT_STORE_KEY,
-	VALIDATION_STORE_KEY,
+	checkoutStore,
+	paymentStore,
+	validationStore,
 } from '@woocommerce/block-data';
+import { store as noticesStore } from '@wordpress/notices';
+import type { WPNotice } from '@wordpress/notices/build-types/store/selectors';
+import { checkoutEvents } from '@woocommerce/blocks-checkout-events';
 
 /**
  * Internal dependencies
  */
-import { useEventEmitters, reducer as emitReducer } from './event-emit';
+import { reducer as emitReducer } from './event-emit';
 import { emitterCallback, noticeContexts } from '../../../event-emit';
 import { useStoreEvents } from '../../../hooks/use-store-events';
 import {
@@ -31,6 +34,7 @@ import {
 	getPaymentMethods,
 } from '../../../../../blocks-registry/payment-methods/registry';
 import { useEditorContext } from '../../editor-context';
+import { EventListenerRegistrationFunction } from '../../../../../events/event-emitter';
 
 type CheckoutEventsContextType = {
 	// Submits the checkout and begins processing.
@@ -44,11 +48,11 @@ type CheckoutEventsContextType = {
 	// Deprecated in favour of onCheckoutValidation.
 	onCheckoutValidationBeforeProcessing: ReturnType< typeof emitterCallback >;
 	// Used to register a callback that will fire if the api call to /checkout is successful
-	onCheckoutSuccess: ReturnType< typeof emitterCallback >;
+	onCheckoutSuccess: EventListenerRegistrationFunction;
 	// Used to register a callback that will fire if the api call to /checkout fails
-	onCheckoutFail: ReturnType< typeof emitterCallback >;
+	onCheckoutFail: EventListenerRegistrationFunction;
 	// Used to register a callback that will fire when the checkout performs validation on the form
-	onCheckoutValidation: ReturnType< typeof emitterCallback >;
+	onCheckoutValidation: EventListenerRegistrationFunction;
 };
 
 const CheckoutEventsContext = createContext< CheckoutEventsContextType >( {
@@ -86,7 +90,7 @@ export const CheckoutEventsProvider = ( {
 	const { isEditor } = useEditorContext();
 
 	const { __internalUpdateAvailablePaymentMethods } =
-		useDispatch( PAYMENT_STORE_KEY );
+		useDispatch( paymentStore );
 
 	// Update the payment method store when paymentMethods or expressPaymentMethods changes.
 	// Ensure this happens in the editor even if paymentMethods is empty. This won't happen instantly when the objects
@@ -112,7 +116,7 @@ export const CheckoutEventsProvider = ( {
 		__internalEmitValidateEvent,
 		__internalEmitAfterProcessingEvents,
 		__internalSetBeforeProcessing,
-	} = useDispatch( CHECKOUT_STORE_KEY );
+	} = useDispatch( checkoutStore );
 
 	const {
 		checkoutRedirectUrl,
@@ -124,7 +128,7 @@ export const CheckoutEventsProvider = ( {
 		checkoutOrderNotes,
 		checkoutCustomerId,
 	} = useSelect( ( select ) => {
-		const store = select( CHECKOUT_STORE_KEY );
+		const store = select( checkoutStore );
 		return {
 			checkoutRedirectUrl: store.getRedirectUrl(),
 			checkoutStatus: store.getCheckoutStatus(),
@@ -141,35 +145,39 @@ export const CheckoutEventsProvider = ( {
 		__internalSetRedirectUrl( redirectUrl );
 	}
 
-	const { setValidationErrors } = useDispatch( VALIDATION_STORE_KEY );
+	const { setValidationErrors } = useDispatch( validationStore );
 	const { dispatchCheckoutEvent } = useStoreEvents();
-	const { checkoutNotices, paymentNotices, expressPaymentNotices } =
-		useSelect( ( select ) => {
-			const { getNotices } = select( 'core/notices' );
-			const checkoutContexts = Object.values( noticeContexts ).filter(
-				( context ) =>
-					context !== noticeContexts.PAYMENTS &&
-					context !== noticeContexts.EXPRESS_PAYMENTS
-			);
-			const allCheckoutNotices = checkoutContexts.reduce(
-				( acc, context ) => {
-					return [ ...acc, ...getNotices( context ) ];
-				},
-				[]
-			);
-			return {
-				checkoutNotices: allCheckoutNotices,
-				paymentNotices: getNotices( noticeContexts.PAYMENTS ),
-				expressPaymentNotices: getNotices(
-					noticeContexts.EXPRESS_PAYMENTS
-				),
-			};
-		}, [] );
 
-	const [ observers, observerDispatch ] = useReducer( emitReducer, {} );
+	const checkoutContexts = Object.values( noticeContexts ).filter(
+		( context ) =>
+			context !== noticeContexts.PAYMENTS &&
+			context !== noticeContexts.EXPRESS_PAYMENTS
+	);
+
+	const checkoutNotices = useSelect(
+		( select ) => {
+			const { getNotices } = select( noticesStore );
+			return checkoutContexts.reduce( ( acc, context ) => {
+				return [ ...acc, ...getNotices( context ) ];
+			}, [] as WPNotice[] );
+		},
+		[ checkoutContexts ]
+	);
+
+	const { paymentNotices, expressPaymentNotices } = useSelect( ( select ) => {
+		const { getNotices } = select( noticesStore );
+		return {
+			paymentNotices: getNotices( noticeContexts.PAYMENTS ),
+			expressPaymentNotices: getNotices(
+				noticeContexts.EXPRESS_PAYMENTS
+			),
+		};
+	}, [] );
+
+	const [ observers ] = useReducer( emitReducer, {} );
 	const currentObservers = useRef( observers );
 	const { onCheckoutValidation, onCheckoutSuccess, onCheckoutFail } =
-		useEventEmitters( observerDispatch );
+		checkoutEvents;
 
 	// set observers on ref so it's always current.
 	useEffect( () => {
@@ -245,7 +253,6 @@ export const CheckoutEventsProvider = ( {
 	useEffect( () => {
 		if ( isCheckoutBeforeProcessing ) {
 			__internalEmitValidateEvent( {
-				observers: currentObservers.current,
 				setValidationErrors,
 			} );
 		}
@@ -270,7 +277,6 @@ export const CheckoutEventsProvider = ( {
 
 		if ( isCheckoutAfterProcessing ) {
 			__internalEmitAfterProcessingEvents( {
-				observers: currentObservers.current,
 				notices: {
 					checkoutNotices,
 					paymentNotices,
