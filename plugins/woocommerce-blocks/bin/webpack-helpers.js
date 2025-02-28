@@ -19,7 +19,6 @@ const wcDepMap = {
 	'@woocommerce/price-format': [ 'wc', 'priceFormat' ],
 	'@woocommerce/blocks-checkout': [ 'wc', 'blocksCheckout' ],
 	'@woocommerce/blocks-components': [ 'wc', 'blocksComponents' ],
-	'@woocommerce/interactivity': [ 'wc', '__experimentalInteractivity' ],
 	'@woocommerce/types': [ 'wc', 'wcTypes' ],
 	'@woocommerce/customer-effort-score': [ 'wc', 'customerEffortScore' ],
 };
@@ -66,10 +65,6 @@ const getAlias = ( options = {} ) => {
 		'@woocommerce/base-hooks': path.resolve(
 			__dirname,
 			`../assets/js/${ pathPart }base/hooks/`
-		),
-		'@woocommerce/interactivity': path.resolve(
-			__dirname,
-			`../assets/js/${ pathPart }interactivity/`
 		),
 		'@woocommerce/base-utils': path.resolve(
 			__dirname,
