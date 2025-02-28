@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-const { NODE_ENV, getAlias } = require('./bin/webpack-helpers.js');
+const { NODE_ENV, getAlias } = require( './bin/webpack-helpers.js' );
 const {
 	getCoreConfig,
 	getMainConfig,
@@ -11,9 +11,9 @@ const {
 	getSiteEditorConfig,
 	getStylingConfig,
 	getCartAndCheckoutFrontendConfig,
-} = require('./bin/webpack-configs.js');
+} = require( './bin/webpack-configs.js' );
 
-const interactivityBlocksConfig = require('./bin/webpack-config-interactivity-blocks-frontend.js');
+const interactivityBlocksConfig = require( './bin/webpack-config-interactivity-blocks-frontend.js' );
 
 // Only options shared between all configs should be defined here.
 const sharedConfig = {
@@ -38,27 +38,27 @@ const sharedConfig = {
 
 const CartAndCheckoutFrontendConfig = {
 	...sharedConfig,
-	...getCartAndCheckoutFrontendConfig({ alias: getAlias() }),
+	...getCartAndCheckoutFrontendConfig( { alias: getAlias() } ),
 };
 
 // Core config for shared libraries.
 const CoreConfig = {
 	...sharedConfig,
-	...getCoreConfig({ alias: getAlias() }),
+	...getCoreConfig( { alias: getAlias() } ),
 };
 
 // Main Blocks config for registering Blocks and for the Editor.
 const MainConfig = {
 	...sharedConfig,
-	...getMainConfig({
+	...getMainConfig( {
 		alias: getAlias(),
-	}),
+	} ),
 };
 
 // Frontend config for scripts used in the store itself.
 const FrontendConfig = {
 	...sharedConfig,
-	...getFrontConfig({ alias: getAlias() }),
+	...getFrontConfig( { alias: getAlias() } ),
 };
 
 /**
@@ -66,7 +66,7 @@ const FrontendConfig = {
  */
 const ExtensionsConfig = {
 	...sharedConfig,
-	...getExtensionsConfig({ alias: getAlias() }),
+	...getExtensionsConfig( { alias: getAlias() } ),
 };
 
 /**
@@ -74,7 +74,7 @@ const ExtensionsConfig = {
  */
 const PaymentsConfig = {
 	...sharedConfig,
-	...getPaymentsConfig({ alias: getAlias() }),
+	...getPaymentsConfig( { alias: getAlias() } ),
 };
 
 /**
@@ -82,7 +82,7 @@ const PaymentsConfig = {
  */
 const StylingConfig = {
 	...sharedConfig,
-	...getStylingConfig({ alias: getAlias() }),
+	...getStylingConfig( { alias: getAlias() } ),
 };
 
 /**
@@ -90,7 +90,7 @@ const StylingConfig = {
  */
 const SiteEditorConfig = {
 	...sharedConfig,
-	...getSiteEditorConfig({ alias: getAlias() }),
+	...getSiteEditorConfig( { alias: getAlias() } ),
 };
 
 const InteractivityBlocksConfig = {
