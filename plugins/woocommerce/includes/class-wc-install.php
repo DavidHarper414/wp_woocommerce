@@ -745,8 +745,6 @@ class WC_Install {
 
 	/**
 	 * Push all needed DB updates to the queue for processing.
-	 *
-	 * @param bool $schedule_with_delay Whether updates are scheduled to run with a random delay (of up to 15 mins).
 	 */
 	private static function update() {
 		$current_db_version = get_option( 'woocommerce_db_version' );
