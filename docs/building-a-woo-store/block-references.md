@@ -1293,7 +1293,7 @@ Display a list of filter options.
 -	**Category:** woocommerce
 -   **Ancestor:** woocommerce/product-filter-attribute,woocommerce/product-filter-status
 -   **Parent:** 
--	**Supports:** color (background, text, ~~enableContrastChecker~~)
+-	**Supports:** color (background, text, ~~enableContrastChecker~~), interactivity
 -	**Attributes:** customOptionElement, customOptionElementBorder, customOptionElementSelected, optionElement, optionElementBorder, optionElementSelected
 
 ## Chips - woocommerce/product-filter-chips
@@ -1304,7 +1304,7 @@ Display filter options as chips.
 -	**Category:** woocommerce
 -   **Ancestor:** woocommerce/product-filter-attribute,woocommerce/product-filter-status
 -   **Parent:** 
--	**Supports:** 
+-	**Supports:** interactivity
 -	**Attributes:** chipBackground, chipBorder, chipText, customChipBackground, customChipBorder, customChipText, customSelectedChipBackground, customSelectedChipBorder, customSelectedChipText, selectedChipBackground, selectedChipBorder, selectedChipText
 
 ## Clear filters (Experimental) - woocommerce/product-filter-clear-button
@@ -1337,7 +1337,7 @@ A slider helps shopper choose a price range.
 -	**Category:** woocommerce
 -   **Ancestor:** woocommerce/product-filter-price
 -   **Parent:** 
--	**Supports:** color (~~background~~, ~~enableContrastChecker~~, ~~text~~), ~~html~~
+-	**Supports:** color (~~background~~, ~~enableContrastChecker~~, ~~text~~), interactivity, ~~html~~
 -	**Attributes:** customSlider, customSliderHandle, customSliderHandleBorder, inlineInput, showInputFields, slider, sliderHandle, sliderHandleBorder
 
 ## Rating (Experimental) - woocommerce/product-filter-rating
@@ -1359,7 +1359,7 @@ Display removable active filters as chips.
 -	**Category:** woocommerce
 -   **Ancestor:** woocommerce/product-filter-active
 -   **Parent:** 
--	**Supports:** layout (default, ~~allowInheriting~~, ~~allowJustification~~, ~~allowSwitching~~, ~~allowVerticalAlignment~~)
+-	**Supports:** interactivity, layout (default, ~~allowInheriting~~, ~~allowJustification~~, ~~allowSwitching~~, ~~allowVerticalAlignment~~)
 -	**Attributes:** chipBackground, chipBorder, chipText, customChipBackground, customChipBorder, customChipText
 
 ## Status (Experimental) - woocommerce/product-filter-status
