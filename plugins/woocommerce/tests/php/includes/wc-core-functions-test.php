@@ -262,6 +262,7 @@ class WC_Core_Functions_Test extends \WC_Unit_Test_Case {
 		$this->assertFalse( wc_delete_transients( '' ) );
 
 		// Test with other non-array arguments.
+		$this->assertFalse( wc_delete_transients( 'test' ) );
 		$this->assertFalse( wc_delete_transients( null ) );
 		$this->assertFalse( wc_delete_transients( 123 ) );
 		$this->assertFalse( wc_delete_transients( true ) );
