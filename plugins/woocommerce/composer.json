@@ -109,9 +109,11 @@
 	},
 	"scripts": {
 		"post-install-cmd": [
+			"sh ./bin/optimize-vendor-files.sh",
 			"sh ./bin/post-install.sh"
 		],
 		"post-update-cmd": [
+			"sh ./bin/optimize-vendor-files.sh",
 			"sh ./bin/post-update.sh"
 		],
 		"test": [
