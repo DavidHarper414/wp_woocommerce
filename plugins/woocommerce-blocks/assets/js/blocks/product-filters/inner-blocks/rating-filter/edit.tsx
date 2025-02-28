@@ -44,30 +44,19 @@ const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 			allowedBlocks: getAllowedBlocks( EXCLUDED_BLOCKS ),
 			template: [
 				[
-					'core/group',
+					'core/heading',
 					{
-						layout: {
-							type: 'flex',
-							flexWrap: 'nowrap',
-						},
-						metadata: {
-							name: __( 'Header', 'woocommerce' ),
-						},
+						level: 4,
+						content: __( 'Rating', 'woocommerce' ),
 						style: {
 							spacing: {
-								blockGap: '0',
+								margin: {
+									bottom: '10px',
+									top: '0',
+								},
 							},
 						},
 					},
-					[
-						[
-							'core/heading',
-							{
-								level: 4,
-								content: __( 'Rating', 'woocommerce' ),
-							},
-						],
-					].filter( Boolean ) as unknown as TemplateArray,
 				],
 				[ 'woocommerce/product-filter-checkbox-list' ],
 			],

@@ -26,30 +26,19 @@ const Edit = ( props: EditProps ) => {
 		{
 			template: [
 				[
-					'core/group',
+					'core/heading',
 					{
-						layout: {
-							type: 'flex',
-							flexWrap: 'nowrap',
-						},
-						metadata: {
-							name: __( 'Header', 'woocommerce' ),
-						},
+						level: 4,
+						content: __( 'Status', 'woocommerce' ),
 						style: {
 							spacing: {
-								blockGap: '0',
+								margin: {
+									bottom: '10px',
+									top: '0',
+								},
 							},
 						},
 					},
-					[
-						[
-							'core/heading',
-							{
-								level: 4,
-								content: __( 'Status', 'woocommerce' ),
-							},
-						],
-					].filter( Boolean ) as unknown as TemplateArray,
 				],
 				[ 'woocommerce/product-filter-checkbox-list' ],
 			],
