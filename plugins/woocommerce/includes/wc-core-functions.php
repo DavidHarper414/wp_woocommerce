@@ -2714,8 +2714,8 @@ function wc_delete_transients( $transients ) {
 		// For database storage, create a list of transient option names.
 		$transient_names = array();
 		foreach ( $transients as $transient ) {
-			$transient_names[] = '_transient_timeout_' . $transient;
 			$transient_names[] = '_transient_' . $transient;
+			$transient_names[] = '_transient_timeout_' . $transient;
 		}
 
 		// Limit the number of items in a single query to avoid exceeding database query parameter limits.
@@ -2735,6 +2735,19 @@ function wc_delete_transients( $transients ) {
 		}
 
 		try {
+			// Before deleting, get the list of options to clear from cache.
+			// Since we already have the option names we could skip this step but this mirrors WP's delete_option functionality.
+			// It also allows us to only delete the options we know exist.
+			$options_to_clear = array();
+			if ( ! wp_installing() ) {
+				$options_to_clear = $wpdb->get_col(
+					$wpdb->prepare(
+						'SELECT option_name FROM ' . $wpdb->options . ' WHERE option_name IN ( ' . implode( ', ', array_fill( 0, count( $transient_names ), '%s' ) ) . ' )',
+						$transient_names
+					)
+				);
+			}
+
 			// Use a single query for better performance.
 			$result = $wpdb->query(
 				$wpdb->prepare(
@@ -2742,6 +2755,36 @@ function wc_delete_transients( $transients ) {
 					$transient_names
 				)
 			);
+
+			// Lets clear our options data from the cache.
+			// We can batch delete if available, introduced in WP 6.0.0.
+			if ( ! wp_installing() && ! empty( $options_to_clear ) ) {
+				if ( function_exists( 'wp_cache_delete_multiple' ) ) {
+					wp_cache_delete_multiple( $options_to_clear, 'options' );
+				} else {
+					foreach ( $options_to_clear as $option_name ) {
+						wp_cache_delete( $option_name, 'options' );
+					}
+				}
+
+				// Also update alloptions cache if needed.
+				// This is required to prevent phantom transients from being returned.
+				$alloptions         = wp_load_alloptions( true );
+				$updated_alloptions = false;
+
+				if ( is_array( $alloptions ) ) {
+					foreach ( $options_to_clear as $option_name ) {
+						if ( isset( $alloptions[ $option_name ] ) ) {
+							unset( $alloptions[ $option_name ] );
+							$updated_alloptions = true;
+						}
+					}
+
+					if ( $updated_alloptions ) {
+						wp_cache_set( 'alloptions', $alloptions, 'options' );
+					}
+				}
+			}
 
 			if ( false === $result ) {
 				wc_get_logger()->error(

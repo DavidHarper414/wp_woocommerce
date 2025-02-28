@@ -243,9 +243,6 @@ class WC_Core_Functions_Test extends \WC_Unit_Test_Case {
 		// Delete the transients.
 		wc_delete_transients( array( $transient_name1, $transient_name2 ) );
 
-		// Force WordPress to refresh its memory cache.
-		wp_cache_flush();
-
 		// Verify transients are deleted.
 		$this->assertFalse( get_transient( $transient_name1 ) );
 		$this->assertFalse( get_transient( $transient_name2 ) );
@@ -257,9 +254,6 @@ class WC_Core_Functions_Test extends \WC_Unit_Test_Case {
 
 		// Pass the transient name as an array element
 		wc_delete_transients( array( $transient_name3 ) );
-
-		// Force WordPress to refresh its memory cache.
-		wp_cache_flush();
 
 		$this->assertFalse( get_transient( $transient_name3 ) );
 
