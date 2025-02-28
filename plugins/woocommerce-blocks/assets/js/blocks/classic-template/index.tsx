@@ -50,7 +50,6 @@ type Attributes = {
 };
 
 const blockifiedFallbackConfig = {
-	isConversionPossible: () => false,
 	getBlockifiedTemplate: () => [],
 	getDescription: () => '',
 	onClickCallback: () => void 0,
@@ -219,12 +218,7 @@ const Edit = ( {
 		[ attributes.align, attributes.template, setAttributes ]
 	);
 
-	const {
-		isConversionPossible,
-		getDescription,
-		getSkeleton,
-		blockifyConfig,
-	} = conversionConfig[ templateType ];
+	const { getSkeleton, blockifyConfig } = conversionConfig[ templateType ];
 
 	const skeleton = getSkeleton ? (
 		getSkeleton()
@@ -236,8 +230,9 @@ const Edit = ( {
 		/>
 	);
 
-	const canConvert = isConversionPossible();
-	const placeholderDescription = getDescription( templateTitle, canConvert );
+	const placeholderDescription = conversionConfig[
+		templateType
+	].getDescription( templateTitle, true );
 
 	return (
 		<div { ...blockProps }>
@@ -266,7 +261,7 @@ const Edit = ( {
 							'woocommerce'
 						) }
 					</p>
-					{ canConvert && blockifyConfig && (
+					{ blockifyConfig && (
 						<ConvertTemplate
 							clientId={ clientId }
 							blockifyConfig={ blockifyConfig }

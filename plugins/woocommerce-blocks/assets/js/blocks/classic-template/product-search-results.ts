@@ -115,10 +115,6 @@ const getBlockifiedTemplate = ( inheritedAttributes: InheritedAttributes ) =>
 		createProductCollectionBlock( inheritedAttributes ),
 	].filter( Boolean ) as BlockInstance[];
 
-const isConversionPossible = () => {
-	return true;
-};
-
 const getDescription = ( templateTitle: string ) =>
 	sprintf(
 		/* translators: %s is the template title */
@@ -162,4 +158,4 @@ const blockifyConfig = {
 	getBlockifiedTemplate,
 };
 
-export { isConversionPossible, getDescription, blockifyConfig };
+export { getDescription, blockifyConfig };
