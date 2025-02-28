@@ -241,7 +241,7 @@ class WC_Core_Functions_Test extends \WC_Unit_Test_Case {
 		$this->assertEquals( 'test_value_2', get_transient( $transient_name2 ) );
 
 		// Delete the transients.
-		wc_delete_transients( array( $transient_name1, $transient_name2 ) );
+		_wc_delete_transients( array( $transient_name1, $transient_name2 ) );
 
 		// Verify transients are deleted.
 		$this->assertFalse( get_transient( $transient_name1 ) );
@@ -253,19 +253,19 @@ class WC_Core_Functions_Test extends \WC_Unit_Test_Case {
 		$this->assertEquals( 'test_value_3', get_transient( $transient_name3 ) );
 
 		// Pass the transient name as an array element
-		wc_delete_transients( array( $transient_name3 ) );
+		_wc_delete_transients( array( $transient_name3 ) );
 
 		$this->assertFalse( get_transient( $transient_name3 ) );
 
 		// Test with empty input.
-		$this->assertFalse( wc_delete_transients( array() ) );
-		$this->assertFalse( wc_delete_transients( '' ) );
+		$this->assertFalse( _wc_delete_transients( array() ) );
+		$this->assertFalse( _wc_delete_transients( '' ) );
 
 		// Test with other non-array arguments.
-		$this->assertFalse( wc_delete_transients( 'test' ) );
-		$this->assertFalse( wc_delete_transients( null ) );
-		$this->assertFalse( wc_delete_transients( 123 ) );
-		$this->assertFalse( wc_delete_transients( true ) );
-		$this->assertFalse( wc_delete_transients( new stdClass() ) );
+		$this->assertFalse( _wc_delete_transients( 'test' ) );
+		$this->assertFalse( _wc_delete_transients( null ) );
+		$this->assertFalse( _wc_delete_transients( 123 ) );
+		$this->assertFalse( _wc_delete_transients( true ) );
+		$this->assertFalse( _wc_delete_transients( new stdClass() ) );
 	}
 }
