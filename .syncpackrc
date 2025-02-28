@@ -314,7 +314,7 @@
 			"packages": [
 				"**"
 			],
-			"pinVersion": "wp-6.7"
+			"pinVersion": "next"
 		},
 		{
 			"label": "@wordpress/* runtime-dependencies",
