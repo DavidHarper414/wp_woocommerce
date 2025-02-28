@@ -18,6 +18,11 @@ defined( 'ABSPATH' ) || exit;
 class WC_Comments {
 
 	/**
+	 * @var string COMMENT_COUNT_CACHE_GROUP The cache group to use for comment counts.
+	 */
+	private CONST COMMENT_COUNT_CACHE_GROUP = 'wc_comment_counts';
+
+	/**
 	 * Hook in methods.
 	 */
 	public static function init() {
@@ -45,8 +50,8 @@ class WC_Comments {
 		add_filter( 'wp_count_comments', array( __CLASS__, 'wp_count_comments' ), 10, 2 );
 
 		// Delete comments count cache whenever there is a new comment or a comment status changes.
-		add_action( 'wp_insert_comment', array( __CLASS__, 'delete_comments_count_cache_on_wp_insert_comment' ), 10, 2 );
-		add_action( 'transition_comment_status', array( __CLASS__, 'delete_comments_count_cache_on_comment_status_change' ), 10, 3 );
+		add_action( 'wp_insert_comment', array( __CLASS__, 'increment_comments_count_cache_on_wp_insert_comment' ), 10, 2 );
+		add_action( 'transition_comment_status', array( __CLASS__, 'update_comments_count_cache_on_comment_status_change' ), 10, 3 );
 
 		// Support avatars for `review` comment type.
 		add_filter( 'get_avatar_comment_types', array( __CLASS__, 'add_avatar_for_review_comment_type' ) );
@@ -219,13 +224,13 @@ class WC_Comments {
 	 * Callback for 'wp_insert_comment' to delete the comment count cache if the comment is included in the count.
 	 *
 	 * @param int        $comment_id The comment ID.
-	 * @param WP_Comment $comment Comment object.
+	 * @param WP_Comment $comment    Comment object.
 	 *
 	 * @return void
 	 */
-	public static function delete_comments_count_cache_on_wp_insert_comment( $comment_id, $comment ) {
+	public static function increment_comments_count_cache_on_wp_insert_comment( $comment_id, $comment ) {
 		if ( ! self::is_comment_excluded_from_wp_comment_counts( $comment ) ) {
-			self::delete_comments_count_cache();
+			wp_cache_incr( 'wc_count_comments_' . $comment->comment_approved, 1, self::COMMENT_COUNT_CACHE_GROUP );
 		}
 	}
 
@@ -238,9 +243,17 @@ class WC_Comments {
 	 *
 	 * @return void
 	 */
-	public static function delete_comments_count_cache_on_comment_status_change( $new_status, $old_status, $comment ) {
+	public static function update_comments_count_cache_on_comment_status_change( $new_status, $old_status, $comment ) {
 		if ( ! self::is_comment_excluded_from_wp_comment_counts( $comment ) ) {
-			self::delete_comments_count_cache();
+			// WP Core uses different strings for the hooks than what is represented by the comment_approved value.
+			$old_status_map = [
+				'approved'   => '1',
+				'unapproved' => '0',
+			];
+			$old_status     = $old_status_map[ $old_status ] ?? $old_status;
+
+			wp_cache_incr( 'wc_count_comments_' . $comment->comment_approved, 1, self::COMMENT_COUNT_CACHE_GROUP );
+			wp_cache_decr( 'wc_count_comments_' . $old_status, 1, self::COMMENT_COUNT_CACHE_GROUP );
 		}
 	}
 
@@ -264,70 +277,76 @@ class WC_Comments {
 	 * is called.
 	 */
 	public static function delete_comments_count_cache() {
-		delete_transient( 'wc_count_comments' );
+		if ( wp_cache_supports( 'flush_group' ) ) {
+			wp_cache_flush_group( self::COMMENT_COUNT_CACHE_GROUP );
+		} else {
+			$comment_approved_values = array(
+				'0',
+				'1',
+				'spam',
+				'trash',
+				'post-trashed',
+			);
+			foreach ( $comment_approved_values as $approved_value ) {
+				wp_cache_delete( 'wc_count_comments_' . $approved_value, self::COMMENT_COUNT_CACHE_GROUP );
+			}
+		}
 	}
 
 	/**
 	 * Remove order notes, webhook delivery logs, and product reviews from wp_count_comments().
 	 *
-	 * @since  2.2
-	 * @param  object $stats   Comment stats.
-	 * @param  int    $post_id Post ID.
+	 * @param object $stats   Comment stats.
+	 * @param int    $post_id Post ID.
+	 *
 	 * @return object
+	 * @since  2.2
 	 */
 	public static function wp_count_comments( $stats, $post_id ) {
 		global $wpdb;
 
 		if ( 0 === $post_id ) {
-			$stats = get_transient( 'wc_count_comments' );
+			$comment_counts = array(
+				'approved'     => 0,
+				'moderated'    => 0,
+				'spam'         => 0,
+				'trash'        => 0,
+				'post-trashed' => 0,
+			);
 
-			if ( false === $stats ) {
-				$stats = array(
-					'total_comments' => 0,
-					'all'            => 0,
-				);
+			$mapping = array(
+				'0'            => 'moderated',
+				'1'            => 'approved',
+				'spam'         => 'spam',
+				'trash'        => 'trash',
+				'post-trashed' => 'post-trashed',
+			);
 
-				$count = $wpdb->get_results(
-					"
-					SELECT comment_approved, COUNT(*) AS num_comments
-					FROM {$wpdb->comments}
-					LEFT JOIN {$wpdb->posts} ON comment_post_ID = {$wpdb->posts}.ID
-					WHERE comment_type NOT IN ('action_log', 'order_note', 'webhook_delivery') AND {$wpdb->posts}.post_type NOT IN ('product')
-					GROUP BY comment_approved
-					",
-					ARRAY_A
-				);
-
-				$approved = array(
-					'0'            => 'moderated',
-					'1'            => 'approved',
-					'spam'         => 'spam',
-					'trash'        => 'trash',
-					'post-trashed' => 'post-trashed',
-				);
-
-				foreach ( (array) $count as $row ) {
-					// Don't count post-trashed toward totals.
-					if ( ! in_array( $row['comment_approved'], array( 'post-trashed', 'trash', 'spam' ), true ) ) {
-						$stats['all']            += $row['num_comments'];
-						$stats['total_comments'] += $row['num_comments'];
-					} elseif ( ! in_array( $row['comment_approved'], array( 'post-trashed', 'trash' ), true ) ) {
-						$stats['total_comments'] += $row['num_comments'];
-					}
-					if ( isset( $approved[ $row['comment_approved'] ] ) ) {
-						$stats[ $approved[ $row['comment_approved'] ] ] = $row['num_comments'];
-					}
+			foreach ( $mapping as $comment_approved => $comment_status ) {
+				// Cache is by comment_approved value as WP core uses different terms for the same value increasing the likelihood of bugs being introduced.
+				$cache_key = 'wc_count_comments_' . $comment_approved;
+				$count     = wp_cache_get( $cache_key, self::COMMENT_COUNT_CACHE_GROUP );
+				if ( $count === false ) {
+					$count = $wpdb->get_var(
+						$wpdb->prepare(
+							"
+							SELECT COUNT(*)
+							FROM {$wpdb->comments}
+							LEFT JOIN {$wpdb->posts} ON comment_post_ID = {$wpdb->posts}.ID
+							WHERE comment_type NOT IN ('action_log', 'order_note', 'webhook_delivery') AND {$wpdb->posts}.post_type NOT IN ('product')
+							AND comment_approved = %s
+							",
+							$comment_approved
+						)
+					);
+					wp_cache_set( $cache_key, $count, self::COMMENT_COUNT_CACHE_GROUP );
 				}
-
-				foreach ( $approved as $key ) {
-					if ( empty( $stats[ $key ] ) ) {
-						$stats[ $key ] = 0;
-					}
-				}
-
-				$stats = (object) $stats;
-				set_transient( 'wc_count_comments', $stats );
+				$comment_counts[ $comment_status ] = (int) $count;
 			}
+
+			$comment_counts['all']            = $comment_counts['approved'] + $comment_counts['moderated'];
+			$comment_counts['total_comments'] = $comment_counts['all'] + $comment_counts['spam'];
+			$stats                            = (object) $comment_counts;
 		}
 
 		return $stats;
