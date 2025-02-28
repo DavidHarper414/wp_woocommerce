@@ -789,7 +789,169 @@ describe( 'Job Processing', () => {
 								events: [],
 								changes: [ /test.js$/ ],
 								command: 'test-cmd',
-								ignoreDependenciesChanged: true,
+								onlyForDependencies: [ 'test-a' ],
+							},
+						],
+					},
+					dependencies: [
+						{
+							name: 'test-a',
+							path: 'test-a',
+							ciConfig: {
+								jobs: [
+									{
+										type: JobType.Test,
+										testType: 'unit',
+										name: 'Default A',
+										shardingArguments: [],
+										events: [],
+										changes: [ /test-a.js$/ ],
+										command: 'test-cmd-a',
+									},
+								],
+							},
+							dependencies: [],
+						},
+						{
+							name: 'test-b',
+							path: 'test-b',
+							ciConfig: {
+								jobs: [
+									{
+										type: JobType.Test,
+										testType: 'unit',
+										name: 'Default B',
+										shardingArguments: [],
+										events: [],
+										changes: [ /test-b.js$/ ],
+										command: 'test-cmd-b',
+									},
+								],
+							},
+							dependencies: [],
+						},
+					],
+				},
+				{
+					'test-b': [ 'test-b.js' ],
+				},
+				{}
+			);
+
+			expect( jobs.lint ).toHaveLength( 0 );
+			expect( jobs.test ).toHaveLength( 1 );
+			expect( jobs.test ).toContainEqual( {
+				projectName: 'test-b',
+				projectPath: 'test-b',
+				name: 'Default B',
+				command: 'test-cmd-b',
+				shardNumber: 0,
+				testEnv: {
+					shouldCreate: false,
+					envVars: {},
+				},
+				testType,
+			} );
+		} );
+
+		it( 'should not trigger test job if all dependencies are ignored', async () => {
+			const testType = 'unit';
+			const jobs = await createJobsForChanges(
+				{
+					name: 'test',
+					path: 'test',
+					ciConfig: {
+						jobs: [
+							{
+								type: JobType.Test,
+								testType,
+								name: 'Default',
+								shardingArguments: [],
+								events: [],
+								changes: [ /test.js$/ ],
+								command: 'test-cmd',
+								onlyForDependencies: [],
+							},
+						],
+					},
+					dependencies: [
+						{
+							name: 'test-a',
+							path: 'test-a',
+							ciConfig: {
+								jobs: [
+									{
+										type: JobType.Test,
+										testType: 'unit',
+										name: 'Default A',
+										shardingArguments: [],
+										events: [],
+										changes: [ /test-a.js$/ ],
+										command: 'test-cmd-a',
+									},
+								],
+							},
+							dependencies: [],
+						},
+						{
+							name: 'test-b',
+							path: 'test-b',
+							ciConfig: {
+								jobs: [
+									{
+										type: JobType.Test,
+										testType: 'unit',
+										name: 'Default B',
+										shardingArguments: [],
+										events: [],
+										changes: [ /test-b.js$/ ],
+										command: 'test-cmd-b',
+									},
+								],
+							},
+							dependencies: [],
+						},
+					],
+				},
+				{
+					'test-b': [ 'test-b.js' ],
+				},
+				{}
+			);
+
+			expect( jobs.lint ).toHaveLength( 0 );
+			expect( jobs.test ).toHaveLength( 1 );
+			expect( jobs.test ).toContainEqual( {
+				projectName: 'test-b',
+				projectPath: 'test-b',
+				name: 'Default B',
+				command: 'test-cmd-b',
+				shardNumber: 0,
+				testEnv: {
+					shouldCreate: false,
+					envVars: {},
+				},
+				testType,
+			} );
+		} );
+
+		it( 'should trigger test job if the listed dependency is changed', async () => {
+			const testType = 'unit';
+			const jobs = await createJobsForChanges(
+				{
+					name: 'test',
+					path: 'test',
+					ciConfig: {
+						jobs: [
+							{
+								type: JobType.Test,
+								testType,
+								name: 'Default',
+								shardingArguments: [],
+								events: [],
+								changes: [ /test.js$/ ],
+								command: 'test-cmd',
+								onlyForDependencies: [ 'test-a' ],
 							},
 						],
 					},
@@ -821,7 +983,19 @@ describe( 'Job Processing', () => {
 			);
 
 			expect( jobs.lint ).toHaveLength( 0 );
-			expect( jobs.test ).toHaveLength( 1 );
+			expect( jobs.test ).toHaveLength( 2 );
+			expect( jobs.test ).toContainEqual( {
+				projectName: 'test',
+				projectPath: 'test',
+				name: 'Default',
+				command: 'test-cmd',
+				shardNumber: 0,
+				testEnv: {
+					shouldCreate: false,
+					envVars: {},
+				},
+				testType,
+			} );
 			expect( jobs.test ).toContainEqual( {
 				projectName: 'test-a',
 				projectPath: 'test-a',

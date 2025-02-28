@@ -343,9 +343,9 @@ export interface TestJobConfig extends BaseJobConfig {
 	report?: ReportConfig;
 
 	/**
-	 * Whether to ignore dependencies being changed. The job will not be triggered if only dependencies have changed.
+	 * A list of dependencies that if changed should trigger the job. If not set, any changed dependency will trigger the job.
 	 */
-	ignoreDependenciesChanged?: boolean;
+	onlyForDependencies?: string[];
 }
 
 /**
@@ -370,14 +370,20 @@ function parseTestJobConfig( raw: any ): TestJobConfig {
 		testType = raw.testType.toLowerCase();
 	}
 
-	let ignoreDependenciesChanged = false;
-	if ( raw.ignoreDependenciesChanged ) {
-		if ( typeof raw.ignoreDependenciesChanged !== 'boolean' ) {
+	if ( raw.onlyForDependencies ) {
+		if ( ! Array.isArray( raw.onlyForDependencies ) ) {
 			throw new ConfigError(
-				'The "ignoreDependenciesChanged" property must be a boolean.'
+				'onlyForDependencies configuration must be an array of strings.'
 			);
 		}
-		ignoreDependenciesChanged = raw.ignoreDependenciesChanged;
+
+		for ( const entry of raw.onlyForDependencies ) {
+			if ( typeof entry !== 'string' ) {
+				throw new ConfigError(
+					'onlyForDependencies configuration must be an array of strings.'
+				);
+			}
+		}
 	}
 
 	const config: TestJobConfig = {
@@ -386,7 +392,7 @@ function parseTestJobConfig( raw: any ): TestJobConfig {
 		testType,
 		shardingArguments: raw.shardingArguments || [],
 		name: raw.name,
-		ignoreDependenciesChanged,
+		onlyForDependencies: raw.onlyForDependencies,
 	};
 
 	if ( raw.testEnv ) {
