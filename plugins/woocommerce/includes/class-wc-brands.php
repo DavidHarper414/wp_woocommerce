@@ -1138,7 +1138,7 @@ class WC_Brands {
 			return false;
 		}
 
-		return strpos( $template->content, '"term":"product_brand"' ) !== false;
+		return strpos( $template->content, '<!-- wp:post-terms {"term":"product_brand"' ) !== false;
 	}
 
 	/**
