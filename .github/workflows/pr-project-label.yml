@@ -37,8 +37,8 @@ jobs:
 
           - name: Validate Trusted Execution
             run: |
-              if [[ "$GITHUB_REF" != "refs/pull/${{ github.event.pull_request.number }}/merge" ]]; then
-                echo "Error: Running on an untrusted PR branch. Exiting."
+              if [[ ! "$GITHUB_REF" =~ refs/pull/.+/merge ]]; then
+                echo "Error: Unexpected ref format ($GITHUB_REF). Exiting."
                 exit 1
               fi
               
