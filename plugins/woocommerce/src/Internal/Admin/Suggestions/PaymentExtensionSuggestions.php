@@ -230,6 +230,7 @@ class PaymentExtensionSuggestions {
 			),
 		),
 		'AD' => array(
+			self::MONEI,
 			self::PAYPAL_WALLET => array(
 				'_append' => array(
 					'tags' => array( self::TAG_PREFERRED ),
@@ -2612,7 +2613,7 @@ class PaymentExtensionSuggestions {
 				'icon'        => plugins_url( 'assets/images/onboarding/icons/vivacom.svg', WC_PLUGIN_FILE ),
 				'plugin'      => array(
 					'_type' => self::PLUGIN_TYPE_WPORG,
-					'slug'  => 'vivawallet-woocommerce-gateway',
+					'slug'  => 'viva-com-smart-for-woocommerce',
 				),
 				'links'       => array(
 					array(

@@ -1635,6 +1635,10 @@ if ( ! function_exists( 'woocommerce_catalog_ordering' ) ) {
 			unset( $catalog_orderby_options['rating'] );
 		}
 
+		if ( is_array( $orderby ) ) {
+			$orderby = current( array_intersect( $orderby, array_keys( $catalog_orderby_options ) ) );
+		}
+
 		if ( ! array_key_exists( $orderby, $catalog_orderby_options ) ) {
 			$orderby = current( array_keys( $catalog_orderby_options ) );
 		}
@@ -3615,6 +3619,17 @@ if ( ! function_exists( 'wc_no_products_found' ) ) {
 	 * Handles the loop when no products were found/no product exist.
 	 */
 	function wc_no_products_found() {
+		if ( ! function_exists( 'wc_print_notice' ) ) {
+			// wc_print_notice() is used in our default template, so this likely means this function was called out of
+			// context. We include the notice functions here to avoid a fatal error.
+			wc_doing_it_wrong(
+				__FUNCTION__,
+				'Function should only be used during frontend requests.',
+				'9.8.0'
+			);
+			return;
+		}
+
 		wc_get_template( 'loop/no-products-found.php' );
 	}
 }

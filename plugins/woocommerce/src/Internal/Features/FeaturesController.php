@@ -5,6 +5,7 @@
 
 namespace Automattic\WooCommerce\Internal\Features;
 
+use WC_Tracks;
 use WC_Site_Tracking;
 use Automattic\Jetpack\Constants;
 use Automattic\WooCommerce\Internal\Admin\Analytics;
@@ -100,13 +101,28 @@ class FeaturesController {
 	 * Creates a new instance of the class.
 	 */
 	public function __construct() {
+		// In principle, register_additional_features is triggered manually from within class-woocommerce
+		// right before before_woocommerce_init is fired (this is needed for the features to be visible
+		// to plugins executing declare_compatibility).
+		// However we add additional checks/hookings here to support unit tests and possible overlooked/future
+		// DI container/class instantiation nuances.
+		if ( ! $this->registered_additional_features ) {
+			if ( did_action( 'before_woocommerce_init' ) ) {
+				// Needed for unit tests, where 'before_woocommerce_init' will have been fired already at this point.
+				$this->register_additional_features();
+			} else {
+				// This needs to have a higher $priority than the 'before_woocommerce_init' hooked by plugins that declare compatibility.
+				add_filter( 'before_woocommerce_init', array( $this, 'register_additional_features' ), -9999, 0 );
+			}
+		}
+
 		if ( did_action( 'init' ) ) {
 			// Needed for unit tests, where 'init' will have been fired already at this point.
-			$this->register_additional_features();
+			$this->start_listening_for_option_changes();
 		} else {
 			add_filter( 'init', array( $this, 'start_listening_for_option_changes' ), 10, 0 );
-			add_filter( 'init', array( $this, 'register_additional_features' ), 1, 0 ); // This needs to have a higher $priority than the 'init' hooked in class-woocommerce.
 		}
+
 		add_filter( 'woocommerce_get_sections_advanced', array( $this, 'add_features_section' ), 10, 1 );
 		add_filter( 'woocommerce_get_settings_advanced', array( $this, 'add_feature_settings' ), 10, 2 );
 		add_filter( 'deactivated_plugin', array( $this, 'handle_plugin_deactivation' ), 10, 1 );
@@ -118,6 +134,7 @@ class FeaturesController {
 		add_filter( 'views_plugins', array( $this, 'handle_plugins_page_views_list' ), 10, 1 );
 		add_filter( 'woocommerce_admin_shared_settings', array( $this, 'set_change_feature_enable_nonce' ), 20, 1 );
 		add_action( 'admin_init', array( $this, 'change_feature_enable_from_query_params' ), 20, 0 );
+		add_action( self::FEATURE_ENABLED_CHANGED_ACTION, array( $this, 'display_email_improvements_feedback_notice' ), 10, 2 );
 	}
 
 	/**
@@ -842,6 +859,14 @@ class FeaturesController {
 			return;
 		}
 
+		WC_Tracks::record_event(
+			self::FEATURE_ENABLED_CHANGED_ACTION,
+			array(
+				'feature_id' => $feature_id,
+				'enabled'    => $value,
+			)
+		);
+
 		/**
 		 * Action triggered when a feature is enabled or disabled (the value of the corresponding setting option is changed).
 		 *
@@ -1556,6 +1581,25 @@ class FeaturesController {
 		if ( count( $query_params_to_remove ) > 1 && isset( $_SERVER['REQUEST_URI'] ) ) {
 			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			wp_safe_redirect( remove_query_arg( $query_params_to_remove, $_SERVER['REQUEST_URI'] ) );
+		}
+	}
+
+	/**
+	 * Display the email improvements feedback notice to render CES modal in.
+	 *
+	 * @param string $feature_id The feature id.
+	 * @param bool   $is_enabled Whether the feature is enabled.
+	 *
+	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
+	 */
+	public function display_email_improvements_feedback_notice( $feature_id, $is_enabled ): void {
+		if ( 'email_improvements' === $feature_id && ! $is_enabled ) {
+			add_action(
+				'admin_notices',
+				function () {
+					echo '<div id="wc_settings_features_email_feedback_slotfill"></div>';
+				}
+			);
 		}
 	}
 }
