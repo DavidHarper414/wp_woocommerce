@@ -147,8 +147,12 @@ trait CheckoutTrait {
 	 */
 	private function update_order_from_request( \WP_REST_Request $request ) {
 		$this->order->set_customer_note( wc_sanitize_textarea( $request['customer_note'] ) ?? '' );
-		$this->order->set_payment_method( $this->get_request_payment_method_id( $request ) );
-		$this->order->set_payment_method_title( $this->get_request_payment_method_title( $request ) );
+		$payment_method = $this->get_request_payment_method( $request );
+		if ( null !== $payment_method ) {
+			WC()->session->set( 'chosen_payment_method', $payment_method->id );
+			$this->order->set_payment_method( $payment_method->id );
+			$this->order->set_payment_method_title( $payment_method->title );
+		}
 		$this->persist_additional_fields_for_order( $request );
 
 		wc_do_deprecated_action(
