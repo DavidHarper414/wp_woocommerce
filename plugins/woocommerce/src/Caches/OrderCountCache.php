@@ -13,7 +13,7 @@ use Automattic\WooCommerce\Utilities\OrderUtil;
 /**
  * A class to cache counts for various order statuses.
  */
-class OrderCountCache extends ObjectCache {
+class OrderCountCache {
 
 	/**
 	 * Default value for the duration of the objects in the cache, in seconds
@@ -21,33 +21,14 @@ class OrderCountCache extends ObjectCache {
 	 *
 	 * @var int
 	 */
-	protected $default_expiration = DAY_IN_SECONDS;
+	protected $expiration = DAY_IN_SECONDS;
 
 	/**
-	 * Cache key.
+	 * Cache prefix.
 	 *
 	 * @var string
 	 */
-	private $cache_key;
-
-	/**
-	 * Get the cache key and prefix to use for Orders.
-	 *
-	 * @return string
-	 */
-	public function get_object_type(): string {
-		return 'order-count';
-	}
-
-	/**
-	 * Get the id of an object to be cached.
-	 *
-	 * @param array|object $object The object to be cached.
-	 * @return int|string|null The id of the object, or null if it can't be determined.
-	 */
-	protected function get_object_id( $object ) {
-		return null;
-	}
+	private $cache_prefix = 'order-count';
 
 	/**
 	 * Validate an object before caching it.
@@ -79,6 +60,18 @@ class OrderCountCache extends ObjectCache {
 	}
 
 	/**
+	 * Get the default statuses.
+	 *
+	 * @return string[]
+	 */
+	private function get_default_statuses() {
+		return array_merge(
+			array_keys( wc_get_order_statuses() ),
+			array( OrderStatus::TRASH )
+		);
+	}
+
+	/**
 	 * Add an object to the cache, or update an already cached object.
 	 *
 	 * @param object|array    $object The object to be cached.
@@ -87,8 +80,20 @@ class OrderCountCache extends ObjectCache {
 	 * @return bool True on success, false on error.
 	 * @throws CacheException Invalid parameter, or null id was passed and get_object_id returns null too.
 	 */
-	public function set( $object, $id = null, int $expiration = self::DEFAULT_EXPIRATION ): bool {
-		return parent::set( $object, $id, $expiration );
+	public function set( $order_type, $order_status, int $value ): bool {
+		$cache_key = $this->get_cache_key( $order_type, $order_status );
+		return wp_cache_set( $cache_key, $value, '', $this->expiration );
+	}
+
+	/**
+	 * Get the cache key for a given order type and status.
+	 *
+	 * @param string $order_type The type of order.
+	 * @param string $order_status The status of the order.
+	 * @return string The cache key.
+	 */
+	private function get_cache_key( $order_type, $order_status ) {
+		return $this->cache_prefix . '_' . $order_type . '_' . $order_status;
 	}
 
 	/**
@@ -104,7 +109,66 @@ class OrderCountCache extends ObjectCache {
 	 * @return object|array|null Cached object, or null if it's not cached and can't be retrieved from datastore or via callback.
 	 * @throws CacheException Invalid id parameter.
 	 */
-	public function get( $id, int $expiration = self::DEFAULT_EXPIRATION, ?callable $get_from_datastore_callback = null ) {
-		return parent::get( $id, $expiration );
+	public function get( $order_type, $order_statuses = array() ) {
+		if ( empty( $order_statuses ) ) {
+			$order_statuses = $this->get_default_statuses();
+		}
+
+		$cache_keys = array_map( function( $order_statuses ) use ( $order_type ) {
+			return $this->get_cache_key( $order_type, $order_statuses );
+		}, $order_statuses );
+
+		$cache_values  = wp_cache_get_multiple( $cache_keys );
+		$status_values = array();
+
+		foreach ( $cache_values as $key => $value ) {
+			// Return null for the entire cache if any of the default statuses are not found.
+			if ( $value === false ) {
+				return null;
+			}
+
+			$order_status                   = str_replace( $this->get_cache_key( $order_type, '' ), '', $key );
+			$status_values[ $order_status ] = $value;
+		}
+
+		return $status_values;
+	}
+
+	/**
+	 * Increment the cache value for a given order status.
+	 *
+	 * @param string $order_type The type of order.
+	 * @param string $order_status The status of the order.
+	 * @param int $offset The amount to increment by.
+	 * @return int The new value of the cache.
+	 */
+	public function increment( $order_type, $order_status, $offset = 1 ) {
+		$cache_key = $this->get_cache_key( $order_type, $order_status );
+		return wp_cache_incr( $cache_key, $offset );
+	}
+
+	/**
+	 * Decrement the cache value for a given order status.
+	 *
+	 * @param string $order_type The type of order.
+	 * @param string $order_status The status of the order.
+	 * @param int $offset The amount to decrement by.
+	 * @return int The new value of the cache.
+	 */
+	public function decrement( $order_type, $order_status, $offset = 1 ) {
+		$cache_key = $this->get_cache_key( $order_type, $order_status );
+		return wp_cache_decr( $cache_key, $offset );
+	}
+
+	/**
+	 * Check if the cache has a value for a given order type and status.
+	 *
+	 * @param string $order_type The type of order.
+	 * @param string $order_status The status of the order.
+	 * @return bool True if the cache has a value, false otherwise.
+	 */
+	public function is_cached( $order_type, $order_status ) {
+		$cache_key = $this->get_cache_key( $order_type, $order_status );
+		return wp_cache_get( $cache_key ) !== false;
 	}
 }
