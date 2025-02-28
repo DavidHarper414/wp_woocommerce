@@ -188,25 +188,25 @@ function wc_delete_related_product_transients( $post_id ) {
 		return;
 	}
 
-	$transient_name       = 'wc_related_' . $post_id;
-	$old_transient        = get_transient( $transient_name );
-	$old_related_products = array();
+	$transient_name          = 'wc_related_' . $post_id;
+	$old_transient           = get_transient( $transient_name );
+	$old_related_product_ids = array();
 
 	if ( is_array( $old_transient ) && ! empty( $old_transient ) ) {
-		$old_related_products = $old_transient[ array_key_first( $old_transient ) ];
+		$old_related_product_ids = $old_transient[ array_key_first( $old_transient ) ];
 	}
 
-	// Delete current product transient.
+	// Delete current product transient so that it can be refreshed below.
 	delete_transient( $transient_name );
 
 	// Gets new related products and sets current product transient.
-	$new_related_products = wc_get_related_products( $post_id, 1000 );
+	$new_related_product_ids = wc_get_related_products( $post_id, 1000 );
 
 	// Combine all product IDs that need their transients cleared.
 	$related_product_ids = array_unique(
 		array_merge(
-			$old_related_products,
-			$new_related_products
+			$old_related_product_ids,
+			$new_related_product_ids
 		)
 	);
 
@@ -215,29 +215,14 @@ function wc_delete_related_product_transients( $post_id ) {
 	}
 
 	// Create the list of transient names to delete.
-	$transient_names = array();
-	foreach ( $related_product_ids as $id ) {
-		$transient_names[] = '_transient_timeout_wc_related_' . $id;
-		$transient_names[] = '_transient_wc_related_' . $id;
-	}
-
-	// Delete specific timeout and transient entries.
-	if ( wp_using_ext_object_cache() ) {
-		// When using external object cache, we need to delete each transient individually.
-		foreach ( $related_product_ids as $id ) {
-			delete_transient( 'wc_related_' . $id );
-		}
-	} else {
-		// For database storage, we can use a single query for better performance.
-		$wpdb->query(
-			$wpdb->prepare(
-				'DELETE FROM ' . $wpdb->options . ' WHERE option_name IN ( ' . implode( ', ', array_fill( 0, count( $transient_names ), '%s' ) ) . ' )',
-				$transient_names
-			)
-		);
-	}
+	$related_product_transients = array_map(
+		function ( $id ) {
+			return 'wc_related_' . $id;
+		},
+		$related_product_ids
+	);
+	_wc_delete_transients( $related_product_transients );
 }
-
 add_action( 'wc_delete_related_product_transients_async', 'wc_delete_related_product_transients' );
 
 /**
