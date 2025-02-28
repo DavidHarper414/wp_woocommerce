@@ -1,6 +1,6 @@
 # WooCommerce Performance Tests
 
-Automated k6 performance tests for WooCommerce. To be used for benchmarking performance (both single user and under load) by simulating and measuring the response time of HTTP requests.
+Automated k6 HTTP performance tests for WooCommerce. To be used for benchmarking performance (both single user and under load) by simulating and measuring the response time of HTTP requests.
 
 ## Table of contents
 
