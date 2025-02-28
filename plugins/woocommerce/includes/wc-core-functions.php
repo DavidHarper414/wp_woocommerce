@@ -2796,7 +2796,7 @@ function _wc_delete_transients( $transients ) {
 		} catch ( Exception $e ) {
 			wc_get_logger()->error(
 				sprintf( 'Exception when deleting transients: %s', $e->getMessage() ),
-				array( 'source' => 'wc_delete_transients' )
+				array( 'source' => '_wc_delete_transients' )
 			);
 			return false;
 		}
