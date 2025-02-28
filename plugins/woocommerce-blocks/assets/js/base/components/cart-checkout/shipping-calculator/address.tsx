@@ -5,8 +5,8 @@ import { __ } from '@wordpress/i18n';
 import Button from '@woocommerce/base-components/button';
 import { useState } from '@wordpress/element';
 import isShallowEqual from '@wordpress/is-shallow-equal';
-import type { ShippingAddress, FormFields } from '@woocommerce/settings';
-import { validationStore, CART_STORE_KEY } from '@woocommerce/block-data';
+import type { ShippingAddress, AddressForm } from '@woocommerce/settings';
+import { validationStore, cartStore } from '@woocommerce/block-data';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useFocusReturn } from '@woocommerce/base-utils';
 import { useCheckoutAddress } from '@woocommerce/base-context';
@@ -20,9 +20,9 @@ import { useFormFields } from '../form/use-form-fields';
 
 interface ShippingCalculatorAddressProps {
 	address: ShippingAddress;
-	onUpdate: ( address: ShippingAddress ) => void;
+	onUpdate: ( address: Partial< ShippingAddress > ) => void;
 	onCancel: () => void;
-	addressFields: Partial< keyof FormFields >[];
+	addressFields: Partial< keyof AddressForm >[];
 }
 const ShippingCalculatorAddress = ( {
 	address: initialAddress,
@@ -39,9 +39,10 @@ const ShippingCalculatorAddress = ( {
 				hasValidationErrors:
 					select( validationStore ).hasValidationErrors(),
 				isCustomerDataUpdating:
-					select( CART_STORE_KEY ).isCustomerDataUpdating(),
+					select( cartStore ).isCustomerDataUpdating(),
 			};
-		}
+		},
+		[]
 	);
 	const { defaultFields } = useCheckoutAddress();
 	const formFields = useFormFields(
@@ -55,9 +56,18 @@ const ShippingCalculatorAddress = ( {
 		const requiredFields = formFields
 			.filter( ( field ) => field.required && ! field.hidden )
 			.map( ( field ) => field.key );
-		return requiredFields.every(
-			( field ) => address[ field ] && address[ field ].trim() !== ''
-		);
+
+		return requiredFields.every( ( field ) => {
+			const value = address[ field ];
+
+			// In the CoreAddress type, additional fields can be boolean.
+			// TODO: You should find out, whether these additional fields need to be considered in this code.
+			if ( typeof value === 'string' ) {
+				return value.trim() !== '';
+			}
+
+			return false;
+		} );
 	};
 
 	const validateSubmit = () => {
@@ -93,15 +103,16 @@ const ShippingCalculatorAddress = ( {
 							return onCancel();
 						}
 
-						const addressToSubmit = addressFields.reduce(
-							( acc, key ) => {
-								if ( typeof address[ key ] !== 'undefined' ) {
-									acc[ key ] = address[ key ];
-								}
-								return acc;
-							},
-							{} as ShippingAddress
-						);
+						const addressToSubmit = addressFields.reduce<
+							Partial< ShippingAddress >
+						>( ( acc, key ) => {
+							if ( typeof address[ key ] !== 'undefined' ) {
+								// This type incompatibility is due to additional fields being able to contain a boolean
+								// value. We should clean up these types in the future.
+								acc[ key ] = address[ key ];
+							}
+							return acc;
+						}, {} );
 
 						onUpdate( addressToSubmit );
 					}

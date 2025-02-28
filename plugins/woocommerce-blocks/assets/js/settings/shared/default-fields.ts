@@ -113,8 +113,8 @@ export interface BillingAddress extends ShippingAddress {
 	email: string;
 }
 
-export type KeyedFormField = FormField & {
-	key: keyof FormFields;
+export type KeyedFormField< T extends keyof FormFields > = FormField & {
+	key: T;
 	errorMessage?: string;
 };
 

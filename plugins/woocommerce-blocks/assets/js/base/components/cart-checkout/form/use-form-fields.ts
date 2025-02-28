@@ -18,17 +18,17 @@ import prepareFormFields from './prepare-form-fields';
 /**
  * Combines address fields, including fields from the locale, and sorts them by index.
  */
-export const useFormFields = (
+export const useFormFields = < T extends keyof FormFields >(
 	// List of field keys to include in the form.
-	fieldKeys: ( keyof FormFields )[],
+	fieldKeys: T[],
 	// Default fields from settings.
 	defaultFields: FormFields,
 	// Form type, can be billing, shipping, contact, additional-information, or calculator.
 	formType: string,
 	// Address country.
 	addressCountry = ''
-): KeyedFormField[] => {
-	const currentResults = useRef< KeyedFormField[] >( [] );
+): KeyedFormField< T >[] => {
+	const currentResults = useRef< KeyedFormField< T >[] >( [] );
 	const { parser, data } = useSchemaParser( formType );
 
 	const formFields = prepareFormFields(

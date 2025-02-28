@@ -31,7 +31,7 @@ export interface AddressFormProps< T > {
 	// Array of fields in form.
 	fields: ( keyof FormFields )[];
 	// Called with the new address data when the address form changes. This is only called when all required fields are filled and there are no validation errors.
-	onChange: ( newValue: AddressFormValues | ContactFormValues ) => void;
+	onChange: ( newValue: T ) => void;
 	// Values for fields.
 	values: T;
 	// support inserting children at end of form
