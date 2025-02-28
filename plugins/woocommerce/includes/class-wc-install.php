@@ -706,7 +706,7 @@ class WC_Install {
 			 */
 			if ( self::is_db_auto_update_enabled() ) {
 				wc_get_logger()->info( 'Automatic database update triggered.', array( 'source' => 'wc-updater' ) );
-				self::update( true );
+				self::update();
 			} else {
 				WC_Admin_Notices::add_notice( 'update', true );
 			}
@@ -748,7 +748,7 @@ class WC_Install {
 	 *
 	 * @param bool $schedule_with_delay Whether updates are scheduled to run with a random delay (of up to 15 mins).
 	 */
-	private static function update( bool $schedule_with_delay = false ) {
+	private static function update() {
 		$current_db_version = get_option( 'woocommerce_db_version' );
 		$current_wc_version = WC()->version;
 		$scheduled_time     = time();
@@ -758,25 +758,22 @@ class WC_Install {
 			array( 'source' => 'wc-updater' )
 		);
 
-		// We add some randomness here to prevent overloading servers after an upate has been installed.
-		if ( $schedule_with_delay ) {
+		if ( self::is_db_auto_update_enabled() ) {
 			/**
-			 * Filters the maximum delay in seconds to apply to the scheduling of database updates when automatic
-			 * updates are enabled.
+			 * Filters the delay in seconds to apply to the scheduling of database updates when automatic updates are
+			 * enabled.
 			 *
 			 * @since 9.9.0
 			 *
-			 * @param int $delay The maximum delay in seconds. Default is 1800 (30 minutes).
+			 * @param int $delay Delay to add. Default is 0 (updates will run as soon as possible).
 			 */
-			$scheduled_time_delay = absint( apply_filters( 'woocommerce_db_update_schedule_delay', 30 * MINUTE_IN_SECONDS ) );
-			$scheduled_time_delay = wp_rand( 0, $scheduled_time_delay );
+			$scheduled_time_delay = absint( apply_filters( 'woocommerce_db_update_schedule_delay', 0 ) );
 
 			if ( $scheduled_time_delay > 0 ) {
 				wc_get_logger()->info(
 					sprintf( '  Updates will begin running in approximately %s.', human_time_diff( 0, $scheduled_time_delay ) ),
 					array( 'source' => 'wc-updater' )
 				);
-
 				$scheduled_time += $scheduled_time_delay;
 			}
 		}
