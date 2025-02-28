@@ -443,7 +443,13 @@ class Plugins extends \WC_REST_Data_Controller {
 		$connect_url  = \Jetpack::init()->build_connect_url( true, $redirect_url, 'woocommerce-onboarding' );
 
 		$calypso_env = defined( 'WOOCOMMERCE_CALYPSO_ENVIRONMENT' ) && in_array( WOOCOMMERCE_CALYPSO_ENVIRONMENT, array( 'development', 'wpcalypso', 'horizon', 'stage' ), true ) ? WOOCOMMERCE_CALYPSO_ENVIRONMENT : 'production';
-		$connect_url = add_query_arg( array( 'calypso_env' => $calypso_env ), $connect_url );
+		$connect_url = add_query_arg(
+			array(
+				'calypso_env' => $calypso_env,
+				'plugin_name' => 'jetpack-ai',
+			),
+			$connect_url
+		);
 
 		return( array(
 			'slug'          => 'jetpack',

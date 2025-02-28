@@ -1,0 +1,4 @@
+Significance: minor
+Type: tweak
+
+Add plugin_name to default jetpack connection URL
