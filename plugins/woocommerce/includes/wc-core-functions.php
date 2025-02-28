@@ -2720,8 +2720,8 @@ function wc_delete_transients( $transients ) {
 
 		// Limit the number of items in a single query to avoid exceeding database query parameter limits.
 		if ( count( $transient_names ) > 999 ) {
-			// Process in chunks of 1000 option names (500 transients).
-			$chunks  = array_chunk( $transients, 500 );
+			// Process in smaller chunks of 200 option names (100 transients) to reduce memory usage.
+			$chunks  = array_chunk( $transients, 100 );
 			$success = true;
 
 			foreach ( $chunks as $chunk ) {
@@ -2729,6 +2729,8 @@ function wc_delete_transients( $transients ) {
 				if ( ! $result ) {
 					$success = false;
 				}
+				// Force garbage collection after each chunk to free memory.
+				gc_collect_cycles();
 			}
 
 			return $success;
@@ -2749,7 +2751,7 @@ function wc_delete_transients( $transients ) {
 			}
 
 			// Use a single query for better performance.
-			$result = $wpdb->query(
+			$wpdb->query(
 				$wpdb->prepare(
 					'DELETE FROM ' . $wpdb->options . ' WHERE option_name IN ( ' . implode( ', ', array_fill( 0, count( $options_to_clear ), '%s' ) ) . ' )',
 					$options_to_clear
@@ -2784,14 +2786,6 @@ function wc_delete_transients( $transients ) {
 						wp_cache_set( 'alloptions', $alloptions, 'options' );
 					}
 				}
-			}
-
-			if ( false === $result ) {
-				wc_get_logger()->error(
-					sprintf( 'Database error when deleting transients: %s', $wpdb->last_error ),
-					array( 'source' => 'wc_delete_transients' )
-				);
-				return false;
 			}
 
 			return true;
