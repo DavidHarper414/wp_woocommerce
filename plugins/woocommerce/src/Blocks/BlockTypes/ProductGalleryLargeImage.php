@@ -72,15 +72,6 @@ class ProductGalleryLargeImage extends AbstractBlock {
 		}
 
 		$images_html = $this->get_main_images_html( $block->context, $post_id );
-		$directives  = $this->get_directives( $block->context );
-
-		$directives_html = array_reduce(
-			array_keys( $directives ),
-			function ( $carry, $key ) use ( $directives ) {
-				return $carry . ' ' . $key . '="' . esc_attr( $directives[ $key ] ) . '"';
-			},
-			''
-		);
 		wp_enqueue_script_module( $this->get_full_block_name() );
 
 		$processor = new \WP_HTML_Tag_Processor( $content );
@@ -90,7 +81,7 @@ class ProductGalleryLargeImage extends AbstractBlock {
 
 		ob_start();
 		?>
-			<div class="wc-block-product-gallery-large-image wp-block-woocommerce-product-gallery-large-image" <?php echo $directives_html; ?>>
+			<div class="wc-block-product-gallery-large-image wp-block-woocommerce-product-gallery-large-image">
 				<ul class="wc-block-product-gallery-large-image__container" tabindex="-1">
 					<?php echo $images_html; ?>
 				</ul>
@@ -112,6 +103,15 @@ class ProductGalleryLargeImage extends AbstractBlock {
 	private function get_main_images_html( $context ) {
 		$base_classes = 'wc-block-woocommerce-product-gallery-large-image__image';
 
+		$directives      = $this->get_directives( $context );
+		$directives_html = array_reduce(
+			array_keys( $directives ),
+			function ( $carry, $key ) use ( $directives ) {
+				return $carry . ' ' . $key . '="' . esc_attr( $directives[ $key ] ) . '"';
+			},
+			''
+		);
+
 		if ( $context['fullScreenOnClick'] ) {
 			$base_classes .= ' wc-block-woocommerce-product-gallery-large-image__image--full-screen-on-click';
 		}
@@ -122,7 +122,7 @@ class ProductGalleryLargeImage extends AbstractBlock {
 		ob_start();
 		?>
 			<template data-wp-each--largeimage="state.visibleImageData" data-wp-each-key="context.largeimage.id">
-				<li class="wc-block-product-gallery-large-image__wrapper">
+				<li class="wc-block-product-gallery-large-image__wrapper" <?php echo $directives_html; ?>>
 					<img
 						class="<?php echo esc_attr( $base_classes ); ?>"
 						data-wp-bind--src="context.largeimage.src"

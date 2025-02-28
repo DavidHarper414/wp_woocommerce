@@ -140,7 +140,7 @@ class ProductGallery extends AbstractBlock {
 						'touchCurrentX'       => 0,
 						'productId'           => $product_id,
 						'imageIds'            => ProductGalleryUtils::get_product_gallery_image_ids( $product, null, false ),
-						'imageId'             => $image_id,
+						'selectedImageId'     => $image_id,
 						'userHasInteracted'   => false,
 					),
 					JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP

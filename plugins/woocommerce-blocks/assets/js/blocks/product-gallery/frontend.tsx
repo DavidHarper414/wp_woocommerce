@@ -11,7 +11,7 @@ import type { StorePart } from '@woocommerce/utils';
 export interface ProductGalleryContext {
 	// It's an actual image number, not an index, hence one-based!
 	selectedImageNumber: number;
-	imageId: string;
+	selectedImageId: string;
 	imageIds: string[];
 	isDialogOpen: boolean;
 	productId: string;
@@ -63,12 +63,15 @@ const scrollImageIntoView = ( imageId: string ) => {
 const productGallery = {
 	state: {
 		get isSelected() {
-			const { selectedImageNumber, imageIds, imageId } = getContext();
-			return selectedImageNumber === imageIds.indexOf( imageId ) + 1;
+			const { selectedImageNumber, imageIds, selectedImageId } =
+				getContext();
+			return (
+				selectedImageNumber === imageIds.indexOf( selectedImageId ) + 1
+			);
 		},
 		get imageIndex(): number {
-			const { imageIds, imageId } = getContext();
-			return imageIds.indexOf( imageId );
+			const { imageIds, selectedImageId } = getContext();
+			return imageIds.indexOf( selectedImageId );
 		},
 		get thumbnailTabIndex(): string {
 			return state.isSelected ? '0' : '-1';
@@ -116,8 +119,8 @@ const productGallery = {
 			const { imageData } = context;
 			const imageIndex = newImageNumber - 1;
 			const imageId = imageData[ imageIndex ].id;
+			context.selectedImageId = imageId;
 			if ( imageIndex !== -1 ) {
-				context.imageId = imageId;
 				scrollImageIntoView( imageId );
 			}
 		},
@@ -125,7 +128,16 @@ const productGallery = {
 			if ( event ) {
 				event.stopPropagation();
 			}
-			const newImageNumber = state.imageIndex + 1;
+			const element = getElement()?.ref as HTMLElement;
+			if ( ! element ) {
+				return;
+			}
+			const imageId = element.getAttribute( 'data-image-id' );
+			if ( ! imageId ) {
+				return;
+			}
+			const context = getContext();
+			const newImageNumber = context.imageIds.indexOf( imageId ) + 1;
 			actions.selectImage( newImageNumber );
 		},
 		selectNextImage: ( event?: MouseEvent ) => {
@@ -263,7 +275,8 @@ const productGallery = {
 					context.imageIds.length
 				);
 				context.selectedImageNumber = newImageNumber;
-				context.imageId = context.imageIds[ newImageNumber - 1 ];
+				context.selectedImageId =
+					context.imageIds[ newImageNumber - 1 ];
 				context.disableLeft = disableLeft;
 				context.disableRight = disableRight;
 				scrollImageIntoView( context.imageIds[ newImageNumber - 1 ] );

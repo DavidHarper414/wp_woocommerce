@@ -38,21 +38,22 @@ const productGalleryLargeImage = {
 			const percentageX = ( event.offsetX / element.clientWidth ) * 100;
 			const percentageY = ( event.offsetY / element.clientHeight ) * 100;
 
-			const { imageId } = getContext();
+			const { selectedImageId } = getContext();
 
-			if ( imageId === target.getAttribute( 'id' ) ) {
+			if ( selectedImageId === target.getAttribute( 'id' ) ) {
 				target.style.transform = `scale(1.3)`;
 				target.style.transformOrigin = `${ percentageX }% ${ percentageY }%`;
 			}
 		},
 		resetZoom: ( event: MouseEvent ) => {
 			const target = event.target as HTMLElement;
+
 			if ( ! target ) {
 				return;
 			}
 
 			const image = target.querySelector(
-				'.wc-block-woocommerce-product-gallery-large-image__image'
+				'.wc-block-woocommerce-product-gallery-large-image__image--active-image-slide'
 			) as HTMLElement;
 
 			if ( ! image ) {
