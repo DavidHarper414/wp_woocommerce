@@ -84,7 +84,7 @@ class WC_Brands {
 		// Product Editor compatibility.
 		add_action( 'woocommerce_layout_template_after_instantiation', array( $this, 'wc_brands_on_block_template_register' ), 10, 3 );
 
-		// Block theme integration
+		// Block theme integration.
 		add_filter( 'hooked_block_types', array( $this, 'hook_product_brand_block' ), 10, 4 );
 		add_filter( 'hooked_block_core/post-terms', array( $this, 'configure_product_brand_block' ), 10, 5 );
 	}
@@ -400,7 +400,7 @@ class WC_Brands {
 	public function show_brand() {
 		global $post;
 
-		if ( is_singular( 'product' ) && ! wc_current_theme_is_fse_theme() ) {
+		if ( is_singular( 'product' ) ) {
 			$terms       = get_the_terms( $post->ID, 'product_brand' );
 			$brand_count = is_array( $terms ) ? count( $terms ) : 0;
 
@@ -1106,7 +1106,10 @@ class WC_Brands {
 			 $context instanceof WP_Block_Template &&
 			 'single-product' === $context->slug ) {
 				
-			// Simply add the core/post-terms block type
+			// Remove the PHP action to prevent duplication when the block is added.
+			remove_action( 'woocommerce_product_meta_end', array( $this, 'show_brand' ) );
+				
+			// Simply add the core/post-terms block type.
 			$hooked_block_types[] = 'core/post-terms';
 		}
 		
