@@ -19,8 +19,7 @@ export const MoreMenu = () => {
 		<MoreMenuDropdown>
 			{ ( onClose ) => (
 				<>
-					{ <WritingMenu /> }
-
+					<WritingMenu />
 					<ActionItem.Slot
 						name={ MORE_MENU_ACTION_ITEM_SLOT_NAME }
 						label={ __( 'Plugins', 'woocommerce' ) }
