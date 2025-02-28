@@ -296,4 +296,8 @@ $wc-setting-email-width: 634px;
 	align-items: center;
 	display: inline-flex;
 	gap: 12px;
+
+	.components-toggle-control {
+		margin-bottom: 0;
+	}
 }

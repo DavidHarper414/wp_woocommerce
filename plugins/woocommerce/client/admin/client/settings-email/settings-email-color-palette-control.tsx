@@ -38,8 +38,17 @@ export const ResetStylesControl: React.FC< ResetStylesControlProps > = ( {
 
 	const [ initialValue ] = useState( getColors() );
 
+	const handleAutoSyncToggle = ( newValue: boolean ) => {
+		setIsAutoSyncEnabled( newValue );
+		autoSyncInput.value = newValue ? 'yes' : 'no';
+	};
+
 	const handleInputChange = () => {
-		setIsResetShown( areColorsChanged( defaultColors ) );
+		const isOutOfSync = areColorsChanged( defaultColors );
+		setIsResetShown( isOutOfSync );
+		if ( isOutOfSync ) {
+			handleAutoSyncToggle( false );
+		}
 		setChanged( areColorsChanged( initialValue ) );
 	};
 
@@ -53,11 +62,7 @@ export const ResetStylesControl: React.FC< ResetStylesControlProps > = ( {
 		setColors( initialValue );
 		setIsResetShown( areColorsChanged( defaultColors ) );
 		setChanged( false );
-	};
-
-	const handleAutoSyncToggle = ( newValue: boolean ) => {
-		setIsAutoSyncEnabled( newValue );
-		autoSyncInput.value = newValue ? 'yes' : 'no';
+		handleAutoSyncToggle( autoSync );
 	};
 
 	useEffect( () => {
@@ -76,11 +81,16 @@ export const ResetStylesControl: React.FC< ResetStylesControlProps > = ( {
 						: __( 'Using default values.', 'woocommerce' ) }
 				</span>
 			) }
-			<ToggleControl
-				label={ __( 'Auto-sync with theme changes', 'woocommerce' ) }
-				checked={ isAutoSyncEnabled }
-				onChange={ handleAutoSyncToggle }
-			/>
+			{ hasThemeJson && ! isResetShown && (
+				<ToggleControl
+					label={ __(
+						'Auto-sync with theme changes',
+						'woocommerce'
+					) }
+					checked={ isAutoSyncEnabled }
+					onChange={ handleAutoSyncToggle }
+				/>
+			) }
 			{ isResetShown && (
 				<Button variant="secondary" onClick={ handleReset }>
 					{ hasThemeJson
