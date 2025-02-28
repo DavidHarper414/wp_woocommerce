@@ -225,15 +225,6 @@
 		},
 		{
 			"dependencies": [
-				"@wordpress/dependency-extraction-webpack-plugin"
-			],
-			"packages": [
-				"**"
-			],
-			"pinVersion": "6.16.0"
-		},
-		{
-			"dependencies": [
 				"@wordpress/babel-plugin-import-jsx-pragma",
 				"@wordpress/babel-preset-default",
 				"@wordpress/stylelint-config",
