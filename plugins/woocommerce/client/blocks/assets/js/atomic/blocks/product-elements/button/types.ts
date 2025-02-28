@@ -21,8 +21,8 @@ export interface AddToCartButtonPlaceholderAttributes {
 }
 
 export interface AddToCartButtonAttributes {
-	className?: string;
-	style?: React.CSSProperties;
+	className: string;
+	style: React.CSSProperties;
 	product: {
 		id: number;
 		permalink: string;

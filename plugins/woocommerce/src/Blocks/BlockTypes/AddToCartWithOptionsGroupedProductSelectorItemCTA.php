@@ -8,7 +8,8 @@ use WP_Block;
 
 /**
  * Block type for the CTA of grouped product selector items in add to cart with options.
- * It's responsible to render the CTA for each child product in a form of a list item.
+ * It's responsible to render the CTA for each child product, that might be a button,
+ * a checkbox, or a link.
  */
 class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 	/**
@@ -18,6 +19,12 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 	 */
 	protected $block_name = 'add-to-cart-with-options-grouped-product-selector-item-cta';
 
+	/**
+	 * Gets the quantity selector markup for a product.
+	 *
+	 * @param \WC_Product $product The product object.
+	 * @return string The HTML markup for the quantity selector.
+	 */
 	private function get_quantity_selector_markup( $product ) {
 		ob_start();
 
@@ -48,11 +55,17 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 		return '<div class="wp-block-add-to-cart-with-options-grouped-product-selector-item-cta wc-block-add-to-cart-with-options__quantity-selector wc-block-add-to-cart-with-options__quantity-selector--input">' . $product_html . '</div>';
 	}
 
-	private function get_button_markup( $pr ) {
+	/**
+	 * Gets the add to cart button markup for a product.
+	 *
+	 * @param \WC_Product $product_to_render The product object.
+	 * @return string The HTML markup for the add to cart button.
+	 */
+	private function get_button_markup( $product_to_render ) {
 		global $product;
 
 		$previous_product = $product;
-		$product          = $pr;
+		$product          = $product_to_render;
 
 		ob_start();
 		woocommerce_template_loop_add_to_cart();
@@ -63,6 +76,12 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 		return $button_html;
 	}
 
+	/**
+	 * Gets the checkbox markup for a product.
+	 *
+	 * @param \WC_Product $product The product object.
+	 * @return string The HTML markup for the checkbox input and label.
+	 */
 	private function get_checkbox_markup( $product ) {
 		if ( $product->is_on_sale() ) {
 			$label = sprintf(
@@ -112,7 +131,6 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 			}
 		}
 
-		// var_dump( $block->context['postId'] ); // @todo, investigate why $block->context['postId'] is the post ID at the beginning.
 		return '';
 	}
 }

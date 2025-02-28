@@ -2,18 +2,23 @@
  * External dependencies
  */
 import { useProductDataContext } from '@woocommerce/shared-context';
-import { Disabled } from '@wordpress/components';
+import { Disabled, Spinner } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { isSiteEditorPage } from '@woocommerce/utils';
 import { useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 
 const CTA = () => {
-	const { product } = useProductDataContext(); // @todo: listen to isLoading.
+	const { isLoading, product } = useProductDataContext();
 	const isSiteEditor = useSelect(
 		( select ) => isSiteEditorPage( select( 'core/edit-site' ) ),
 		[]
 	);
+
+	if ( isLoading ) {
+		return <Spinner />;
+	}
+
 	const {
 		permalink,
 		add_to_cart: productCartDetails,

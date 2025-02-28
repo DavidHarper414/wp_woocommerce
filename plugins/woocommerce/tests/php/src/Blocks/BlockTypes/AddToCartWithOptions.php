@@ -21,7 +21,7 @@ class AddToCartWithOptions extends \WP_UnitTestCase {
 	 *
 	 * @var bool
 	 */
-	protected static $blocks_registered = false;
+	protected static $are_blocks_registered = false;
 
 	/**
 	 * Initiate the mock object.
@@ -29,7 +29,7 @@ class AddToCartWithOptions extends \WP_UnitTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		if ( ! self::$blocks_registered ) {
+		if ( ! self::$are_blocks_registered ) {
 			// We need to register the blocks after set up. They are no registered
 			// on `init` because `init` is called with a classic theme.
 			new AddToCartWithOptionsMock();
@@ -38,7 +38,7 @@ class AddToCartWithOptions extends \WP_UnitTestCase {
 			new AddToCartWithOptionsGroupedProductSelectorItemTemplateMock();
 			new AddToCartWithOptionsGroupedProductSelectorItemCTAMock();
 
-			self::$blocks_registered = true;
+			self::$are_blocks_registered = true;
 		}
 	}
 
@@ -100,7 +100,7 @@ class AddToCartWithOptions extends \WP_UnitTestCase {
 		$product = $grouped_product;
 
 		$markup = do_blocks( '<!-- wp:woocommerce/single-product {"productId":' . $grouped_product_id . '} --><!-- wp:woocommerce/add-to-cart-with-options /--><!-- /wp:woocommerce/single-product -->' );
-		$this->assertStringContainsString( 'type="number"', $markup, 'The Grouped Product Add to Cart with Options form contains a checkbox.' );
+		$this->assertStringContainsString( 'type="number"', $markup, 'The Grouped Product Add to Cart with Options form contains a numeric input.' );
 
 		$simple_product->set_sold_individually( true );
 		$simple_product->save();
