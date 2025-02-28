@@ -107,6 +107,5 @@ module.exports = [
 	PaymentsConfig,
 	SiteEditorConfig,
 	StylingConfig,
-	InteractivityConfig,
 	InteractivityBlocksConfig,
 ];
