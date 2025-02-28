@@ -79,7 +79,6 @@ class AddToCartWithOptions extends AbstractBlock {
 			}
 
 			if ( '' === $template_part_contents ) {
-				echo 'INPRODUCT ID: ' . $product->get_id() . '<br>'; // Why the ID here...
 				$template_part_contents = do_blocks( file_get_contents( Package::get_path() . 'templates/' . BlockTemplateUtils::DIRECTORY_NAMES['TEMPLATE_PARTS'] . '/' . $slug . '.html' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 			}
 

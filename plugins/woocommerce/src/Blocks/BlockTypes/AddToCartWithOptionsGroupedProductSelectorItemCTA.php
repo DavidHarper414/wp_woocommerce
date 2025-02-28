@@ -48,21 +48,17 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 		return '<div class="wp-block-add-to-cart-with-options-grouped-product-selector-item-cta wc-block-add-to-cart-with-options__quantity-selector wc-block-add-to-cart-with-options__quantity-selector--input">' . $product_html . '</div>';
 	}
 
-	private function get_button_markup( $product ) {
-		global $post;
+	private function get_button_markup( $pr ) {
+		global $product;
 
-		$previous_post = $post;
-
-		$post_object = get_post( $product->get_id() );
-		$post        = $post_object; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		setup_postdata( $post );
+		$previous_product = $product;
+		$product          = $pr;
 
 		ob_start();
 		woocommerce_template_loop_add_to_cart();
 		$button_html = ob_get_clean();
 
-		$post = $previous_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		setup_postdata( $post );
+		$product = $previous_product;
 
 		return $button_html;
 	}
@@ -108,7 +104,6 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 			} elseif ( $product->is_sold_individually() ) {
 				$markup = $this->get_checkbox_markup( $product );
 			} else {
-				// return AddToCartWithOptionsQuantitySelector::get_quantity_selector_markup( $product, array( 'quantitySelectorStyle' => 'stepper' ) );
 				$markup = $this->get_quantity_selector_markup( $product );
 			}
 

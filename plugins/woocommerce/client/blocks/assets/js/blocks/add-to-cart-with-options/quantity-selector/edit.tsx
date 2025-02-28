@@ -19,12 +19,6 @@ import {
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
 
-/**
- * Internal dependencies
- */
-import { QuantityInput } from './components/quantity-input';
-import { QuantityStepper } from './components/quantity-stepper';
-
 enum QuantitySelectorStyle {
 	Input = 'input',
 	Stepper = 'stepper',
@@ -101,11 +95,55 @@ const AddToCartWithOptionsQuantitySelectorEdit = (
 			<div { ...blockProps }>
 				<Disabled>
 					{ quantitySelectorStyle === QuantitySelectorStyle.Input && (
-						<QuantityInput isSiteEditor={ isSiteEditor } />
+						<div className="quantity">
+							<input
+								style={
+									// In the post editor, the editor isn't in an iframe, so WordPress styles are applied. We need to remove them.
+									! isSiteEditor
+										? {
+												backgroundColor: '#ffffff',
+												lineHeight: 'normal',
+												minHeight: 'unset',
+												boxSizing: 'unset',
+												borderRadius: 'unset',
+										  }
+										: {}
+								}
+								type="number"
+								value="1"
+								className="input-text qty text"
+								readOnly
+							/>
+						</div>
 					) }
 					{ quantitySelectorStyle ===
 						QuantitySelectorStyle.Stepper && (
-						<QuantityStepper isSiteEditor={ isSiteEditor } />
+						<div className="quantity wc-block-components-quantity-selector">
+							<button className="wc-block-components-quantity-selector__button wc-block-components-quantity-selector__button--minus">
+								-
+							</button>
+							<input
+								style={
+									// In the post editor, the editor isn't in an iframe, so WordPress styles are applied. We need to remove them.
+									! isSiteEditor
+										? {
+												backgroundColor: '#ffffff',
+												lineHeight: 'normal',
+												minHeight: 'unset',
+												boxSizing: 'unset',
+												borderRadius: 'unset',
+										  }
+										: {}
+								}
+								type="number"
+								value="1"
+								className="input-text qty text"
+								readOnly
+							/>
+							<button className="wc-block-components-quantity-selector__button wc-block-components-quantity-selector__button--plus">
+								+
+							</button>
+						</div>
 					) }
 				</Disabled>
 			</div>

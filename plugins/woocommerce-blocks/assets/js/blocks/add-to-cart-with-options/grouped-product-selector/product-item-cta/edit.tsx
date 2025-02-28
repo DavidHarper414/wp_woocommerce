@@ -6,21 +6,17 @@ import { Disabled } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { isSiteEditorPage } from '@woocommerce/utils';
 import { useBlockProps } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 
-/**
- * Internal dependencies
- */
-import { AddToCartButton } from '../../../../atomic/blocks/product-elements/button/components/add-to-cart-button';
-import { QuantityInput } from '../../quantity-selector/components/quantity-input';
-
-// @todo add styles so the quantity selector has padding.
 const CTA = () => {
-	const { product } = useProductDataContext();
+	const { product } = useProductDataContext(); // @todo: listen to isLoading.
 	const isSiteEditor = useSelect(
 		( select ) => isSiteEditorPage( select( 'core/edit-site' ) ),
 		[]
 	);
 	const {
+		permalink,
+		add_to_cart: productCartDetails,
 		has_options: hasOptions,
 		is_purchasable: isPurchasable,
 		is_in_stock: isInStock,
@@ -38,13 +34,40 @@ const CTA = () => {
 			);
 		}
 		return (
-			<div className="wc-block-add-to-cart-with-options__quantity-selector wc-block-add-to-cart-with-options__quantity-selector--stepper">
-				<QuantityInput isSiteEditor={ isSiteEditor } />
+			<div className="wc-block-add-to-cart-with-options__quantity-selector wc-block-add-to-cart-with-options__quantity-selector--input">
+				<div className="quantity">
+					<input
+						style={
+							// In the post editor, the editor isn't in an iframe, so WordPress styles are applied. We need to remove them.
+							! isSiteEditor
+								? {
+										backgroundColor: '#ffffff',
+										lineHeight: 'normal',
+										minHeight: 'unset',
+										boxSizing: 'unset',
+										borderRadius: 'unset',
+								  }
+								: {}
+						}
+						type="number"
+						value="1"
+						className="input-text qty text"
+						readOnly
+					/>
+				</div>
 			</div>
 		);
 	}
 
-	return <AddToCartButton product={ product } />;
+	return (
+		<a
+			aria-label={ productCartDetails?.description || '' }
+			className="wp-block-button__link wp-element-button add_to_cart_button wc-block-components-product-button__button"
+			href={ permalink }
+		>
+			{ productCartDetails?.text || __( 'Add to Cart', 'woocommerce' ) }
+		</a>
+	);
 };
 
 export default function ProductItemCTAEdit() {
