@@ -72,10 +72,46 @@ const ShippingCalculatorAddress = ( {
 		return true;
 	}, [ formFields, address ] );
 
-	const validateSubmit = () => {
+	const validateSubmit = useCallback( () => {
 		showAllValidationErrors();
 		return ! hasValidationErrors && hasRequiredFields();
-	};
+	}, [ showAllValidationErrors, hasValidationErrors, hasRequiredFields ] );
+
+	const handleClick = useCallback(
+		( e: React.MouseEvent< HTMLButtonElement > ) => {
+			e.preventDefault();
+
+			const addressChanged = ! isShallowEqual( address, initialAddress );
+			const isAddressValid = validateSubmit();
+
+			if ( isAddressValid ) {
+				if ( ! addressChanged ) {
+					return onCancel();
+				}
+
+				const addressToSubmit = addressFields.reduce<
+					Partial< ShippingAddress >
+				>( ( acc, key ) => {
+					if ( typeof address[ key ] !== 'undefined' ) {
+						// This type incompatibility is due to additional fields being able to contain a boolean
+						// value. We should clean up these types in the future.
+						acc[ key ] = address[ key ];
+					}
+					return acc;
+				}, {} );
+
+				onUpdate( addressToSubmit );
+			}
+		},
+		[
+			validateSubmit,
+			address,
+			initialAddress,
+			addressFields,
+			onCancel,
+			onUpdate,
+		]
+	);
 
 	return (
 		<form
@@ -91,34 +127,7 @@ const ShippingCalculatorAddress = ( {
 				className="wc-block-components-shipping-calculator-address__button"
 				disabled={ isCustomerDataUpdating }
 				variant="outlined"
-				onClick={ ( e ) => {
-					e.preventDefault();
-
-					const addressChanged = ! isShallowEqual(
-						address,
-						initialAddress
-					);
-					const isAddressValid = validateSubmit();
-
-					if ( isAddressValid ) {
-						if ( ! addressChanged ) {
-							return onCancel();
-						}
-
-						const addressToSubmit = addressFields.reduce<
-							Partial< ShippingAddress >
-						>( ( acc, key ) => {
-							if ( typeof address[ key ] !== 'undefined' ) {
-								// This type incompatibility is due to additional fields being able to contain a boolean
-								// value. We should clean up these types in the future.
-								acc[ key ] = address[ key ];
-							}
-							return acc;
-						}, {} );
-
-						onUpdate( addressToSubmit );
-					}
-				} }
+				onClick={ handleClick }
 				type="submit"
 			>
 				{ __( 'Check delivery options', 'woocommerce' ) }
