@@ -35,7 +35,6 @@ const wcHandleMap = {
 	'@woocommerce/blocks-checkout': 'wc-blocks-checkout',
 	'@woocommerce/blocks-checkout-events': 'wc-blocks-checkout-events',
 	'@woocommerce/blocks-components': 'wc-blocks-components',
-	'@woocommerce/interactivity': 'wc-interactivity',
 	'@woocommerce/types': 'wc-types',
 	'@woocommerce/customer-effort-score': 'wc-customer-effort-score',
 };
