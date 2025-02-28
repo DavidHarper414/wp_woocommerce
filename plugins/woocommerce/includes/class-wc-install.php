@@ -666,9 +666,9 @@ class WC_Install {
 
 	/**
 	 * Is DB auto-update enabled? This controls whether database updates are applied without prompting the admin.
-	 * This is the default behavior since 9.8.0 and can be overridden via filter 'woocommerce_enable_auto_update_db'.
+	 * This is the default behavior since 9.9.0 and can be overridden via filter 'woocommerce_enable_auto_update_db'.
 	 *
-	 * @since 9.8.0
+	 * @since 9.9.0
 	 *
 	 * @return bool TRUE if database auto-updates are enabled. FALSE otherwise.
 	 */
@@ -764,7 +764,7 @@ class WC_Install {
 			 * Filters the maximum delay in seconds to apply to the scheduling of database updates when automatic
 			 * updates are enabled.
 			 *
-			 * @since 9.8.0
+			 * @since 9.9.0
 			 *
 			 * @param int $delay The maximum delay in seconds. Default is 1800 (30 minutes).
 			 */
