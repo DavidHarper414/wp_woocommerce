@@ -819,9 +819,6 @@ class WC_Settings_Emails extends WC_Settings_Page {
 			data-default-colors="<?php echo esc_attr( wp_json_encode( $default_colors ) ); ?>"
 			<?php echo wp_theme_has_theme_json() ? 'data-has-theme-json' : ''; ?>
 		></div>
-		<?php if ( wp_theme_has_theme_json() ) : ?>
-		<div id="wc_settings_email_auto_sync_slotfill"></div>
-		<?php endif; ?>
 		<input
 			type="hidden"
 			name="woocommerce_email_auto_sync_with_theme"

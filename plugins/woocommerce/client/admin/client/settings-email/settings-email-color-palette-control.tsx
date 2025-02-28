@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Button } from '@wordpress/components';
+import { Button, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
 
@@ -20,16 +20,22 @@ import {
 type ResetStylesControlProps = {
 	defaultColors: DefaultColors;
 	hasThemeJson: boolean;
+	autoSync: boolean;
+	autoSyncInput: HTMLInputElement;
 };
 
 export const ResetStylesControl: React.FC< ResetStylesControlProps > = ( {
 	defaultColors,
 	hasThemeJson,
+	autoSync,
+	autoSyncInput,
 } ) => {
 	const [ isResetShown, setIsResetShown ] = useState(
 		areColorsChanged( defaultColors )
 	);
 	const [ changed, setChanged ] = useState( false );
+	const [ isAutoSyncEnabled, setIsAutoSyncEnabled ] = useState( autoSync );
+
 	const [ initialValue ] = useState( getColors() );
 
 	const handleInputChange = () => {
@@ -49,6 +55,11 @@ export const ResetStylesControl: React.FC< ResetStylesControlProps > = ( {
 		setChanged( false );
 	};
 
+	const handleAutoSyncToggle = ( newValue: boolean ) => {
+		setIsAutoSyncEnabled( newValue );
+		autoSyncInput.value = newValue ? 'yes' : 'no';
+	};
+
 	useEffect( () => {
 		addListeners( handleInputChange );
 		return () => {
@@ -65,6 +76,11 @@ export const ResetStylesControl: React.FC< ResetStylesControlProps > = ( {
 						: __( 'Using default values.', 'woocommerce' ) }
 				</span>
 			) }
+			<ToggleControl
+				label={ __( 'Auto-sync with theme changes', 'woocommerce' ) }
+				checked={ isAutoSyncEnabled }
+				onChange={ handleAutoSyncToggle }
+			/>
 			{ isResetShown && (
 				<Button variant="secondary" onClick={ handleReset }>
 					{ hasThemeJson
