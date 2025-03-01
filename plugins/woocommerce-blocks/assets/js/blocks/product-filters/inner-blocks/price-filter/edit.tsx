@@ -8,7 +8,6 @@ import {
 } from '@wordpress/block-editor';
 import { useCollectionData } from '@woocommerce/base-context/hooks';
 import { __ } from '@wordpress/i18n';
-import { TemplateArray } from '@wordpress/blocks';
 
 /**
  * Internal dependencies

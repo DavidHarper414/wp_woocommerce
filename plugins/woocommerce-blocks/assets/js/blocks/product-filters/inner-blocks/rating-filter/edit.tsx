@@ -18,7 +18,6 @@ import { getSettingWithCoercion } from '@woocommerce/settings';
 import { isBoolean } from '@woocommerce/types';
 import { useState, useMemo, useEffect } from '@wordpress/element';
 import { withSpokenMessages } from '@wordpress/components';
-import type { BlockEditProps, TemplateArray } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
