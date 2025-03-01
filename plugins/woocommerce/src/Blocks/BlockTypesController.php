@@ -467,6 +467,7 @@ final class BlockTypesController {
 			'ProductSummary',
 			'ProductTag',
 			'ProductTitle',
+			'ProductDescription',
 			'ProductTopRated',
 			'ProductsByAttribute',
 			'RatingFilter',
