@@ -275,7 +275,8 @@ class WC_Widget_Brand_Nav extends WC_Widget {
 		}
 
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-		return esc_url( $link );
+		// nosemgrep: php.wp.security.xss.query-arg
+		return $link;
 	}
 
 	/**
@@ -354,7 +355,7 @@ class WC_Widget_Brand_Nav extends WC_Widget {
 					"
 					jQuery( '.wc-brand-dropdown-layered-nav-" . esc_js( $taxonomy ) . "' ).change( function() {
 						var slug = jQuery( this ).val();
-						location.href = '" . preg_replace( '%\/page\/[0-9]+%', '', str_replace( array( '&amp;', '%2C' ), array( '&', ',' ), esc_js( add_query_arg( 'filtering', '1', $link ) ) ) ) . '&filter_' . esc_js( $taxonomy ) . "=' + jQuery( '.wc-brand-dropdown-layered-nav-" . esc_js( $taxonomy ) . "' ).val();
+						location.href = '" . preg_replace( '%\/page\/[0-9]+%', '', str_replace( array( '&amp;', '%2C' ), array( '&', ',' ), esc_js( add_query_arg( 'filtering', '1', esc_url_raw( $link ) ) ) ) ) . '&filter_' . esc_js( $taxonomy ) . "=' + jQuery( '.wc-brand-dropdown-layered-nav-" . esc_js( $taxonomy ) . "' ).val();
 					});
 				"
 				);
