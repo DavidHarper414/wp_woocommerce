@@ -1600,7 +1600,21 @@ jQuery( function ( $ ) {
 	wc_meta_boxes_order_downloads.init();
 	wc_meta_boxes_order_custom_meta.init();
 
-	// this allows third party plugin to call woocommerce function
+	/**
+	 * Event listeners to allow third-party plugins to reinitialize WooCommerce order meta boxes
+	 * after dynamically modifying their content.
+	 *
+	 * Usage Example:
+	 *
+	 * // Reinitialize the Order Data Panel:
+	 * window.dispatchEvent(new CustomEvent("wc_meta_boxes_order_init"));
+	 *
+	 * // Reinitialize Order Items Panel:
+	 * window.dispatchEvent(new CustomEvent("wc_meta_boxes_order_items_init"));
+	 *
+	 * These events ensure that order meta boxes can be dynamically updated
+	 * and properly reinitialized as needed.
+	 */
 	window.addEventListener('wc_meta_boxes_order_init', (e) => {
 		wc_meta_boxes_order.init()
 	});
