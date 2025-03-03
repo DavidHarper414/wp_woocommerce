@@ -21,11 +21,14 @@ import {
 	type ConfigOf,
 } from '@wordpress/data/build-types/types';
 import { checkoutStore } from '@woocommerce/block-data';
+import { select } from '@wordpress/data';
+import type { AdditionalValues } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
  */
 import { shouldRetry } from '../../base/context/event-emit';
+import { STORE_KEY as VALIDATION_STORE_KEY } from '../validation/constants';
 import {
 	CheckoutAndPaymentNotices,
 	CheckoutAfterProcessingWithErrorEventData,
@@ -229,4 +232,37 @@ export const getPaymentResultFromCheckoutResponse = (
 	}
 
 	return paymentResult;
+};
+
+export const validateAdditionalFields = (
+	additionalFields: AdditionalValues
+): boolean => {
+	// Early return if no additional fields to validate
+	if ( Object.keys( additionalFields ).length === 0 ) {
+		return true;
+	}
+
+	const validationStore = select( VALIDATION_STORE_KEY );
+
+	// Check each additional field for validation errors
+	// The validation store prefixes fields with 'additional-field-'
+	for ( const fieldKey of Object.keys( additionalFields ) ) {
+		// We don't know which location the field is in, so we need to check both
+		let error = validationStore.getValidationError(
+			`contact_${ fieldKey }`
+		);
+
+		if ( error && ! error.hidden ) {
+			return false;
+		}
+
+		error = validationStore.getValidationError(
+			`additional-information_${ fieldKey }`
+		);
+		if ( error && ! error.hidden ) {
+			return false;
+		}
+	}
+
+	return true;
 };
