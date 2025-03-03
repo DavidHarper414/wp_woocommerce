@@ -3,9 +3,6 @@
  */
 import { button } from '@wordpress/icons';
 import { getPlugin, registerPlugin } from '@wordpress/plugins';
-import { isExperimentalBlocksEnabled } from '@woocommerce/block-settings';
-import { getSettingWithCoercion } from '@woocommerce/settings';
-import { isBoolean } from '@woocommerce/types';
 import { registerProductBlockType } from '@woocommerce/atomic-utils';
 import type { BlockConfiguration } from '@wordpress/blocks';
 
@@ -15,19 +12,9 @@ import type { BlockConfiguration } from '@wordpress/blocks';
 import ProductTypeSelectorPlugin from './plugins';
 import metadata from './block.json';
 import AddToCartOptionsEdit from './edit';
-import save from './save';
+import { shouldBlockifiedAddToCartWithOptionsBeRegistered } from './utils';
 import './style.scss';
 import type { Attributes } from './types';
-
-// Pick the value of the "blockify add to cart flag"
-const isBlockifiedAddToCart = getSettingWithCoercion(
-	'isBlockifiedAddToCart',
-	false,
-	isBoolean
-);
-
-export const shouldBlockifiedAddToCartWithOptionsBeRegistered =
-	isExperimentalBlocksEnabled() && isBlockifiedAddToCart;
 
 if ( shouldBlockifiedAddToCartWithOptionsBeRegistered ) {
 	// Register a plugin that adds a product type selector to the template sidebar.
@@ -43,10 +30,17 @@ if ( shouldBlockifiedAddToCartWithOptionsBeRegistered ) {
 		{
 			...( metadata as BlockConfiguration< Attributes > ),
 			icon: {
-				src: button,
+				src: ( { size }: { size?: number } ) => (
+					<span
+						className="wp-block-woocommerce-add-to-cart-with-options__block-icon"
+						style={ { height: size, width: size } }
+					>
+						{ button }
+					</span>
+				),
 			},
 			edit: AddToCartOptionsEdit,
-			save,
+			save: () => null,
 			ancestor: [ 'woocommerce/single-product' ],
 		},
 		{

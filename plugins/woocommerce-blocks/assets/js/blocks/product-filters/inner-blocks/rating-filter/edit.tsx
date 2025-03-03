@@ -26,7 +26,7 @@ import type { BlockEditProps, TemplateArray } from '@wordpress/blocks';
 import { previewOptions } from './preview';
 import { getActiveFilters } from './utils';
 import { Inspector } from './components/inspector';
-import { getAllowedBlocks } from '../../utils';
+import { getAllowedBlocks } from '../../utils/get-allowed-blocks';
 import { EXCLUDED_BLOCKS } from '../../constants';
 import { Notice } from '../../components/notice';
 import type { Attributes } from './types';
@@ -36,7 +36,7 @@ import { InitialDisabled } from '../../components/initial-disabled';
 const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 	const { attributes, setAttributes, clientId } = props;
 
-	const { isPreview, showCounts, minRating, clearButton } = attributes;
+	const { isPreview, showCounts, minRating } = attributes;
 
 	const { children, ...innerBlocksProps } = useInnerBlocksProps(
 		useBlockProps(),
@@ -67,27 +67,9 @@ const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 								content: __( 'Rating', 'woocommerce' ),
 							},
 						],
-						clearButton
-							? [
-									'woocommerce/product-filter-clear-button',
-									{
-										lock: {
-											remove: true,
-											move: false,
-										},
-									},
-							  ]
-							: null,
 					].filter( Boolean ) as unknown as TemplateArray,
 				],
-				[
-					'woocommerce/product-filter-checkbox-list',
-					{
-						lock: {
-							remove: true,
-						},
-					},
-				],
+				[ 'woocommerce/product-filter-checkbox-list' ],
 			],
 		}
 	);
@@ -127,7 +109,10 @@ const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 			return;
 		}
 
-		if ( collectionFilters?.rating_counts?.length === 0 ) {
+		if (
+			! collectionFilters?.rating_counts ||
+			collectionFilters?.rating_counts?.length === 0
+		) {
 			setDisplayedOptions( previewOptions );
 			return;
 		}
@@ -146,7 +131,7 @@ const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 			? collectionFilters.rating_counts
 					.sort( ( a, b ) => b.rating - a.rating )
 					.filter( ( { rating } ) => rating >= minimumRating )
-					.map( ( { rating, count } ) => ( {
+					.map( ( { rating, count }, index ) => ( {
 						label: (
 							<Rating
 								key={ rating }
@@ -155,6 +140,7 @@ const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 							/>
 						),
 						value: rating?.toString(),
+						selected: index === 0,
 					} ) )
 			: [];
 

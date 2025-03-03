@@ -1,19 +1,12 @@
 /**
  * External dependencies
  */
-import {
-	getContext,
-	store,
-	navigate as navigateFn,
-} from '@woocommerce/interactivity';
-import { getSetting } from '@woocommerce/settings';
+import { getContext, store, getServerContext } from '@wordpress/interactivity';
 
-const isBlockTheme = getSetting< boolean >( 'isBlockTheme' );
-const isProductArchive = getSetting< boolean >( 'isProductArchive' );
-const needsRefresh = getSetting< boolean >(
-	'needsRefreshForInteractivityAPI',
-	false
-);
+const getSetting = window.wc.wcSettings.getSetting;
+const isBlockTheme = getSetting( 'isBlockTheme' );
+const isProductArchive = getSetting( 'isProductArchive' );
+const needsRefresh = getSetting( 'needsRefreshForInteractivityAPI', false );
 
 function isParamsEqual(
 	obj1: Record< string, string >,
@@ -37,7 +30,7 @@ function isParamsEqual(
 	return true;
 }
 
-export function navigate( href: string, options = {} ) {
+async function navigate( href: string, options = {} ) {
 	/**
 	 * We may need to reset the current page when changing filters.
 	 * This is because the current page may not exist for this set
@@ -64,16 +57,87 @@ export function navigate( href: string, options = {} ) {
 	if ( needsRefresh || ( ! isBlockTheme && isProductArchive ) ) {
 		return ( window.location.href = href );
 	}
-	return navigateFn( href, options );
+
+	const { actions } = await import( '@wordpress/interactivity-router' );
+	return actions.navigate( href, options );
 }
 
-export interface ProductFiltersContext {
+export type ActiveFilter = {
+	label: string;
+	type: 'attribute' | 'price' | 'rating' | 'status';
+	value: string | null;
+	attribute?: {
+		slug: string;
+		queryType: 'and' | 'or';
+	};
+	price?: {
+		min: number | null;
+		max: number | null;
+	};
+};
+
+export type ProductFiltersContext = {
 	isOverlayOpened: boolean;
 	params: Record< string, string >;
 	originalParams: Record< string, string >;
-}
+	activeFilters: ActiveFilter[];
+};
 
-const { actions } = store( 'woocommerce/product-filters', {
+const productFiltersStore = store( 'woocommerce/product-filters', {
+	state: {
+		get params() {
+			const { activeFilters } = getContext< ProductFiltersContext >();
+			const params: Record< string, string > = {};
+
+			function addParam( key: string, value: string ) {
+				if ( key in params && params[ key ].length > 0 )
+					return ( params[ key ] = `${ params[ key ] },${ value }` );
+				params[ key ] = value;
+			}
+
+			activeFilters.forEach( ( filter ) => {
+				const { type, value } = filter;
+
+				if ( ! value ) return;
+
+				if ( type === 'price' && 'price' in filter ) {
+					if ( filter.price.min )
+						params.min_price = filter.price.min.toString();
+					if ( filter.price.max )
+						params.max_price = filter.price.max.toString();
+				}
+
+				if ( type === 'status' ) {
+					addParam( 'filter_stock_status', value );
+				}
+
+				if ( type === 'rating' ) {
+					addParam( `rating_filter`, value );
+				}
+
+				if ( type === 'attribute' && 'attribute' in filter ) {
+					addParam( `filter_${ filter.attribute.slug }`, value );
+					params[ `query_type_${ filter.attribute.slug }` ] =
+						filter.attribute.queryType;
+				}
+			} );
+			return params;
+		},
+		get activeFilters() {
+			const { activeFilters } = getContext< ProductFiltersContext >();
+			return activeFilters
+				.filter( ( item ) => !! item.value )
+				.sort( ( a, b ) => {
+					return a.label
+						.toLowerCase()
+						.localeCompare( b.label.toLowerCase() );
+				} )
+				.map( ( item ) => ( {
+					...item,
+					uid: `${ item.type }/${ item.value }`,
+				} ) );
+		},
+	},
 	actions: {
 		openOverlay: () => {
 			const context = getContext< ProductFiltersContext >();
@@ -97,16 +161,51 @@ const { actions } = store( 'woocommerce/product-filters', {
 		closeOverlayOnEscape: ( event: KeyboardEvent ) => {
 			const context = getContext< ProductFiltersContext >();
 			if ( context.isOverlayOpened && event.key === 'Escape' ) {
-				actions.closeOverlay();
+				productFiltersStore.actions.closeOverlay();
 			}
 		},
-	},
-	callbacks: {
-		maybeNavigate: () => {
-			const { params, originalParams } =
-				getContext< ProductFiltersContext >();
+		setActiveFilter: ( activeFilter: ActiveFilter ) => {
+			const { value, type } = activeFilter;
+			const context = getContext< ProductFiltersContext >();
+			const newActiveFilters = context.activeFilters.filter(
+				( item ) => ! ( item.value === value && item.type === type )
+			);
 
-			if ( isParamsEqual( params, originalParams ) ) {
+			newActiveFilters.push( activeFilter );
+
+			context.activeFilters = newActiveFilters;
+		},
+		removeActiveFiltersBy: (
+			callback: ( item: ActiveFilter ) => boolean
+		) => {
+			const context = getContext< ProductFiltersContext >();
+			context.activeFilters = context.activeFilters.filter(
+				( item ) => ! callback( item )
+			);
+		},
+		removeActiveFiltersByType: ( type: ActiveFilter[ 'type' ] ) => {
+			productFiltersStore.actions.removeActiveFiltersBy(
+				( item ) => item.type === type
+			);
+		},
+		removeActiveFilter: (
+			type: ActiveFilter[ 'type' ],
+			value: ActiveFilter[ 'value' ]
+		) => {
+			productFiltersStore.actions.removeActiveFiltersBy(
+				( item ) => item.type === type && item.value === value
+			);
+		},
+		*navigate() {
+			const { originalParams } =
+				getServerContext< ProductFiltersContext >();
+
+			if (
+				isParamsEqual(
+					productFiltersStore.state.params,
+					originalParams
+				)
+			) {
 				return;
 			}
 
@@ -114,14 +213,20 @@ const { actions } = store( 'woocommerce/product-filters', {
 			const { searchParams } = url;
 
 			for ( const key in originalParams ) {
-				searchParams.delete( key, originalParams[ key ] );
+				searchParams.delete( key );
 			}
 
-			for ( const key in params ) {
-				searchParams.set( key, params[ key ] );
+			for ( const key in productFiltersStore.state.params ) {
+				searchParams.set(
+					key,
+					productFiltersStore.state.params[ key ]
+				);
 			}
-			navigate( url.href );
+
+			yield navigate( url.href );
 		},
+	},
+	callbacks: {
 		scrollLimit: () => {
 			const { isOverlayOpened } = getContext< ProductFiltersContext >();
 			if ( isOverlayOpened ) {
@@ -132,3 +237,5 @@ const { actions } = store( 'woocommerce/product-filters', {
 		},
 	},
 } );
+
+export type ProductFiltersStore = typeof productFiltersStore;

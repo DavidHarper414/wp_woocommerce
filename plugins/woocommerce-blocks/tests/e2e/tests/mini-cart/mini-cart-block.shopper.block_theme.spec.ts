@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { expect, test, wpCLI } from '@woocommerce/e2e-utils';
+import { expect, test as base, wpCLI } from '@woocommerce/e2e-utils';
 
 /**
  * Internal dependencies
@@ -12,6 +12,70 @@ import {
 } from '../checkout/constants';
 import { getTestTranslation } from '../../utils/get-test-translation';
 import { translations } from '../../test-data/data/data';
+import ProductCollectionPage from '../product-collection/product-collection.page';
+
+const test = base.extend< { productCollectionPage: ProductCollectionPage } >( {
+	productCollectionPage: async ( { page, admin, editor }, use ) => {
+		const pageObject = new ProductCollectionPage( {
+			page,
+			admin,
+			editor,
+		} );
+		await use( pageObject );
+	},
+} );
+
+test.describe( 'Shopper → Notices', () => {
+	test( 'Shopper can add item to cart, and will not see a notice in the mini cart', async ( {
+		page,
+		editor,
+		admin,
+		productCollectionPage,
+	} ) => {
+		await admin.visitSiteEditor( {
+			postId: `twentytwentyfour//header`,
+			postType: 'wp_template_part',
+			canvas: 'edit',
+		} );
+		const miniCart = await editor.getBlockByName( 'woocommerce/mini-cart' );
+		await editor.selectBlocks( miniCart );
+		const openDrawerControl = editor.page.getByLabel(
+			'Open drawer when adding'
+		);
+		await openDrawerControl.check();
+		await editor.page
+			.getByRole( 'button', { name: 'Save', exact: true } )
+			.click();
+		await productCollectionPage.createNewPostAndInsertBlock(
+			'productCatalog'
+		);
+		await productCollectionPage.publishAndGoToFrontend();
+		await page
+			.getByLabel( `Add to cart: “${ SIMPLE_PHYSICAL_PRODUCT_NAME }”` )
+			.click();
+
+		await expect( page.getByText( 'Your cart' ) ).toBeVisible();
+		await expect( page.getByText( '(1 item)' ) ).toBeVisible();
+
+		await page.getByLabel( 'Close', { exact: true } ).click();
+		// Mini cart gets out of sync if triggered to open and close very quickly. PW interacts too quickly
+		// and this isn't something that you'll see often in real use. This waits for the mini cart to close.
+		await expect( page.getByRole( 'dialog' ) ).toBeHidden();
+		await page
+			.getByLabel( `Add to cart: “${ SIMPLE_PHYSICAL_PRODUCT_NAME }”` )
+			.click();
+
+		await expect( page.getByText( 'Your cart' ) ).toBeVisible();
+		await expect( page.getByText( '(2 items)' ) ).toBeVisible();
+		await expect(
+			page
+				.getByRole( 'dialog' )
+				.getByText(
+					`The quantity of "${ SIMPLE_PHYSICAL_PRODUCT_NAME }" was`
+				)
+		).toBeHidden();
+	} );
+} );
 
 test.describe( 'Shopper → Translations', () => {
 	test.beforeEach( async () => {

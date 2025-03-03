@@ -30,6 +30,15 @@ const blocks = {
 		customDir: 'add-to-cart-with-options/variation-selector',
 		isExperimental: true,
 	},
+	'add-to-cart-with-options-grouped-product-selector': {
+		customDir: 'add-to-cart-with-options/grouped-product-selector',
+		isExperimental: true,
+	},
+	'add-to-cart-with-options-grouped-product-selector-item': {
+		customDir:
+			'add-to-cart-with-options/grouped-product-selector/product-item-template',
+		isExperimental: true,
+	},
 	'all-products': {
 		customDir: 'products/all-products',
 	},
@@ -38,6 +47,10 @@ const blocks = {
 	},
 	'attribute-filter': {},
 	breadcrumbs: {},
+	'blockified-product-details': {
+		isExperimental: true,
+		customDir: 'product-details',
+	},
 	'catalog-sorting': {},
 	'coming-soon': {},
 	'customer-account': {},
@@ -54,7 +67,6 @@ const blocks = {
 		customDir: 'classic-template',
 	},
 	'classic-shortcode': {},
-	'store-notices': {},
 	'page-content-wrapper': {},
 	'price-filter': {},
 	'product-best-sellers': {},
@@ -99,6 +111,7 @@ const blocks = {
 	},
 	'single-product': {},
 	'stock-filter': {},
+	'store-notices': {},
 	'product-filters': {
 		isExperimental: true,
 	},
@@ -187,6 +200,24 @@ const blocks = {
 	},
 };
 
+/**
+ * Blocks that are generic and will likely be pushed up to Gutenberg or a public block registry.
+ */
+const genericBlocks = {
+	'accordion-group': {
+		customDir: 'accordion/accordion-group',
+	},
+	'accordion-header': {
+		customDir: 'accordion/inner-blocks/accordion-header',
+	},
+	'accordion-item': {
+		customDir: 'accordion/inner-blocks/accordion-item',
+	},
+	'accordion-panel': {
+		customDir: 'accordion/inner-blocks/accordion-panel',
+	},
+};
+
 // Intentional separation of cart and checkout entry points to allow for better code splitting.
 const cartAndCheckoutBlocks = {
 	cart: {},
@@ -218,6 +249,34 @@ const getBlockEntries = ( relativePath, blockEntries = blocks ) => {
 	);
 };
 
+// The entries are used to build styles **and** JS, but for
+// frontend JS of these blocks we use a script modules build so
+// we skip building their JS files in the old build.
+// The script modules build handles them in
+// webpack-config-interactivity-blocks-frontend.js.
+const frontendScriptModuleBlocksToSkip = [
+	'product-gallery',
+	'product-gallery-large-image',
+	'store-notices',
+	'product-collection',
+	'product-filters',
+	'product-filter-status',
+	'product-filter-price',
+	'product-filter-attribute',
+	'product-filter-rating',
+	'product-filter-active',
+	'product-filter-removable-chips',
+];
+
+const frontendEntries = getBlockEntries( 'frontend.{t,j}s{,x}', {
+	...Object.fromEntries(
+		Object.entries( blocks ).filter( ( [ blockName ] ) => {
+			return ! frontendScriptModuleBlocksToSkip.includes( blockName );
+		} )
+	),
+	...genericBlocks,
+} );
+
 const entries = {
 	styling: {
 		// Packages styles
@@ -233,16 +292,12 @@ const entries = {
 			'./assets/js/atomic/blocks/product-elements/product-reviews/index.tsx',
 		'product-details':
 			'./assets/js/atomic/blocks/product-elements/product-details/index.tsx',
+
 		...getBlockEntries( '{index,block,frontend}.{t,j}s{,x}', {
 			...blocks,
+			...genericBlocks,
 			...cartAndCheckoutBlocks,
 		} ),
-
-		// Interactivity component styling
-		'wc-interactivity-checkbox-list':
-			'./packages/interactivity-components/checkbox-list/index.ts',
-		'wc-interactivity-dropdown':
-			'./packages/interactivity-components/dropdown/index.ts',
 
 		// Templates
 		'wc-blocks-classic-template-revert-button-style':
@@ -250,19 +305,15 @@ const entries = {
 	},
 	core: {
 		wcBlocksRegistry: './assets/js/blocks-registry/index.js',
+		blocksCheckoutEvents: './assets/js/events/index.ts',
 		wcSettings: './assets/js/settings/shared/index.ts',
 		wcBlocksData: './assets/js/data/index.ts',
 		wcBlocksMiddleware: './assets/js/middleware/index.js',
 		wcBlocksSharedContext: './assets/js/shared/context/index.js',
 		wcBlocksSharedHocs: './assets/js/shared/hocs/index.js',
+		wcSchemaParser: './assets/js/utils/schema-parser/index.ts',
 		priceFormat: './packages/prices/index.js',
 		wcTypes: './assets/js/types/index.ts',
-
-		// interactivity components, exported as separate entries for now
-		'wc-interactivity-dropdown':
-			'./packages/interactivity-components/dropdown/index.ts',
-		'wc-interactivity-checkbox-list':
-			'./packages/interactivity-components/checkbox-list/index.ts',
 	},
 	main: {
 		// Shared blocks code
@@ -271,14 +322,13 @@ const entries = {
 		// Blocks
 		...getBlockEntries( 'index.{t,j}s{,x}', {
 			...blocks,
+			...genericBlocks,
 			...cartAndCheckoutBlocks,
 		} ),
 	},
 	frontend: {
 		reviews: './assets/js/blocks/reviews/frontend.ts',
-		...getBlockEntries( 'frontend.{t,j}s{,x}' ),
-		'product-button-interactivity':
-			'./assets/js/atomic/blocks/product-elements/button/frontend.tsx',
+		...frontendEntries,
 	},
 	payments: {
 		'wc-payment-method-cheque':
@@ -315,4 +365,5 @@ const getEntryConfig = ( type = 'main', exclude = [] ) => {
 
 module.exports = {
 	getEntryConfig,
+	genericBlocks,
 };

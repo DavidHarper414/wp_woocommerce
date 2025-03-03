@@ -9,6 +9,7 @@ import { CartResponse } from '@woocommerce/types';
  */
 import { CART_API_ERROR } from './constants';
 import type { CartDispatchFromMap, CartResolveSelectFromMap } from './index';
+import { setTriggerStoreSyncEvent } from './utils';
 
 /**
  * Resolver for retrieving all cart data.
@@ -31,22 +32,22 @@ export const getCartData =
 			apiFetch.setCartHash( response?.headers );
 		}
 
-		response
-			.json()
-			.then( function ( cartData: CartResponse ) {
-				const { receiveCart, receiveError } = dispatch;
+		try {
+			const cartData: CartResponse = await response.json();
+			const { receiveCart, receiveError } = dispatch;
 
-				if ( ! cartData ) {
-					receiveError( CART_API_ERROR );
-					return;
-				}
-
-				receiveCart( cartData );
-			} )
-			.catch( () => {
-				const { receiveError } = dispatch;
+			if ( ! cartData ) {
 				receiveError( CART_API_ERROR );
-			} );
+				return;
+			}
+
+			setTriggerStoreSyncEvent( false );
+			receiveCart( cartData );
+			setTriggerStoreSyncEvent( true );
+		} catch ( error ) {
+			const { receiveError } = dispatch;
+			receiveError( CART_API_ERROR );
+		}
 	};
 
 /**

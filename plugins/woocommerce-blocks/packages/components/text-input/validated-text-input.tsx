@@ -12,7 +12,7 @@ import {
 import clsx from 'clsx';
 import { isObject } from '@woocommerce/types';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { VALIDATION_STORE_KEY } from '@woocommerce/block-data';
+import { validationStore } from '@woocommerce/block-data';
 import { usePrevious } from '@woocommerce/base-hooks';
 import { useInstanceId } from '@wordpress/compose';
 
@@ -28,6 +28,8 @@ import { ValidatedTextInputProps } from './types';
 export type ValidatedTextInputHandle = {
 	focus?: () => void;
 	revalidate: () => void;
+	isFocused: () => boolean;
+	setErrorMessage: ( errorMessage: string ) => void;
 };
 
 /**
@@ -42,7 +44,7 @@ const ValidatedTextInput = forwardRef<
 			className,
 			id,
 			type = 'text',
-			ariaDescribedBy,
+			ariaDescribedBy = '',
 			errorId,
 			focusOnMount = false,
 			onChange,
@@ -82,7 +84,8 @@ const ValidatedTextInput = forwardRef<
 			setValidationErrors,
 			hideValidationError,
 			clearValidationError,
-		} = useDispatch( VALIDATION_STORE_KEY );
+			showValidationError,
+		} = useDispatch( validationStore );
 
 		// Ref for validation callback.
 		const customValidationRef = useRef( customValidation );
@@ -94,13 +97,14 @@ const ValidatedTextInput = forwardRef<
 
 		const { validationError, validationErrorId } = useSelect(
 			( select ) => {
-				const store = select( VALIDATION_STORE_KEY );
+				const store = select( validationStore );
 				return {
 					validationError: store.getValidationError( errorIdString ),
 					validationErrorId:
 						store.getValidationErrorId( errorIdString ),
 				};
-			}
+			},
+			[ errorIdString ]
 		);
 
 		const validateInput = useCallback(
@@ -117,22 +121,31 @@ const ValidatedTextInput = forwardRef<
 
 				if (
 					inputObject.checkValidity() &&
-					customValidationRef.current( inputObject )
+					customValidationRef.current( inputObject ) &&
+					errorsHidden
 				) {
 					clearValidationError( errorIdString );
 					return;
 				}
 
-				setValidationErrors( {
-					[ errorIdString ]: {
-						message: getValidityMessageForInput(
-							label,
-							inputObject,
-							customValidityMessage
-						),
-						hidden: errorsHidden,
-					},
-				} );
+				if ( ! errorsHidden ) {
+					showValidationError( errorIdString );
+				}
+
+				const validityMessage = getValidityMessageForInput(
+					label,
+					inputObject,
+					customValidityMessage
+				);
+
+				if ( validityMessage ) {
+					setValidationErrors( {
+						[ errorIdString ]: {
+							message: validityMessage,
+							hidden: errorsHidden,
+						},
+					} );
+				}
 			},
 			[
 				clearValidationError,
@@ -140,6 +153,7 @@ const ValidatedTextInput = forwardRef<
 				setValidationErrors,
 				label,
 				customValidityMessage,
+				showValidationError,
 			]
 		);
 
@@ -153,6 +167,15 @@ const ValidatedTextInput = forwardRef<
 					},
 					revalidate() {
 						validateInput( ! value );
+					},
+					isFocused() {
+						return (
+							inputRef.current?.ownerDocument?.activeElement ===
+							inputRef.current
+						);
+					},
+					setErrorMessage( errorMessage: string ) {
+						inputRef.current?.setCustomValidity( errorMessage );
 					},
 				};
 			},
@@ -275,7 +298,7 @@ const ValidatedTextInput = forwardRef<
 					}
 				} }
 				onBlur={ () => validateInput( false ) }
-				ariaDescribedBy={ ariaDescribedBy }
+				aria-describedby={ ariaDescribedBy }
 				value={ value }
 				title="" // This prevents the same error being shown on hover.
 				label={ label }

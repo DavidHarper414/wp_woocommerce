@@ -2,11 +2,11 @@
  * External dependencies
  */
 import {
-	FormField,
+	Field,
 	FormFields,
 	CountryAddressFields,
-	KeyedFormField,
-	LocaleSpecificFormField,
+	KeyedFormFields,
+	FieldLocaleOverrides,
 } from '@woocommerce/settings';
 import { __, sprintf } from '@wordpress/i18n';
 import { isNumber, isString } from '@woocommerce/types';
@@ -21,9 +21,9 @@ import { COUNTRY_LOCALE } from '@woocommerce/block-settings';
  * @return {Object} Supported locale fields.
  */
 const getSupportedCoreLocaleProps = (
-	localeField: LocaleSpecificFormField
-): Partial< FormField > => {
-	const fields: Partial< FormField > = {};
+	localeField: FieldLocaleOverrides
+): Partial< Field > => {
+	const fields: Partial< Field > = {};
 
 	if ( localeField.label !== undefined ) {
 		fields.label = localeField.label;
@@ -45,12 +45,12 @@ const getSupportedCoreLocaleProps = (
 		);
 	}
 
-	if ( localeField.priority ) {
-		if ( isNumber( localeField.priority ) ) {
-			fields.index = localeField.priority;
+	if ( localeField.index ) {
+		if ( isNumber( localeField.index ) ) {
+			fields.index = localeField.index;
 		}
-		if ( isString( localeField.priority ) ) {
-			fields.index = parseInt( localeField.priority, 10 );
+		if ( isString( localeField.index ) ) {
+			fields.index = parseInt( localeField.index, 10 );
 		}
 	}
 
@@ -69,27 +69,17 @@ const getSupportedCoreLocaleProps = (
  */
 const countryAddressFields: CountryAddressFields = Object.entries(
 	COUNTRY_LOCALE
-)
-	.map( ( [ country, countryLocale ] ) => [
-		country,
-		Object.entries( countryLocale )
-			.map( ( [ localeFieldKey, localeField ] ) => [
-				localeFieldKey,
-				getSupportedCoreLocaleProps( localeField ),
-			] )
-			.reduce( ( obj, [ key, val ] ) => {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore - Ignoring because it should be fine as long as the data from the server is correct. TS won't catch it anyway if it's not.
-				obj[ key ] = val;
-				return obj;
-			}, {} ),
-	] )
-	.reduce( ( obj, [ key, val ] ) => {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore - Ignoring because it should be fine as long as the data from the server is correct. TS won't catch it anyway if it's not.
-		obj[ key ] = val;
-		return obj;
-	}, {} );
+).reduce( ( acc, [ country, countryLocale ] ) => {
+	acc[ country ] = Object.entries( countryLocale ).reduce(
+		( fields, [ localeFieldKey, localeField ] ) => {
+			fields[ localeFieldKey ] =
+				getSupportedCoreLocaleProps( localeField );
+			return fields;
+		},
+		{}
+	);
+	return acc;
+}, {} );
 
 /**
  * Combines address fields, including fields from the locale, and sorts them by index.
@@ -98,14 +88,14 @@ const prepareFormFields = (
 	// ist of field keys--only address fields matching these will be returned
 	fieldKeys: ( keyof FormFields )[],
 	// Default fields from settings.
-	defaultFields: FormFields | Record< string, never >,
+	defaultFields: FormFields,
 	// Address country code. If unknown, locale fields will not be merged.
 	addressCountry = ''
-): KeyedFormField[] => {
-	const localeConfigs: FormFields =
+): KeyedFormFields => {
+	const localeConfigs =
 		addressCountry && countryAddressFields[ addressCountry ] !== undefined
 			? countryAddressFields[ addressCountry ]
-			: ( {} as FormFields );
+			: {};
 
 	return fieldKeys
 		.map( ( field ) => {

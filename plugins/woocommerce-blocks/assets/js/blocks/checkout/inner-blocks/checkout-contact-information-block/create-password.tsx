@@ -1,22 +1,24 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import PasswordStrengthMeter from '@woocommerce/base-components/cart-checkout/password-strength-meter';
+import { checkoutStore, validationStore } from '@woocommerce/block-data';
 import { ValidatedTextInput } from '@woocommerce/blocks-components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { CHECKOUT_STORE_KEY } from '@woocommerce/block-data';
-import PasswordStrengthMeter from '@woocommerce/base-components/cart-checkout/password-strength-meter';
+import { useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 const CreatePassword = () => {
 	const [ passwordStrength, setPasswordStrength ] = useState( 0 );
 	const { customerPassword } = useSelect( ( select ) => {
-		const store = select( CHECKOUT_STORE_KEY );
+		const store = select( checkoutStore );
 		return {
 			customerPassword: store.getCustomerPassword(),
 		};
-	} );
-	const { __internalSetCustomerPassword } = useDispatch( CHECKOUT_STORE_KEY );
+	}, [] );
+	const { __internalSetCustomerPassword } = useDispatch( checkoutStore );
+	const { setValidationErrors, clearValidationError } =
+		useDispatch( validationStore );
 
 	return (
 		<ValidatedTextInput
@@ -26,29 +28,35 @@ const CreatePassword = () => {
 			value={ customerPassword }
 			required={ true }
 			errorId={ 'account-password' }
-			customValidityMessage={ (
-				validity: ValidityState
-			): string | undefined => {
-				if (
-					validity.valueMissing ||
-					validity.badInput ||
-					validity.typeMismatch
-				) {
-					return __( 'Please enter a valid password', 'woocommerce' );
+			onChange={ ( value: string ) => {
+				__internalSetCustomerPassword( value );
+
+				if ( ! value ) {
+					setValidationErrors( {
+						'account-password': {
+							message: __(
+								'Please enter a valid password',
+								'woocommerce'
+							),
+							hidden: true,
+						},
+					} );
+					return;
 				}
-			} }
-			customValidation={ ( inputObject ) => {
 				if ( passwordStrength < 2 ) {
-					inputObject.setCustomValidity(
-						__( 'Please create a stronger password', 'woocommerce' )
-					);
-					return false;
+					setValidationErrors( {
+						'account-password': {
+							message: __(
+								'Please create a stronger password',
+								'woocommerce'
+							),
+							hidden: true,
+						},
+					} );
+					return;
 				}
-				return true;
+				clearValidationError( 'account-password' );
 			} }
-			onChange={ ( value: string ) =>
-				__internalSetCustomerPassword( value )
-			}
 			feedback={
 				<PasswordStrengthMeter
 					password={ customerPassword }

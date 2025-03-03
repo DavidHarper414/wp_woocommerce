@@ -12,7 +12,7 @@ import {
 import { PRIVACY_URL, TERMS_URL } from '@woocommerce/block-settings';
 import { ValidatedTextInput, Spinner } from '@woocommerce/blocks-components';
 import { useSelect } from '@wordpress/data';
-import { VALIDATION_STORE_KEY } from '@woocommerce/block-data';
+import { validationStore } from '@woocommerce/block-data';
 import { getSetting } from '@woocommerce/settings';
 
 const termsPageLink = TERMS_URL ? (
@@ -92,8 +92,10 @@ const Form = ( {
 } ) => {
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ password, setPassword ] = useState( '' );
-	const hasValidationError = useSelect( ( select ) =>
-		select( VALIDATION_STORE_KEY ).getValidationError( 'account-password' )
+	const hasValidationError = useSelect(
+		( select ) =>
+			select( validationStore ).getValidationError( 'account-password' ),
+		[]
 	);
 	const customerEmail =
 		blockAttributes?.customerEmail ||

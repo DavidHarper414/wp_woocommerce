@@ -29,7 +29,7 @@ import { attributeOptionsPreview } from './constants';
 import './style.scss';
 import { EditProps, isAttributeCounts } from './types';
 import { getAttributeFromId } from './utils';
-import { getAllowedBlocks } from '../../utils';
+import { getAllowedBlocks } from '../../utils/get-allowed-blocks';
 import { EXCLUDED_BLOCKS } from '../../constants';
 import { FilterOptionItem } from '../../types';
 import { InitialDisabled } from '../../components/initial-disabled';
@@ -48,7 +48,6 @@ const Edit = ( props: EditProps ) => {
 		showCounts,
 		sortOrder,
 		hideEmpty,
-		clearButton,
 	} = blockAttributes;
 
 	const attributeObject = getAttributeFromId( attributeId );
@@ -115,7 +114,7 @@ const Edit = ( props: EditProps ) => {
 							? `${ term.name } (${ term.count })`
 							: term.name,
 						value: term.id.toString(),
-						selected: index === 1,
+						selected: index === 0,
 						rawData: term,
 					} ) )
 			);
@@ -163,27 +162,9 @@ const Edit = ( props: EditProps ) => {
 									__( 'Attribute', 'woocommerce' ),
 							},
 						],
-						clearButton
-							? [
-									'woocommerce/product-filter-clear-button',
-									{
-										lock: {
-											remove: true,
-											move: false,
-										},
-									},
-							  ]
-							: null,
 					].filter( Boolean ) as unknown as TemplateArray,
 				],
-				[
-					displayStyle,
-					{
-						lock: {
-							remove: true,
-						},
-					},
-				],
+				[ displayStyle ],
 			],
 		}
 	);

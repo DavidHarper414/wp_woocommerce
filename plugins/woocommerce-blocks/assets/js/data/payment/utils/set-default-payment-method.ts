@@ -7,24 +7,30 @@ import { PlainPaymentMethods } from '@woocommerce/types';
 /**
  * Internal dependencies
  */
-import { STORE_KEY as PAYMENT_STORE_KEY } from '../constants';
+import { store as paymentStore } from '../index';
 
 export const setDefaultPaymentMethod = async (
 	paymentMethods: PlainPaymentMethods
 ) => {
 	const paymentMethodKeys = Object.keys( paymentMethods );
-
 	const expressPaymentMethodKeys = Object.keys(
-		select( PAYMENT_STORE_KEY ).getAvailableExpressPaymentMethods()
+		select( paymentStore ).getAvailableExpressPaymentMethods()
 	);
-
 	const allPaymentMethodKeys = [
 		...paymentMethodKeys,
 		...expressPaymentMethodKeys,
 	];
 
-	const savedPaymentMethods =
-		select( PAYMENT_STORE_KEY ).getSavedPaymentMethods();
+	const activePaymentMethod = select( paymentStore ).getActivePaymentMethod();
+	// Return if current method is valid.
+	if (
+		activePaymentMethod &&
+		allPaymentMethodKeys.includes( activePaymentMethod )
+	) {
+		return;
+	}
+
+	const savedPaymentMethods = select( paymentStore ).getSavedPaymentMethods();
 	const flatSavedPaymentMethods = Object.keys( savedPaymentMethods ).flatMap(
 		( type ) => savedPaymentMethods[ type ]
 	);
@@ -32,14 +38,12 @@ export const setDefaultPaymentMethod = async (
 		flatSavedPaymentMethods.find( ( method ) => method.is_default ) ||
 		flatSavedPaymentMethods[ 0 ] ||
 		undefined;
-
 	if ( savedPaymentMethod ) {
 		const token = savedPaymentMethod.tokenId.toString();
 		const paymentMethodSlug = savedPaymentMethod.method.gateway;
-
 		const savedTokenKey = `wc-${ paymentMethodSlug }-payment-token`;
 
-		dispatch( PAYMENT_STORE_KEY ).__internalSetActivePaymentMethod(
+		dispatch( paymentStore ).__internalSetActivePaymentMethod(
 			paymentMethodSlug,
 			{
 				token,
@@ -51,19 +55,8 @@ export const setDefaultPaymentMethod = async (
 		return;
 	}
 
-	const activePaymentMethod =
-		select( PAYMENT_STORE_KEY ).getActivePaymentMethod();
-
-	// Return if current method is valid.
-	if (
-		activePaymentMethod &&
-		allPaymentMethodKeys.includes( activePaymentMethod )
-	) {
-		return;
-	}
-
-	dispatch( PAYMENT_STORE_KEY ).__internalSetPaymentIdle();
-	dispatch( PAYMENT_STORE_KEY ).__internalSetActivePaymentMethod(
+	dispatch( paymentStore ).__internalSetPaymentIdle();
+	dispatch( paymentStore ).__internalSetActivePaymentMethod(
 		paymentMethodKeys[ 0 ]
 	);
 };

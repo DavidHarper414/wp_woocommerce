@@ -1,15 +1,14 @@
 /**
  * External dependencies
  */
-import { AdditionalValues } from '@woocommerce/settings';
+import { OrderFormValues } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
  */
 import { ACTION_TYPES as types } from './action-types';
-import { ReturnOrGeneratorYieldUnion } from '../mapped-types';
 
-// `Thunks are functions that can be dispatched, similar to actions creators
+// Thunks are functions that can be dispatched, similar to actions creators.
 export * from './thunks';
 
 /**
@@ -157,7 +156,7 @@ export const __internalSetShouldCreateAccount = (
 /**
  * Sets shipping address locally, as opposed to updateCustomerData which sends it to the server.
  */
-export const setAdditionalFields = ( additionalFields: AdditionalValues ) =>
+export const setAdditionalFields = ( additionalFields: OrderFormValues ) =>
 	( { type: types.SET_ADDITIONAL_FIELDS, additionalFields } as const );
 
 /**
@@ -191,27 +190,3 @@ export const __internalSetExtensionData = (
 	namespace,
 	replace,
 } );
-
-export type CheckoutAction =
-	| ReturnOrGeneratorYieldUnion<
-			| typeof __internalSetIdle
-			| typeof __internalSetComplete
-			| typeof __internalSetProcessing
-			| typeof __internalSetBeforeProcessing
-			| typeof __internalSetAfterProcessing
-			| typeof __internalSetRedirectUrl
-			| typeof __internalSetHasError
-			| typeof __internalIncrementCalculating
-			| typeof __internalDecrementCalculating
-			| typeof __internalSetCustomerId
-			| typeof __internalSetCustomerPassword
-			| typeof __internalSetUseShippingAsBilling
-			| typeof setEditingBillingAddress
-			| typeof setEditingShippingAddress
-			| typeof __internalSetShouldCreateAccount
-			| typeof __internalSetOrderNotes
-			| typeof setPrefersCollection
-			| typeof __internalSetExtensionData
-			| typeof setAdditionalFields
-	  >
-	| Record< string, never >;

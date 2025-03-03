@@ -6,6 +6,7 @@ import { dispatch, select } from '@wordpress/data';
 import { decodeEntities } from '@wordpress/html-entities';
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { CurriedSelectorsOf } from '@wordpress/data/build-types/types';
 // eslint-disable-next-line @wordpress/no-unsafe-wp-apis, @woocommerce/dependency-group
 import { __unstableStripHTML as stripHTML } from '@wordpress/dom';
 
@@ -13,13 +14,18 @@ import { __unstableStripHTML as stripHTML } from '@wordpress/dom';
  * Internal dependencies
  */
 import { STORE_KEY as CART_STORE_KEY } from './constants';
+import type { CartStoreDescriptor } from '../../data/cart';
 
-interface NotifyQuantityChangesArgs {
-	oldCart: Cart;
-	newCart: Cart;
+export type QuantityChanges = {
 	cartItemsPendingQuantity?: string[] | undefined;
 	cartItemsPendingDelete?: string[] | undefined;
-}
+	productsPendingAdd?: number[] | undefined;
+};
+
+type NotifyQuantityChangesArgs = {
+	oldCart: Cart;
+	newCart: Cart;
+} & QuantityChanges;
 
 const isWithinQuantityLimits = ( cartItem: CartItem ) => {
 	return (
@@ -36,10 +42,14 @@ const stripAndDecode = ( text: string ) => {
 const notifyIfQuantityChanged = (
 	oldCart: Cart,
 	newCart: Cart,
-	cartItemsPendingQuantity: string[]
+	cartItemsPendingQuantity: string[],
+	productsPendingAdd: number[]
 ) => {
 	newCart.items.forEach( ( cartItem ) => {
-		if ( cartItemsPendingQuantity.includes( cartItem.key ) ) {
+		if (
+			cartItemsPendingQuantity.includes( cartItem.key ) ||
+			productsPendingAdd.includes( cartItem.id )
+		) {
 			return;
 		}
 		const oldCartItem = oldCart.items.find( ( item ) => {
@@ -137,12 +147,22 @@ export const notifyQuantityChanges = ( {
 	newCart,
 	cartItemsPendingQuantity = [],
 	cartItemsPendingDelete = [],
+	productsPendingAdd = [],
 }: NotifyQuantityChangesArgs ) => {
+	const selectors = select(
+		CART_STORE_KEY
+	) as CurriedSelectorsOf< CartStoreDescriptor >;
 	const isResolutionFinished =
-		select( CART_STORE_KEY ).hasFinishedResolution( 'getCartData' );
+		// @ts-expect-error hasFinishedResolution is untyped.
+		selectors.hasFinishedResolution( 'getCartData' );
 	if ( ! isResolutionFinished ) {
 		return;
 	}
 	notifyIfRemoved( oldCart, newCart, cartItemsPendingDelete );
-	notifyIfQuantityChanged( oldCart, newCart, cartItemsPendingQuantity );
+	notifyIfQuantityChanged(
+		oldCart,
+		newCart,
+		cartItemsPendingQuantity,
+		productsPendingAdd
+	);
 };
