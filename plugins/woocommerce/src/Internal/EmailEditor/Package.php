@@ -42,7 +42,7 @@ class Package {
 			return;
 		}
 
-		\Automattic\WooCommerce\EmailEditor\Package::init(); // The namespace will be changed to Automattic\WooCommerce\EmailEditor\Package in the future.
+		\Automattic\WooCommerce\EmailEditor\Package::init();
 		self::initialize();
 	}
 
