@@ -76,7 +76,7 @@ export const BusinessLocation = ( {
 					isSearchable
 					virtualScroll={ true }
 					virtualItemHeight={ 40 }
-					virtualListHeight={ 40 * 10 }
+					virtualListHeight={ 40 * 9 }
 				/>
 				<div className="woocommerce-profiler-button-container woocommerce-profiler-go-to-mystore__button-container">
 					<Button

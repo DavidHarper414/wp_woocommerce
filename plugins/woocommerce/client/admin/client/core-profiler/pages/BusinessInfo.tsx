@@ -331,7 +331,7 @@ export const BusinessInfo = ( {
 						isSearchable
 						virtualScroll={ true }
 						virtualItemHeight={ 40 }
-						virtualListHeight={ 40 * 10 }
+						virtualListHeight={ 40 * 9 }
 					/>
 					{ countries.length === 0 && (
 						<Notice
