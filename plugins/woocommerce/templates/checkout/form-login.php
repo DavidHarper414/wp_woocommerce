@@ -17,6 +17,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/../../includes/wc-notice-functions.php';
+
 if ( is_user_logged_in() || 'no' === get_option( 'woocommerce_enable_checkout_login_reminder' ) ) {
 	return;
 }
