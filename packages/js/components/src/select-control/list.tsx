@@ -73,7 +73,11 @@ type Props = {
 	virtualListHeight?: number;
 };
 
-interface OptionProps {
+const VirtualOption = ( {
+	index,
+	style,
+	data,
+}: {
 	index: number;
 	style: React.CSSProperties;
 	data: {
@@ -83,9 +87,7 @@ interface OptionProps {
 		onSelect: ( option: Option ) => void;
 		getOptionRef: ( index: number ) => RefObject< HTMLButtonElement >;
 	};
-}
-
-const VirtualOption = ( { index, style, data }: OptionProps ) => {
+} ) => {
 	const { options, selectedIndex, instanceId, onSelect, getOptionRef } = data;
 	const option = options[ index ];
 
