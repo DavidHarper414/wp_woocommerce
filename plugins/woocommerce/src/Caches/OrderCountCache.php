@@ -62,7 +62,7 @@ class OrderCountCache {
 	 *
 	 * @return string[]
 	 */
-	private function get_default_statuses() {
+	public function get_default_statuses() {
 		return array_merge(
 			array_keys( wc_get_order_statuses() ),
 			array( OrderStatus::TRASH )

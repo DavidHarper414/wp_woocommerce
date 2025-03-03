@@ -222,13 +222,14 @@ final class OrderUtil {
 				// phpcs:enable
 
 				$count_per_status = array_map( 'absint', array_column( $results, 'count', 'status' ) );
+
 			} else {
 				$count_per_status = (array) wp_count_posts( $order_type );
 			}
 
 			// Make sure all order statuses are included just in case.
 			$count_per_status = array_merge(
-				array_fill_keys( array_keys( wc_get_order_statuses() ), 0 ),
+				array_fill_keys( $order_count_cache->get_default_statuses(), 0 ),
 				$count_per_status
 			);
 
