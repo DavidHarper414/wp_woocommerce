@@ -39,27 +39,25 @@ const CTA = () => {
 			);
 		}
 		return (
-			<div className="wc-block-add-to-cart-with-options__quantity-selector wc-block-add-to-cart-with-options__quantity-selector--input">
-				<div className="quantity">
-					<input
-						style={
-							// In the post editor, the editor isn't in an iframe, so WordPress styles are applied. We need to remove them.
-							! isSiteEditor
-								? {
-										backgroundColor: '#ffffff',
-										lineHeight: 'normal',
-										minHeight: 'unset',
-										boxSizing: 'unset',
-										borderRadius: 'unset',
-								  }
-								: {}
-						}
-						type="number"
-						value="1"
-						className="input-text qty text"
-						readOnly
-					/>
-				</div>
+			<div className="quantity">
+				<input
+					style={
+						// In the post editor, the editor isn't in an iframe, so WordPress styles are applied. We need to remove them.
+						! isSiteEditor
+							? {
+									backgroundColor: '#ffffff',
+									lineHeight: 'normal',
+									minHeight: 'unset',
+									boxSizing: 'unset',
+									borderRadius: 'unset',
+							  }
+							: {}
+					}
+					type="number"
+					value="1"
+					className="input-text qty text"
+					readOnly
+				/>
 			</div>
 		);
 	}

@@ -50,9 +50,9 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 			)
 		);
 
-		$product_html = ob_get_clean();
+		$quantity_selector_html = ob_get_clean();
 
-		return '<div class="wp-block-add-to-cart-with-options-grouped-product-selector-item-cta wc-block-add-to-cart-with-options__quantity-selector wc-block-add-to-cart-with-options__quantity-selector--input">' . $product_html . '</div>';
+		return $quantity_selector_html;
 	}
 
 	/**
@@ -127,7 +127,7 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 			}
 
 			if ( $markup ) {
-				return '<div class="wc-block-add-to-cart-with-options-grouped-product-selector-item-cta">' . $markup . '</div>';
+				return '<div class="wp-block-add-to-cart-with-options-grouped-product-selector-item-cta wc-block-add-to-cart-with-options-grouped-product-selector-item-cta">' . $markup . '</div>';
 			}
 		}
 
