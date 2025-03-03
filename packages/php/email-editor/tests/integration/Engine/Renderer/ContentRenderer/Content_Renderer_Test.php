@@ -37,7 +37,7 @@ class Content_Renderer_Test extends \Email_Editor_Integration_Test_Case {
 		parent::setUp();
 		$this->di_container->get( Email_Editor::class )->initialize();
 		$this->renderer   = $this->di_container->get( Content_Renderer::class );
-		$email_post_id = $this->factory->post->create(
+		$email_post_id    = $this->factory->post->create(
 			array(
 				'post_content' => '<!-- wp:paragraph --><p>Hello!</p><!-- /wp:paragraph -->',
 			)

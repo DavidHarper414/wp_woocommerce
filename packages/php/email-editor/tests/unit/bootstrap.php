@@ -7,6 +7,7 @@
 
 declare(strict_types = 1);
 
+// phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed -- We want to ignore this rule in bootstrap file.
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 if ( ! function_exists( 'register_block_template' ) ) {

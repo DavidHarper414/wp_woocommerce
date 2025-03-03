@@ -30,7 +30,7 @@ class Email_Css_Inliner implements Css_Inliner {
 	 * @return self
 	 */
 	public function from_html( string $unprocessed_html ): self {
-		$that = new self();
+		$that          = new self();
 		$that->inliner = CssInliner::fromHtml( $unprocessed_html );
 		return $that;
 	}

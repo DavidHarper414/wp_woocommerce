@@ -29,7 +29,7 @@ class Theme_Controller_Test extends \Email_Editor_Integration_Test_Case {
 		parent::setUp();
 
 		// Switch theme for easier testing theme colors.
-		switch_theme('twentytwentyfour');
+		switch_theme( 'twentytwentyfour' );
 
 		// Crete a custom user theme post.
 		$styles_data = array(

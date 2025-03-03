@@ -99,7 +99,7 @@ abstract class Email_Editor_Integration_Test_Case extends \WP_UnitTestCase {
 	protected function initContainer(): void {
 		$container = new Container();
 		$container->set(
-      Email_Css_Inliner::class,
+			Email_Css_Inliner::class,
 			function () {
 				return new Email_Css_Inliner();
 			}

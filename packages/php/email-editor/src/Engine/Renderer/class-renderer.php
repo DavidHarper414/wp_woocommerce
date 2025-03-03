@@ -8,7 +8,7 @@
 declare(strict_types = 1);
 namespace Automattic\WooCommerce\EmailEditor\Engine\Renderer;
 
-// require_once __DIR__ . '/../../../vendor/autoload.php'; // wrong vendor path. TODO: need to fix this
+// require_once __DIR__ . '/../../../vendor/autoload.php'; // wrong vendor path. TODO: need to fix this.
 
 use Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Content_Renderer;
 use Automattic\WooCommerce\EmailEditor\Engine\Templates\Templates;
