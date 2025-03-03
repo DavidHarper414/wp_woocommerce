@@ -2949,6 +2949,6 @@ function wc_update_961_migrate_default_email_base_color() {
 /**
  * Remove the transient wc_count_comments as this has migrated to use cache.
  */
-function wc_update_9900_remove_wc_count_comments_transient() {
+function wc_update_990_remove_wc_count_comments_transient() {
 	delete_transient( 'wc_count_comments' );
 }

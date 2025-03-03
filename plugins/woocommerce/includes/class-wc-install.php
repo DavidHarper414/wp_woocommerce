@@ -275,7 +275,7 @@ class WC_Install {
 			'wc_update_961_migrate_default_email_base_color',
 		),
 		'9.9.0' => array(
-			'wc_update_9900_remove_wc_count_comments_transient',
+			'wc_update_990_remove_wc_count_comments_transient',
 		),
 	);
 
