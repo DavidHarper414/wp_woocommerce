@@ -272,6 +272,7 @@ const frontendScriptModuleBlocksToSkip = [
 	'add-to-cart-with-options-variation-selector',
 	'add-to-cart-with-options-grouped-product-selector',
 	'add-to-cart-with-options-grouped-product-selector-item',
+	'accordion-group',
 ];
 
 const frontendEntries = getBlockEntries( 'frontend.{t,j}s{,x}', {
