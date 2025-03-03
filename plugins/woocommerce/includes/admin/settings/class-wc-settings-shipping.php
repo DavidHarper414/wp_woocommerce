@@ -128,8 +128,8 @@ class WC_Settings_Shipping extends WC_Settings_Page {
 				),
 
 				array(
-					'desc'          => __( 'Hide flat rate when free shipping is available', 'woocommerce' ),
-					'id'            => 'woocommerce_shipping_hide_flat_rate_when_free',
+					'desc'          => __( 'Hide shipping rates when free is available', 'woocommerce' ),
+					'id'            => 'woocommerce_shipping_hide_rates_when_free',
 					'default'       => 'no',
 					'type'          => 'checkbox',
 					'autoload'      => false,

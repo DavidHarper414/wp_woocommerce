@@ -358,22 +358,24 @@ class WC_Shipping {
 				}
 			}
 
-			// Hide flat rate shipping when free shipping is available.
-			if ( 'yes' === get_option( 'woocommerce_shipping_hide_flat_rate_when_free', 'no' ) ) {
-				$has_free_shipping = false;
+			// Hide shipping rates when free shipping is available.
+			if ( 'yes' === get_option( 'woocommerce_shipping_hide_rates_when_free', 'no' ) ) {
+				$free_shipping = array();
+				$local_pickup  = array();
+
 				foreach ( $package['rates'] as $rate ) {
 					if ( 'free_shipping' === $rate->method_id ) {
-						$has_free_shipping = true;
-						break;
+						$free_shipping[] = $rate;
+						continue;
+					}
+
+					if ( 'local_pickup' === $rate->method_id ) {
+						$local_pickup[] = $rate;
 					}
 				}
 
-				if ( $has_free_shipping ) {
-					foreach ( $package['rates'] as $rate_id => $rate ) {
-						if ( 'flat_rate' === $rate->method_id ) {
-							unset( $package['rates'][ $rate_id ] );
-						}
-					}
+				if ( ! empty( $free_shipping ) ) {
+					$package['rates'] = array_merge( $free_shipping, $local_pickup );
 				}
 			}
 
