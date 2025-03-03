@@ -9,6 +9,7 @@ use WC_Tracks;
 use WC_Site_Tracking;
 use Automattic\Jetpack\Constants;
 use Automattic\WooCommerce\Internal\Admin\Analytics;
+use Automattic\WooCommerce\Internal\BackInStockNotifications;
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use Automattic\WooCommerce\Proxies\LegacyProxy;
 use Automattic\WooCommerce\Utilities\ArrayUtil;
@@ -400,6 +401,29 @@ class FeaturesController {
 					),
 					'enabled_by_default' => false,
 					'disable_ui'         => true,
+				),
+				'back_in_stock_notifications' => array(
+					'name'               => __( 'Back in stock notifications', 'woocommerce' ),
+					'description'        => BackInStockNotifications::is_really_enabled() ? 
+						/* translators: %s: URL to WooCommerce stock notification settings */
+						sprintf(
+							__( 'Enable back in stock notifications for customers. Configure the options in <a href="%s">WooCommerce > Settings > Products > Customer stock notifications</a>.', 'woocommerce' ),
+							esc_url( admin_url( 'admin.php?page=wc-settings&tab=products&section=bis_settings' ) )
+						) 
+						: __(
+							'Enable back in stock notifications for customers.',
+							'woocommerce'
+						),
+					'enabled_by_default' => true,
+					'is_experimental'    => false,
+					/*
+					 * This is not a legacy feature, but it can't use the compatibility checking system other features use.
+					 *
+					 * See previous entries for more details.
+					 */
+					'is_legacy'          => true,
+					'disable_ui'         => false,
+					'option_key'         => BackInStockNotifications::$ENABLE_OPTION_NAME,
 				),
 			);
 

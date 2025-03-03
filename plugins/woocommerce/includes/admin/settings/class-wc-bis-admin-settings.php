@@ -31,29 +31,31 @@ if ( ! class_exists( 'WC_BIS_Settings' ) ) :
 			$this->id    = 'bis_settings';
 			$this->label = __( 'Stock Notifications', 'woocommerce' );
 
-			// Hook to Products settings.
+			// Add subtab to WC > Settings > Products.
 			add_filter( 'woocommerce_get_sections_products', array( $this, 'add_bis_section_to_product_settings' ), 100, 1 );
-			add_filter( 'woocommerce_get_settings_products', array( $this, 'add_product_bis_settings' ), 100, 2 );
+
+			// Customer stock notifications subtab settings.
+			add_filter( 'woocommerce_get_settings_products', array( $this, 'add_customer_stock_notifications_settings' ), 100, 2 );
 
 		}
 
-		public function add_bis_section_to_product_settings( array $products ): array {
+		public function add_bis_section_to_product_settings( array $sections ): array {
 			// Add bis_settings section to products tab after Inventory section.
-			$inventory_index = array_search( 'inventory', array_keys( $products ) );
+			$inventory_index = array_search( 'inventory', array_keys( $sections ) );
 			if ( $inventory_index !== false ) {
-				$products = array_slice( $products, 0, $inventory_index + 1, true ) +
+				$sections = array_slice( $sections, 0, $inventory_index + 1, true ) +
 					array( 'bis_settings' => __( 'Customer stock notifications', 'woocommerce' ) ) +
-					array_slice( $products, $inventory_index + 1, null, true );
+					array_slice( $sections, $inventory_index + 1, null, true );
 			} else {
-				$products['bis_settings'] = __( 'Customer stock notifications', 'woocommerce' );
+				$sections['bis_settings'] = __( 'Customer stock notifications', 'woocommerce' );
 			}
 	
-			return $products;
+			return $sections;
 		}
 
 
 		/**
-		 * Handler for 'woocommerce_get_settings_products', adds the settings related to the product attributes lookup table.
+		 * Handler for 'woocommerce_get_settings_products', adds the settings related to the Back In Stock Notifications.
 		 *
 		 * @param array  $settings Original settings configuration array.
 		 * @param string $section_id Settings section identifier.
@@ -61,7 +63,7 @@ if ( ! class_exists( 'WC_BIS_Settings' ) ) :
 		 *
 		 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 		 */
-		public function add_product_bis_settings( array $settings, string $section_id ): array {
+		public function add_customer_stock_notifications_settings( array $settings, string $section_id ): array {
 			if ( 'bis_settings' === $section_id ) {
 				$title_item = array(
 					'title' => __( 'Customer stock notifications', 'woocommerce' ),

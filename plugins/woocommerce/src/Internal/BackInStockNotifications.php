@@ -39,6 +39,13 @@ class BackInStockNotifications {
 	private static $bis_plugin_is_active = false;
 
 	/**
+	 * Option name for the feature flag.
+	 * 
+	 * @var string
+	 */
+	public static $ENABLE_OPTION_NAME = 'wc_feature_woocommerce_back_in_stock_notifications_enabled';
+
+	/**
 	 * Class initialization
 	 *
 	 * @internal
@@ -115,6 +122,15 @@ class BackInStockNotifications {
 	 */
 	public static function is_enabled() {
 		return false;
+	}
+
+	/**
+	 * Returns true if the feature is enabled in this WC instance.
+	 * 
+	 * @return bool
+	 */
+	public static function is_really_enabled() {
+		return self::is_enabled() && 'yes' === get_option( self::$ENABLE_OPTION_NAME );
 	}
 
 	/**
