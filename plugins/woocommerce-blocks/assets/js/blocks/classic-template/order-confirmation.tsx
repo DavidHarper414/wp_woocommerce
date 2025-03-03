@@ -3,15 +3,12 @@
  */
 import { createBlock, type BlockInstance } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
+import { sprintf } from 'lodash';
 
 /**
  * Internal dependencies
  */
 import type { OnClickCallbackParameter, InheritedAttributes } from './types';
-
-const isConversionPossible = () => {
-	return true;
-};
 
 const getButtonLabel = () => __( 'Transform into blocks', 'woocommerce' );
 
@@ -89,12 +86,15 @@ const onClickCallback = ( {
 	}
 };
 
-const getDescription = () => {
-	return __(
-		'This block represents the classic template used to display the order confirmation. The actual rendered template may appear different from this placeholder.',
-		'woocommerce'
+const getDescription = ( templateTitle: string ) =>
+	sprintf(
+		/* translators: %s is the template title */
+		__(
+			'Transform this template into multiple blocks so you can add, remove, reorder, and customize your %s template.',
+			'woocommerce'
+		),
+		templateTitle
 	);
-};
 
 const getSkeleton = () => {
 	return (
@@ -212,4 +212,4 @@ const blockifyConfig = {
 	getBlockifiedTemplate,
 };
 
-export { blockifyConfig, isConversionPossible, getDescription, getSkeleton };
+export { blockifyConfig, getDescription, getSkeleton };
