@@ -39,8 +39,8 @@ class AccordionGroup extends AbstractBlock {
 				'autoclose' => $attributes['autoclose'],
 				'isOpen'    => array(),
 			);
-			$p->set_attribute( 'data-wc-interactive', wp_json_encode( array( 'namespace' => 'woocommerce/accordion' ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) );
-			$p->set_attribute( 'data-wc-context', wp_json_encode( $interactivity_context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) );
+			$p->set_attribute( 'data-wp-interactive', 'woocommerce/accordion' );
+			$p->set_attribute( 'data-wp-context', wp_json_encode( $interactivity_context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) );
 
 			// Only modify content if directives have been set.
 			$content = $p->get_updated_html();

@@ -15,7 +15,7 @@ jQuery( function( $ ) {
 		this.$liveRegion = this.createLiveRegion();
 
 		$( document.body )
-			.on( 'click', '.add_to_cart_button:not(.wc-interactive)', { addToCartHandler: this }, this.onAddToCart )
+			.on( 'click', '.add_to_cart_button:not(.wp-interactive)', { addToCartHandler: this }, this.onAddToCart )
 			.on( 'click', '.remove_from_cart_button', { addToCartHandler: this }, this.onRemoveFromCart )
 			.on( 'added_to_cart', { addToCartHandler: this }, this.onAddedToCart )
 			.on( 'removed_from_cart', { addToCartHandler: this }, this.onRemovedFromCart )
