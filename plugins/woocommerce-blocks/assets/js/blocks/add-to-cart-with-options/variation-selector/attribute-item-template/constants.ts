@@ -31,7 +31,6 @@ export const ATTRIBUTE_ITEM_TEMPLATE: TemplateArray = [
 						'woocommerce/add-to-cart-with-options-variation-selector-attribute-name',
 						{
 							fontSize: 'medium',
-							textColor: 'accent-4',
 						},
 					],
 					[
