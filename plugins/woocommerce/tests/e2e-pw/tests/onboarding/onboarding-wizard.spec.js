@@ -262,11 +262,11 @@ test.describe(
 					.click();
 				// select a WooPayments incompatible location
 				await page
-					.locator(
-						'form.woocommerce-profiler-business-information-form > div > div > div > div > input'
-					)
-					.last()
+					.getByRole( 'combobox', { name: 'Select country/region' } )
 					.click();
+				await page
+					.getByRole( 'combobox', { name: 'Select country/region' } )
+					.fill( 'Afghanistan' );
 				await page
 					.getByRole( 'option', { name: 'Afghanistan' } )
 					.click();
