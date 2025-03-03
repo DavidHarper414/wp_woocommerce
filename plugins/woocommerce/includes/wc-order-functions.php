@@ -397,11 +397,17 @@ function wc_orders_count( $status, string $type = '' ) {
 	$type            = trim( $type );
 
 	try {
-		$types_for_count = $type ? array( $type ) : $valid_types;
+		$types_for_count   = $type ? array( $type ) : $valid_types;
+		$order_count_cache = new OrderCountCache();
 
 		foreach ( $types_for_count as $type ) {
-			$count_for_type = OrderUtil::get_count_for_type( $type );
-			$count         += $count_for_type[ $status ];
+			$cache = $order_count_cache->get( $type, array( $status ) );
+			if ( false !== $cache && isset( $cache[ $status ] ) ) {
+				$count += $cache[ $status ];
+			} else {
+				$count_for_type = OrderUtil::get_count_for_type( $type );
+				$count         += $count_for_type[ $status ];
+			}
 		}
 
 		return $count;

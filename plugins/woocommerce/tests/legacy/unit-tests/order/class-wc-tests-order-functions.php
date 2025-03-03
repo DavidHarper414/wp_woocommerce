@@ -121,7 +121,9 @@ class WC_Tests_Order_Functions extends WC_Unit_Test_Case {
 
 		$order_count_cache = new OrderCountCache();
 		foreach ( $test_counts as $order_type => $counts ) {
-			$order_count_cache->set( $counts, $order_type );
+			foreach ( $counts as $status => $count ) {
+				$order_count_cache->set( $order_type, $status, $count );
+			}
 		}
 
 		// Check counts for specific order types.
