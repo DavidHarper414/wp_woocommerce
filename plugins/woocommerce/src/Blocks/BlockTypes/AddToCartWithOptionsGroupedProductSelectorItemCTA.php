@@ -114,7 +114,8 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 		$post_id = isset( $block->context['postId'] ) ? $block->context['postId'] : '';
 		$product = wc_get_product( $post_id );
 
-		if ( $product ) {
+		if ( $product instanceof \WC_Product ) {
+
 			$product_type = $product->get_type();
 			$markup       = '';
 
