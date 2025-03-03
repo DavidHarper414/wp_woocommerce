@@ -5,6 +5,7 @@ import {
 	store,
 	getContext as getContextFn,
 	getElement,
+	withScope,
 } from '@wordpress/interactivity';
 import type { StorePart } from '@woocommerce/utils';
 
@@ -285,34 +286,37 @@ const productGallery = {
 			// We don't want to set `userHasInteracted` to true on initial mutation
 			let isInitialMutation = true;
 
-			const observer = new MutationObserver( function ( mutations ) {
-				for ( const mutation of mutations ) {
-					if ( ! isInitialMutation ) {
-						actions.userHasInteracted();
-					}
+			const observer = new MutationObserver(
+				withScope( function ( mutations ) {
+					for ( const mutation of mutations ) {
+						if ( ! isInitialMutation ) {
+							actions.userHasInteracted();
+						}
 
-					if ( isInitialMutation ) {
-						isInitialMutation = false;
-					}
+						if ( isInitialMutation ) {
+							isInitialMutation = false;
+						}
 
-					const mutationTarget = mutation.target as HTMLElement;
-					const currentImageAttribute =
-						mutationTarget.getAttribute( 'current-image' );
-					if (
-						mutation.type === 'attributes' &&
-						currentImageAttribute &&
-						context.imageIds.includes( currentImageAttribute )
-					) {
-						const nextImageNumber =
-							context.imageIds.indexOf( currentImageAttribute ) +
-							1;
+						const mutationTarget = mutation.target as HTMLElement;
+						const currentImageAttribute =
+							mutationTarget.getAttribute( 'current-image' );
+						if (
+							mutation.type === 'attributes' &&
+							currentImageAttribute &&
+							context.imageIds.includes( currentImageAttribute )
+						) {
+							const nextImageNumber =
+								context.imageIds.indexOf(
+									currentImageAttribute
+								) + 1;
 
-						selectImage( nextImageNumber );
-					} else {
-						selectFirstImage();
+							actions.selectImage( nextImageNumber );
+						} else {
+							actions.selectImage( 1 );
+						}
 					}
-				}
-			} );
+				} )
+			);
 
 			observer.observe( variableProductCartForm, {
 				attributes: true,
