@@ -222,7 +222,7 @@ class Theme_Controller {
 
 		// Because the section styles is not a part of the output the `get_styles_block_nodes` method, we need to get it separately.
 		if ( $template && $template->wp_id ) {
-			$template_theme    = (array) get_post_meta( $template->wp_id, 'woocommerce_email_theme', true );
+			$template_theme    = (array) get_post_meta( $template->wp_id, Email_Editor::WOOCOMMERCE_EMAIL_META_THEME_TYPE, true );
 			$template_styles   = (array) ( $template_theme['styles'] ?? array() );
 			$template_elements = $template_styles['elements'] ?? array();
 			$elements_styles   = array_replace_recursive( (array) $elements_styles, (array) $template_elements );
