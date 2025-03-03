@@ -4,7 +4,8 @@
 import {
 	CURRENT_USER_IS_ADMIN,
 	FormFields,
-	KeyedFormField,
+	KeyedFormFields,
+	FormType,
 } from '@woocommerce/settings';
 import { useSchemaParser } from '@woocommerce/base-hooks';
 import { useRef } from '@wordpress/element';
@@ -14,6 +15,7 @@ import fastDeepEqual from 'fast-deep-equal/es6';
  * Internal dependencies
  */
 import prepareFormFields from './prepare-form-fields';
+import { hasSchemaRules } from './utils';
 
 /**
  * Combines address fields, including fields from the locale, and sorts them by index.
@@ -23,8 +25,8 @@ export const useFormFields = < T extends keyof FormFields >(
 	fieldKeys: T[],
 	// Default fields from settings.
 	defaultFields: FormFields,
-	// Form type, can be billing, shipping, contact, additional-information, or calculator.
-	formType: string,
+	// Form type, can be billing, shipping, contact, order, or calculator.
+	formType: FormType,
 	// Address country.
 	addressCountry = ''
 ): KeyedFormField< T >[] => {
@@ -40,15 +42,24 @@ export const useFormFields = < T extends keyof FormFields >(
 	const updatedFields = formFields.map( ( field ) => {
 		const defaultConfig = defaultFields[ field.key ] || {};
 		if ( defaultConfig.rules && parser ) {
-			if (
-				defaultConfig.rules.required &&
-				typeof defaultConfig.rules.required === 'object' &&
-				Object.keys( defaultConfig.rules.required ).length > 0
-			) {
-				const schema = {
-					type: 'object',
-					properties: defaultConfig.rules.required,
-				};
+			if ( hasSchemaRules( defaultConfig, 'required' ) ) {
+				let schema = {};
+				if (
+					Object.keys( defaultConfig.rules.required ).some(
+						( key ) =>
+							key === 'cart' ||
+							key === 'checkout' ||
+							key === 'customer'
+					)
+				) {
+					schema = {
+						type: 'object',
+						properties: defaultConfig.rules.required,
+					};
+				} else {
+					schema = defaultConfig.rules.required;
+				}
+
 				try {
 					const result = parser.validate( schema, data );
 					field.required = result;
@@ -59,11 +70,7 @@ export const useFormFields = < T extends keyof FormFields >(
 					}
 				}
 			}
-			if (
-				defaultConfig.rules.hidden &&
-				typeof defaultConfig.rules.hidden === 'object' &&
-				Object.keys( defaultConfig.rules.hidden ).length > 0
-			) {
+			if ( hasSchemaRules( defaultConfig, 'hidden' ) ) {
 				const schema = {
 					type: 'object',
 					properties: defaultConfig.rules.hidden,
