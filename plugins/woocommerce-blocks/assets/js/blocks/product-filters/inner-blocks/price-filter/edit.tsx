@@ -47,7 +47,7 @@ const Edit = () => {
 									style: {
 										spacing: {
 											margin: {
-												bottom: '10px',
+												bottom: '0.625rem',
 												top: '0',
 											},
 										},

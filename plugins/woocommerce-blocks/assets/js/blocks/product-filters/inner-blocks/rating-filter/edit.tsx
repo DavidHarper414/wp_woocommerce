@@ -50,7 +50,7 @@ const RatingFilterEdit = ( props: BlockEditProps< Attributes > ) => {
 						style: {
 							spacing: {
 								margin: {
-									bottom: '10px',
+									bottom: '0.625rem',
 									top: '0',
 								},
 							},
