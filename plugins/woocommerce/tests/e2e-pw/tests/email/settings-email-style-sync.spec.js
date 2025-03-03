@@ -38,7 +38,7 @@ test.describe( 'Email Style Sync', () => {
 	test.beforeEach( async ( { baseURL } ) => {
 		// Enable email improvements feature
 		await setFeatureFlag( baseURL, 'yes' );
-		// Ensure auto-sync is disabled by default
+		// Ensure auto-sync is enabled by default
 		await setAutoSyncFlag( baseURL, 'yes' );
 		// Ensure color palette is not synced with theme
 		await setOption(
