@@ -62,6 +62,27 @@ async function navigate( href: string, options = {} ) {
 	return actions.navigate( href, options );
 }
 
+// TODO: Remove this once the fix is released in WP. https://github.com/woocommerce/gutenberg/pull/4
+const maybeRemoveRouterRegion = () => {
+	const productCollectionBlock = document.querySelector(
+		'.wp-block-woocommerce-product-collection'
+	);
+
+	if ( ! productCollectionBlock ) {
+		return;
+	}
+
+	const productFilters = productCollectionBlock.getElementsByClassName(
+		'wp-block-woocommerce-product-filters'
+	);
+
+	if ( productFilters && productFilters.length > 0 ) {
+		Array.from( productFilters ).forEach( ( filter ) =>
+			filter.removeAttribute( 'data-wp-router-region' )
+		);
+	}
+};
+
 export type ActiveFilter = {
 	label: string;
 	type: 'attribute' | 'price' | 'rating' | 'status';
@@ -222,6 +243,9 @@ const productFiltersStore = store( 'woocommerce/product-filters', {
 					productFiltersStore.state.params[ key ]
 				);
 			}
+
+			// TODO: Remove this once the fix is released in WP. https://github.com/woocommerce/gutenberg/pull/4
+			maybeRemoveRouterRegion();
 
 			yield navigate( url.href );
 		},
