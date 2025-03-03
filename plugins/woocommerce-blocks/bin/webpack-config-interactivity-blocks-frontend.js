@@ -41,6 +41,8 @@ const entries = {
 		'./assets/js/blocks/product-filters/inner-blocks/status-filter/frontend.ts',
 	'woocommerce/accordion-group':
 		'./assets/js/blocks/accordion/accordion-group/frontend.ts',
+	'woocommerce/add-to-cart-form':
+		'./assets/js/blocks/product-elements/add-to-cart-form/frontend.ts',
 	'woocommerce/add-to-cart-with-options':
 		'./assets/js/blocks/add-to-cart-with-options/frontend.ts',
 	'woocommerce/add-to-cart-with-options-grouped-product-selector':
