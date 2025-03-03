@@ -102,12 +102,16 @@ export default function AttributeOptionsEdit(
 				<Pills id={ attribute.taxonomy } options={ options } />
 			) : (
 				<Disabled>
-					<SelectControl
+					<select
 						id={ attribute.taxonomy }
-						options={ options }
-						hideLabelFromVision
-						__nextHasNoMarginBottom
-					/>
+						className="wp-block-woocommerce-add-to-cart-with-options-variation-selector-attribute-options__dropdown"
+					>
+						{ options.map( ( option ) => (
+							<option key={ option.value } value={ option.value }>
+								{ option.label }
+							</option>
+						) ) }
+					</select>
 				</Disabled>
 			) }
 		</div>
