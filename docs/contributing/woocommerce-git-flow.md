@@ -14,7 +14,7 @@ For core development, we use the following structure and flow.
 
 ![Git Flow WooCommerce uses for core development - tagging beta](https://developer.woocommerce.com/wp-content/uploads/sites/2/2025/02/woo-git-flow-2.png)
 
-3. If issues are found in the beta they are fixed with pull requests targetting the `release/x.y` branch.
+3. If issues are found in the beta they are fixed with pull requests targeting the `release/x.y` branch.
 
 ![Git Flow WooCommerce uses for core development - fixing issues in the beta](https://developer.woocommerce.com/wp-content/uploads/sites/2/2025/02/woo-git-flow-3.png)
 
