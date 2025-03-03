@@ -218,4 +218,14 @@ class AddToCartWithOptions extends AbstractBlock {
 
 		return $form_html;
 	}
+
+	/**
+	 * Disable the frontend script for this block type, it's built with script modules.
+	 *
+	 * @param string $key Data to get, or default to everything.
+	 * @return null
+	 */
+	protected function get_block_type_script( $key = null ) {
+		return null;
+	}
 }

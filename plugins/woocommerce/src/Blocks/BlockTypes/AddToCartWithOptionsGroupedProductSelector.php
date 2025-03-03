@@ -45,4 +45,14 @@ class AddToCartWithOptionsGroupedProductSelector extends AbstractBlock {
 
 		return '';
 	}
+
+	/**
+	 * Disable the frontend script for this block type, it's built with script modules.
+	 *
+	 * @param string $key Data to get, or default to everything.
+	 * @return array|string|null
+	 */
+	protected function get_block_type_script( $key = null ) {
+		return null;
+	}
 }
