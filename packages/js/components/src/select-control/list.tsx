@@ -85,7 +85,6 @@ interface OptionProps {
 	};
 }
 
-// VirtualOption component for rendering each virtualized row
 const VirtualOption = ( { index, style, data }: OptionProps ) => {
 	const { options, selectedIndex, instanceId, onSelect, getOptionRef } = data;
 	const option = options[ index ];
