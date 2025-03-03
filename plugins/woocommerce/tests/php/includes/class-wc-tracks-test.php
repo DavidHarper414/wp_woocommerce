@@ -241,7 +241,7 @@ class WC_Tracks_Test extends \WC_Unit_Test_Case {
 		delete_transient( 'wc_tracks_blog_details' );
 
 		// Set a known store ID.
-		$test_store_id = 'test_store_id_' . time();
+		$test_store_id = 'test_store_id_' . uniqid();
 		update_option( \WC_Install::STORE_ID_OPTION, $test_store_id );
 
 		// First call should set the transient.
@@ -249,7 +249,7 @@ class WC_Tracks_Test extends \WC_Unit_Test_Case {
 		$this->assertEquals( $test_store_id, $first_call['store_id'] );
 
 		// Change the store ID in the database.
-		$new_store_id = 'new_store_id_' . time();
+		$new_store_id = 'new_store_id_' . uniqid();
 		update_option( \WC_Install::STORE_ID_OPTION, $new_store_id );
 
 		// Second call should use the cached data and not reflect the new store ID.
