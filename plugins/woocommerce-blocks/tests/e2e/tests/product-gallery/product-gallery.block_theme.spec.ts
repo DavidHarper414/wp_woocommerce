@@ -36,6 +36,26 @@ const test = base.extend< { pageObject: ProductGalleryPage } >( {
 	},
 } );
 
+/**
+ * Get the image id from the image element. Sometimes the image id is in the data-image-id attribute, sometimes in the id attribute.
+ *
+ * @param imgElement - The image element.
+ * @return The image id.
+ */
+export const getImageId = async ( imgElement: Locator ) => {
+	const imageId = await imgElement.getAttribute( 'id' );
+	if ( imageId ) {
+		return imageId;
+	}
+
+	const dataImageId = await imgElement.getAttribute( 'data-image-id' );
+	if ( dataImageId ) {
+		return dataImageId;
+	}
+
+	return null;
+};
+
 export const getVisibleLargeImageId = async (
 	mainImageBlockLocator: Locator
 ) => {
@@ -43,8 +63,7 @@ export const getVisibleLargeImageId = async (
 		'.wc-block-woocommerce-product-gallery-large-image__image--active-image-slide'
 	);
 
-	const mainImageId = await mainImage.getAttribute( 'id' );
-	return mainImageId;
+	return getImageId( mainImage );
 };
 
 export const getIsDialogOpen = async (
@@ -67,13 +86,7 @@ const getThumbnailImageIdByNth = async (
 ) => {
 	const image = thumbnailsLocator.locator( 'img' ).nth( nth );
 
-	const imageContext = ( await image.getAttribute(
-		'data-wp-context'
-	) ) as string;
-
-	const imageId = JSON.parse( imageContext ).imageId;
-
-	return imageId;
+	return getImageId( image );
 };
 
 test.describe( `${ blockData.name }`, () => {
@@ -324,7 +337,7 @@ test.describe( `${ blockData.name }`, () => {
 			// eslint-disable-next-line playwright/no-wait-for-timeout, no-restricted-syntax
 			await page.waitForTimeout( 300 );
 			const popUpSelectedImageId =
-				await pageObject.getActiveElementImageId( {
+				await pageObject.getActiveImageElementId( {
 					page,
 				} );
 
