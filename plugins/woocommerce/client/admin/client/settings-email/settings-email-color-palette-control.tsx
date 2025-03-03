@@ -56,7 +56,7 @@ export const ResetStylesControl: React.FC< ResetStylesControlProps > = ( {
 		setColors( defaultColors );
 		setIsResetShown( false );
 		setChanged( areColorsChanged( initialValue ) );
-		setIsAutoSyncEnabled( true );
+		handleAutoSyncToggle( true );
 	};
 
 	const handleUndo = () => {
