@@ -16,6 +16,29 @@ const glob = require( 'glob' );
 // when you mark/unmark block experimental.
 const blocks = {
 	'active-filters': {},
+	'add-to-cart-form': {
+		customDir: 'product-elements/add-to-cart-form',
+	},
+	'add-to-cart-with-options': {
+		isExperimental: true,
+	},
+	'add-to-cart-with-options-quantity-selector': {
+		customDir: 'add-to-cart-with-options/quantity-selector',
+		isExperimental: true,
+	},
+	'add-to-cart-with-options-variation-selector': {
+		customDir: 'add-to-cart-with-options/variation-selector',
+		isExperimental: true,
+	},
+	'add-to-cart-with-options-grouped-product-selector': {
+		customDir: 'add-to-cart-with-options/grouped-product-selector',
+		isExperimental: true,
+	},
+	'add-to-cart-with-options-grouped-product-selector-item': {
+		customDir:
+			'add-to-cart-with-options/grouped-product-selector/product-item-template',
+		isExperimental: true,
+	},
 	'all-products': {
 		customDir: 'products/all-products',
 	},
@@ -226,7 +249,7 @@ const getBlockEntries = ( relativePath, blockEntries = blocks ) => {
 	);
 };
 
-// The entries are used to build styles **and** JS, but for
+// `blocks` entries are used to build styles **and** JS, but for
 // frontend JS of these blocks we use a script modules build so
 // we skip building their JS files in the old build.
 // The script modules build handles them in
@@ -243,6 +266,12 @@ const frontendScriptModuleBlocksToSkip = [
 	'product-filter-rating',
 	'product-filter-active',
 	'product-filter-removable-chips',
+	'add-to-cart-form',
+	'add-to-cart-with-options',
+	'add-to-cart-with-options-quantity-selector',
+	'add-to-cart-with-options-variation-selector',
+	'add-to-cart-with-options-grouped-product-selector',
+	'add-to-cart-with-options-grouped-product-selector-item',
 ];
 
 const frontendEntries = getBlockEntries( 'frontend.{t,j}s{,x}', {
