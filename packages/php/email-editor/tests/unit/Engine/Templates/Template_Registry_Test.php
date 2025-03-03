@@ -34,7 +34,7 @@ class TemplatesRegistryTest extends TestCase {
 	 */
 	public function testRegisterAndGetTemplateByName(): void {
 		$template = $this->createMock( Template::class );
-		$template->method( 'get_name' )->willReturn( 'mailpoet//email-general' );
+		$template->method( 'get_name' )->willReturn( 'woocommerce//email-general' );
 		$template->method( 'get_title' )->willReturn( 'Email General' );
 		$template->method( 'get_description' )->willReturn( 'A general email template.' );
 		$template->method( 'get_content' )->willReturn( '<!-- wp:paragraph --> <p>Hello World</p> <!-- /wp:paragraph -->' );
@@ -44,10 +44,10 @@ class TemplatesRegistryTest extends TestCase {
 		$this->registry->register( $template );
 
 		// Retrieve the template by name.
-		$retrieved_template = $this->registry->get_by_name( 'mailpoet//email-general' );
+		$retrieved_template = $this->registry->get_by_name( 'woocommerce//email-general' );
 
 		$this->assertNotNull( $retrieved_template );
-		$this->assertSame( 'mailpoet//email-general', $retrieved_template->get_name() );
+		$this->assertSame( 'woocommerce//email-general', $retrieved_template->get_name() );
 		$this->assertSame( 'Email General', $retrieved_template->get_title() );
 		$this->assertSame( 'A general email template.', $retrieved_template->get_description() );
 		$this->assertSame( '<!-- wp:paragraph --> <p>Hello World</p> <!-- /wp:paragraph -->', $retrieved_template->get_content() );
@@ -59,7 +59,7 @@ class TemplatesRegistryTest extends TestCase {
 	 */
 	public function testRegisterAndGetTemplateBySlug(): void {
 		$template = $this->createMock( Template::class );
-		$template->method( 'get_name' )->willReturn( 'mailpoet//email-general' );
+		$template->method( 'get_name' )->willReturn( 'woocommerce//email-general' );
 		$template->method( 'get_slug' )->willReturn( 'email-general' );
 
 		// Register the template.
@@ -108,7 +108,7 @@ class TemplatesRegistryTest extends TestCase {
 	 */
 	public function testRegisterDuplicateTemplate(): void {
 		$template = $this->createMock( Template::class );
-		$template->method( 'get_name' )->willReturn( 'mailpoet//email-general' );
+		$template->method( 'get_name' )->willReturn( 'woocommerce//email-general' );
 
 		// Register the same template twice.
 		$this->registry->register( $template );

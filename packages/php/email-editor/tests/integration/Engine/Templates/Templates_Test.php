@@ -34,7 +34,7 @@ class Templates_Test extends \Email_Editor_Integration_Test_Case {
 	 * @return void
 	 */
 	public function testItCanFetchBlockTemplate(): void {
-		$this->templates->initialize( array( 'mailpoet_email' ) );
+		$this->templates->initialize( array( 'woocommerce_email' ) );
 		$template = $this->templates->get_block_template( 'email-general' );
 
 		self::assertInstanceOf( \WP_Block_Template::class, $template );
@@ -58,7 +58,7 @@ class Templates_Test extends \Email_Editor_Integration_Test_Case {
 				return $registry;
 			}
 		);
-		$this->templates->initialize( array( 'mailpoet_email' ) );
+		$this->templates->initialize( array( 'woocommerce_email' ) );
 		$this->assertTrue( $trigger_check );
 	}
 }
