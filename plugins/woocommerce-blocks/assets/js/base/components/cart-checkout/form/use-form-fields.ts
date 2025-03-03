@@ -4,7 +4,7 @@
 import {
 	CURRENT_USER_IS_ADMIN,
 	FormFields,
-	KeyedFormFields,
+	KeyedFormField,
 	FormType,
 } from '@woocommerce/settings';
 import { useSchemaParser } from '@woocommerce/base-hooks';
