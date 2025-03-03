@@ -79,7 +79,7 @@
           "post_title": "Blocks reference",
           "menu_title": "Blocks Reference",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/building-a-woo-store/block-references.md",
-          "hash": "16b8085da828ecf5369e9d78228f688ef178e24420491c15c41b63645b7331f9",
+          "hash": "a6b4c6a7067a8f8043f6a9f7bf2fed970d27fd9a47e5be44a2d49fb747bdf04d",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/building-a-woo-store/block-references.md",
           "id": "1fbe91d7fa4fafaf35f0297e4cee1e7958756aed"
         },
@@ -317,7 +317,7 @@
               "menu_title": "Checkout Flow and Events",
               "tags": "reference",
               "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/cart-and-checkout-blocks/checkout-payment-methods/checkout-flow-and-events.md",
-              "hash": "59cb71c113f7d5c5e619b5ca0b5d0f903f31987155a3f4273c203a138f944f1a",
+              "hash": "7f8ec447923e8056c629faabb13aa9d80444afdad8c0b80d28bb564bfbda959b",
               "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/cart-and-checkout-blocks/checkout-payment-methods/checkout-flow-and-events.md",
               "id": "499384cbb48ed96a2e12653cd68bd82d123a20a1",
               "links": {
@@ -1958,5 +1958,5 @@
       "categories": []
     }
   ],
-  "hash": "9b9e00cb06b79532555fcf0e2a1ae5d4c3e6e55aca953c29f319055029477357"
+  "hash": "86c8a6ae7885dfdcbc9c9ecb7e3de9b33e6abb939b2874c9dcd8981d74c00833"
 }
