@@ -1,3 +1,3 @@
 Significance: patch
-Type: bug
+Type: fix
 Comment: [Experimental]Product filters conditionally remove the router region attribute.
