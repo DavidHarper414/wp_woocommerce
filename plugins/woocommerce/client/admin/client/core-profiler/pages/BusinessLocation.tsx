@@ -74,6 +74,9 @@ export const BusinessLocation = ( {
 					selected={ storeCountry ? [ storeCountry ] : [] }
 					showAllOnFocus
 					isSearchable
+					virtualScroll={ true }
+					virtualItemHeight={ 40 }
+					virtualListHeight={ 40 * 10 }
 				/>
 				<div className="woocommerce-profiler-button-container woocommerce-profiler-go-to-mystore__button-container">
 					<Button
