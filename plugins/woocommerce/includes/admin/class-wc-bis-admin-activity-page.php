@@ -20,7 +20,7 @@ class WC_BIS_Admin_Activity_Page {
 	 *
 	 * @const PAGE_URL
 	 */
-	const PAGE_URL = 'admin.php?page=bis_activity';
+	const PAGE_URL = 'admin.php?page=wc-status&tab=bis_activity';
 
 	/**
 	 * Render page.

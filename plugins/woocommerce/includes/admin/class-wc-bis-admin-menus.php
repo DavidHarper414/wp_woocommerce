@@ -47,6 +47,10 @@ class WC_BIS_Admin_Menus {
 
 		// Integrate WooCommerce side navigation.
 		add_action( 'woocommerce_navigation_core_excluded_items', array( __CLASS__, 'exclude_navigation_items' ) );
+
+		// Add "Activity" tab to WooCommerce status page.
+		add_filter( 'woocommerce_admin_status_tabs', array( __CLASS__, 'add_bis_activity_page_tab' ) );
+		add_action( 'woocommerce_admin_status_content_bis_activity', array( __CLASS__, 'activity_page' ) );
 	}
 
 	/**
@@ -156,20 +160,6 @@ class WC_BIS_Admin_Menus {
 				)
 			);
 
-			wc_admin_connect_page(
-				array(
-					'id'        => 'woocommerce-bis_notifications-activity',
-					'parent'    => 'woocommerce-bis_notifications',
-					'screen_id' => 'woocommerce_page_bis_activity',
-					'title'     => __( 'Activity', 'woocommerce' ),
-					'path'      => add_query_arg(
-						array(
-							'page' => 'bis_activity',
-						),
-						'admin.php'
-					),
-				)
-			);
 		}
 	}
 
@@ -197,11 +187,6 @@ class WC_BIS_Admin_Menus {
 		$tabs['notifications'] = array(
 			'title' => __( 'Notifications', 'woocommerce' ),
 			'url'   => admin_url( 'admin.php?page=bis_notifications' ),
-		);
-
-		$tabs['activity'] = array(
-			'title' => __( 'Activity', 'woocommerce' ),
-			'url'   => admin_url( 'admin.php?page=bis_activity' ),
 		);
 
 		$tabs = apply_filters( 'woocommerce_bis_admin_tabs', $tabs );
@@ -238,8 +223,6 @@ class WC_BIS_Admin_Menus {
 				$current_tab = 'dashboard';
 			} elseif ( in_array( $screen->id, array( 'woocommerce_page_bis_notifications' ), true ) ) {
 				$current_tab = 'notifications';
-			} elseif ( in_array( $screen->id, array( 'woocommerce_page_bis_activity' ), true ) ) {
-				$current_tab = 'activity';
 			}
 		}
 
@@ -279,20 +262,25 @@ class WC_BIS_Admin_Menus {
 			array( __CLASS__, 'backinstock_page' )
 		);
 
-		$activity_page = add_submenu_page(
-			'woocommerce',
-			__( 'Activity', 'woocommerce' ),
-			__( 'Activity', 'woocommerce' ),
-			'manage_woocommerce',
-			'bis_activity',
-			array( __CLASS__, 'activity_page' )
-		);
-
 		add_action( 'load-' . $backinstock_page, array( __CLASS__, 'backinstock_page_init' ) );
 
 		// Hide pages.
 		self::hide_submenu_page( 'woocommerce', 'bis_notifications' );
-		self::hide_submenu_page( 'woocommerce', 'bis_activity' );
+	}
+
+	/**	
+	 * Add "Activity" tab to WooCommerce status page.
+	 *
+	 * @param array $tabs
+	 * @return array
+	 */
+	public static function add_bis_activity_page_tab( $tabs ) {
+		if ( ! is_array( $tabs ) ) {
+			return $tabs;
+		}
+
+		$tabs['bis_activity'] = __( 'Customer stock notifications', 'woocommerce' );
+		return $tabs;
 	}
 
 	/**
@@ -350,6 +338,9 @@ class WC_BIS_Admin_Menus {
 	/**
 	 * Exclude menu items from WooCommerce menu migration.
 	 *
+	 * This feature has been deprecated in WooCommerce 9.5, so it can be removed in the future. 
+	 * Keeping this here for now.
+	 * 
 	 * @since  1.0.9
 	 *
 	 * @param  array $excluded_items

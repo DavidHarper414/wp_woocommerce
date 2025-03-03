@@ -13,13 +13,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php WC_BIS_Admin_Menus::render_tabs(); ?>
 
-	<h1 class="wp-heading-inline"><?php esc_html_e( 'Activity', 'woocommerce' ); ?></h1>
+	<h1 class="wp-heading-inline"><?php esc_html_e( 'Customer stock notifications log', 'woocommerce' ); ?></h1>
 
 	<hr class="wp-header-end">
 
 	<form id="activity-table" method="GET">
 		<p class="search-box">
-			<label for="post-search-input" class="screen-reader-text"><?php esc_html_e( 'Search activity', 'woocommerce' ); ?>:</label>
+			<label for="post-search-input" class="screen-reader-text"><?php esc_html_e( 'Search customer stock notifications', 'woocommerce' ); ?>:</label>
 			<input type="search" value="<?php echo esc_attr( $search ); ?>" name="s" id="bis-search-input">
 			<input type="submit" value="<?php echo esc_attr( 'Search', 'woocommerce' ); ?>" class="button" id="search-submit" name="">
 		</p>
