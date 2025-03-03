@@ -105,7 +105,7 @@ class ProductTemplate extends AbstractBlock {
 			$block_content = (
 				new WP_Block(
 					$block_instance,
-					$block_context
+					$available_context
 				)
 			)->render( array( 'dynamic' => false ) );
 
