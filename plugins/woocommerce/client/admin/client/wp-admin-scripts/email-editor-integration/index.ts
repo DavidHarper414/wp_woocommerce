@@ -10,8 +10,8 @@ import { registerBlockType } from '@wordpress/blocks';
  * Internal dependencies
  */
 import { wooContentBlock } from './woo_content_placeholder_block';
-
-const NAME_SPACE = 'woocommerce/email-editor-integration';
+import { NAME_SPACE } from './constants';
+import { modifySidebar } from './sidebar_extension';
 
 addFilter(
 	'woocommerce_email_editor_send_button_label',
@@ -20,3 +20,4 @@ addFilter(
 );
 
 registerBlockType( 'woo/email-content', wooContentBlock );
+modifySidebar();
