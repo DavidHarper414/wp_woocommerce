@@ -17,8 +17,9 @@
 		"build:zip": "./bin/build-zip.sh",
 		"build:project": "pnpm --if-present '/^build:project:.*$/'",
 		"build:project:copy-assets:legacy": "rsync -avhW --checksum --delete --quiet client/legacy/build/css/ assets/css && rsync -avhW --checksum --delete --quiet client/legacy/build/js/ assets/js",
-		"build:project:copy-assets:admin": "rsync -avhW --checksum --delete --quiet client/admin/build/ assets/client/admin",
+		"build:project:copy-assets:admin": "rsync -avhW --checksum --delete --quiet client/admin/build/ assets/client/admin && pnpm email-editor:build:project:copy-assets",
 		"build:project:copy-assets:blocks": "rsync -avhW --checksum --delete --quiet ../woocommerce-blocks/build/ assets/client/blocks && rsync -avhW --checksum --quiet ../woocommerce-blocks/blocks.ini blocks.ini && wp-scripts build-blocks-manifest --input=assets/client/blocks --output=assets/client/blocks/blocks-json.php",
+		"email-editor:build:project:copy-assets": "rsync -avhW --checksum --delete --quiet client/admin/node_modules/@woocommerce/email-editor/build/ assets/client/admin/email-editor && rsync -avhW --checksum --quiet client/admin/node_modules/@woocommerce/email-editor/assets/ assets/client/admin/email-editor",
 		"build:project:actualize-translation-domains": "wireit",
 		"changelog": "XDEBUG_MODE=off composer install --quiet && composer exec -- changelogger",
 		"env:destroy": "pnpm wp-env destroy",
@@ -32,7 +33,7 @@
 		"env:test": "pnpm env:dev",
 		"env:perf": "pnpm env:dev && pnpm env:performance-init",
 		"preinstall": "npx only-allow pnpm",
-		"postinstall": "rimraf -g vendor/woocommerce && XDEBUG_MODE=off composer install --quiet",
+		"postinstall": "rimraf -g vendor/woocommerce packages/email-editor && XDEBUG_MODE=off composer install --quiet",
 		"lint": "pnpm --if-present '/^lint:lang:.*$/'",
 		"lint:changes:branch": "pnpm '/^lint:changes:branch:.*$/'",
 		"lint:fix": "pnpm --if-present '/^lint:fix:lang:.*$/'",
@@ -298,69 +299,6 @@
 					}
 				},
 				{
-					"name": "Core e2e tests - Woocommerce Payments",
-					"testType": "e2e",
-					"command": "test:e2e:with-env woocommerce-payments",
-					"shardingArguments": [],
-					"changes": [],
-					"events": [
-						"daily-checks",
-						"release-checks",
-						"core-e2e-woocommerce-payments"
-					],
-					"testEnv": {
-						"start": "env:test"
-					},
-					"report": {
-						"resultsBlobName": "wcpayments-e2e-report",
-						"resultsPath": "tests/e2e-pw/test-results",
-						"allure": true
-					}
-				},
-				{
-					"name": "Core e2e tests - Woocommerce Paypal Payments",
-					"testType": "e2e",
-					"command": "test:e2e:with-env woocommerce-paypal-payments",
-					"shardingArguments": [],
-					"changes": [],
-					"events": [
-						"daily-checks",
-						"release-checks",
-						"core-e2e-woocommerce-paypal-payments"
-					],
-					"testEnv": {
-						"start": "env:test"
-					},
-					"report": {
-						"resultsBlobName": "wc-paypal-payments-e2e-report",
-						"resultsPath": "tests/e2e-pw/test-results",
-						"allure": true
-					}
-				},
-				{
-					"name": "Core e2e tests - WooCommerce Shipping & Tax",
-					"testType": "e2e",
-					"command": "test:e2e:with-env woocommerce-services",
-					"shardingArguments": [
-						"--shard=1/2",
-						"--shard=2/2"
-					],
-					"changes": [],
-					"events": [
-						"daily-checks",
-						"release-checks",
-						"core-e2e-woocommerce-services"
-					],
-					"testEnv": {
-						"start": "env:test"
-					},
-					"report": {
-						"resultsBlobName": "wc-services-e2e-report",
-						"resultsPath": "tests/e2e-pw/test-results",
-						"allure": true
-					}
-				},
-				{
 					"name": "Core e2e tests - HPOS disabled",
 					"testType": "e2e",
 					"command": "test:e2e:hpos",
@@ -372,10 +310,7 @@
 						"core-e2e-hpos-disabled"
 					],
 					"testEnv": {
-						"start": "env:test",
-						"config": {
-							"disableHpos": true
-						}
+						"start": "env:test"
 					},
 					"report": {
 						"resultsBlobName": "core-e2e-reports-hpos-disabled",
@@ -529,10 +464,7 @@
 						"core-api-hpos-disabled"
 					],
 					"testEnv": {
-						"start": "env:test",
-						"config": {
-							"disableHpos": true
-						}
+						"start": "env:test"
 					},
 					"report": {
 						"resultsBlobName": "core-api-report-hpos-disabled",
@@ -735,7 +667,7 @@
 	"devDependencies": {
 		"@babel/cli": "7.12.8",
 		"@babel/core": "7.12.9",
-		"@babel/preset-env": "7.12.7",
+		"@babel/preset-env": "^7.23.5",
 		"@babel/register": "7.12.1",
 		"@faker-js/faker": "^9.3.0",
 		"@playwright/test": "^1.50.1",
