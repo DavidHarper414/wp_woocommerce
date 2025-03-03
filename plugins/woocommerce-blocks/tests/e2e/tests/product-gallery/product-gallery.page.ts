@@ -72,7 +72,8 @@ export class ProductGalleryPage {
 	/**
 	 * Get the image element id. Sometimes the image id is in the id attribute, sometimes in the data-image-id attribute.
 	 *
-	 * @param page - The page.
+	 * @param {Object} params      - The parameters object.
+	 * @param {Page}   params.page - The page.
 	 * @return The image element id.
 	 */
 	async getActiveImageElementId( { page }: { page: Page } ) {
