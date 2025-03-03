@@ -91,12 +91,8 @@ test.describe(
 					.getByRole( 'option', { name: 'Clothing and accessories' } )
 					.click();
 				// select a WooPayments compatible location
-				await page
-					.getByRole( 'combobox', { name: 'Select country/region' } )
-					.click();
-				await page
-					.getByRole( 'combobox', { name: 'Select country/region' } )
-					.fill( 'Australia' );
+				await page.getByRole( 'combobox' ).last().click();
+				await page.getByRole( 'combobox' ).last().fill( 'Australia' );
 				await page
 					.getByRole( 'option', {
 						name: 'Australia — Northern Territory',
@@ -261,12 +257,8 @@ test.describe(
 					.getByRole( 'option', { name: 'Food and drink' } )
 					.click();
 				// select a WooPayments incompatible location
-				await page
-					.getByRole( 'combobox', { name: 'Select country/region' } )
-					.click();
-				await page
-					.getByRole( 'combobox', { name: 'Select country/region' } )
-					.fill( 'Afghanistan' );
+				await page.getByRole( 'combobox' ).last().click();
+				await page.getByRole( 'combobox' ).last().fill( 'Afghanistan' );
 				await page
 					.getByRole( 'option', { name: 'Afghanistan' } )
 					.click();
