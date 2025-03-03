@@ -166,12 +166,16 @@ final class ProductFilterAttribute extends AbstractBlock {
 		$product_attribute = wc_get_attribute( $block_attributes['attributeId'] );
 		$attribute_counts  = $this->get_attribute_counts( $block, $product_attribute->slug, $block_attributes['queryType'] );
 		$hide_empty        = $block_attributes['hideEmpty'] ?? true;
+		$orderby           = $block_attributes['sortOrder'] ? explode( '-', $block_attributes['sortOrder'] )[0] : 'name';
+		$order             = $block_attributes['sortOrder'] ? strtoupper( explode( '-', $block_attributes['sortOrder'] )[1] ) : 'DESC';
 
 		if ( $hide_empty ) {
 			$attribute_terms = get_terms(
 				array(
 					'taxonomy' => $product_attribute->slug,
 					'include'  => array_keys( $attribute_counts ),
+					'orderby'  => $orderby,
+					'order'    => $order,
 				)
 			);
 		} else {
@@ -179,6 +183,8 @@ final class ProductFilterAttribute extends AbstractBlock {
 				array(
 					'taxonomy'   => $product_attribute->slug,
 					'hide_empty' => false,
+					'orderby'    => $orderby,
+					'order'      => $order,
 				)
 			);
 		}
