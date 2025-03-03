@@ -244,6 +244,13 @@ export class SelectControl extends Component< Props, State > {
 		this.setNewValue = this.setNewValue.bind( this );
 	}
 
+	componentDidUpdate( prevProps: Props ) {
+		const { selected } = this.props;
+		if ( selected !== prevProps.selected ) {
+			this.reset( selected );
+		}
+	}
+
 	bindNode( node: HTMLDivElement ) {
 		this.node = node;
 	}

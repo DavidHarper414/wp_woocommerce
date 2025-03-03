@@ -141,7 +141,6 @@ class List extends Component< Props > {
 			isNumber( selectedIndex )
 		) {
 			if ( virtualScroll && this.listRef.current ) {
-				// Scroll to the selected item in virtualized list
 				this.listRef.current.scrollToItem( selectedIndex, 'smart' );
 			} else {
 				this.scrollToOption( selectedIndex );
