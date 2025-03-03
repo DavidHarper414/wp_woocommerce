@@ -339,7 +339,7 @@ class WC_Comments {
 							$comment_approved
 						)
 					);
-					wp_cache_set( $cache_key, $count, self::COMMENT_COUNT_CACHE_GROUP );
+					wp_cache_set( $cache_key, $count, self::COMMENT_COUNT_CACHE_GROUP, 3 * DAY_IN_SECONDS );
 				}
 				$comment_counts[ $comment_status ] = (int) $count;
 			}
