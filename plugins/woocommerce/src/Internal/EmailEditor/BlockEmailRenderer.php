@@ -44,7 +44,7 @@ class BlockEmailRenderer {
 	/**
 	 * Initialize the renderer.
 	 */
-	public function register_hooks(): void {
+	public function init(): void {
 		add_action( 'mailpoet_blocks_renderer_initialized', array( $this, 'register_block_renderers' ) );
 	}
 

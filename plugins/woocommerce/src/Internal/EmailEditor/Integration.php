@@ -32,13 +32,6 @@ class Integration {
 	private Dependency_Check $dependency_check;
 
 	/**
-	 * Renderer for block emails.
-	 *
-	 * @var BlockEmailRenderer
-	 */
-	private BlockEmailRenderer $block_email_renderer;
-
-	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -68,8 +61,8 @@ class Integration {
 		$container->get( PatternsController::class );
 		$container->get( TemplatesController::class );
 		$container->get( PersonalizationTagManager::class );
+		$container->get( BlockEmailRenderer::class );
 		$this->editor_page_renderer = $container->get( PageRenderer::class );
-		$this->block_email_renderer = $container->get( BlockEmailRenderer::class );
 	}
 
 	/**
@@ -79,7 +72,6 @@ class Integration {
 		add_filter( 'woocommerce_email_editor_post_types', array( $this, 'add_email_post_type' ) );
 		add_filter( 'woocommerce_is_email_editor_page', array( $this, 'is_editor_page' ), 10, 1 );
 		add_filter( 'replace_editor', array( $this, 'replace_editor' ), 10, 2 );
-		$this->block_email_renderer->register_hooks();
 	}
 
 	/**
