@@ -30,6 +30,8 @@ class AccordionGroup extends AbstractBlock {
 			return $content;
 		}
 
+		wp_enqueue_script_module( $this->get_full_block_name() );
+
 		$p = new \WP_HTML_Tag_Processor( $content );
 
 		if ( $p->next_tag( array( 'class_name' => 'wp-block-woocommerce-accordion-group' ) ) ) {

@@ -39,6 +39,16 @@ const entries = {
 		'./assets/js/blocks/product-filters/inner-blocks/removable-chips/frontend.ts',
 	'woocommerce/product-filter-status':
 		'./assets/js/blocks/product-filters/inner-blocks/status-filter/frontend.ts',
+	'woocommerce/accordion-group':
+		'./assets/js/blocks/accordion/accordion-group/frontend.ts',
+	'woocommerce/add-to-cart-with-options':
+		'./assets/js/blocks/add-to-cart-with-options/frontend.ts',
+	'woocommerce/add-to-cart-with-options-grouped-product-selector':
+		'./assets/js/blocks/add-to-cart-with-options/inner-blocks/grouped-product-selector/frontend.ts',
+	'woocommerce/add-to-cart-with-options-quantity-selector':
+		'./assets/js/blocks/add-to-cart-with-options/inner-blocks/quantity-selector/frontend.ts',
+	'woocommerce/add-to-cart-with-options-variation-selector':
+		'./assets/js/blocks/add-to-cart-with-options/inner-blocks/variation-selector/frontend.ts',
 
 	// Other
 	'woocommerce/product-collection-notices':

@@ -310,6 +310,8 @@ class AddToCartWithOptionsVariationSelector extends AbstractBlock {
 	protected function render( $attributes, $content, $block ): string {
 		global $product;
 
+		wp_enqueue_script_module( $this->get_full_block_name() );
+
 		if ( $product instanceof \WC_Product && $product->is_type( 'variable' ) ) {
 			return $this->render_variation_form( $product, $attributes );
 		}
