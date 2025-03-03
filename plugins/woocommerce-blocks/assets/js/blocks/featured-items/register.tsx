@@ -68,6 +68,7 @@ export function register(
 		},
 		supports: {
 			...metadata.supports,
+			ariaLabel: true,
 			color: {
 				background: metadata.supports?.color?.background,
 				text: metadata.supports?.color?.text,
