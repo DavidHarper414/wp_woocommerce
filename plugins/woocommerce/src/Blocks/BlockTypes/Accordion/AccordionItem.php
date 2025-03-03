@@ -34,7 +34,7 @@ class AccordionItem extends AbstractBlock {
 
 		// Initialize the state of the item on the server using a closure,
 		// since we need to get derived state based on the current context.
-		wc_initial_state(
+		wp_interactivity_state(
 			'woocommerce/accordion',
 			array(
 				'isOpen' => function () {

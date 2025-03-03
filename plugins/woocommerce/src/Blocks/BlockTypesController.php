@@ -502,7 +502,7 @@ final class BlockTypesController {
 
 		// Update plugins/woocommerce-blocks/docs/internal-developers/blocks/feature-flags-and-experimental-interfaces.md
 		// when modifying this list.
-		if ( Features::is_enabled( 'experimental-blocks' ) ) {
+		if ( true ) {
 			$block_types[] = 'ProductFilters';
 			$block_types[] = 'ProductFilterStatus';
 			$block_types[] = 'ProductFilterPrice';
