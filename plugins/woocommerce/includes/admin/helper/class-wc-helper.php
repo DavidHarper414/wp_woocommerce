@@ -1636,6 +1636,43 @@ class WC_Helper {
 		return isset( $data['success'] ) && true === $data['success'];
 	}
 
+	/**
+	 * Get details of the current WooCommerce.com connection.
+	 *
+	 * @return array
+	 */
+	public static function fetch_helper_connection_info(): ?array {
+		$cache_key = '_woocommerce_helper_connection_data';
+		$data      = get_transient( $cache_key );
+		if ( false !== $data ) {
+			return $data;
+		}
+
+		$request = WC_Helper_API::get(
+			'connection-info',
+			array(
+				'authenticated' => true,
+			)
+		);
+
+		if ( wp_remote_retrieve_response_code( $request ) !== 200 ) {
+			return null;
+		}
+
+		$connection_data = json_decode( wp_remote_retrieve_body( $request ), true );
+
+		$url = $connection_data['url'] ?? '';
+
+		if ( ! empty( $url ) ) {
+			$auth        = WC_Helper_Options::get( 'auth' );
+			$auth['url'] = $url;
+			WC_Helper_Options::update( 'auth', $auth );
+			set_transient( $cache_key, $connection_data, 15 * MINUTE_IN_SECONDS );
+		}
+
+		return $connection_data;
+	}
+
 
 	/**
 	 * Get the connected user's subscriptions.
@@ -2461,7 +2498,7 @@ class WC_Helper {
 				'access_token'        => $access_token,
 				'access_token_secret' => $access_token_secret,
 				'site_id'             => $site_id,
-				'url'             	  => $home_url,
+				'url'                 => $home_url,
 				'user_id'             => get_current_user_id(),
 				'updated'             => time(),
 			)
