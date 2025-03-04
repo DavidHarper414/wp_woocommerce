@@ -465,7 +465,7 @@
           "menu_title": "Free shipping customizations",
           "tags": "code-snippets",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/code-snippets/free_shipping_customization.md",
-          "hash": "625fc92305797b57ef2f9571cbba440b97c5871358cd894e37d87eb1ac479105",
+          "hash": "953c5d719a7325818ded53124a09c2bf6480bfe1a536beb12dedcc8dc83574a8",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/code-snippets/free_shipping_customization.md",
           "id": "cac6f1ccd661588e9a5fa7405643e9c6d4da388e"
         },
@@ -1528,7 +1528,7 @@
           "menu_title": "Shipping method API",
           "tags": "reference",
           "edit_url": "https://github.com/woocommerce/woocommerce/edit/trunk/docs/shipping/shipping-method-api.md",
-          "hash": "40bf33d540692608fccec48e9a6cc08e51c510c894c32414723c75cc2d2dc3a8",
+          "hash": "04c1caa84990bea8b00032a645456d19cc9da1aa9e171755f03b0b136dcd1492",
           "url": "https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/shipping/shipping-method-api.md",
           "id": "70270a01c8f1f2b630c809c0b9611940e99293a9",
           "links": {
@@ -1949,5 +1949,5 @@
       "categories": []
     }
   ],
-  "hash": "af0531c2a930ab0970250ea506fc22a6c9a1b1b78d7b40a1a019d5cce23e8b59"
+  "hash": "9cb05e281a69b7be475fbbbff220509f37565da28cb96fa47256c5bc595eb2ce"
 }
