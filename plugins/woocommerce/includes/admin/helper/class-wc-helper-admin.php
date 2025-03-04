@@ -66,6 +66,7 @@ class WC_Helper_Admin {
 		);
 
 		$woo_connect_notice_type = WC_Helper_Updater::get_woo_connect_notice_type();
+		$blog_name               = get_bloginfo( 'name' );
 
 		$settings['wccomHelper'] = array(
 			'isConnected'                => WC_Helper::is_site_connected(),
@@ -73,8 +74,10 @@ class WC_Helper_Admin {
 			'userEmail'                  => $auth_user_email,
 			'userAvatar'                 => get_avatar_url( $auth_user_email, array( 'size' => '48' ) ),
 			'storeCountry'               => wc_get_base_location()['country'],
+			'storeName'                  => $blog_name ? $blog_name : '',
 			'inAppPurchaseURLParams'     => WC_Admin_Addons::get_in_app_purchase_url_params(),
 			'installedProducts'          => $installed_products,
+			'mySubscriptionsTabLoaded'   => WC_Helper_Options::get( 'my_subscriptions_tab_loaded' ),
 			'wooUpdateManagerInstalled'  => WC_Woo_Update_Manager_Plugin::is_plugin_installed(),
 			'wooUpdateManagerActive'     => WC_Woo_Update_Manager_Plugin::is_plugin_active(),
 			'wooUpdateManagerInstallUrl' => WC_Woo_Update_Manager_Plugin::generate_install_url(),
