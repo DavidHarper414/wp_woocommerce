@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import React from 'react';
 import { recordEvent } from '@woocommerce/tracks';
 import { render, fireEvent } from '@testing-library/react';
 import {
@@ -52,11 +51,9 @@ describe( 'CompleteSetupButton', () => {
 			'settings_payments_provider_complete_setup_click',
 			{
 				provider_id: 'test-gateway',
-				onboarding_state: {
-					started: true,
-					completed: false,
-					test_mode: false,
-				},
+				onboarding_started: true,
+				onboarding_completed: false,
+				onboarding_test_mode: false,
 			}
 		);
 	} );

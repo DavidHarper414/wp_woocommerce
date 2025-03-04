@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import React from 'react';
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { decodeEntities } from '@wordpress/html-entities';
@@ -17,6 +16,7 @@ import {
 	type PaymentSelectors,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { getAdminLink } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -266,7 +266,9 @@ const PaymentRecommendations: React.FC = () => {
 						'woocommerce'
 					) }
 					eventName="settings_payment_recommendations_visit_marketplace_click"
-					targetUrl="admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways"
+					targetUrl={ getAdminLink(
+						'admin.php?page=wc-admin&tab=extensions&path=/extensions&category=payment-gateways'
+					) }
 				/>
 			</CardFooter>
 		</Card>
