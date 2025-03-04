@@ -160,6 +160,9 @@ class BackInStockNotifications {
 		// Cleanup events when WooCommerce is deactivated.
 		add_action( 'deactivate_woocommerce/woocommerce.php', array( __CLASS__, 'cleanup_events' ), 20 );
 
+		// Add feature definition to WC > Settings > Advanced > Features.
+		add_action( 'woocommerce_register_feature_definitions', array( __CLASS__, 'add_feature_definition' ) );
+
 		if ( ! self::is_really_enabled() ) {
 			return;
 		}
@@ -212,6 +215,42 @@ class BackInStockNotifications {
 				return;
 			}
 		}
+	}
+
+	/**	
+	 * Add feature definition to WC > Settings > Advanced > Features.
+	 * 
+	 * @param array $feature_definitions The feature definitions.
+	 */
+	public static function add_feature_definition( $features_controller ) {
+		$definition = array(
+			'description'        => BackInStockNotifications::is_really_enabled() ? 
+				/* translators: %s: URL to WooCommerce stock notification settings */
+				sprintf(
+					__( 'Enable back in stock notifications for customers. Configure the options in <a href="%s">WooCommerce > Settings > Products > Customer stock notifications</a>.', 'woocommerce' ),
+					esc_url( admin_url( 'admin.php?page=wc-settings&tab=products&section=bis_settings' ) )
+				) 
+				: __(
+					'Enable back in stock notifications for customers.',
+					'woocommerce'
+				),
+			'enabled_by_default' => true,
+			'is_experimental'    => false,
+			/*
+			 * This is not a legacy feature, but it can't use the compatibility checking system other features use.
+			 *
+			 * See previous entries for more details.
+			 */
+			'is_legacy'          => true,
+			'disable_ui'         => false,
+			'option_key'         => self::$ENABLE_OPTION_NAME,
+		);
+
+		$features_controller->add_feature_definition(
+			'back_in_stock_notifications',
+			__( 'Back in stock notifications', 'woocommerce' ),
+			$definition
+		);
 	}
 
 	/**
