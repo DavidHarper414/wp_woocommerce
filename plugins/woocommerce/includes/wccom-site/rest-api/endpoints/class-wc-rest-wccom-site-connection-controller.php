@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class WC_REST_WCCOM_Site_Connection_Controller extends WC_REST_WCCOM_Site_Controller {
 	const CONNECTION_DATA_FOUND = 'connection_data_found';
-	const HAS_VALID_CONNECTION  = 'has_valid_connection';
+	const CONNECTION_VALID      = 'connection_valid';
 
 	/**
 	 * Route base.
@@ -100,8 +100,8 @@ class WC_REST_WCCOM_Site_Connection_Controller extends WC_REST_WCCOM_Site_Contro
 	/**
 	 * Get the status of the WooCommerce.com connection.
 	 *
+	 * @return WP_Error|WP_REST_Response
 	 * @since  9.9.0
-	 * @return WP_REST_Response
 	 */
 	public function handle_status_request() {
 		$auth = WC_Helper_Options::get( 'auth' );
@@ -109,18 +109,21 @@ class WC_REST_WCCOM_Site_Connection_Controller extends WC_REST_WCCOM_Site_Contro
 			return $this->get_response(
 				array(
 					self::CONNECTION_DATA_FOUND => false,
-					self::HAS_VALID_CONNECTION  => false,
+					self::CONNECTION_VALID      => false,
 				)
 			);
 		}
 
 		$connection_data = WC_Helper::fetch_helper_connection_info();
+		if ( $connection_data instanceof WP_Error ) {
+			return $connection_data;
+		}
 
 		if ( null === $connection_data ) {
 			return $this->get_response(
 				array(
 					self::CONNECTION_DATA_FOUND => true,
-					self::HAS_VALID_CONNECTION  => false,
+					self::CONNECTION_VALID      => false,
 				)
 			);
 		}
@@ -129,7 +132,7 @@ class WC_REST_WCCOM_Site_Connection_Controller extends WC_REST_WCCOM_Site_Contro
 			array_merge(
 				array(
 					self::CONNECTION_DATA_FOUND => true,
-					self::HAS_VALID_CONNECTION  => true,
+					self::CONNECTION_VALID      => true,
 				),
 				$connection_data
 			)
