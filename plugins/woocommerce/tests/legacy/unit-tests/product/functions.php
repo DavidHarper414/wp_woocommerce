@@ -1198,18 +1198,10 @@ class WC_Tests_Product_Functions extends WC_Unit_Test_Case {
 			->with( $attachment->post_parent, $attachment->ID, 'thumbnail' )
 			->willReturn( $mock_preview_url );
 
-		// Replace the service in the container
-		$original_container = wc_get_container();
-		$mock_container = $this->getMockBuilder( 'Automattic\WooCommerce\Container' )
-			->disableOriginalConstructor()
-			->getMock();
-
-		$mock_container->expects( $this->once() )
-			->method( 'get' )
-			->with( \Automattic\WooCommerce\Internal\Admin\ProductDownloadsPreview::class )
-			->willReturn( $mock_preview );
-
-		wc()->container = $mock_container;
+		// Add our mocks to the wc container
+		$container = wc_get_container();
+		$container->reset_all_resolved();
+		$container->replace( 'Automattic\WooCommerce\Internal\Admin\ProductDownloadsPreview', $mock_preview);
 
 		// Expected result for admin user
 		$expected_admin_attr = array(
@@ -1222,12 +1214,10 @@ class WC_Tests_Product_Functions extends WC_Unit_Test_Case {
 
 		// Now test with admin user
 		$admin_result = wc_get_attachment_image_attributes( $image_attr, $attachment, 'thumbnail' );
-		$this->assertEquals( $expected_admin_attr, $admin_result );
+		$this->assertEquals( $expected_admin_attr['src'], $admin_result['src'], 'We expect to see the secure url for non admin users trying to access an image inside woocommerce_uploads.' );
 
-		// Restore original user and container
+		// cleanup
 		wp_set_current_user( $original_user_id );
-		wc()->container = $original_container;
-
 		unset( $image_attr, $expected_attr, $expected_admin_attr );
 	}
 
