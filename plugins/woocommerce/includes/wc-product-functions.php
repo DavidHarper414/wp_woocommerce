@@ -665,7 +665,6 @@ function wc_prepare_attachment_for_js( $response ) {
 
     // Generate secure admin URL for image src
     $admin_preview = wc_get_container()->get( ProductDownloadsPreview::class );
-    $response['url'] = $admin_preview->get_admin_image_src_url( $product_id, $attachment_id, '' );
 
 	if ( isset( $response['sizes'] ) ) {
 		foreach ( $response['sizes'] as $size => $value ) {
