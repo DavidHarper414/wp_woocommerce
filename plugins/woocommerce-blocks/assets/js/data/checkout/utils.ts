@@ -22,7 +22,11 @@ import {
 } from '@wordpress/data/build-types/types';
 import { checkoutStore } from '@woocommerce/block-data';
 import { select } from '@wordpress/data';
-import type { AdditionalValues } from '@woocommerce/settings';
+import type { AdditionalValues, CoreContactForm } from '@woocommerce/settings';
+import {
+	CONTACT_FORM_KEYS,
+	ORDER_FORM_KEYS,
+} from '../../settings/blocks/constants';
 
 /**
  * Internal dependencies
@@ -245,20 +249,23 @@ export const validateAdditionalFields = (
 	const validationStore = select( VALIDATION_STORE_KEY );
 
 	// Check each additional field for validation errors
-	// The validation store prefixes fields with 'additional-field-'
+	// The validation store prefixes ads a prefix depending on the field location
 	for ( const fieldKey of Object.keys( additionalFields ) ) {
-		// We don't know which location the field is in, so we need to check both
-		let error = validationStore.getValidationError(
-			`contact_${ fieldKey }`
-		);
-
-		if ( error && ! error.hidden ) {
+		let prefix = '';
+		if ( CONTACT_FORM_KEYS.includes( fieldKey as keyof CoreContactForm ) ) {
+			prefix = 'contact_';
+		} else if (
+			ORDER_FORM_KEYS.includes( fieldKey as keyof AdditionalValues )
+		) {
+			prefix = 'additional-information_';
+		} else {
 			return false;
 		}
 
-		error = validationStore.getValidationError(
-			`additional-information_${ fieldKey }`
+		const error = validationStore.getValidationError(
+			`${ prefix }${ fieldKey }`
 		);
+
 		if ( error && ! error.hidden ) {
 			return false;
 		}
