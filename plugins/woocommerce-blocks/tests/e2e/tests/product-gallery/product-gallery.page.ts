@@ -70,7 +70,7 @@ export class ProductGalleryPage {
 	}
 
 	/**
-	 * Get the image element id. Sometimes the image id is in the id attribute, sometimes in the data-image-id attribute.
+	 * Get the image ID of the active image element.
 	 *
 	 * @param {Object} params      - The parameters object.
 	 * @param {Page}   params.page - The page.
@@ -81,11 +81,6 @@ export class ProductGalleryPage {
 			const element = document?.activeElement;
 			if ( ! element ) {
 				return null;
-			}
-
-			const imageId = element.getAttribute( 'id' );
-			if ( imageId ) {
-				return imageId;
 			}
 
 			const dataImageId = element.getAttribute( 'data-image-id' );
