@@ -718,6 +718,7 @@ class WC_Email extends WC_Settings_API {
 
 		$block_email_content = $this->get_block_email_html_content();
 		if ( $block_email_content ) {
+			$this->email_type = 'plain' === $this->email_type ? 'html' : $this->email_type;
 			return $block_email_content;
 		}
 
