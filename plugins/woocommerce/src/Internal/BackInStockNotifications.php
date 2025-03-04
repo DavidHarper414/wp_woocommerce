@@ -53,7 +53,7 @@ class BackInStockNotifications {
 	final public static function init() {
 
 		// If this is an activation request for BIS, included code can't be loaded, as it will end up with a fatal error.
-		if ( ! self::is_enabled() || self::$is_activation_request || self::$bis_plugin_is_active ) { 
+		if ( ! self::is_really_enabled() || self::$is_activation_request || self::$bis_plugin_is_active ) { 
 			return;
 		}
 
@@ -88,8 +88,8 @@ class BackInStockNotifications {
 	 * @return void
 	 */
 	public static function maybe_deactivate_signups() {
-		// Only run if BIS is enabled.
-		if ( ! self::is_enabled() ) {
+		// Only run if BIS is enabled during the rollout period.
+		if ( ! self::is_really_enabled() ) {
 			return;
 		}
 
@@ -107,7 +107,7 @@ class BackInStockNotifications {
 	}
 
 	/**
-	 * Returns true if the feature is enabled for all users during the rollout period.
+	 * Returns true if the feature should be enabled for this WC instance during the rollout period.
 	 *
 	 * As of WooCommerce 9.9, Back In Stock Notifications will be merged, but disabled for all users.
 	 * As of WooCommerce 10.0, Back In Stock Notifications will be enabled for 5% of users.
@@ -121,16 +121,28 @@ class BackInStockNotifications {
 	 * @return bool
 	 */
 	public static function is_enabled() {
-		return false;
+		return true;
 	}
 
 	/**
 	 * Returns true if the feature is enabled in this WC instance.
 	 * 
+	 * The user option takes precedence over the rollout period flag.
+	 * 
+	 * This duplicates the logic of \Automattic\WooCommerce\Packages\Packages::get_enabled_packages.
+	 * 
 	 * @return bool
 	 */
 	public static function is_really_enabled() {
-		return self::is_enabled() && 'yes' === get_option( self::$ENABLE_OPTION_NAME );
+		if ( 'no' === get_option( self::$ENABLE_OPTION_NAME ) ) {
+			return false;
+		}
+
+		if ( 'yes' === get_option( self::$ENABLE_OPTION_NAME ) ) {
+			return true;
+		}
+
+		return self::is_enabled();
 	}
 
 	/**
@@ -148,7 +160,7 @@ class BackInStockNotifications {
 		// Cleanup events when WooCommerce is deactivated.
 		add_action( 'deactivate_woocommerce/woocommerce.php', array( __CLASS__, 'cleanup_events' ), 20 );
 
-		if ( ! self::is_enabled() ) {
+		if ( ! self::is_really_enabled() ) {
 			return;
 		}
 
