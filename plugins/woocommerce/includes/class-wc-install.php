@@ -274,12 +274,12 @@ class WC_Install {
 		'9.6.1' => array(
 			'wc_update_961_migrate_default_email_base_color',
 		),
-		'9.7.0' => array(
-			'wc_update_970_update_primary_key_to_composite_in_order_product_lookup_table',
-			'wc_update_970_add_old_refunded_order_items_to_product_lookup_table',
-		),
 		'9.8.0' => array(
 			'wc_update_980_remove_order_attribution_install_banner_dismissed_option',
+		),
+		'9.9.0' => array(
+			'wc_update_990_update_primary_key_to_composite_in_order_product_lookup_table',
+			'wc_update_990_add_old_refunded_order_items_to_product_lookup_table',
 		),
 	);
 
