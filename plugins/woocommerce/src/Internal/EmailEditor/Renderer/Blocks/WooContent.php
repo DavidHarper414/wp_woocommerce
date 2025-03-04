@@ -4,9 +4,9 @@ declare( strict_types = 1 );
 
 namespace Automattic\WooCommerce\Internal\EmailEditor\Renderer\Blocks;
 
+use Automattic\WooCommerce\EmailEditor\Engine\Settings_Controller;
+use Automattic\WooCommerce\EmailEditor\Integrations\Core\Renderer\Blocks\Abstract_Block_Renderer;
 use Automattic\WooCommerce\Internal\EmailEditor\BlockEmailRenderer;
-use MailPoet\EmailEditor\Engine\Settings_Controller;
-use MailPoet\EmailEditor\Integrations\Core\Renderer\Blocks\Abstract_Block_Renderer;
 
 /**
  * Renders a list item block.

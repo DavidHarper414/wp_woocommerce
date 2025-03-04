@@ -4,11 +4,11 @@ declare( strict_types=1 );
 
 namespace Automattic\WooCommerce\Internal\EmailEditor;
 
+use Automattic\WooCommerce\EmailEditor\Email_Editor_Container;
+use Automattic\WooCommerce\EmailEditor\Engine\Personalizer;
+use Automattic\WooCommerce\EmailEditor\Engine\Renderer\ContentRenderer\Blocks_Registry;
+use Automattic\WooCommerce\EmailEditor\Engine\Renderer\Renderer as EmailRenderer;
 use Automattic\WooCommerce\Internal\EmailEditor\Renderer\Blocks\WooContent;
-use MailPoet\EmailEditor\Engine\Personalizer;
-use MailPoet\EmailEditor\Engine\Renderer\ContentRenderer\Blocks_Registry;
-use MailPoet\EmailEditor\Engine\Renderer\Renderer as MailPoetRenderer;
-use MailPoet\EmailEditor\EmailEditorContainer;
 
 /**
  * Class responsible for rendering block-based emails.
@@ -20,7 +20,7 @@ class BlockEmailRenderer {
 	/**
 	 * Service for rendering block emails
 	 *
-	 * @var MailPoetRenderer
+	 * @var EmailRenderer
 	 */
 	private $renderer;
 
@@ -36,16 +36,18 @@ class BlockEmailRenderer {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$editor_container   = EmailEditorContainer::container();
-		$this->renderer     = $editor_container->get( MailPoetRenderer::class );
+		$editor_container   = Email_Editor_Container::container();
+		$this->renderer     = $editor_container->get( EmailRenderer::class );
 		$this->personalizer = $editor_container->get( Personalizer::class );
 	}
 
 	/**
 	 * Initialize the renderer.
+	 *
+	 * @internal
 	 */
-	public function init(): void {
-		add_action( 'mailpoet_blocks_renderer_initialized', array( $this, 'register_block_renderers' ) );
+	final public function init(): void {
+		add_action( 'woocommerce_blocks_renderer_initialized', array( $this, 'register_block_renderers' ) );
 	}
 
 	/**

@@ -4,12 +4,12 @@ declare( strict_types=1 );
 
 namespace Automattic\WooCommerce\Tests\Internal\EmailEditor;
 
+use Automattic\WooCommerce\EmailEditor\Bootstrap;
+use Automattic\WooCommerce\EmailEditor\Email_Editor_Container;
+use Automattic\WooCommerce\EmailEditor\Engine\Dependency_Check;
 use Automattic\WooCommerce\Internal\EmailEditor\BlockEmailRenderer;
 use Automattic\WooCommerce\Internal\EmailEditor\Integration;
 use Automattic\WooCommerce\Internal\EmailEditor\Package;
-use MailPoet\EmailEditor\Bootstrap;
-use MailPoet\EmailEditor\EmailEditorContainer;
-use MailPoet\EmailEditor\Engine\Dependency_Check;
 
 /**
  * Tests for the BlockEmailRenderer class.
@@ -49,7 +49,7 @@ class BlockEmailRendererTest extends \WC_Unit_Test_Case {
 
 		add_option( 'woocommerce_feature_block_email_editor_enabled', 'yes' );
 		wc_get_container()->get( Package::class )->init();
-		EmailEditorContainer::container()->get( Bootstrap::class )->initialize();
+		Email_Editor_Container::container()->get( Bootstrap::class )->initialize();
 
 		$this->email_post = $this->factory()->post->create_and_get(
 			array(
@@ -94,7 +94,7 @@ class BlockEmailRendererTest extends \WC_Unit_Test_Case {
 	 * Skip test if the environment doesn't fulfill minimal requirements.
 	 */
 	private function skip_if_unsupported_environment() {
-		if ( ! EmailEditorContainer::container()->get( Dependency_Check::class )->are_dependencies_met() ) {
+		if ( ! Email_Editor_Container::container()->get( Dependency_Check::class )->are_dependencies_met() ) {
 			$this->markTestSkipped( 'This test because the test environment does not fulfill minimal requirements for the block email editor.' );
 		}
 	}

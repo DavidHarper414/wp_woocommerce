@@ -19,7 +19,7 @@ import { NAME_SPACE } from './constants';
 
 const SidebarExtensionComponent = () => {
 	const { current_post_id, current_post_type, email_types } =
-		window.MailPoetEmailEditor;
+		window.WooCommerceEmailEditor;
 	const email = useEntityRecord(
 		'postType',
 		current_post_type,
@@ -48,7 +48,7 @@ const SidebarExtensionComponent = () => {
 
 export function modifySidebar() {
 	addFilter(
-		'mailpoet_email_editor_setting_sidebar_extension_component',
+		'woocommerce_email_editor_setting_sidebar_extension_component',
 		NAME_SPACE,
 		() => SidebarExtensionComponent
 	);
