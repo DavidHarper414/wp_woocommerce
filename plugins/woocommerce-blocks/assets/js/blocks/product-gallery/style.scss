@@ -329,8 +329,7 @@ body.wc-block-product-gallery-dialog-open {
 
 // On mobile devices (<600px):
 // - Product gallery groups are stacked vertically
-// - Thumbnails appear belowthe main gallery image
-// - Thumbnails are arranged horizontally in a row
+// - Thumbnails appear below the main gallery image and are arranged horizontally in a row
 @include breakpoint("<600px") {
 	.wp-block-group.is-layout-flex {
 		flex-direction: column !important;
