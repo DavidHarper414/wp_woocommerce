@@ -3,6 +3,15 @@ $thumbnails-gap: 15px;
 $thumbnails-border-width: 1px;
 $dialog-padding: 20px;
 
+// Mobile breakpoint
+$break-small: 600px;
+
+@mixin on-mobile {
+	@media (max-width: #{$break-small - 1px}) {
+		@content;
+	}
+}
+
 .wc-block-product-gallery-large-image {
 	width: 100%;
 	height: fit-content;
@@ -322,6 +331,47 @@ body.wc-block-product-gallery-dialog-open {
 
 			&:last-child {
 				margin-bottom: 0;
+			}
+		}
+	}
+}
+
+// Mobile styles for Product Gallery
+@include on-mobile {
+	// Force the parent group block to stack vertically on mobile
+	.wp-block-group.is-layout-flex {
+		flex-direction: column !important;
+
+		// Reorder elements to ensure large image is first
+		.wc-block-product-gallery-large-image {
+			order: -1;
+			width: 100%;
+		}
+	}
+
+	// Force thumbnails to be horizontal and properly sized on mobile
+	.wc-block-product-gallery-thumbnails {
+		flex-direction: row !important;
+		width: 100%;
+		margin-top: $thumbnails-gap;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: none; // Hide scrollbar on Firefox
+
+		// Hide scrollbar on Webkit browsers
+		&::-webkit-scrollbar {
+			display: none;
+		}
+
+		// Override any existing thumbnail sizing
+		&__thumbnail {
+			flex: 0 0 auto;
+			width: 70px; // Fixed width for consistent mobile thumbnails
+			min-width: 70px;
+			margin-right: $thumbnails-gap;
+
+			&:last-child {
+				margin-right: 0;
 			}
 		}
 	}
