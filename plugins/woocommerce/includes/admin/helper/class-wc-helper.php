@@ -1639,9 +1639,9 @@ class WC_Helper {
 	/**
 	 * Get details of the current WooCommerce.com connection.
 	 *
-	 * @return array
+	 * @return array|WP_Error
 	 */
-	public static function fetch_helper_connection_info(): ?array {
+	public static function fetch_helper_connection_info() {
 		$cache_key = '_woocommerce_helper_connection_data';
 		$data      = get_transient( $cache_key );
 		if ( false !== $data ) {
@@ -1655,8 +1655,13 @@ class WC_Helper {
 			)
 		);
 
-		if ( wp_remote_retrieve_response_code( $request ) !== 200 ) {
-			return null;
+		$status = wp_remote_retrieve_response_code( $request );
+		if ( 200 !== $status ) {
+			return new WP_Error(
+				'invalid_response',
+				'Invalid response from WooCommerce.com',
+				array( 'status' => $status )
+			);
 		}
 
 		$connection_data = json_decode( wp_remote_retrieve_body( $request ), true );
