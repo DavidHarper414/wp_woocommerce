@@ -73,7 +73,7 @@ describe( 'updateLinkHref', () => {
 		const encodedPath = encodeURIComponent( '/analytics/orders' );
 
 		expect( item.href ).toBe(
-			`admin.php?page=wc-admin&path=${ encodedPath }&fruit=apple&dish=cobbler&test=fail`
+			`admin.php?page=wc-admin&path=${ encodedPath }&fruit=apple&dish=cobbler`
 		);
 	} );
 } );
