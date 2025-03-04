@@ -30,6 +30,12 @@ const {
 const AddSplitChunkDependencies = require( './add-split-chunk-dependencies' );
 const { sharedOptimizationConfig } = require( './webpack-shared-config' );
 
+const ROOT_DIR = path.resolve( __dirname, '../../../../../' );
+const BUILD_DIR = path.resolve( __dirname, '../build/' );
+const BABEL_CACHE_DIR = path.join(
+	ROOT_DIR,
+	'node_modules/.cache/babel-loader'
+);
 const isProduction = NODE_ENV === 'production';
 
 /**
@@ -85,7 +91,7 @@ const getCoreConfig = ( options = {} ) => {
 			filename: ( chunkData ) => {
 				return `${ paramCase( chunkData.chunk.name ) }.js`;
 			},
-			path: path.resolve( __dirname, '../build/' ),
+			path: BUILD_DIR,
 			library: [ 'wc', '[name]' ],
 			libraryTarget: 'this',
 			uniqueName: 'webpackWcBlocksCoreJsonp',
@@ -105,10 +111,7 @@ const getCoreConfig = ( options = {} ) => {
 								'@babel/plugin-transform-optional-chaining',
 								'@babel/plugin-transform-class-properties',
 							],
-							cacheDirectory: path.resolve(
-								__dirname,
-								'../../../node_modules/.cache/babel-loader'
-							),
+							cacheDirectory: BABEL_CACHE_DIR,
 							cacheCompression: false,
 						},
 					},
@@ -172,7 +175,7 @@ const getMainConfig = ( options = {} ) => {
 		entry: getEntryConfig( 'main', options.exclude || [] ),
 		output: {
 			devtoolNamespace: 'wc',
-			path: path.resolve( __dirname, '../build/' ),
+			path: BUILD_DIR,
 			// This is a cache busting mechanism which ensures that the script is loaded via the browser with a ?ver=hash
 			// string. The hash is based on the built file contents.
 			// @see https://github.com/webpack/webpack/issues/2329
@@ -204,10 +207,7 @@ const getMainConfig = ( options = {} ) => {
 								'@babel/plugin-transform-optional-chaining',
 								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
-							cacheDirectory: path.resolve(
-								__dirname,
-								'../../../node_modules/.cache/babel-loader'
-							),
+							cacheDirectory: BABEL_CACHE_DIR,
 							cacheCompression: false,
 						},
 					},
@@ -295,7 +295,7 @@ const getFrontConfig = ( options = {} ) => {
 		entry: getEntryConfig( 'frontend', options.exclude || [] ),
 		output: {
 			devtoolNamespace: 'wc',
-			path: path.resolve( __dirname, '../build/' ),
+			path: BUILD_DIR,
 			// This is a cache busting mechanism which ensures that the script is loaded via the browser with a ?ver=hash
 			// string. The hash is based on the built file contents.
 			// @see https://github.com/webpack/webpack/issues/2329
@@ -340,10 +340,7 @@ const getFrontConfig = ( options = {} ) => {
 								'@babel/plugin-transform-optional-chaining',
 								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
-							cacheDirectory: path.resolve(
-								__dirname,
-								'../../../node_modules/.cache/babel-loader'
-							),
+							cacheDirectory: BABEL_CACHE_DIR,
 							cacheCompression: false,
 						},
 					},
@@ -410,7 +407,7 @@ const getPaymentsConfig = ( options = {} ) => {
 		entry: getEntryConfig( 'payments', options.exclude || [] ),
 		output: {
 			devtoolNamespace: 'wc',
-			path: path.resolve( __dirname, '../build/' ),
+			path: BUILD_DIR,
 			filename: `[name].js`,
 			uniqueName: 'webpackWcBlocksPaymentMethodExtensionJsonp',
 		},
@@ -444,10 +441,7 @@ const getPaymentsConfig = ( options = {} ) => {
 								'@babel/plugin-transform-optional-chaining',
 								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
-							cacheDirectory: path.resolve(
-								__dirname,
-								'../../../node_modules/.cache/babel-loader'
-							),
+							cacheDirectory: BABEL_CACHE_DIR,
 							cacheCompression: false,
 						},
 					},
@@ -503,7 +497,7 @@ const getExtensionsConfig = ( options = {} ) => {
 		entry: getEntryConfig( 'extensions', options.exclude || [] ),
 		output: {
 			devtoolNamespace: 'wc',
-			path: path.resolve( __dirname, '../build/' ),
+			path: BUILD_DIR,
 			filename: '[name].js',
 			uniqueName: 'webpackWcBlocksExtensionsMethodExtensionJsonp',
 		},
@@ -537,10 +531,7 @@ const getExtensionsConfig = ( options = {} ) => {
 								'@babel/plugin-transform-optional-chaining',
 								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
-							cacheDirectory: path.resolve(
-								__dirname,
-								'../../../node_modules/.cache/babel-loader'
-							),
+							cacheDirectory: BABEL_CACHE_DIR,
 							cacheCompression: false,
 						},
 					},
@@ -596,7 +587,7 @@ const getSiteEditorConfig = ( options = {} ) => {
 		entry: getEntryConfig( 'editor', options.exclude || [] ),
 		output: {
 			devtoolNamespace: 'wc',
-			path: path.resolve( __dirname, '../build/' ),
+			path: BUILD_DIR,
 			filename: `[name].js`,
 			chunkLoadingGlobal: 'webpackWcBlocksExtensionsMethodExtensionJsonp',
 		},
@@ -629,10 +620,7 @@ const getSiteEditorConfig = ( options = {} ) => {
 									: false,
 								'@babel/plugin-transform-optional-chaining',
 							].filter( Boolean ),
-							cacheDirectory: path.resolve(
-								__dirname,
-								'../../../node_modules/.cache/babel-loader'
-							),
+							cacheDirectory: BABEL_CACHE_DIR,
 							cacheCompression: false,
 						},
 					},
@@ -689,7 +677,7 @@ const getStylingConfig = ( options = {} ) => {
 		entry: getEntryConfig( 'styling', options.exclude || [] ),
 		output: {
 			devtoolNamespace: 'wc',
-			path: path.resolve( __dirname, '../build/' ),
+			path: BUILD_DIR,
 			filename: '[name]-style.js',
 			library: [ 'wc', 'blocks', '[name]' ],
 			libraryTarget: 'this',
@@ -762,10 +750,7 @@ const getStylingConfig = ( options = {} ) => {
 								'@babel/plugin-transform-optional-chaining',
 								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
-							cacheDirectory: path.resolve(
-								__dirname,
-								'../../../node_modules/.cache/babel-loader'
-							),
+							cacheDirectory: BABEL_CACHE_DIR,
 							cacheCompression: false,
 						},
 					},
@@ -846,7 +831,7 @@ const getInteractivityAPIConfig = ( options = {} ) => {
 		},
 		output: {
 			filename: '[name].js',
-			path: path.resolve( __dirname, '../build/' ),
+			path: BUILD_DIR,
 			library: [ 'wc', '__experimentalInteractivity' ],
 			libraryTarget: 'this',
 			chunkLoadingGlobal: 'webpackWcBlocksJsonp',
@@ -891,10 +876,7 @@ const getInteractivityAPIConfig = ( options = {} ) => {
 									'@babel/plugin-transform-optional-chaining',
 									'@babel/plugin-transform-class-properties',
 								],
-								cacheDirectory: path.resolve(
-									__dirname,
-									'../../../node_modules/.cache/babel-loader'
-								),
+								cacheDirectory: BABEL_CACHE_DIR,
 								cacheCompression: false,
 							},
 						},
@@ -923,7 +905,7 @@ const getCartAndCheckoutFrontendConfig = ( options = {} ) => {
 		),
 		output: {
 			devtoolNamespace: 'wc',
-			path: path.resolve( __dirname, '../build/' ),
+			path: BUILD_DIR,
 			// This is a cache busting mechanism which ensures that the script is loaded via the browser with a ?ver=hash
 			// string. The hash is based on the built file contents.
 			// @see https://github.com/webpack/webpack/issues/2329
@@ -977,10 +959,7 @@ const getCartAndCheckoutFrontendConfig = ( options = {} ) => {
 								'@babel/plugin-transform-optional-chaining',
 								'@babel/plugin-transform-class-properties',
 							].filter( Boolean ),
-							cacheDirectory: path.resolve(
-								__dirname,
-								'../../../node_modules/.cache/babel-loader'
-							),
+							cacheDirectory: BABEL_CACHE_DIR,
 							cacheCompression: false,
 						},
 					},
