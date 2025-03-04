@@ -99,8 +99,20 @@ class BackInStockNotifications {
 			return;
 		}	
 	
+		$option_value = get_option( 'wc_bis_allow_signups' );
+
+		// BIS wasn't active at the time of the core update, => disable signups.
 		if ( ! self::$bis_plugin_is_active ) {
-			update_option( 'wc_bis_allow_signups', 'no' );
+			$option_value = 'no';	
+		}
+
+		// New installation, enable signups.
+		if ( 0 === array_sum( (array) wp_count_posts( 'product' ) ) ) {
+			$option_value = 'yes';
+		}
+
+		if ( $option_value !== get_option( 'wc_bis_allow_signups' ) ) {
+			update_option( 'wc_bis_allow_signups', $option_value );
 		}
 
 		// Mark as initialized so we don't run this again.
