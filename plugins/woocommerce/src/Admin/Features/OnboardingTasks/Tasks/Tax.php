@@ -28,7 +28,7 @@ class Tax extends Task {
 	public function __construct( $task_list ) {
 		parent::__construct( $task_list );
 		add_action( 'admin_enqueue_scripts', array( $this, 'possibly_add_return_notice_script' ) );
-		add_action( 'woocommerce_tax_rate_added', array( $this, 'track_completion_on_tax_rate_added' ) );
+		add_action( 'woocommerce_tax_rate_added', array( $this, 'track_actioned_on_tax_rate_added' ) );
 	}
 
 	/**
@@ -120,7 +120,11 @@ class Tax extends Task {
 			$this->is_complete_result = $is_wc_connect_taxes_enabled ||
                    get_option( 'woocommerce_no_sales_tax' ) !== false ||
                    $third_party_complete ||
-                   $this->has_existing_tax_rates();
+                   $this->is_actioned();
+
+			if ( ! $this->is_complete_result && $this->has_existing_tax_rates() ) {
+				$this->mark_actioned();
+			}
 		}
 
 		return $this->is_complete_result;
@@ -144,12 +148,12 @@ class Tax extends Task {
 	}
 
 	/**
-	 * Marks the task as complete any time a tax rate has been added. Called from the `woocommerce_tax_rate_added` hook.
+	 * Marks the task as actioned any time a tax rate has been added. Called from the `woocommerce_tax_rate_added` hook.
 	 *
 	 * @return void
 	 */
-	public function track_completion_on_tax_rate_added() {
-		$this->track_completion();
+	public function track_actioned_on_tax_rate_added() {
+		$this->mark_actioned();
 	}
 
 	/**
