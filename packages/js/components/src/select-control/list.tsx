@@ -98,6 +98,8 @@ const VirtualOption = ( {
 			id={ `woocommerce-select-control__option-${ instanceId }-${ option.key }` }
 			role="option"
 			aria-selected={ index === selectedIndex }
+			aria-setsize={ options.length }
+			aria-posinset={ index + 1 }
 			disabled={ option.isDisabled }
 			className={ classnames( 'woocommerce-select-control__option', {
 				'is-selected': index === selectedIndex,
