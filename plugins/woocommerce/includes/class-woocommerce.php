@@ -1195,7 +1195,7 @@ final class WooCommerce {
 	public function bis_notifications() {
 		static $noop_instance = null;
 
-		if ( ! ( BackInStockNotifications::is_enabled() && Packages::is_package_enabled( 'BackInStockNotifications' ) ) ) {
+		if ( ! BackInStockNotifications::is_really_enabled() ) {
 			if ( ! $noop_instance ) {
 				$noop_instance = new WC_BIS_Noop();
 			}

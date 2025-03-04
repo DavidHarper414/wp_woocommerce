@@ -9,6 +9,7 @@ namespace Automattic\WooCommerce\Internal;
 
 use Automattic\WooCommerce\Internal\Utilities\DatabaseUtil;
 use Automattic\WooCommerce\Proxies\LegacyProxy;
+use Automattic\WooCommerce\Packages;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -129,20 +130,12 @@ class BackInStockNotifications {
 	 * 
 	 * The user option takes precedence over the rollout period flag.
 	 * 
-	 * This duplicates the logic of \Automattic\WooCommerce\Packages\Packages::get_enabled_packages.
+	 * Helper method redirected to \Automattic\WooCommerce\Packages\Packages::is_package_enabled.
 	 * 
 	 * @return bool
 	 */
 	public static function is_really_enabled() {
-		if ( 'no' === get_option( self::$ENABLE_OPTION_NAME ) ) {
-			return false;
-		}
-
-		if ( 'yes' === get_option( self::$ENABLE_OPTION_NAME ) ) {
-			return true;
-		}
-
-		return self::is_enabled();
+		return Packages::is_package_enabled('woocommerce-back-in-stock-notifications');
 	}
 
 	/**
