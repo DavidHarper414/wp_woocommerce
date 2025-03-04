@@ -38,30 +38,7 @@ const defaultProductData: ProductResponseItem = {
 	images: [],
 	categories: [],
 	tags: [],
-	attributes: [
-		{
-			id: 1,
-			taxonomy: 'pa_color',
-			name: 'Color',
-			has_variations: true,
-			terms: [
-				{ id: 1, slug: 'blue', name: 'Blue' },
-				{ id: 2, slug: 'red', name: 'Red' },
-				{ id: 3, slug: 'green', name: 'Green' },
-			],
-		},
-		{
-			id: 2,
-			taxonomy: 'pa_size',
-			name: 'Size',
-			has_variations: true,
-			terms: [
-				{ id: 1, slug: 'sm', name: 'Small' },
-				{ id: 2, slug: 'md', name: 'Medium' },
-				{ id: 3, slug: 'lg', name: 'Large' },
-			],
-		},
-	],
+	attributes: [],
 	variations: [],
 	has_options: false,
 	is_purchasable: false,

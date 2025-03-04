@@ -9,11 +9,16 @@ import {
 	__experimentalUseBlockPreview as useBlockPreview,
 } from '@wordpress/block-editor';
 import { BlockInstance, type BlockEditProps } from '@wordpress/blocks';
+import { useSelect } from '@wordpress/data';
 import {
 	CustomDataProvider,
 	useProductDataContext,
 } from '@woocommerce/shared-context';
-import { useSelect } from '@wordpress/data';
+
+/**
+ * Internal dependencies
+ */
+import { DEFAULT_ATTRIBUTES } from './constants';
 
 interface Attributes {
 	className?: string;
@@ -65,6 +70,8 @@ export default function AttributeItemTemplateEdit(
 	} );
 
 	const { product } = useProductDataContext();
+	const productAttributes =
+		product.type === 'variable' ? product.attributes : DEFAULT_ATTRIBUTES;
 
 	const { blocks } = useSelect(
 		( select ) => {
@@ -79,7 +86,7 @@ export default function AttributeItemTemplateEdit(
 
 	return (
 		<div { ...blockProps } role="list">
-			{ product.attributes.map( ( attribute ) => (
+			{ productAttributes.map( ( attribute ) => (
 				<CustomDataProvider
 					key={ attribute.id }
 					id="attribute"
@@ -89,7 +96,7 @@ export default function AttributeItemTemplateEdit(
 						blocks={ blocks }
 						isSelected={
 							( selectedAttributeItem ||
-								product.attributes[ 0 ]?.id ) === attribute.id
+								productAttributes[ 0 ]?.id ) === attribute.id
 						}
 						onSelect={ () =>
 							setSelectedAttributeItem( attribute.id )
