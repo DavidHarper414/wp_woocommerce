@@ -1,11 +1,15 @@
-const { test } = require( './fixtures' );
-const { ADMIN_STATE_PATH } = require( '../playwright.config' );
+/**
+ * Internal dependencies
+ */
+import { test } from './fixtures';
+import { WC_API_PATH } from '../utils/api-client';
+import { ADMIN_STATE_PATH } from '../playwright.config';
 
 exports.test = test.extend( {
 	page: async ( { page, restApi }, use ) => {
 		// Enable product block editor
 		await restApi.put(
-			'wc/v3/settings/advanced/woocommerce_feature_product_block_editor_enabled',
+			`${ WC_API_PATH }/settings/advanced/woocommerce_feature_product_block_editor_enabled`,
 			{
 				value: 'yes',
 			}
@@ -20,7 +24,7 @@ exports.test = test.extend( {
 
 		// Disable product block editor
 		await restApi.put(
-			'wc/v3/settings/advanced/woocommerce_feature_product_block_editor_enabled',
+			`${ WC_API_PATH }/settings/advanced/woocommerce_feature_product_block_editor_enabled`,
 			{
 				value: 'no',
 			}

@@ -1,9 +1,11 @@
-const { test } = require( '../../../fixtures/block-editor-fixtures' );
-const { expect } = require( '@playwright/test' );
-
-const { clickOnTab } = require( '../../../utils/simple-products' );
-const { api } = require( '../../../utils' );
-const { tags } = require( '../../../fixtures/fixtures' );
+/**
+ * Internal dependencies
+ */
+import { test } from '../../../fixtures/block-editor-fixtures';
+import { tags, expect } from '../../../fixtures/fixtures';
+import { clickOnTab } from '../../../utils/simple-products';
+import { WC_API_PATH } from '../../../utils/api-client';
+import { getFakeProduct } from '../../../utils/data';
 
 const NEW_EDITOR_ADD_PRODUCT_URL =
 	'wp-admin/admin.php?page=wc-admin&path=%2Fadd-product';
@@ -15,33 +17,30 @@ const productData = {
 	summary: 'This is a product summary',
 };
 
-const groupedProductsData = [
-	{
-		name: `Product name 1 ${ new Date().getTime().toString() }`,
-		productPrice: '400',
-		type: 'simple',
-	},
-	{
-		name: `Product name 2 ${ new Date().getTime().toString() }`,
-		productPrice: '600',
-		type: 'simple',
-	},
-];
+const groupedProductsData = [ getFakeProduct(), getFakeProduct() ];
 
 const productIds = [];
 
 test.describe( 'General tab', { tag: tags.GUTENBERG }, () => {
 	test.describe( 'Grouped product', () => {
-		test.beforeAll( async () => {
+		test.beforeAll( async ( { restApi } ) => {
 			for ( const product of groupedProductsData ) {
-				const id = await api.create.product( product );
+				const id = await restApi
+					.post( `${ WC_API_PATH }/products`, { product } )
+					.then( ( response ) => response.data.id );
 				productIds.push( id );
 			}
 		} );
 
-		test.afterAll( async () => {
+		test.afterAll( async ( { restApi } ) => {
 			for ( const productId of productIds ) {
-				await api.deletePost.product( productId );
+				await restApi
+					.delete( `${ WC_API_PATH }/products/${ productId }`, {
+						force: true,
+					} )
+					.catch( ( err ) => {
+						console.log( err );
+					} );
 			}
 		} );
 		test.skip(

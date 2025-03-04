@@ -1,39 +1,9 @@
 /**
  * Internal dependencies
  */
-import ApiClient from '../utils/api-client';
+import ApiClient, { WP_API_PATH } from '../utils/api-client';
 
-let api;
-/**
- * Allow explicit construction of api client.
- */
-const constructWith = () => {
-	api = ApiClient.create();
-};
-
-const throwCustomError = (
-	error,
-	customMessage = 'Something went wrong. See details below.'
-) => {
-	throw new Error(
-		customMessage
-			.concat(
-				`\nResponse status: ${ error.response.status } ${ error.response.statusText }`
-			)
-			.concat(
-				`\nResponse headers:\n${ JSON.stringify(
-					error.response.headers,
-					null,
-					2
-				) }`
-			).concat( `\nResponse data:\n${ JSON.stringify(
-			error.response.data,
-			null,
-			2
-		) }
-` )
-	);
-};
+const api = ApiClient.getInstance();
 
 const update = {
 	storeDetails: async ( store ) => {
@@ -73,154 +43,72 @@ const update = {
 const get = {
 	coupons: async ( params ) => {
 		const response = await api
-			.get( 'coupons', params )
-			.then( ( r ) => r )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when trying to list all coupons.'
-				);
-			} );
+			.get( `${ WP_API_PATH }/coupons`, params )
+			.then( ( r ) => r );
 
 		return response.data;
 	},
-	defaultCountry: async () => {
-		const response = await api.get(
-			'settings/general/woocommerce_default_country'
-		);
-
-		const code = response.data.default;
-
-		return code;
-	},
 	orders: async ( params ) => {
 		const response = await api
-			.get( 'orders', params )
-			.then( ( r ) => r )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when trying to list all orders.'
-				);
-			} );
+			.get( `${ WP_API_PATH }/orders`, params )
+			.then( ( r ) => r );
 
 		return response.data;
 	},
 	products: async ( params ) => {
 		const response = await api
-			.get( 'products', params )
-			.then( ( r ) => r )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when trying to list all products.'
-				);
-			} );
+			.get( `${ WP_API_PATH }/products`, params )
+			.then( ( r ) => r );
 
 		return response.data;
 	},
 	productAttributes: async ( params ) => {
 		const response = await api
-			.get( 'products/attributes', params )
-			.then( ( r ) => r )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when trying to list all product attributes.'
-				);
-			} );
+			.get( `${ WP_API_PATH }/products/attributes`, params )
+			.then( ( r ) => r );
 
 		return response.data;
 	},
 	productCategories: async ( params ) => {
 		const response = await api
-			.get( 'products/categories', params )
-			.then( ( r ) => r )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when trying to list all product categories.'
-				);
-			} );
+			.get( `${ WP_API_PATH }/products/categories`, params )
+			.then( ( r ) => r );
 
 		return response.data;
 	},
 	productTags: async ( params ) => {
 		const response = await api
-			.get( 'products/tags', params )
-			.then( ( r ) => r )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when trying to list all product tags.'
-				);
-			} );
-
+			.get( `${ WP_API_PATH }/products/tags`, params )
+			.then( ( r ) => r );
 		return response.data;
 	},
 	shippingClasses: async ( params ) => {
 		const response = await api
-			.get( 'products/shipping_classes', params )
-			.then( ( r ) => r )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when trying to list all shipping classes.'
-				);
-			} );
+			.get( `${ WP_API_PATH }/products/shipping_classes`, params )
+			.then( ( r ) => r );
 
 		return response.data;
 	},
 
 	shippingZones: async ( params ) => {
 		const response = await api
-			.get( 'shipping/zones', params )
-			.then( ( r ) => r )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when trying to list all shipping zones.'
-				);
-			} );
+			.get( `${ WP_API_PATH }/shipping/zones`, params )
+			.then( ( r ) => r );
 
 		return response.data;
 	},
-	shippingZoneMethods: async ( shippingZoneId ) => {
-		const response = await api
-			.get( `shipping/zones/${ shippingZoneId }/methods` )
-			.then( ( r ) => r )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					`Something went wrong when trying to list all shipping methods in shipping zone ${ shippingZoneId }.`
-				);
-			} );
 
-		return response.data;
-	},
 	taxClasses: async () => {
 		const response = await api
-			.get( 'taxes/classes' )
-			.then( ( r ) => r )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when trying to list all tax classes.'
-				);
-			} );
+			.get( `${ WP_API_PATH }/taxes/classes` )
+			.then( ( r ) => r );
 
 		return response.data;
 	},
 	taxRates: async ( params ) => {
 		const response = await api
-			.get( 'taxes', params )
-			.then( ( r ) => r )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when trying to list all tax rates.'
-				);
-			} );
+			.get( `${ WP_API_PATH }/taxes`, params )
+			.then( ( r ) => r );
 
 		return response.data;
 	},
@@ -228,18 +116,21 @@ const get = {
 
 const create = {
 	product: async ( product ) => {
-		const response = await api.post( 'products', product );
+		const response = await api.post( `${ WP_API_PATH }/products`, product );
 
 		return response.data.id;
 	},
 	shippingZone: async ( zone ) => {
-		const response = await api.post( 'shipping/zones', zone );
+		const response = await api.post(
+			`${ WP_API_PATH }/shipping/zones`,
+			zone
+		);
 
 		return response.data.id;
 	},
 	shippingMethod: async ( zoneId, method ) => {
 		const response = await api.post(
-			`shipping/zones/${ zoneId }/methods`,
+			`${ WP_API_PATH }/shipping/zones/${ zoneId }/methods`,
 			method
 		);
 
@@ -255,7 +146,7 @@ const create = {
 	 */
 	productVariations: async ( productId, variations ) => {
 		const response = await api.post(
-			`products/${ productId }/variations/batch`,
+			`${ WP_API_PATH }/products/${ productId }/variations/batch`,
 			{
 				create: variations,
 			}
@@ -268,154 +159,83 @@ const create = {
 const deletePost = {
 	coupons: async ( ids ) => {
 		const res = await api
-			.post( 'coupons/batch', { delete: ids } )
-			.then( ( response ) => response )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when batch deleting coupons.'
-				);
-			} );
+			.post( `${ WP_API_PATH }/coupons/batch`, { delete: ids } )
+			.then( ( response ) => response );
 
 		return res.data;
 	},
 	product: async ( id ) => {
-		await api.delete( `products/${ id }`, {
+		await api.delete( `${ WP_API_PATH }/products/${ id }`, {
 			force: true,
 		} );
 	},
 	products: async ( ids ) => {
 		const res = await api
-			.post( 'products/batch', { delete: ids } )
-			.then( ( response ) => response )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when batch deleting products.'
-				);
-			} );
+			.post( `${ WP_API_PATH }/products/batch`, { delete: ids } )
+			.then( ( response ) => response );
 		return res.data;
 	},
 	productAttributes: async ( id ) => {
 		const res = await api
-			.post( 'products/attributes/batch', { delete: id } )
-			.then( ( response ) => response )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when batch deleting product attributes.'
-				);
-			} );
+			.post( `${ WP_API_PATH }/products/attributes/batch`, {
+				delete: id,
+			} )
+			.then( ( response ) => response );
 		return res.data;
 	},
 	productCategories: async ( ids ) => {
 		const res = await api
-			.post( 'products/categories/batch', { delete: ids } )
-			.then( ( response ) => response )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when batch deleting product categories.'
-				);
-			} );
+			.post( `${ WP_API_PATH }/products/categories/batch`, {
+				delete: ids,
+			} )
+			.then( ( response ) => response );
 		return res.data;
 	},
 	productTags: async ( ids ) => {
 		const res = await api
-			.post( 'products/tags/batch', { delete: ids } )
-			.then( ( response ) => response )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when batch deleting product tags.'
-				);
-			} );
+			.post( `${ WP_API_PATH }/products/tags/batch`, { delete: ids } )
+			.then( ( response ) => response );
 		return res.data;
 	},
 	order: async ( id ) => {
-		await api.delete( `orders/${ id }`, {
+		await api.delete( `${ WP_API_PATH }/orders/${ id }`, {
 			force: true,
 		} );
 	},
 	orders: async ( ids ) => {
 		const res = await api
-			.post( 'orders/batch', { delete: ids } )
-			.then( ( response ) => response )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when batch deleting orders.'
-				);
-			} );
+			.post( `${ WP_API_PATH }/orders/batch`, { delete: ids } )
+			.then( ( response ) => response );
 		return res.data;
 	},
 	shippingClasses: async ( ids ) => {
 		const res = await api
-			.post( 'products/shipping_classes/batch', { delete: ids } )
-			.then( ( response ) => response )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when batch deleting shipping classes.'
-				);
-			} );
+			.post( `${ WP_API_PATH }/products/shipping_classes/batch`, {
+				delete: ids,
+			} )
+			.then( ( response ) => response );
 		return res.data;
 	},
 	shippingZone: async ( id ) => {
 		const res = await api
-			.delete( `shipping/zones/${ id }`, {
+			.delete( `${ WP_API_PATH }/shipping/zones/${ id }`, {
 				force: true,
 			} )
-			.then( ( response ) => response )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when deleting shipping zone.'
-				);
-			} );
-		return res.data;
-	},
-	shippingZoneMethod: async ( shippingZoneId, shippingMethodId ) => {
-		const res = await api
-			.delete(
-				`shipping/zones/${ shippingZoneId }/methods/${ shippingMethodId }`,
-				{
-					force: true,
-				}
-			)
-			.then( ( response ) => response )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when deleting shipping zone method.'
-				);
-			} );
+			.then( ( response ) => response );
 		return res.data;
 	},
 	taxClass: async ( slug ) => {
 		const res = await api
-			.delete( `taxes/classes/${ slug }`, {
+			.delete( `${ WP_API_PATH }/taxes/classes/${ slug }`, {
 				force: true,
 			} )
-			.then( ( response ) => response )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					`Something went wrong when deleting tax class ${ slug }.`
-				);
-			} );
+			.then( ( response ) => response );
 		return res.data;
 	},
 	taxRates: async ( ids ) => {
 		const res = await api
-			.post( 'taxes/batch', { delete: ids } )
-			.then( ( response ) => response )
-			.catch( ( error ) => {
-				throwCustomError(
-					error,
-					'Something went wrong when batch deleting tax rates.'
-				);
-			} );
+			.post( `${ WP_API_PATH }/taxes/batch`, { delete: ids } )
+			.then( ( response ) => response );
 		return res.data;
 	},
 };
@@ -425,5 +245,4 @@ module.exports = {
 	get,
 	create,
 	deletePost,
-	constructWith,
 };

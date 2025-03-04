@@ -10,6 +10,15 @@ import { admin } from '../test-data/data';
 import playwrightConfig from '../playwright.config';
 
 class ApiClient {
+	static instance;
+
+	static getInstance() {
+		if ( ! ApiClient.instance ) {
+			ApiClient.instance = ApiClient.create();
+		}
+		return ApiClient.instance;
+	}
+
 	static create() {
 		let baseURL = playwrightConfig.use.baseURL;
 		if ( ! baseURL.endsWith( '/' ) ) {
