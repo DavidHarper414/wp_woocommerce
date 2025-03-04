@@ -109,6 +109,7 @@ runs:
           if: ${{ inputs.build == 'true' || steps.project-filters.outputs.build != '' }}
           env:
             BROWSERSLIST_IGNORE_OLD_DATA: true
+            WIREIT_CACHE: github
           shell: 'bash'
           run: |
             if [[ '${{ inputs.build-type }}' == 'backend' ]]; then
