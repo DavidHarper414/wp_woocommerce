@@ -239,11 +239,6 @@ export interface TestEnvConfigVars {
 	 * The version of PHP that should be used.
 	 */
 	phpVersion?: string;
-
-	/**
-	 * Whether the HPOS feature should be disabled in the test environment setup.
-	 */
-	disableHpos?: boolean;
 }
 
 /**
@@ -273,16 +268,6 @@ function parseTestEnvConfigVars( raw: any ): TestEnvConfigVars {
 		}
 
 		config.phpVersion = raw.phpVersion;
-	}
-
-	if ( raw.disableHpos ) {
-		if ( typeof raw.disableHpos !== 'boolean' ) {
-			throw new ConfigError(
-				'The "disableHpos" option must be a boolean.'
-			);
-		}
-
-		config.disableHpos = raw.disableHpos;
 	}
 
 	return config;
@@ -353,43 +338,9 @@ export interface TestJobConfig extends BaseJobConfig {
 	testEnv?: TestEnvConfig;
 
 	/**
-	 * The key(s) to use when identifying what jobs should be triggered by a cascade.
-	 */
-	cascadeKeys?: string[];
-
-	/**
 	 * The configuration for the report if one is needed.
 	 */
 	report?: ReportConfig;
-}
-
-/**
- * parses the cascade config.
- *
- * @param {string|string[]} raw The raw config to parse.
- */
-function parseTestCascade( raw: unknown ): string[] {
-	if ( typeof raw === 'string' ) {
-		return [ raw ];
-	}
-
-	if ( ! Array.isArray( raw ) ) {
-		throw new ConfigError(
-			'Cascade configuration must be a string or array of strings.'
-		);
-	}
-
-	const changes: string[] = [];
-	for ( const entry of raw ) {
-		if ( typeof entry !== 'string' ) {
-			throw new ConfigError(
-				'Cascade configuration must be a string or array of strings.'
-			);
-		}
-
-		changes.push( entry );
-	}
-	return changes;
 }
 
 /**
@@ -475,10 +426,6 @@ function parseTestJobConfig( raw: any ): TestJobConfig {
 			resultsPath: raw.report.resultsPath,
 			allure: raw.report.allure,
 		};
-	}
-
-	if ( raw.cascade ) {
-		config.cascadeKeys = parseTestCascade( raw.cascade );
 	}
 
 	return config;
