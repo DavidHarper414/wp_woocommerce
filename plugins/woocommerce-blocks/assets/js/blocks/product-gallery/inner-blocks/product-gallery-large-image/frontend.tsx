@@ -40,7 +40,7 @@ const productGalleryLargeImage = {
 
 			const { selectedImageId } = getContext();
 
-			if ( selectedImageId === target.getAttribute( 'id' ) ) {
+			if ( selectedImageId === target.getAttribute( 'data-image-id' ) ) {
 				target.style.transform = `scale(1.3)`;
 				target.style.transformOrigin = `${ percentageX }% ${ percentageY }%`;
 			}
