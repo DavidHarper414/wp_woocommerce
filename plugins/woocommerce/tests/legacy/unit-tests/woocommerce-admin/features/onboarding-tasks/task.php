@@ -365,6 +365,7 @@ class WC_Admin_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		$mock->expects( $this->never() )
 			->method( 'record_tracks_event' );
 
+		$this->expectDeprecated();
 		$mock->possibly_track_completion();
 	}
 
@@ -384,6 +385,7 @@ class WC_Admin_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		$mock->expects( $this->never() )
 			->method( 'record_tracks_event' );
 
+		$this->expectDeprecated();
 		$mock->possibly_track_completion();
 	}
 }
