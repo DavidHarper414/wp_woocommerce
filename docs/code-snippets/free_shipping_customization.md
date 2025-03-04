@@ -18,8 +18,6 @@ The functionality to hide all other methods, and only show Free Shipping, requir
 
 Before adding snippets, clear your WooCommerce cache. Go to WooCommerce > System Status > Tools > WooCommerce Transients > Clear transients.
 
-Add this code to your child theme's `functions.php`, or via a plugin that allows custom functions to be added. Please don't add custom code directly to a parent theme's `functions.php` as changes are entirely erased when a parent theme updates.
-
 ## Code Snippets
 
 ### Enabling or Disabling Free Shipping via Hooks
