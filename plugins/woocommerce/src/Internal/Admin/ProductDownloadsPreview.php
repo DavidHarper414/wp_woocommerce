@@ -5,7 +5,7 @@
  * @package WooCommerce\Internal\ProductDownloads
  */
 
-namespace Automattic\WooCommerce\Internal\ProductDownloads;
+namespace Automattic\WooCommerce\Internal\Admin;
 
 use Automattic\WooCommerce\Internal\RegisterHooksInterface;
 
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since x.x.x
  */
-class AdminPreview implements RegisterHooksInterface {
+class ProductDownloadsPreview implements RegisterHooksInterface {
 
 	/**
 	 * Register hooks.

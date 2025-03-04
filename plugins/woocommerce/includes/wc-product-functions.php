@@ -19,7 +19,7 @@ use Automattic\WooCommerce\Proxies\LegacyProxy;
 use Automattic\WooCommerce\Utilities\ArrayUtil;
 use Automattic\WooCommerce\Utilities\NumberUtil;
 use Automattic\WooCommerce\Internal\ProductImage\MatchImageBySKU;
-use Automattic\WooCommerce\Internal\ProductDownloads\AdminPreview;
+use Automattic\WooCommerce\Internal\Admin\ProductDownloadsPreview.php
 
 defined( 'ABSPATH' ) || exit;
 
@@ -630,7 +630,7 @@ function wc_get_attachment_image_attributes( $attr, $attachment, $size ) {
     }
 
     // Generate secure admin URL for image src
-    $admin_preview = wc_get_container()->get( AdminPreview::class );
+    $admin_preview = wc_get_container()->get( ProductDownloadsPreview::class );
     $attr['src'] = $admin_preview->get_admin_image_src_url( $attachment->post_parent, $attachment->ID, $size );
 
 
@@ -664,7 +664,7 @@ function wc_prepare_attachment_for_js( $response ) {
 	$attachment_id = $response['id'];
 
     // Generate secure admin URL for image src
-    $admin_preview = wc_get_container()->get( AdminPreview::class );
+    $admin_preview = wc_get_container()->get( ProductDownloadsPreview::class );
     $response['url'] = $admin_preview->get_admin_image_src_url( $product_id, $attachment_id, '' );
 
 	if ( isset( $response['sizes'] ) ) {
