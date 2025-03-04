@@ -49,7 +49,9 @@ const scrollImageIntoView = ( imageId: string ) => {
 	if ( ! imageId ) {
 		return;
 	}
-	const imageElement = document.getElementById( imageId );
+	const imageElement = document.querySelector(
+		`.wp-block-woocommerce-product-gallery-large-image img[data-image-id="${ imageId }"]`
+	);
 	if ( imageElement ) {
 		imageElement.scrollIntoView( {
 			behavior: 'smooth',
