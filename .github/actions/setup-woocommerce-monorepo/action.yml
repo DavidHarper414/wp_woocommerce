@@ -103,13 +103,14 @@ runs:
         - name: 'Cache Build Output'
           # Boolean inputs aren't parsed into filters so it'll either be "true" or there will be a filter.
           if: ${{ inputs.build == 'true' || steps.project-filters.outputs.build != '' }}
-          uses: 'google/wireit@setup-github-actions-caching/v2'
+          uses: 'google/wireit@setup-github-actions-caching/v1'
+          with:
+            workingDirectory: '.'
         - name: 'Build'
           # Boolean inputs aren't parsed into filters so it'll either be "true" or there will be a filter.
           if: ${{ inputs.build == 'true' || steps.project-filters.outputs.build != '' }}
           env:
             BROWSERSLIST_IGNORE_OLD_DATA: true
-            WIREIT_CACHE: github
           shell: 'bash'
           run: |
             if [[ '${{ inputs.build-type }}' == 'backend' ]]; then
