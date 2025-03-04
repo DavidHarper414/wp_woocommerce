@@ -98,12 +98,8 @@ test.describe(
 					.getByRole( 'option', { name: 'Clothing and accessories' } )
 					.click();
 				// select a WooPayments compatible location
-				await page
-					.locator(
-						'form.woocommerce-profiler-business-information-form > div > div > div > div > input'
-					)
-					.last()
-					.click();
+				await page.getByRole( 'combobox' ).last().click();
+				await page.getByRole( 'combobox' ).last().fill( 'Australia' );
 				await page
 					.getByRole( 'option', {
 						name: 'Australia — Northern Territory',
@@ -268,12 +264,8 @@ test.describe(
 					.getByRole( 'option', { name: 'Food and drink' } )
 					.click();
 				// select a WooPayments incompatible location
-				await page
-					.locator(
-						'form.woocommerce-profiler-business-information-form > div > div > div > div > input'
-					)
-					.last()
-					.click();
+				await page.getByRole( 'combobox' ).last().click();
+				await page.getByRole( 'combobox' ).last().fill( 'Afghanistan' );
 				await page
 					.getByRole( 'option', { name: 'Afghanistan' } )
 					.click();
@@ -503,6 +495,9 @@ test.describe(
 				} )
 			).toBeVisible();
 			await page.getByLabel( 'Select country/region' ).click();
+			await page
+				.getByLabel( 'Select country/region' )
+				.fill( 'California' );
 			await page
 				.getByRole( 'option', {
 					name: 'United States (US) — California',
