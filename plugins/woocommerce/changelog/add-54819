@@ -1,0 +1,4 @@
+Significance: minor
+Type: performance
+
+Add background scheduler to help refresh expensive queries
