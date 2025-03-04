@@ -25,7 +25,7 @@ function MySettings() {
 	return (
 		<ul>
 			{ Object.keys( settings ?? {} ).map( setting => (
-				<li key={setting}>{ setting }</li>
+				<li key={ setting }>{ setting }</li>
 			) ) }
 		</ul>
 	);
