@@ -1178,21 +1178,19 @@ class WC_Tests_Product_Functions extends WC_Unit_Test_Case {
 		// Test for admin user who can see the image
 		$original_user_id = get_current_user_id();
 
-		// Create mock admin user
+		// Create mock admin user and grant the correct privileges
 		$admin_id = $this->factory->user->create( array( 'role' => 'administrator' ) );
 		wp_set_current_user( $admin_id );
-
-		// Grant WooCommerce admin capabilities
 		$user = get_userdata( $admin_id );
 		$user->add_cap( 'manage_woocommerce' );
 
-		// Mock the ProductDownloadsPreview service
+		// Mock the URL that well compare the ouput with
 		$mock_preview_url = 'https://wc.local/admin-secure-url/my-image.jpg';
 
+		// Mock the ProductDownloadsPreview class
 		$mock_preview = $this->getMockBuilder( 'Automattic\WooCommerce\Internal\Admin\ProductDownloadsPreview' )
 			->disableOriginalConstructor()
 			->getMock();
-
 		$mock_preview->expects( $this->once() )
 			->method( 'get_admin_image_src_url' )
 			->with( $attachment->post_parent, $attachment->ID, 'thumbnail' )
