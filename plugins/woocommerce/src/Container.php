@@ -171,7 +171,7 @@ final class Container {
 			CostOfGoodsSoldServiceProvider::class,
 			AdminSettingsServiceProvider::class,
 			AdminSuggestionsServiceProvider::class,
-			BackgroundCacheServiceProvider::class,
+			BackgroundSchedulerServiceProvider::class,
 		);
 	}
 }
