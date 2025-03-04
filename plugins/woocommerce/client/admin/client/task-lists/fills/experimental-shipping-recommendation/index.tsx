@@ -1,11 +1,7 @@
 /**
  * External dependencies
  */
-import {
-	OPTIONS_STORE_NAME,
-	PLUGINS_STORE_NAME,
-	settingsStore,
-} from '@woocommerce/data';
+import { optionsStore, pluginsStore, settingsStore } from '@woocommerce/data';
 import { withSelect } from '@wordpress/data';
 import { registerPlugin } from '@wordpress/plugins';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
@@ -20,28 +16,23 @@ import { TaskProps } from './types';
 const ShippingRecommendationWrapper = compose(
 	withSelect( ( select: SelectFunction ) => {
 		const { getSettings } = select( settingsStore );
-		const { hasFinishedResolution } = select( OPTIONS_STORE_NAME );
-		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
+		const { hasFinishedResolution } = select( optionsStore );
+		const { getActivePlugins } = select( pluginsStore );
 
 		return {
-			// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 			activePlugins: getActivePlugins(),
 			generalSettings: getSettings( 'general' )?.general,
-			isJetpackConnected:
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-				select( PLUGINS_STORE_NAME ).isJetpackConnected(),
+			isJetpackConnected: select( pluginsStore ).isJetpackConnected(),
 			isResolving:
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				! hasFinishedResolution( 'getOption', [
 					'woocommerce_setup_jetpack_opted_in',
 				] ) ||
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
 				! hasFinishedResolution( 'getOption', [
-					'wc_connect_options',
+					'wcshipping_options',
 				] ) ||
-				// @ts-expect-error Todo: awaiting more global fix, demo: https://github.com/woocommerce/woocommerce/pull/54146
-				! select( PLUGINS_STORE_NAME ).hasFinishedResolution(
-					'isJetpackConnected'
+				! select( pluginsStore ).hasFinishedResolution(
+					'isJetpackConnected',
+					[]
 				),
 		};
 	} )

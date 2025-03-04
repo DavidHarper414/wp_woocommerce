@@ -19,7 +19,7 @@ import { Icon, chevronLeft, chevronRight, close } from '@wordpress/icons';
 import {
 	notesStore,
 	QUERY_DEFAULTS,
-	OPTIONS_STORE_NAME,
+	optionsStore,
 	useUserPreferences,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -37,7 +37,7 @@ import sanitizeHTML from '../../lib/sanitize-html';
 import StoreAlertsPlaceholder from './placeholder';
 import { getAdminSetting } from '~/utils/admin-settings';
 import { getScreenName } from '../../utils';
-import { hasTwoColumnLayout } from '../../homescreen/layout';
+import { hasTwoColumnLayout } from '~/homescreen/utils';
 import { isTaskListActive } from '../../hooks/use-tasklists-state';
 
 import './style.scss';
@@ -64,7 +64,7 @@ export const StoreAlerts = () => {
 		defaultHomescreenLayout,
 	} = useSelect( ( select ) => {
 		const { getNotes, hasFinishedResolution } = select( notesStore );
-		const { getOption } = select( OPTIONS_STORE_NAME );
+		const { getOption } = select( optionsStore );
 
 		return {
 			alerts: getUnactionedVisibleAlerts( getNotes( ALERTS_QUERY ) ),

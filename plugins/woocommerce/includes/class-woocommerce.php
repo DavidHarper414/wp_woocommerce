@@ -43,7 +43,7 @@ final class WooCommerce {
 	 *
 	 * @var string
 	 */
-	public $version = '9.8.0';
+	public $version = '9.9.0';
 
 	/**
 	 * WooCommerce Schema version.
@@ -343,6 +343,7 @@ final class WooCommerce {
 		$container->get( Automattic\WooCommerce\Internal\Admin\Settings\PaymentsController::class )->register();
 		$container->get( Automattic\WooCommerce\Internal\ProductDownloads\AdminPreview::class )->register();
 		$container->get( Automattic\WooCommerce\Internal\Utilities\LegacyRestApiStub::class )->register();
+		$container->get( Automattic\WooCommerce\Internal\Email\EmailStyleSync::class )->register();
 		Automattic\WooCommerce\Internal\Admin\WcPayWelcomePage::instance()->register();
 
 		// Classes inheriting from RestApiControllerBase.
@@ -833,6 +834,9 @@ final class WooCommerce {
 	 * Init WooCommerce when WordPress Initialises.
 	 */
 	public function init() {
+		// See the comment inside FeaturesController::__construct.
+		wc_get_container()->get( FeaturesController::class )->register_additional_features();
+
 		/**
 		 * Action triggered before WooCommerce initialization begins.
 		 */

@@ -4,7 +4,7 @@
 import { getSetting, STORE_PAGES } from '@woocommerce/settings';
 import { CountryData } from '@woocommerce/types';
 import type {
-	AdditionalValues,
+	OrderForm,
 	AddressForm,
 	ContactForm,
 } from '@woocommerce/settings';
@@ -56,11 +56,15 @@ export const SHIPPING_METHODS_EXIST = getSetting< boolean >(
 	'shippingMethodsExist',
 	false
 );
+export const SHIPPING_ENABLED = getSetting< boolean >(
+	'shippingEnabled',
+	true
+);
 
 type FieldsLocations = {
 	address: ( keyof AddressForm )[];
 	contact: ( keyof ContactForm )[];
-	order: ( keyof AdditionalValues )[];
+	order: ( keyof OrderForm )[];
 };
 
 // Contains country names.
@@ -88,7 +92,7 @@ export const ALLOWED_STATES = Object.fromEntries(
 			return countryData[ countryCode ].allowBilling === true;
 		} )
 		.map( ( countryCode ) => {
-			return [ countryCode, countryData[ countryCode ].states || [] ];
+			return [ countryCode, countryData[ countryCode ].states || {} ];
 		} )
 );
 
@@ -108,13 +112,13 @@ export const SHIPPING_STATES = Object.fromEntries(
 			return countryData[ countryCode ].allowShipping === true;
 		} )
 		.map( ( countryCode ) => {
-			return [ countryCode, countryData[ countryCode ].states || [] ];
+			return [ countryCode, countryData[ countryCode ].states || {} ];
 		} )
 );
 
 export const COUNTRY_LOCALE = Object.fromEntries(
 	Object.keys( countryData ).map( ( countryCode ) => {
-		return [ countryCode, countryData[ countryCode ].locale || [] ];
+		return [ countryCode, countryData[ countryCode ].locale || {} ];
 	} )
 );
 
