@@ -414,7 +414,7 @@ class FeaturesController {
 							'Enable back in stock notifications for customers.',
 							'woocommerce'
 						),
-					'enabled_by_default' => true,
+					'enabled_by_default' => BackInStockNotifications::is_enabled(),
 					'is_experimental'    => false,
 					/*
 					 * This is not a legacy feature, but it can't use the compatibility checking system other features use.
