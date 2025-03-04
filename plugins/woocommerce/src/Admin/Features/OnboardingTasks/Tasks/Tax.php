@@ -28,6 +28,7 @@ class Tax extends Task {
 	public function __construct( $task_list ) {
 		parent::__construct( $task_list );
 		add_action( 'admin_enqueue_scripts', array( $this, 'possibly_add_return_notice_script' ) );
+		add_action( 'woocommerce_tax_rate_added', array( $this, 'track_completion_on_tax_rate_added' ) );
 	}
 
 	/**
@@ -117,12 +118,38 @@ class Tax extends Task {
 			$third_party_complete = apply_filters( 'woocommerce_admin_third_party_tax_setup_complete', false );
 
 			$this->is_complete_result = $is_wc_connect_taxes_enabled ||
-				count( TaxDataStore::get_taxes( array() ) ) > 0 ||
-				get_option( 'woocommerce_no_sales_tax' ) !== false ||
-				$third_party_complete;
+                   get_option( 'woocommerce_no_sales_tax' ) !== false ||
+                   $third_party_complete ||
+                   $this->has_existing_tax_rates();
 		}
 
 		return $this->is_complete_result;
+	}
+
+	/**
+	 * Determines if a tax rate exists in the database.  Result is indefinitely cached.
+	 *
+	 * @return bool
+	 */
+	private function has_existing_tax_rates() {
+		global $wpdb;
+
+		$has_existing_tax_rates = wp_cache_get( 'onboarding_task_tax_rates_exist' );
+		if ( $has_existing_tax_rates === false ) {
+			$rate_exists = (bool) $wpdb->get_var( "SELECT 1 {$wpdb->prefix}woocommerce_tax_rates limit 1" );
+			wp_cache_set( 'onboarding_task_tax_rates_exist', $rate_exists ? 'yes' : 'no' );
+		}
+
+		return $has_existing_tax_rates === 'yes';
+	}
+
+	/**
+	 * Marks the task as complete any time a tax rate has been added. Called from the `woocommerce_tax_rate_added` hook.
+	 *
+	 * @return void
+	 */
+	public function track_completion_on_tax_rate_added() {
+		$this->track_completion();
 	}
 
 	/**

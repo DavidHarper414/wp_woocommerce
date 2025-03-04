@@ -392,8 +392,12 @@ abstract class Task {
 
 	/**
 	 * Track task completion if task is viewable.
+	 *
+	 * @deprecated 9.9.0
 	 */
 	public function possibly_track_completion() {
+		wc_deprecated_function( __FUNCTION__, '9.9.0', __CLASS__ . '::track_completion' );
+
 		if ( $this->has_previously_completed() ) {
 			return;
 		}
@@ -407,6 +411,20 @@ abstract class Task {
 		$completed_tasks[] = $this->get_id();
 		update_option( self::COMPLETED_OPTION, $completed_tasks );
 		$this->record_tracks_event( 'task_completed', array( 'task_name' => $this->get_id() ) );
+	}
+
+	/**
+	 * Track as task as complete if it is not already set as previously completed.
+	 *
+	 * @return void
+	 */
+	public function track_completion() {
+		$completed_tasks = get_option( self::COMPLETED_OPTION, array() );
+		if ( ! in_array( $this->get_id(), $completed_tasks, true ) ) {
+			$completed_tasks[] = $this->get_id();
+			update_option( self::COMPLETED_OPTION, $completed_tasks );
+			$this->record_tracks_event( 'task_completed', array( 'task_name' => $this->get_id() ) );
+		}
 	}
 
 	/**
@@ -499,7 +517,10 @@ abstract class Task {
 	 * @return array
 	 */
 	public function get_json() {
-		$this->possibly_track_completion();
+		$is_complete = $this->is_complete();
+		if ( $is_complete ) {
+			$this->track_completion();
+		}
 
 		return array(
 			'id'              => $this->get_id(),
@@ -511,7 +532,7 @@ abstract class Task {
 			'additionalInfo'  => $this->get_additional_info(),
 			'actionLabel'     => $this->get_action_label(),
 			'actionUrl'       => $this->get_action_url(),
-			'isComplete'      => $this->is_complete(),
+			'isComplete'      => $is_complete,
 			'time'            => $this->get_time(),
 			'level'           => 3,
 			'isActioned'      => $this->is_actioned(),
