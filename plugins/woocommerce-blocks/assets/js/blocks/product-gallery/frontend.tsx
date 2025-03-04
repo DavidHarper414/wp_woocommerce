@@ -212,6 +212,14 @@ const productGallery = {
 				}
 				actions.openDialog();
 			}
+
+			if ( event.code === 'ArrowRight' ) {
+				actions.selectNextImage();
+			}
+
+			if ( event.code === 'ArrowLeft' ) {
+				actions.selectPreviousImage();
+			}
 		},
 		onViewAllImagesKeyDown: ( event: KeyboardEvent ) => {
 			if (
