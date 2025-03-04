@@ -173,7 +173,7 @@ WooCommerce comes with some sample data you can use to see how products look; im
 
 **WooCommerce**
 
-* Fix - Fix an xss vulnerability in the cart & checkout blocks [#56048](https://github.com/woocommerce/woocommerce/pull/56048)
+* Fix - Remove decodeEntities from the product name used on cart & checkout [#56048](https://github.com/woocommerce/woocommerce/pull/56048)
 * Fix - Improved shortcode cart and checkout coupon notices by appending elements instead of text. [#56047](https://github.com/woocommerce/woocommerce/pull/56047)
 * Update - Replaced concatenated string-based HTML elements in JS with createElement(). [#56047](https://github.com/woocommerce/woocommerce/pull/56047)
 
