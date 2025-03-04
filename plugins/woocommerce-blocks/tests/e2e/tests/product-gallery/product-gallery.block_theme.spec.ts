@@ -37,7 +37,7 @@ const test = base.extend< { pageObject: ProductGalleryPage } >( {
 } );
 
 /**
- * Get the image id from the image element. Sometimes the image id is in the data-image-id attribute, sometimes in the id attribute.
+ * Get the image id from the image element.
  *
  * @param imgElement - The image element.
  * @return The image id.
