@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import * as navigation from '@woocommerce/navigation';
+
+/**
  * Internal dependencies
  */
 import { updateLinkHref } from '../controller';
@@ -75,5 +80,34 @@ describe( 'updateLinkHref', () => {
 		expect( item.href ).toBe(
 			`admin.php?page=wc-admin&path=${ encodedPath }&fruit=apple&dish=cobbler`
 		);
+	} );
+
+	it( 'should correctly manage browser history when clicked', () => {
+		const item = { href: REPORT_URL };
+		const spyGetHistory = jest.spyOn( navigation, 'getHistory' );
+		const mockPreventDefault = jest.fn();
+		const onclickParams = {
+			ctrlKey: true,
+			metaKey: true,
+			preventDefault: mockPreventDefault,
+		};
+
+		updateLinkHref( item, nextQuery, timeExcludedScreens );
+
+		item.onclick( onclickParams );
+		expect( spyGetHistory ).toHaveBeenCalledTimes( 0 );
+		expect( mockPreventDefault ).toHaveBeenCalledTimes( 0 );
+
+		item.onclick( { ...onclickParams, ctrlKey: false } );
+		expect( spyGetHistory ).toHaveBeenCalledTimes( 0 );
+		expect( mockPreventDefault ).toHaveBeenCalledTimes( 0 );
+
+		item.onclick( { ...onclickParams, metaKey: false } );
+		expect( spyGetHistory ).toHaveBeenCalledTimes( 0 );
+		expect( mockPreventDefault ).toHaveBeenCalledTimes( 0 );
+
+		item.onclick( { ...onclickParams, ctrlKey: false, metaKey: false } );
+		expect( spyGetHistory ).toHaveBeenCalledTimes( 1 );
+		expect( mockPreventDefault ).toHaveBeenCalledTimes( 1 );
 	} );
 } );
