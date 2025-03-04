@@ -11,7 +11,7 @@ import ApiClient, { WC_ADMIN_API_PATH } from './api-client';
  */
 
 export async function updateOnboardingProfile( data ) {
-	const apiClient = ApiClient.create();
+	const apiClient = ApiClient.getInstance();
 	const path = `${ WC_ADMIN_API_PATH }/onboarding/profile`;
 
 	const updateResponse = await apiClient.put( path, data );

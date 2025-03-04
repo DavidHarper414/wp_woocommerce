@@ -1,8 +1,9 @@
-const { test } = require( '../../../fixtures/block-editor-fixtures' );
-const { expect } = require( '@playwright/test' );
-
-const { clickOnTab } = require( '../../../utils/simple-products' );
-const { tags } = require( '../../../fixtures/fixtures' );
+/**
+ * Internal dependencies
+ */
+import { test, expect } from '../../../fixtures/fixtures.js';
+import { clickOnTab } from '../../../utils/simple-products';
+import { tags } from '../../../fixtures/fixtures';
 
 const NEW_EDITOR_ADD_PRODUCT_URL =
 	'wp-admin/admin.php?page=wc-admin&path=%2Fadd-product';

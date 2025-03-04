@@ -15,7 +15,7 @@ import ApiClient, { WP_API_PATH } from '../utils/api-client';
 
 export const test = baseTest.extend( {
 	restApi: async ( {}, use ) => {
-		await use( ApiClient.create() );
+		await use( ApiClient.getInstance() );
 	},
 
 	testPageTitlePrefix: [ '', { option: true } ],

@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import ApiClient, { WP_API_PATH } from '../utils/api-client';
+import ApiClient, { WC_API_PATH } from '../utils/api-client';
 
 const api = ApiClient.getInstance();
 
@@ -43,48 +43,48 @@ const update = {
 const get = {
 	coupons: async ( params ) => {
 		const response = await api
-			.get( `${ WP_API_PATH }/coupons`, params )
+			.get( `${ WC_API_PATH }/coupons`, params )
 			.then( ( r ) => r );
 
 		return response.data;
 	},
 	orders: async ( params ) => {
 		const response = await api
-			.get( `${ WP_API_PATH }/orders`, params )
+			.get( `${ WC_API_PATH }/orders`, params )
 			.then( ( r ) => r );
 
 		return response.data;
 	},
 	products: async ( params ) => {
 		const response = await api
-			.get( `${ WP_API_PATH }/products`, params )
+			.get( `${ WC_API_PATH }/products`, params )
 			.then( ( r ) => r );
 
 		return response.data;
 	},
 	productAttributes: async ( params ) => {
 		const response = await api
-			.get( `${ WP_API_PATH }/products/attributes`, params )
+			.get( `${ WC_API_PATH }/products/attributes`, params )
 			.then( ( r ) => r );
 
 		return response.data;
 	},
 	productCategories: async ( params ) => {
 		const response = await api
-			.get( `${ WP_API_PATH }/products/categories`, params )
+			.get( `${ WC_API_PATH }/products/categories`, params )
 			.then( ( r ) => r );
 
 		return response.data;
 	},
 	productTags: async ( params ) => {
 		const response = await api
-			.get( `${ WP_API_PATH }/products/tags`, params )
+			.get( `${ WC_API_PATH }/products/tags`, params )
 			.then( ( r ) => r );
 		return response.data;
 	},
 	shippingClasses: async ( params ) => {
 		const response = await api
-			.get( `${ WP_API_PATH }/products/shipping_classes`, params )
+			.get( `${ WC_API_PATH }/products/shipping_classes`, params )
 			.then( ( r ) => r );
 
 		return response.data;
@@ -92,7 +92,7 @@ const get = {
 
 	shippingZones: async ( params ) => {
 		const response = await api
-			.get( `${ WP_API_PATH }/shipping/zones`, params )
+			.get( `${ WC_API_PATH }/shipping/zones`, params )
 			.then( ( r ) => r );
 
 		return response.data;
@@ -100,14 +100,14 @@ const get = {
 
 	taxClasses: async () => {
 		const response = await api
-			.get( `${ WP_API_PATH }/taxes/classes` )
+			.get( `${ WC_API_PATH }/taxes/classes` )
 			.then( ( r ) => r );
 
 		return response.data;
 	},
 	taxRates: async ( params ) => {
 		const response = await api
-			.get( `${ WP_API_PATH }/taxes`, params )
+			.get( `${ WC_API_PATH }/taxes`, params )
 			.then( ( r ) => r );
 
 		return response.data;
@@ -116,13 +116,13 @@ const get = {
 
 const create = {
 	product: async ( product ) => {
-		const response = await api.post( `${ WP_API_PATH }/products`, product );
+		const response = await api.post( `${ WC_API_PATH }/products`, product );
 
 		return response.data.id;
 	},
 	shippingZone: async ( zone ) => {
 		const response = await api.post(
-			`${ WP_API_PATH }/shipping/zones`,
+			`${ WC_API_PATH }/shipping/zones`,
 			zone
 		);
 
@@ -130,7 +130,7 @@ const create = {
 	},
 	shippingMethod: async ( zoneId, method ) => {
 		const response = await api.post(
-			`${ WP_API_PATH }/shipping/zones/${ zoneId }/methods`,
+			`${ WC_API_PATH }/shipping/zones/${ zoneId }/methods`,
 			method
 		);
 
@@ -146,7 +146,7 @@ const create = {
 	 */
 	productVariations: async ( productId, variations ) => {
 		const response = await api.post(
-			`${ WP_API_PATH }/products/${ productId }/variations/batch`,
+			`${ WC_API_PATH }/products/${ productId }/variations/batch`,
 			{
 				create: variations,
 			}
@@ -159,25 +159,25 @@ const create = {
 const deletePost = {
 	coupons: async ( ids ) => {
 		const res = await api
-			.post( `${ WP_API_PATH }/coupons/batch`, { delete: ids } )
+			.post( `${ WC_API_PATH }/coupons/batch`, { delete: ids } )
 			.then( ( response ) => response );
 
 		return res.data;
 	},
 	product: async ( id ) => {
-		await api.delete( `${ WP_API_PATH }/products/${ id }`, {
+		await api.delete( `${ WC_API_PATH }/products/${ id }`, {
 			force: true,
 		} );
 	},
 	products: async ( ids ) => {
 		const res = await api
-			.post( `${ WP_API_PATH }/products/batch`, { delete: ids } )
+			.post( `${ WC_API_PATH }/products/batch`, { delete: ids } )
 			.then( ( response ) => response );
 		return res.data;
 	},
 	productAttributes: async ( id ) => {
 		const res = await api
-			.post( `${ WP_API_PATH }/products/attributes/batch`, {
+			.post( `${ WC_API_PATH }/products/attributes/batch`, {
 				delete: id,
 			} )
 			.then( ( response ) => response );
@@ -185,7 +185,7 @@ const deletePost = {
 	},
 	productCategories: async ( ids ) => {
 		const res = await api
-			.post( `${ WP_API_PATH }/products/categories/batch`, {
+			.post( `${ WC_API_PATH }/products/categories/batch`, {
 				delete: ids,
 			} )
 			.then( ( response ) => response );
@@ -193,24 +193,24 @@ const deletePost = {
 	},
 	productTags: async ( ids ) => {
 		const res = await api
-			.post( `${ WP_API_PATH }/products/tags/batch`, { delete: ids } )
+			.post( `${ WC_API_PATH }/products/tags/batch`, { delete: ids } )
 			.then( ( response ) => response );
 		return res.data;
 	},
 	order: async ( id ) => {
-		await api.delete( `${ WP_API_PATH }/orders/${ id }`, {
+		await api.delete( `${ WC_API_PATH }/orders/${ id }`, {
 			force: true,
 		} );
 	},
 	orders: async ( ids ) => {
 		const res = await api
-			.post( `${ WP_API_PATH }/orders/batch`, { delete: ids } )
+			.post( `${ WC_API_PATH }/orders/batch`, { delete: ids } )
 			.then( ( response ) => response );
 		return res.data;
 	},
 	shippingClasses: async ( ids ) => {
 		const res = await api
-			.post( `${ WP_API_PATH }/products/shipping_classes/batch`, {
+			.post( `${ WC_API_PATH }/products/shipping_classes/batch`, {
 				delete: ids,
 			} )
 			.then( ( response ) => response );
@@ -218,7 +218,7 @@ const deletePost = {
 	},
 	shippingZone: async ( id ) => {
 		const res = await api
-			.delete( `${ WP_API_PATH }/shipping/zones/${ id }`, {
+			.delete( `${ WC_API_PATH }/shipping/zones/${ id }`, {
 				force: true,
 			} )
 			.then( ( response ) => response );
@@ -226,7 +226,7 @@ const deletePost = {
 	},
 	taxClass: async ( slug ) => {
 		const res = await api
-			.delete( `${ WP_API_PATH }/taxes/classes/${ slug }`, {
+			.delete( `${ WC_API_PATH }/taxes/classes/${ slug }`, {
 				force: true,
 			} )
 			.then( ( response ) => response );
@@ -234,7 +234,7 @@ const deletePost = {
 	},
 	taxRates: async ( ids ) => {
 		const res = await api
-			.post( `${ WP_API_PATH }/taxes/batch`, { delete: ids } )
+			.post( `${ WC_API_PATH }/taxes/batch`, { delete: ids } )
 			.then( ( response ) => response );
 		return res.data;
 	},

@@ -3,7 +3,7 @@
  */
 import ApiClient, { WC_API_PATH } from './api-client';
 
-const apiClient = ApiClient.create();
+const apiClient = ApiClient.getInstance();
 
 function resolvePath( path ) {
 	return `${ WC_API_PATH }/settings/${ path }`.replace( /\/+/g, '/' );
