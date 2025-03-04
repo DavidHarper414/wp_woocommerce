@@ -133,7 +133,7 @@ class ProductGalleryLargeImage extends AbstractBlock {
 							data-wp-bind--src="context.image.src"
 							data-wp-bind--srcset="context.image.srcSet"
 							data-wp-bind--sizes="context.image.sizes"
-							data-wp-bind--id="context.image.id"
+							data-wp-bind--data-image-id="context.image.id"
 							data-wp-bind--tabindex="context.image.tabIndex"
 							data-wp-on--keydown="actions.onSelectedLargeImageKeyDown"
 							data-wp-class--wc-block-woocommerce-product-gallery-large-image__image--active-image-slide="context.image.isActive"

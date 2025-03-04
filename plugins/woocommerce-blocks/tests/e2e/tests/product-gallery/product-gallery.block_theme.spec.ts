@@ -43,12 +43,8 @@ const test = base.extend< { pageObject: ProductGalleryPage } >( {
  * @return The image id.
  */
 export const getImageId = async ( imgElement: Locator ) => {
-	const imageId = await imgElement.getAttribute( 'id' );
-	if ( imageId ) {
-		return imageId;
-	}
-
 	const dataImageId = await imgElement.getAttribute( 'data-image-id' );
+
 	if ( dataImageId ) {
 		return dataImageId;
 	}
