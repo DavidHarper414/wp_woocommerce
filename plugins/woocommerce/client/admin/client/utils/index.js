@@ -148,29 +148,57 @@ export const useFullScreen = ( classes ) => {
  * @param {string} [basePath=''] - Internal tracking for property paths.
  * @return {Proxy} A proxied object with deprecation warnings.
  */
-export function createDeprecatedObjectProxy( obj, messages, basePath = '' ) {
+export function createDeprecatedPropertiesProxy(
+	obj,
+	messages,
+	basePath = ''
+) {
+	// If not a plain object or array, return as is
+	if ( typeof obj !== 'object' || obj === null ) {
+		return obj;
+	}
+
 	return new Proxy( obj, {
 		get( target, prop, receiver ) {
-			const nextPath = basePath ? `${ basePath }.${ prop }` : prop;
+			const value = Reflect.get( target, prop, receiver );
 
-			// Retrieve the deprecation message (if exists)
-			const deprecationMessage = nextPath
-				.split( '.' )
-				.reduce( ( acc, key ) => {
-					return acc && typeof acc === 'object'
-						? acc[ key ]
-						: undefined;
-				}, messages );
-
-			if ( typeof deprecationMessage === 'string' ) {
-				console.warn( deprecationMessage ); // eslint-disable-line no-console
+			// Handle array methods and properties
+			if (
+				Array.isArray( target ) &&
+				( prop === 'length' || prop === Symbol.iterator )
+			) {
+				return value;
 			}
 
-			const value = Reflect.get( target, prop, receiver );
+			let nextPath = basePath;
+
+			// Only handle deprecation warnings for string, number, and boolean property names
+			if (
+				typeof prop === 'string' ||
+				typeof prop === 'number' ||
+				typeof prop === 'boolean'
+			) {
+				nextPath = basePath
+					? `${ basePath }.${ String( prop ) }`
+					: String( prop );
+
+				// Retrieve the deprecation message (if exists)
+				const deprecationMessage = nextPath
+					.split( '.' )
+					.reduce( ( acc, key ) => {
+						return acc && typeof acc === 'object'
+							? acc[ key ]
+							: undefined;
+					}, messages );
+
+				if ( typeof deprecationMessage === 'string' ) {
+					console.warn( deprecationMessage ); // eslint-disable-line no-console
+				}
+			}
 
 			// Recursively wrap objects to maintain deprecation checks
 			return value && typeof value === 'object'
-				? createDeprecatedObjectProxy( value, messages, nextPath )
+				? createDeprecatedPropertiesProxy( value, messages, nextPath )
 				: value;
 		},
 	} );
