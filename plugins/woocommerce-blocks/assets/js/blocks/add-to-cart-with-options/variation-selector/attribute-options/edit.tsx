@@ -30,17 +30,17 @@ function Pills( {
 	return (
 		<ul
 			id={ id }
-			className="wp-block-woocommerce-add-to-cart-with-options-variation-selector-attribute-options__pills"
+			className="wc-block-add-to-cart-with-options-variation-selector-attribute-options__pills"
 		>
 			{ options.map( ( option, index ) => (
 				<li
 					key={ option.value }
 					className={ clsx(
-						'wp-block-woocommerce-add-to-cart-with-options-variation-selector-attribute-options__pill',
+						'wc-block-add-to-cart-with-options-variation-selector-attribute-options__pill',
 						{
-							'wp-block-woocommerce-add-to-cart-with-options-variation-selector-attribute-options__pill--selected':
+							'wc-block-add-to-cart-with-options-variation-selector-attribute-options__pill--selected':
 								index === 0,
-							'wp-block-woocommerce-add-to-cart-with-options-variation-selector-attribute-options__pill--disabled':
+							'wc-block-add-to-cart-with-options-variation-selector-attribute-options__pill--disabled':
 								option.disabled,
 						}
 					) }
@@ -104,7 +104,7 @@ export default function AttributeOptionsEdit(
 				<Disabled>
 					<select
 						id={ attribute.taxonomy }
-						className="wp-block-woocommerce-add-to-cart-with-options-variation-selector-attribute-options__dropdown"
+						className="wc-block-add-to-cart-with-options-variation-selector-attribute-options__dropdown"
 					>
 						{ options.map( ( option ) => (
 							<option key={ option.value } value={ option.value }>
