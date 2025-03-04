@@ -92,7 +92,7 @@ class BlockEmailRenderer {
 	public function get_email_post_by_wc_email( \WC_Email $email ): ?\WP_Post {
 		$args = array(
 			'post_type'      => Integration::EMAIL_POST_TYPE,
-			'title'          => $email->id,
+			'name'           => $email->id,
 			'post_status'    => 'draft', // Temporarily use draft status we will change it to publish or custom active later.
 			'posts_per_page' => 1,
 		);

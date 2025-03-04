@@ -53,7 +53,8 @@ class BlockEmailRendererTest extends \WC_Unit_Test_Case {
 
 		$this->email_post = $this->factory()->post->create_and_get(
 			array(
-				'post_title'   => 'test_email',
+				'post_title'   => 'Test email',
+				'post_name'    => 'test_email',
 				'post_type'    => Integration::EMAIL_POST_TYPE,
 				'post_content' => $this->email_post_content,
 				'post_status'  => 'draft',
