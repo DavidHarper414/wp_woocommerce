@@ -369,7 +369,7 @@ class WC_Shipping {
 						continue;
 					}
 
-					if ( 'local_pickup' === $rate->method_id ) {
+					if ( in_array( $rate->method_id, array( 'local_pickup', 'pickup_location' ), true ) ) {
 						$local_pickup[] = $rate;
 					}
 				}
