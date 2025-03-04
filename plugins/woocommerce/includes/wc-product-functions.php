@@ -19,7 +19,7 @@ use Automattic\WooCommerce\Proxies\LegacyProxy;
 use Automattic\WooCommerce\Utilities\ArrayUtil;
 use Automattic\WooCommerce\Utilities\NumberUtil;
 use Automattic\WooCommerce\Internal\ProductImage\MatchImageBySKU;
-use Automattic\WooCommerce\Internal\Admin\ProductDownloadsPreview.php
+use Automattic\WooCommerce\Internal\Admin\ProductDownloadsPreview;
 
 defined( 'ABSPATH' ) || exit;
 
