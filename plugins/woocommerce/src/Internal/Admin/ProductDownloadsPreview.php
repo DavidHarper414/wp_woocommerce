@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * Class for handling secure admin previews of downloadable product files
  * that would otherwise be inaccessible due to server security configurations.
  *
- * @since x.x.x
+ * @since 9.9.0
  */
 class ProductDownloadsPreview implements RegisterHooksInterface {
 
@@ -34,7 +34,7 @@ class ProductDownloadsPreview implements RegisterHooksInterface {
 	 * @param string $size          Image size.
 	 * @return string Secure admin image URL.
 	 *
-	 * @since x.x.x
+	 * @since 9.9.0
 	 */
 	public function get_admin_image_src_url( $product_id, $attachment_id, $size ) {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
@@ -55,7 +55,7 @@ class ProductDownloadsPreview implements RegisterHooksInterface {
 	/**
 	 * Serve image directly with appropriate headers for src attributes
 	 *
-	 * @since x.x.x
+	 * @since 9.9.0
 	 */
 	public function serve_admin_image_src() {
 		if ( ! isset( $_GET['wc-uploads-image-src'] )
