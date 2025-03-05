@@ -2754,43 +2754,46 @@ function _wc_delete_transients( $transients ) {
 				);
 			}
 
-			// Use a single query for better performance.
-			$wpdb->query(
-				$wpdb->prepare(
-					'DELETE FROM ' . $wpdb->options . ' WHERE option_name IN ( ' . implode( ', ', array_fill( 0, count( $options_to_clear ), '%s' ) ) . ' )',
-					$options_to_clear
-				)
-			);
+			if ( ! empty( $options_to_clear ) ) {
+				// Use a single query for better performance.
+				$wpdb->query(
+					$wpdb->prepare(
+						'DELETE FROM ' . $wpdb->options . ' WHERE option_name IN ( ' . implode( ', ', array_fill( 0, count( $options_to_clear ), '%s' ) ) . ' )',
+						$options_to_clear
+					)
+				);
 
-			// Lets clear our options data from the cache.
-			// We can batch delete if available, introduced in WP 6.0.0.
-			if ( ! wp_installing() && ! empty( $options_to_clear ) ) {
-				if ( function_exists( 'wp_cache_delete_multiple' ) ) {
-					wp_cache_delete_multiple( $options_to_clear, 'options' );
-				} else {
-					foreach ( $options_to_clear as $option_name ) {
-						wp_cache_delete( $option_name, 'options' );
-					}
-				}
-
-				// Also update alloptions cache if needed.
-				// This is required to prevent phantom transients from being returned.
-				$alloptions         = wp_load_alloptions( true );
-				$updated_alloptions = false;
-
-				if ( is_array( $alloptions ) ) {
-					foreach ( $options_to_clear as $option_name ) {
-						if ( isset( $alloptions[ $option_name ] ) ) {
-							unset( $alloptions[ $option_name ] );
-							$updated_alloptions = true;
+				// Lets clear our options data from the cache.
+				// We can batch delete if available, introduced in WP 6.0.0.
+				if ( ! wp_installing() ) {
+					if ( function_exists( 'wp_cache_delete_multiple' ) ) {
+						wp_cache_delete_multiple( $options_to_clear, 'options' );
+					} else {
+						foreach ( $options_to_clear as $option_name ) {
+							wp_cache_delete( $option_name, 'options' );
 						}
 					}
-
-					if ( $updated_alloptions ) {
-						wp_cache_set( 'alloptions', $alloptions, 'options' );
+	
+					// Also update alloptions cache if needed.
+					// This is required to prevent phantom transients from being returned.
+					$alloptions         = wp_load_alloptions( true );
+					$updated_alloptions = false;
+	
+					if ( is_array( $alloptions ) ) {
+						foreach ( $options_to_clear as $option_name ) {
+							if ( isset( $alloptions[ $option_name ] ) ) {
+								unset( $alloptions[ $option_name ] );
+								$updated_alloptions = true;
+							}
+						}
+	
+						if ( $updated_alloptions ) {
+							wp_cache_set( 'alloptions', $alloptions, 'options' );
+						}
 					}
 				}
 			}
+
 
 			return true;
 		} catch ( Exception $e ) {
