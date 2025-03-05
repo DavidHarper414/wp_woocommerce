@@ -25,6 +25,10 @@ describe( 'updateLinkHref', () => {
 		dish: 'cobbler',
 	};
 
+	beforeEach( () => {
+		jest.restoreAllMocks();
+	} );
+
 	it( 'should update report urls', () => {
 		const item = { href: REPORT_URL };
 		updateLinkHref( item, nextQuery, timeExcludedScreens );
@@ -82,32 +86,51 @@ describe( 'updateLinkHref', () => {
 		);
 	} );
 
-	it( 'should correctly manage browser history when clicked', () => {
+	it( 'should not prevent default when Command key is pressed', () => {
 		const item = { href: REPORT_URL };
 		const spyGetHistory = jest.spyOn( navigation, 'getHistory' );
-		const mockPreventDefault = jest.fn();
-		const onclickParams = {
-			ctrlKey: true,
+		const event = {
+			ctrlKey: false,
 			metaKey: true,
-			preventDefault: mockPreventDefault,
+			preventDefault: jest.fn(),
 		};
 
 		updateLinkHref( item, nextQuery, timeExcludedScreens );
 
-		item.onclick( onclickParams );
-		expect( spyGetHistory ).toHaveBeenCalledTimes( 0 );
-		expect( mockPreventDefault ).toHaveBeenCalledTimes( 0 );
+		item.onclick( event );
+		expect( spyGetHistory ).not.toHaveBeenCalled();
+		expect( event.preventDefault ).not.toHaveBeenCalled();
+	} );
 
-		item.onclick( { ...onclickParams, ctrlKey: false } );
-		expect( spyGetHistory ).toHaveBeenCalledTimes( 0 );
-		expect( mockPreventDefault ).toHaveBeenCalledTimes( 0 );
+	it( 'should not prevent default when Control key is pressed', () => {
+		const item = { href: REPORT_URL };
+		const spyGetHistory = jest.spyOn( navigation, 'getHistory' );
+		const event = {
+			ctrlKey: true,
+			metaKey: false,
+			preventDefault: jest.fn(),
+		};
 
-		item.onclick( { ...onclickParams, metaKey: false } );
-		expect( spyGetHistory ).toHaveBeenCalledTimes( 0 );
-		expect( mockPreventDefault ).toHaveBeenCalledTimes( 0 );
+		updateLinkHref( item, nextQuery, timeExcludedScreens );
 
-		item.onclick( { ...onclickParams, ctrlKey: false, metaKey: false } );
+		item.onclick( event );
+		expect( spyGetHistory ).not.toHaveBeenCalled();
+		expect( event.preventDefault ).not.toHaveBeenCalled();
+	} );
+
+	it( 'should prevent default on normal clicks', () => {
+		const item = { href: REPORT_URL };
+		const spyGetHistory = jest.spyOn( navigation, 'getHistory' );
+		const event = {
+			ctrlKey: false,
+			metaKey: false,
+			preventDefault: jest.fn(),
+		};
+
+		updateLinkHref( item, nextQuery, timeExcludedScreens );
+
+		item.onclick( event );
 		expect( spyGetHistory ).toHaveBeenCalledTimes( 1 );
-		expect( mockPreventDefault ).toHaveBeenCalledTimes( 1 );
+		expect( event.preventDefault ).toHaveBeenCalledTimes( 1 );
 	} );
 } );
