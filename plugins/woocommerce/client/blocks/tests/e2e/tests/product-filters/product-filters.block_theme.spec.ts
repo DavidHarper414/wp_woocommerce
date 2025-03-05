@@ -65,17 +65,13 @@ test.describe( `${ blockData.name }`, () => {
 		);
 		await expect( block ).toBeVisible();
 
-		const activeFilterBlock = block.getByLabel(
-			'Block: Active'
-		);
+		const activeFilterBlock = block.getByLabel( 'Block: Active' );
 		await expect( activeFilterBlock ).toBeVisible();
 
 		const colorHeading = block.getByText( 'Color', {
 			exact: true,
 		} );
-		const colorFilterBlock = block.getByLabel(
-			'Block: Color'
-		);
+		const colorFilterBlock = block.getByLabel( 'Block: Color' );
 		const expectedColorFilterOptions = [
 			'Blue',
 			'Green',
