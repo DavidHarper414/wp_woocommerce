@@ -20,6 +20,7 @@ export interface ProductGalleryContext {
 	touchCurrentX: number;
 	isDragging: boolean;
 	userHasInteracted: boolean;
+	largeImageBlockHeight: string;
 	imageData: {
 		id: string;
 		src: string;
@@ -413,6 +414,26 @@ const productGallery = {
 					selectedImage.focus();
 				}
 			}
+		},
+		watchLargeImageBlockHeight: () => {
+			const element = document.querySelector(
+				'.wp-block-woocommerce-product-gallery-large-image'
+			) as HTMLElement;
+
+			if ( ! element ) {
+				return;
+			}
+
+			const parentGroup = element.closest(
+				'.wp-block-group'
+			) as HTMLElement;
+
+			if ( ! parentGroup ) {
+				return;
+			}
+
+			const context = getContext();
+			context.largeImageBlockHeight = parentGroup.offsetHeight + 'px';
 		},
 	},
 };
