@@ -17,7 +17,7 @@ export const Edit = ( {
 	setAttributes,
 }: BlockEditProps< ProductGalleryThumbnailsBlockAttributes > ) => {
 	const blockProps = useBlockProps( {
-		className: `wc-block-product-gallery-thumbnails wc-block-product-gallery-thumbnails--number-of-thumbnails-${ attributes.numberOfThumbnails }`,
+		className: `wc-block-product-gallery-thumbnails`,
 	} );
 
 	return (
@@ -30,22 +30,21 @@ export const Edit = ( {
 					/>
 				</PanelBody>
 			</InspectorControls>
-			{ [ ...Array( attributes.numberOfThumbnails ).keys() ].map(
-				( index ) => {
-					return (
-						<div
-							className="wc-block-product-gallery-thumbnails__thumbnail"
-							key={ index }
-						>
-							<img
-								className="wc-block-product-gallery-thumbnails__image"
-								src={ `${ WC_BLOCKS_IMAGE_URL }block-placeholders/product-image-gallery.svg` }
-								alt=""
-							/>
-						</div>
-					);
-				}
-			) }
+			{ /* Show 4 thumbnails so that we showcase the scroll effect. */ }
+			{ [ ...Array( 4 ).keys() ].map( ( index ) => (
+				<div
+					className="wc-block-product-gallery-thumbnails__thumbnail"
+					key={ index }
+				>
+					<img
+						className="wc-block-product-gallery-thumbnails__image"
+						src={ `${ WC_BLOCKS_IMAGE_URL }block-placeholders/product-image-gallery.svg` }
+						alt=""
+						width={ attributes.thumbnailSize }
+						height={ attributes.thumbnailSize }
+					/>
+				</div>
+			) ) }
 		</div>
 	);
 };

@@ -11,9 +11,9 @@
 	"textdomain": "woocommerce",
 	"ancestor": [ "woocommerce/product-gallery" ],
 	"attributes": {
-		"numberOfThumbnails": {
-			"type": "number",
-			"default": 3
+		"thumbnailSize": {
+			"type": "string",
+			"default": "115px"
 		}
 	},
 	"supports": {

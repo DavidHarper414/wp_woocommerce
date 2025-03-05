@@ -2,7 +2,10 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { RangeControl } from '@wordpress/components';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - Ignoring because `__experimentalUnitControl` is not yet in the type definitions.
+// eslint-disable-next-line @wordpress/no-unsafe-wp-apis, @woocommerce/dependency-group
+import { __experimentalUnitControl as UnitControl } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -13,26 +16,23 @@ export const ProductGalleryThumbnailsBlockSettings = ( {
 	attributes,
 	setAttributes,
 }: ProductGalleryThumbnailsSettingsProps ) => {
-	const maxNumberOfThumbnails = 8;
-	const minNumberOfThumbnails = 3;
-	const { numberOfThumbnails } = attributes;
+	const { thumbnailSize } = attributes;
 
 	return (
-		<RangeControl
-			label={ __( 'Number of Thumbnails', 'woocommerce' ) }
-			value={ numberOfThumbnails }
-			onChange={ ( value: number ) =>
+		<UnitControl
+			label={ __( 'Thumbnail Size', 'woocommerce' ) }
+			value={ thumbnailSize }
+			onChange={ ( value: string | undefined ) =>
 				setAttributes( {
-					numberOfThumbnails: Math.round( value ),
+					thumbnailSize: value || '115px', // The current default size.
 				} )
 			}
-			help={ __(
-				'Choose how many thumbnails (3-8) will display. If more images exist, a “View all” button will display.',
-				'woocommerce'
-			) }
-			max={ maxNumberOfThumbnails }
-			min={ minNumberOfThumbnails }
-			step={ 1 }
+			units={ [ { value: 'px', label: 'px' } ] }
+			min={ 10 }
+			max={ 300 }
+			step={ 10 }
+			size="default"
+			__next36pxDefaultSize
 		/>
 	);
 };

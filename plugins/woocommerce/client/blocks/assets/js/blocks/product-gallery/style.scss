@@ -150,7 +150,7 @@ $dialog-padding: 20px;
 		cursor: pointer;
 		max-width: 100%;
 		aspect-ratio: 1 / 1;
-		object-fit: contain;
+		object-fit: cover;
 	}
 
 	&__thumbnail {
