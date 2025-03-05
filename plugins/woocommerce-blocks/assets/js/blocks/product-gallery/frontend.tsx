@@ -9,6 +9,11 @@ import {
 } from '@wordpress/interactivity';
 import type { StorePart } from '@woocommerce/utils';
 
+/**
+ * Internal dependencies
+ */
+import type { ImageDataObject } from './types';
+
 export interface ProductGalleryContext {
 	selectedImageId: string;
 	imageIds: string[];
@@ -20,12 +25,7 @@ export interface ProductGalleryContext {
 	touchCurrentX: number;
 	isDragging: boolean;
 	userHasInteracted: boolean;
-	imageData: {
-		id: string;
-		src: string;
-		srcSet: string;
-		sizes: string;
-	}[];
+	imageData: ImageDataObject;
 }
 
 const getContext = ( ns?: string ) =>
@@ -110,26 +110,32 @@ const productGallery = {
 				selectedImageId
 			);
 
-			return imageData.map( ( image, index ) => {
-				const isActive = selectedImageNumber === index + 1;
-				const tabIndex = isActive ? '0' : '-1';
+			const allProductImages = imageData?.all_images || [];
 
-				if ( ! userHasInteracted && index >= 2 ) {
-					// Return a copy with empty src and srcSet for images beyond the first two
+			const processedImageData = allProductImages.map(
+				( image, index ) => {
+					const isActive = selectedImageNumber === index + 1;
+					const tabIndex = isActive ? '0' : '-1';
+
+					if ( ! userHasInteracted && index >= 2 ) {
+						// Return a copy with empty src and srcSet for images beyond the first two
+						return {
+							...image,
+							isActive,
+							tabIndex,
+							src: '',
+							src_set: '',
+						};
+					}
 					return {
 						...image,
 						isActive,
 						tabIndex,
-						src: '',
-						srcSet: '',
 					};
 				}
-				return {
-					...image,
-					isActive,
-					tabIndex,
-				};
-			} );
+			);
+
+			return processedImageData;
 		},
 	},
 	actions: {
@@ -150,8 +156,9 @@ const productGallery = {
 			context.disableRight = disableRight;
 
 			const { imageData } = context;
+			const allProductImages = imageData?.all_images || [];
 			const imageIndex = newImageNumber - 1;
-			const imageId = imageData[ imageIndex ].id;
+			const imageId = allProductImages[ imageIndex ].id;
 			context.selectedImageId = imageId;
 			if ( imageIndex !== -1 ) {
 				scrollImageIntoView( imageId );

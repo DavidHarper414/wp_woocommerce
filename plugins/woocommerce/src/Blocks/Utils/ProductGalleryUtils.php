@@ -15,17 +15,77 @@ class ProductGalleryUtils {
 	 * @return array An array of image data for the product gallery.
 	 */
 	public static function get_product_gallery_image_data( $product ) {
-		$image_data = array();
-		$image_ids  = self::get_product_gallery_image_ids( $product );
+		$image_data = array(
+			// Images specifically added to the gallery.
+			'gallery_images'   => array(),
+			// Images that are variations of the product. These may not exist in the gallery.
+			'variation_images' => array(),
+			// All images for the product.
+			'all_images'       => array(),
+		);
+
+		$gallery_image_ids           = self::get_product_gallery_image_ids( $product );
+		$product_variation_image_ids = self::get_product_variation_image_ids( $product );
+
+		$image_data['gallery_images']   = self::get_image_src_data( $gallery_image_ids );
+		$image_data['variation_images'] = self::get_image_src_data( $product_variation_image_ids );
+
+		$all_images    = array_merge( $image_data['gallery_images'], $image_data['variation_images'] );
+		$unique_images = array();
+		$seen_ids      = array();
+		foreach ( $all_images as $image ) {
+			if ( ! isset( $seen_ids[ $image['id'] ] ) ) {
+				$unique_images[]          = $image;
+				$seen_ids[ $image['id'] ] = true;
+			}
+		}
+		$image_data['all_images'] = $unique_images;
+
+		return $image_data;
+	}
+
+	/**
+	 * Get the product variation image data.
+	 *
+	 * @param \WC_Product $product The product object to retrieve the variation images for.
+	 * @return array An array of image data for the product variation images.
+	 */
+	public static function get_product_variation_image_ids( $product ) {
+		$variation_image_ids = array();
+
+		if ( $product->is_type( 'variable' ) ) {
+			$variations = $product->get_children();
+			foreach ( $variations as $variation_id ) {
+				$variation = wc_get_product( $variation_id );
+				if ( $variation ) {
+					$variation_image_id = $variation->get_image_id();
+					if ( ! empty( $variation_image_id ) && ! in_array( strval( $variation_image_id ), $variation_image_ids, true ) ) {
+						$variation_image_ids[] = strval( $variation_image_id );
+					}
+				}
+			}
+		}
+
+		return $variation_image_ids;
+	}
+
+	/**
+	 * Get the image source data.
+	 *
+	 * @param array $image_ids The image IDs to retrieve the source data for.
+	 * @return array An array of image source data.
+	 */
+	public static function get_image_src_data( $image_ids ) {
+		$image_src_data = array();
 
 		foreach ( $image_ids as $image_id ) {
 			if ( '0' === $image_id ) {
 				// Handle placeholder image.
-				$image_data[] = array(
-					'id'     => '0',
-					'src'    => wc_placeholder_img_src(),
-					'srcSet' => '',
-					'sizes'  => '',
+				$image_src_data[] = array(
+					'id'      => '0',
+					'src'     => wc_placeholder_img_src(),
+					'src_set' => '',
+					'sizes'   => '',
 				);
 				continue;
 			}
@@ -37,15 +97,15 @@ class ProductGalleryUtils {
 			$srcset = wp_get_attachment_image_srcset( $image_id, 'full' );
 			$sizes  = wp_get_attachment_image_sizes( $image_id, 'full' );
 
-			$image_data[] = array(
-				'id'     => $image_id,
-				'src'    => $full_src ? $full_src[0] : '',
-				'srcSet' => $srcset ? $srcset : '',
-				'sizes'  => $sizes ? $sizes : '',
+			$image_src_data[] = array(
+				'id'      => $image_id,
+				'src'     => $full_src ? $full_src[0] : '',
+				'src_set' => $srcset ? $srcset : '',
+				'sizes'   => $sizes ? $sizes : '',
 			);
 		}
 
-		return $image_data;
+		return $image_src_data;
 	}
 
 	/**
