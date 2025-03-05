@@ -7,7 +7,7 @@
 	}
 
 	.wc-block-components-review-list-item__info {
-		margin-bottom: calc($gap-large + .25em);
+		margin-bottom: calc($gap-large + 0.25em);
 
 		.wc-block-components-review-list-item__image {
 			@include placeholder();
@@ -22,14 +22,14 @@
 				@include placeholder();
 				@include font-size(regular);
 				@include force-content();
-				margin: .25em #{$gap * 0.5} .25em 0;
+				margin: 0.25em #{$gap * 0.5} 0.25em 0;
 				width: 5em;
 			}
 
 			.wc-block-components-review-list-item__product {
 				@include placeholder();
 				@include force-content();
-				margin: .25em 0;
+				margin: 0.25em 0;
 				width: 6em;
 			}
 
@@ -44,7 +44,7 @@
 			@include placeholder();
 			@include force-content();
 			height: 1em;
-			margin: .25em 0;
+			margin: 0.25em 0;
 			width: 7em;
 		}
 	}
