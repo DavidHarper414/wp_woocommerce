@@ -939,7 +939,7 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 				.check();
 
 			// Check that contact and order fields are persisted
-			await checkoutPageObject.page.waitForRequest(
+			await checkoutPageObject.page.waitForResponse(
 				'**/wc/store/v1/checkout**'
 			);
 
