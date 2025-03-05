@@ -26,7 +26,13 @@ class Utils {
 		$use_global_query = ( isset( $block->context['query']['inherit'] ) && $block->context['query']['inherit'] );
 		if ( $use_global_query ) {
 			global $wp_query;
-			$query = clone $wp_query;
+			$query                  = clone $wp_query;
+			$block_posts_per_page   = isset( $block->context['query'] ) && isset( $block->context['query']['perPage'] ) ? $block->context['query']['perPage'] : null;
+			$default_posts_per_page = $query->get( 'posts_per_page' );
+			if ( is_int( $block_posts_per_page ) && $block_posts_per_page !== $default_posts_per_page ) {
+				$query->set( 'posts_per_page', $block_posts_per_page );
+				$query->query( $query->query_vars );
+			}
 		} else {
 			$query_args = build_query_vars_from_query_block( $block, $page );
 			$query      = new WP_Query( $query_args );

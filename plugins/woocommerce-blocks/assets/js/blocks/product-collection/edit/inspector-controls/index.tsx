@@ -177,9 +177,7 @@ const ProductCollectionInspectorControls = (
 				) }
 				<LayoutOptionsControl { ...displayControlProps } />
 				<WidthOptionsControl { ...dimensionsControlProps } />
-				{ showProductsPerPageControl && (
-					<ProductsPerPageControl { ...queryControlProps } />
-				) }
+				<ProductsPerPageControl { ...queryControlProps } />
 				<ColumnsControl { ...displayControlProps } />
 				{ showOffsetControl && (
 					<OffsetControl { ...queryControlProps } />
