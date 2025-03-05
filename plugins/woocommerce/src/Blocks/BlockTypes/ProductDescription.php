@@ -1,0 +1,30 @@
+<?php
+declare(strict_types=1);
+namespace Automattic\WooCommerce\Blocks\BlockTypes;
+
+/**
+ * BlockifiedProductDetails class.
+ */
+class ProductDescription extends AbstractBlock {
+	/**
+	 * Block name.
+	 *
+	 * @var string
+	 */
+	protected $block_name = 'product-description';
+
+
+	/**
+	 * Render the block.
+	 *
+	 * @param array    $attributes Block attributes.
+	 * @param string   $content Block content.
+	 * @param WP_Block $block Block instance.
+	 *
+	 * @return string Rendered block output.
+	 */
+	protected function render( $attributes, $content, $block ) {
+		return $content;
+	}
+}
+

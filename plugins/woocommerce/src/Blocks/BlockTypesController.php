@@ -474,6 +474,7 @@ final class BlockTypesController {
 			'ReviewsByProduct',
 			'RelatedProducts',
 			'ProductDetails',
+			'ProductDescription',
 			'SingleProduct',
 			'StockFilter',
 			'PageContentWrapper',

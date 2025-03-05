@@ -65,6 +65,10 @@ const blocks = {
 		isExperimental: true,
 		customDir: 'product-details',
 	},
+	'product-description': {
+		isExperimental: true,
+		customDir: 'product-description',
+	},
 	'catalog-sorting': {},
 	'coming-soon': {},
 	'customer-account': {},
