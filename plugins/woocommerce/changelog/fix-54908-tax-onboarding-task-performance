@@ -1,4 +1,4 @@
 Significance: minor
 Type: performance
 
-Added caching to Tax Onboarding Task. Deprecated OnboardingTasks\Task::possibly_track_completion().
+Added caching to Tax Onboarding Task.
