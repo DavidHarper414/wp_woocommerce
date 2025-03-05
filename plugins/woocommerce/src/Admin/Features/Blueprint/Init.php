@@ -163,6 +163,7 @@ class Init {
 							'id'          => $exporter instanceof HasAlias ? $exporter->get_alias() : $exporter->get_step_name(),
 							'label'       => $exporter->get_label(),
 							'description' => $exporter->get_description(),
+							'checked'     => true,
 						);
 					},
 					$this->get_woo_exporters()
