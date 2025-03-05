@@ -87,7 +87,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 					$notification->save();
 					$notification->add_event( 'aborted' );
 				} catch ( Exception $e ) {
-					WC_BIS()->log( $e->getMessage(), 'error', 'wc_bis_logs' );
+					wc_get_logger()->error( $e->getMessage(), array( 'source' => 'wc_bis_logs' ) );
 				}
 
 				return;
@@ -115,7 +115,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 						$notification->save();
 						$notification->add_event( 'aborted' );
 					} catch ( Exception $e ) {
-						WC_BIS()->log( $e->getMessage(), 'error', 'wc_bis_logs' );
+						wc_get_logger()->error( $e->getMessage(), array( 'source' => 'wc_bis_logs' ) );
 					}
 
 					return;
@@ -141,7 +141,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 					$notification->save();
 
 				} catch ( Exception $e ) {
-					WC_BIS()->log( $e->getMessage(), 'error', 'wc_bis_logs' );
+					wc_get_logger()->error( $e->getMessage(), array( 'source' => 'wc_bis_logs' ) );
 				}
 			}
 
@@ -207,7 +207,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 					$notification->save();
 					$notification->add_event( 'aborted' );
 				} catch ( Exception $e ) {
-					WC_BIS()->log( $e->getMessage(), 'error', 'wc_bis_logs' );
+					wc_get_logger()->error( $e->getMessage(), array( 'source' => 'wc_bis_logs' ) );
 				}
 
 				return;
@@ -227,7 +227,7 @@ if ( ! class_exists( 'WC_BIS_Email_Notification_Received', false ) ) :
 					$notification->save();
 
 				} catch ( Exception $e ) {
-					WC_BIS()->log( $e->getMessage(), 'error', 'wc_bis_logs' );
+					wc_get_logger()->error( $e->getMessage(), array( 'source' => 'wc_bis_logs' ) );
 				}
 			}
 
