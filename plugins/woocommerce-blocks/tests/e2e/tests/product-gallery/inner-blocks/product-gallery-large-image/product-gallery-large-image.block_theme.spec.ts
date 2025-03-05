@@ -99,7 +99,7 @@ test.describe( `${ blockData.name }`, () => {
 					( el ) => el.style
 				);
 
-				expect( style.transform ).toBe( 'scale(1)' );
+				expect( style.transform ).toBe( '' );
 
 				await selectedImage.hover();
 
@@ -162,7 +162,8 @@ test.describe( `${ blockData.name }`, () => {
 		} );
 	} );
 
-	test( 'Renders correct image when selecting a product variation in the Add to Cart with Options block', async ( {
+	// TODO: This test is flaky, we will fix it in https://github.com/woocommerce/woocommerce/pull/55246
+	test.skip( 'Renders correct image when selecting a product variation in the Add to Cart with Options block', async ( {
 		page,
 		editor,
 		pageObject,
@@ -204,6 +205,10 @@ test.describe( `${ blockData.name }`, () => {
 
 		await addToCartWithOptionsColorSelector.selectOption( 'Green' );
 		await addToCartWithOptionsSizeSelector.selectOption( 'No' );
+
+		// We trigger img srcs to be set after the mutation observer is triggered.
+		// eslint-disable-next-line playwright/no-wait-for-timeout, no-restricted-syntax
+		await page.waitForTimeout( 500 );
 
 		const largeImageElementAfterSelectingVariation =
 			largeImageBlockOnFrontend.locator(

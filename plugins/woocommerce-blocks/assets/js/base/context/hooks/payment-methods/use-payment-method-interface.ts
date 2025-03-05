@@ -9,13 +9,14 @@ import PaymentMethodIcons from '@woocommerce/base-components/cart-checkout/payme
 import { getSetting } from '@woocommerce/settings';
 import deprecated from '@wordpress/deprecated';
 import LoadingMask from '@woocommerce/base-components/loading-mask';
-import type { PaymentMethodInterface } from '@woocommerce/types';
+import { type PaymentMethodInterface, responseTypes } from '@woocommerce/types';
 import { useSelect, useDispatch } from '@wordpress/data';
 import {
 	checkoutStore,
 	paymentStore,
-	CART_STORE_KEY,
+	cartStore,
 } from '@woocommerce/block-data';
+import { checkoutEvents } from '@woocommerce/blocks-checkout-events';
 import { ValidationInputError } from '@woocommerce/blocks-components';
 
 /**
@@ -23,7 +24,7 @@ import { ValidationInputError } from '@woocommerce/blocks-components';
  */
 import { useStoreCart } from '../cart/use-store-cart';
 import { useStoreCartCoupons } from '../cart/use-store-cart-coupons';
-import { noticeContexts, responseTypes } from '../../event-emit';
+import { noticeContexts } from '../../event-emit';
 import { useCheckoutEventsContext } from '../../providers/cart-checkout/checkout-events';
 import { usePaymentEventsContext } from '../../providers/cart-checkout/payment-events';
 import { useShippingDataContext } from '../../providers/cart-checkout/shipping';
@@ -40,10 +41,10 @@ export const usePaymentMethodInterface = (): PaymentMethodInterface => {
 		onCheckoutAfterProcessingWithSuccess,
 		onCheckoutAfterProcessingWithError,
 		onSubmit,
-		onCheckoutSuccess,
-		onCheckoutFail,
-		onCheckoutValidation,
 	} = useCheckoutEventsContext();
+
+	const { onCheckoutValidation, onCheckoutSuccess, onCheckoutFail } =
+		checkoutEvents;
 
 	const { isCalculating, isComplete, isIdle, isProcessing, customerId } =
 		useSelect( ( select ) => {
@@ -132,9 +133,9 @@ export const usePaymentMethodInterface = (): PaymentMethodInterface => {
 	} = useShippingData();
 
 	const { billingAddress, shippingAddress } = useSelect( ( select ) =>
-		select( CART_STORE_KEY ).getCustomerData()
+		select( cartStore ).getCustomerData()
 	);
-	const { setShippingAddress } = useDispatch( CART_STORE_KEY );
+	const { setShippingAddress } = useDispatch( cartStore );
 	const { cartItems, cartFees, cartTotals, extensions } = useStoreCart();
 	const { appliedCoupons } = useStoreCartCoupons();
 	const currentCartTotals = useRef(

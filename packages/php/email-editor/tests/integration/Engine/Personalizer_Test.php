@@ -1,21 +1,21 @@
 <?php
 /**
- * This file is part of the MailPoet Email Editor package.
+ * This file is part of the WooCommerce Email Editor package.
  *
- * @package MailPoet\EmailEditor
+ * @package Automattic\WooCommerce\EmailEditor
  */
 
 declare(strict_types = 1);
-namespace MailPoet\EmailEditor\Engine;
+namespace Automattic\WooCommerce\EmailEditor\Engine;
 
-use MailPoet\EmailEditor\Engine\PersonalizationTags\Personalization_Tag;
-use MailPoet\EmailEditor\Engine\PersonalizationTags\Personalization_Tags_Registry;
+use Automattic\WooCommerce\EmailEditor\Engine\PersonalizationTags\Personalization_Tag;
+use Automattic\WooCommerce\EmailEditor\Engine\PersonalizationTags\Personalization_Tags_Registry;
 
 /**
  * Integration test for Personalizer class which validate the functionality
  * of Personalizer using Personalization_Tags_Registry.
  */
-class Personalizer_Test extends \MailPoetTest {
+class Personalizer_Test extends \Email_Editor_Integration_Test_Case {
 	/**
 	 * Instance of Personalizer created before each test.
 	 *
@@ -32,8 +32,8 @@ class Personalizer_Test extends \MailPoetTest {
 	/**
 	 * Set up before each test.
 	 */
-	protected function _before(): void {
-		parent::_before();
+	public function setUp(): void {
+		parent::setUp();
 		$this->tags_registry = new Personalization_Tags_Registry();
 		$this->personalizer  = new Personalizer( $this->tags_registry );
 	}

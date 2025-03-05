@@ -30,6 +30,20 @@ const blocks = {
 		customDir: 'add-to-cart-with-options/variation-selector',
 		isExperimental: true,
 	},
+	'add-to-cart-with-options-variation-selector-item': {
+		customDir:
+			'add-to-cart-with-options/variation-selector/attribute-item-template',
+		isExperimental: true,
+	},
+	'add-to-cart-with-options-variation-selector-attribute-name': {
+		customDir: 'add-to-cart-with-options/variation-selector/attribute-name',
+		isExperimental: true,
+	},
+	'add-to-cart-with-options-variation-selector-attribute-options': {
+		customDir:
+			'add-to-cart-with-options/variation-selector/attribute-options',
+		isExperimental: true,
+	},
 	'add-to-cart-with-options-grouped-product-selector': {
 		customDir: 'add-to-cart-with-options/grouped-product-selector',
 		isExperimental: true,
@@ -67,7 +81,6 @@ const blocks = {
 		customDir: 'classic-template',
 	},
 	'classic-shortcode': {},
-	'store-notices': {},
 	'page-content-wrapper': {},
 	'price-filter': {},
 	'product-best-sellers': {},
@@ -112,6 +125,7 @@ const blocks = {
 	},
 	'single-product': {},
 	'stock-filter': {},
+	'store-notices': {},
 	'product-filters': {
 		isExperimental: true,
 	},
@@ -249,6 +263,34 @@ const getBlockEntries = ( relativePath, blockEntries = blocks ) => {
 	);
 };
 
+// The entries are used to build styles **and** JS, but for
+// frontend JS of these blocks we use a script modules build so
+// we skip building their JS files in the old build.
+// The script modules build handles them in
+// webpack-config-interactivity-blocks-frontend.js.
+const frontendScriptModuleBlocksToSkip = [
+	'product-gallery',
+	'product-gallery-large-image',
+	'store-notices',
+	'product-collection',
+	'product-filters',
+	'product-filter-status',
+	'product-filter-price',
+	'product-filter-attribute',
+	'product-filter-rating',
+	'product-filter-active',
+	'product-filter-removable-chips',
+];
+
+const frontendEntries = getBlockEntries( 'frontend.{t,j}s{,x}', {
+	...Object.fromEntries(
+		Object.entries( blocks ).filter( ( [ blockName ] ) => {
+			return ! frontendScriptModuleBlocksToSkip.includes( blockName );
+		} )
+	),
+	...genericBlocks,
+} );
+
 const entries = {
 	styling: {
 		// Packages styles
@@ -264,6 +306,7 @@ const entries = {
 			'./assets/js/atomic/blocks/product-elements/product-reviews/index.tsx',
 		'product-details':
 			'./assets/js/atomic/blocks/product-elements/product-details/index.tsx',
+
 		...getBlockEntries( '{index,block,frontend}.{t,j}s{,x}', {
 			...blocks,
 			...genericBlocks,
@@ -276,6 +319,7 @@ const entries = {
 	},
 	core: {
 		wcBlocksRegistry: './assets/js/blocks-registry/index.js',
+		blocksCheckoutEvents: './assets/js/events/index.ts',
 		wcSettings: './assets/js/settings/shared/index.ts',
 		wcBlocksData: './assets/js/data/index.ts',
 		wcBlocksMiddleware: './assets/js/middleware/index.js',
@@ -298,12 +342,7 @@ const entries = {
 	},
 	frontend: {
 		reviews: './assets/js/blocks/reviews/frontend.ts',
-		...getBlockEntries( 'frontend.{t,j}s{,x}', {
-			...blocks,
-			...genericBlocks,
-		} ),
-		'product-button-interactivity':
-			'./assets/js/atomic/blocks/product-elements/button/frontend.tsx',
+		...frontendEntries,
 	},
 	payments: {
 		'wc-payment-method-cheque':
