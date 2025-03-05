@@ -22,7 +22,7 @@
 				@include placeholder();
 				@include font-size(regular);
 				@include force-content();
-				margin: .25em 0;
+				margin: .25em #{$gap * 0.5} .25em 0;
 				width: 5em;
 			}
 
@@ -44,7 +44,7 @@
 			@include placeholder();
 			@include force-content();
 			height: 1em;
-			margin: .25em 0 .25em $gap * 0.5;
+			margin: .25em 0;
 			width: 7em;
 		}
 	}
