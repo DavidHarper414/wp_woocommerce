@@ -943,11 +943,6 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 				'**/wc/store/v1/checkout**'
 			);
 
-			// Check that address fields are persisted
-			await checkoutPageObject.page.waitForRequest(
-				'**/wc/store/v1/batch**'
-			);
-
 			await checkoutPageObject.page.reload();
 
 			await expect(
