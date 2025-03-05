@@ -13,6 +13,7 @@
 	label {
 		padding: 26px;
 		cursor: inherit;
+		max-width: 100%;
 	}
 
 	&.disabled {
@@ -123,6 +124,16 @@
 
 	.woocommerce-profiler-plugins-plugin-card-text {
 		margin: 4px 0 0 80px;
+		display: flex;
+		white-space: nowrap;
+
+		p {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+
 		@include breakpoint( "<782px" ) {
 			align-self: center;
 		}
@@ -130,6 +141,7 @@
 			margin-left: 40px;
 		}
 	}
+
 	.woocommerce-profiler-plugins-plugin-card-text-header {
 		display: flex;
 		gap: 8px;
