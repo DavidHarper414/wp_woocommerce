@@ -391,19 +391,19 @@ abstract class Task {
 	}
 
 	/**
-	 * Track task completion if task is viewable.
+	 * Track task completion if task is viewable and is complete.
 	 *
-	 * @deprecated 9.9.0
+	 * @param bool $verify_is_complete Whether to test if $this->complete() prior to tracking completion. Default true.
+	 *
+	 * @return void
 	 */
-	public function possibly_track_completion() {
-		wc_deprecated_function( __FUNCTION__, '9.9.0', __CLASS__ . '::track_completion' );
-
+	public function possibly_track_completion( $verify_is_complete = true ) {
 		if ( $this->has_previously_completed() ) {
 			return;
 		}
 
 		// Expensive check.
-		if ( ! $this->is_complete() ) {
+		if ( $verify_is_complete && ! $this->is_complete() ) {
 			return;
 		}
 
@@ -411,20 +411,6 @@ abstract class Task {
 		$completed_tasks[] = $this->get_id();
 		update_option( self::COMPLETED_OPTION, $completed_tasks );
 		$this->record_tracks_event( 'task_completed', array( 'task_name' => $this->get_id() ) );
-	}
-
-	/**
-	 * Track as task as complete if it is not already set as previously completed.
-	 *
-	 * @return void
-	 */
-	public function track_completion() {
-		$completed_tasks = get_option( self::COMPLETED_OPTION, array() );
-		if ( ! in_array( $this->get_id(), $completed_tasks, true ) ) {
-			$completed_tasks[] = $this->get_id();
-			update_option( self::COMPLETED_OPTION, $completed_tasks );
-			$this->record_tracks_event( 'task_completed', array( 'task_name' => $this->get_id() ) );
-		}
 	}
 
 	/**
@@ -519,7 +505,7 @@ abstract class Task {
 	public function get_json() {
 		$is_complete = $this->is_complete();
 		if ( $is_complete ) {
-			$this->track_completion();
+			$this->possibly_track_completion( false );
 		}
 
 		return array(
