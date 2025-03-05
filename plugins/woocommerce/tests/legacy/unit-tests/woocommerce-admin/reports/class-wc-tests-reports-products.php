@@ -789,7 +789,7 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 
 		$result = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM wp_wc_order_product_lookup WHERE order_item_id = %d AND order_id = %d',
+				"SELECT * FROM {$wpdb->prefix}wc_order_product_lookup WHERE order_item_id = %d AND order_id = %d",
 				$order_item_id,
 				$refund_order_id
 			)
@@ -934,7 +934,7 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 
 		$result = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM wp_wc_order_product_lookup WHERE order_item_id = %d AND order_id = %d',
+				"SELECT * FROM {$wpdb->prefix}wc_order_product_lookup WHERE order_item_id = %d AND order_id = %d",
 				$order_item_id,
 				$refund_order_id
 			)
@@ -1055,7 +1055,7 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 
 		$result = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM wp_wc_order_product_lookup WHERE order_item_id = %d AND order_id = %d',
+				"SELECT * FROM {$wpdb->prefix}wc_order_product_lookup WHERE order_item_id = %d AND order_id = %d",
 				$order_item_id,
 				$refund_order_id
 			)
