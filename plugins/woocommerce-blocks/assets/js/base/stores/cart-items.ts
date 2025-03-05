@@ -2,13 +2,14 @@
  * External dependencies
  */
 import { store } from '@wordpress/interactivity';
+import type { Cart, CartItem, ApiErrorResponse } from '@woocommerce/types';
 
 /**
  * Internal dependencies
  */
 import { triggerAddedToCartEvent } from './legacy-events';
 
-type Item = {
+type OptimisticCartItem = {
 	key?: string;
 	id: number;
 	quantity: number;
@@ -18,8 +19,8 @@ export type Store = {
 	state: {
 		restUrl: string;
 		nonce: string;
-		cart: {
-			items: Item[];
+		cart: Omit< Cart, 'items' > & {
+			items: ( OptimisticCartItem | CartItem )[];
 		};
 	};
 	actions: {
@@ -29,26 +30,22 @@ export type Store = {
 	};
 };
 
-type StoreAPIError = { message: string; code: string };
-type CartItemResponse = Item | StoreAPIError;
-type CartItemsResponse = Item[] | StoreAPIError;
-
 type QuantityChanges = {
 	cartItemsPendingQuantity?: string[];
 	cartItemsPendingDelete?: string[];
 	productsPendingAdd?: number[];
 };
 
-function isSuccessfulResponse(
+function isApiErrorResponse(
 	res: Response,
-	json: CartItemsResponse | CartItemResponse
-): json is Item | Item[] {
-	return res.status.toString().startsWith( '2' );
+	json: unknown
+): json is ApiErrorResponse {
+	return ! res.status.toString().startsWith( '2' );
 }
 
-function generateError( json: StoreAPIError ) {
-	return Object.assign( new Error( json.message || 'Unknown error.' ), {
-		code: json.code || 'unknown_error',
+function generateError( error: ApiErrorResponse ) {
+	return Object.assign( new Error( error.message || 'Unknown error.' ), {
+		code: error.code || 'unknown_error',
 	} );
 }
 
@@ -75,57 +72,47 @@ export const { state, actions } = store< Store >(
 	{
 		actions: {
 			*addCartItem( { id, quantity }: { id: number; quantity: number } ) {
-				let itemIndex = state.cart.items.findIndex(
+				let item = state.cart.items.find(
 					( { id: productId } ) => id === productId
 				);
-				const previousQuantity =
-					state.cart.items[ itemIndex ]?.quantity ?? 0;
-				let key: string | null = null;
+				const endpoint = item ? 'update-item' : 'add-item';
+				const previousCart = JSON.stringify( state.cart );
 				const quantityChanges: QuantityChanges = {};
 
 				// Optimistically updates the number of items in the cart.
-				if ( itemIndex !== -1 ) {
-					state.cart.items[ itemIndex ].quantity = quantity;
-					key = state.cart.items[ itemIndex ].key || null;
-					if ( key )
-						quantityChanges.cartItemsPendingQuantity = [ key ];
+				if ( item ) {
+					item.quantity = quantity;
+					if ( item.key )
+						quantityChanges.cartItemsPendingQuantity = [ item.key ];
 				} else {
-					state.cart.items.push( { id, quantity } );
-					itemIndex = state.cart.items.length - 1;
+					item = { id, quantity };
+					state.cart.items.push( item );
 					quantityChanges.productsPendingAdd = [ id ];
 				}
 
 				// Updates the database.
 				try {
 					const res: Response = yield fetch(
-						// Todo: replace with `/cart/add-item` and
-						// `/cart/update-item` because sometimes extenders can
-						// modify the quantities of other items on the server so we
-						// need to retrieve the whole cart each time.
-						`${ state.restUrl }wc/store/v1/cart/items/${
-							key || ''
-						}`,
+						`${ state.restUrl }wc/store/v1/cart/${ endpoint }`,
 						{
-							method: key ? 'PUT' : 'POST',
+							method: 'POST',
 							headers: {
 								Nonce: state.nonce,
 								'Content-Type': 'application/json',
 							},
-							body: JSON.stringify(
-								state.cart.items[ itemIndex ]
-							),
+							body: JSON.stringify( item ),
 						}
 					);
-					const json: CartItemResponse = yield res.json();
+					const json: Cart = yield res.json();
 
 					// Checks if the response contains an error.
-					if ( ! isSuccessfulResponse( res, json ) )
+					if ( isApiErrorResponse( res, json ) )
 						throw generateError( json );
 
 					// Updates the local cart.
-					state.cart.items[ itemIndex ] = json;
+					state.cart = json;
 
-					// dispatch legacy event
+					// Dispatches a legacy event.
 					triggerAddedToCartEvent( {
 						preserveCartData: true,
 					} );
@@ -135,8 +122,7 @@ export const { state, actions } = store< Store >(
 				} catch ( error ) {
 					// Reverts the optimistic update.
 					// Todo: Prevent racing conditions with multiple addToCart calls for the same item.
-					state.cart.items[ itemIndex ].quantity =
-						previousQuantity || 0;
+					state.cart = JSON.parse( previousCart );
 
 					throw error;
 				}
@@ -149,17 +135,17 @@ export const { state, actions } = store< Store >(
 
 				try {
 					const res: Response = yield fetch(
-						`${ state.restUrl }wc/store/v1/cart/items`,
+						`${ state.restUrl }wc/store/v1/cart`,
 						{ headers: { 'Content-Type': 'application/json' } }
 					);
-					const json: CartItemsResponse = yield res.json();
+					const json: Cart = yield res.json();
 
 					// Checks if the response contains an error.
-					if ( ! isSuccessfulResponse( res, json ) )
+					if ( isApiErrorResponse( res, json ) )
 						throw generateError( json );
 
 					// Updates the local cart.
-					state.cart.items = json;
+					state.cart = json;
 
 					// Resets the timeout.
 					refreshTimeout = 3000;
