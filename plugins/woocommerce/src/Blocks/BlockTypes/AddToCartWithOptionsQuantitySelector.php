@@ -6,7 +6,7 @@ namespace Automattic\WooCommerce\Blocks\BlockTypes;
 use Automattic\WooCommerce\Blocks\Utils\StyleAttributesUtils;
 
 /**
- * CatalogSorting class.
+ * AddToCartWithOptionsQuantitySelector class.
  */
 class AddToCartWithOptionsQuantitySelector extends AbstractBlock {
 	/**
