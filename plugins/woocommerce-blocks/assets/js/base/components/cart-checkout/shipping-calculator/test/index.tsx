@@ -10,7 +10,7 @@ import type { ShippingAddress } from '@woocommerce/settings';
  */
 import ShippingCalculatorAddress from '../address';
 
-const address = {
+const address: ShippingAddress = {
 	first_name: '',
 	last_name: '',
 	company: '',
@@ -21,7 +21,7 @@ const address = {
 	postcode: '',
 	country: '',
 	phone: '',
-} as ShippingAddress;
+};
 
 const addressFields: Array< 'country' | 'city' | 'state' | 'postcode' > = [
 	'country',
