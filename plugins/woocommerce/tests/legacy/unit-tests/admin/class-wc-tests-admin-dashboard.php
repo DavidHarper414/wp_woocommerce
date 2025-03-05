@@ -49,7 +49,7 @@ class WC_Tests_Admin_Dashboard extends WC_Unit_Test_Case {
 
 		$this->expectOutputRegex( '/98,765\.00/' );
 
-		( new WC_Admin_Dashboard() )->status_widget();
+		( new WC_Admin_Dashboard() )->status_widget_content();
 
 		$widget_output = $this->getActualOutput();
 
