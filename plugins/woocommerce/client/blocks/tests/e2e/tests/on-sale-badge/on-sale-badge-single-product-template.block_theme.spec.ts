@@ -124,7 +124,7 @@ test.describe( `${ blockData.name }`, () => {
 
 			await pageObject.toggleFullScreenOnClickSetting( false );
 
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -148,7 +148,7 @@ test.describe( `${ blockData.name }`, () => {
 
 			await pageObject.toggleFullScreenOnClickSetting( false );
 
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -190,7 +190,7 @@ test.describe( `${ blockData.name }`, () => {
 				} )
 				.toEqual( blockData.margin );
 
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -237,7 +237,7 @@ test.describe( `${ blockData.name }`, () => {
 				} )
 				.toBe( true );
 
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -276,7 +276,7 @@ test.describe( `${ blockData.name }`, () => {
 				} )
 				.toEqual( blockData.margin );
 
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 

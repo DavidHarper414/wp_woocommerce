@@ -39,7 +39,7 @@ test.describe( 'Template customization', () => {
 					name: 'core/paragraph',
 					attributes: { content: userText },
 				} );
-				await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+				await editor.saveSiteEditorEntities( {
 					isOnlyCurrentEntityDirty: true,
 				} );
 
@@ -100,11 +100,9 @@ test.describe( 'Template customization', () => {
 							content: fallbackTemplateUserText,
 						},
 					} );
-					await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices(
-						{
-							isOnlyCurrentEntityDirty: true,
-						}
-					);
+					await editor.saveSiteEditorEntities( {
+						isOnlyCurrentEntityDirty: true,
+					} );
 					await testData.visitPage( {
 						admin,
 						editor,
@@ -166,7 +164,7 @@ test.describe( 'Template customization', () => {
 					name: 'core/paragraph',
 					attributes: { content: woocommerceTemplateUserText },
 				} );
-				await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+				await editor.saveSiteEditorEntities( {
 					isOnlyCurrentEntityDirty: true,
 				} );
 
@@ -187,7 +185,7 @@ test.describe( 'Template customization', () => {
 					name: 'core/paragraph',
 					attributes: { content: userText },
 				} );
-				await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+				await editor.saveSiteEditorEntities( {
 					isOnlyCurrentEntityDirty: true,
 				} );
 

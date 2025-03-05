@@ -111,7 +111,7 @@ for ( const {
 			await editor.insertBlock( { name: legacyBlockName } );
 			await editor.canvas.locator( 'body' ).click();
 
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 

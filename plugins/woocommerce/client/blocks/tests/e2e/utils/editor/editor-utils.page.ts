@@ -65,7 +65,7 @@ export class Editor extends CoreEditor {
 			await transformButton.click();
 
 			// save changes
-			await this.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await this.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 		}
@@ -139,13 +139,15 @@ export class Editor extends CoreEditor {
 	 *
 	 * @see https://github.com/WordPress/gutenberg/issues/69042
 	 */
-	async saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+	saveSiteEditorEntities = async ( {
 		isOnlyCurrentEntityDirty = false,
 	}: {
 		isOnlyCurrentEntityDirty?: boolean;
-	} = {} ) {
+	} = {} ) => {
 		try {
-			await this.saveSiteEditorEntities( { isOnlyCurrentEntityDirty } );
+			await CoreEditor.prototype.saveSiteEditorEntities( {
+				isOnlyCurrentEntityDirty,
+			} );
 		} catch ( error ) {
 			if (
 				! ( error instanceof Error ) ||
@@ -154,5 +156,5 @@ export class Editor extends CoreEditor {
 				throw error;
 			}
 		}
-	}
+	};
 }

@@ -39,7 +39,7 @@ test.describe( 'Legacy templates', () => {
 				editor.canvas.getByText( template.customText )
 			).toBeVisible();
 
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 		} );

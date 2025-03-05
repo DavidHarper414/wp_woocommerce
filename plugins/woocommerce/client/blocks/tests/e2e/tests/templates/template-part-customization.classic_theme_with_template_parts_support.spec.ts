@@ -71,7 +71,7 @@ test.describe( 'Template part customization', () => {
 				name: 'core/paragraph',
 				attributes: { content: userText },
 			} );
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -117,7 +117,7 @@ test.describe( 'Template part customization', () => {
 				name: 'core/paragraph',
 				attributes: { content: woocommerceTemplateUserText },
 			} );
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -138,7 +138,7 @@ test.describe( 'Template part customization', () => {
 				name: 'core/paragraph',
 				attributes: { content: userText },
 			} );
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 

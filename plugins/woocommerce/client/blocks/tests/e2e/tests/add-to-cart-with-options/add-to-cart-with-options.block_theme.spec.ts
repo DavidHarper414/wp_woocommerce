@@ -41,7 +41,7 @@ test.describe( 'Add to Cart with Options Block', () => {
 			'This is a test paragraph added to the Add to Cart with Options template part.'
 		);
 
-		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices();
+		await editor.saveSiteEditorEntities();
 
 		await page.goto( '/product/cap' );
 

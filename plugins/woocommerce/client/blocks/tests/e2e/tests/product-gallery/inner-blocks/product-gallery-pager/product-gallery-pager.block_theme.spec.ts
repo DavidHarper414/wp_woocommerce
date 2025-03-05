@@ -49,7 +49,7 @@ test.describe( `${ blockData.name }`, () => {
 
 		await expect( block ).toHaveText( '3/7' );
 
-		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+		await editor.saveSiteEditorEntities( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 

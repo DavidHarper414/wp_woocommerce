@@ -52,7 +52,7 @@ test.describe( `${ blockData.name }`, () => {
 
 		await expect( block ).toBeVisible();
 
-		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+		await editor.saveSiteEditorEntities( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 
@@ -80,7 +80,7 @@ test.describe( `${ blockData.name }`, () => {
 		} ) => {
 			await pageObject.addProductGalleryBlock( { cleanContent: true } );
 			await pageObject.toggleZoomWhileHoveringSetting( true );
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -137,7 +137,7 @@ test.describe( `${ blockData.name }`, () => {
 
 			await expect( buttonElement ).not.toBeChecked();
 
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -177,7 +177,7 @@ test.describe( `${ blockData.name }`, () => {
 
 		await expect( block ).toBeVisible();
 
-		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+		await editor.saveSiteEditorEntities( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 
@@ -237,7 +237,7 @@ test.describe( `${ blockData.name }`, () => {
 			page,
 		} ) => {
 			await pageObject.addProductGalleryBlock( { cleanContent: true } );
-			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
+			await editor.saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
