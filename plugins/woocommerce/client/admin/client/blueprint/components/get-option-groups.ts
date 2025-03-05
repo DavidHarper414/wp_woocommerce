@@ -1,3 +1,8 @@
+/**
+ * Internal dependencies
+ */
+import { BlueprintStep } from './types';
+
 const OPTIONS_GROUPS = {
 	woocommerce_store_address: 'general',
 	woocommerce_store_address_2: 'general',
@@ -145,7 +150,7 @@ export const getOptionGroups = ( options: string[] ) => {
  * @return string[] a list of groups
  */
 export const getOptionGroupsFromSteps = (
-	steps: { step: string; options?: Record< string, string > }[]
+	steps: ( BlueprintStep & { options?: Record< string, string > } )[]
 ) => {
 	const options = steps.reduce< string[] >( ( acc, step ) => {
 		// Explicitly set acc as string[]

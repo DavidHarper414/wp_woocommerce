@@ -28,43 +28,12 @@ import { dispatch } from '@wordpress/data';
 import './style.scss';
 import { OverwriteConfirmationModal } from '../settings/overwrite-confirmation-modal';
 import { getOptionGroupsFromSteps } from './get-option-groups';
-type BlueprintQueueResponse = {
-	reference?: string;
-	error_type?: string;
-	errors?: string[];
-	process_nonce?: string;
-	settings_to_overwrite?: string[];
-};
-
-type BlueprintImportResponse = {
-	// TODO: flesh out this type with more concrete values
-	processed: boolean;
-	message: string;
-	data: {
-		redirect: string;
-		result: {
-			is_success: boolean;
-			messages: {
-				step: string;
-				type: string;
-				message: string;
-			}[];
-		};
-	};
-};
-
-type BlueprintStep = {
-	step: string;
-};
-
-type BlueprintImportStepResponse = {
-	success: boolean;
-	messages: {
-		step: string;
-		type: string;
-		message: string;
-	}[];
-};
+import {
+	BlueprintQueueResponse,
+	BlueprintImportResponse,
+	BlueprintStep,
+	BlueprintImportStepResponse,
+} from './types';
 
 const parseSteps = async ( file: File ) => {
 	// Create a FileReader instance
@@ -172,8 +141,6 @@ const importBlueprint = async ( steps: BlueprintStep[] ) => {
 interface FileUploadContext {
 	file?: File;
 	steps?: BlueprintStep[];
-	process_nonce?: string;
-	reference?: string;
 	error?: Error;
 	settings_to_overwrite?: string[];
 }
@@ -213,8 +180,6 @@ export const fileUploadMachine = setup( {
 		reportSuccess: enqueueActions( ( { event, enqueue } ) => {
 			assertEvent( event, 'xstate.done.actor.0.fileUpload.uploading' );
 			enqueue.assign( {
-				process_nonce: event.output.process_nonce,
-				reference: event.output.reference,
 				settings_to_overwrite: event.output.settings_to_overwrite,
 			} );
 		} ),
