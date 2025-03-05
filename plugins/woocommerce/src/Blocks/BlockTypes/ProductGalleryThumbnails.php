@@ -83,7 +83,7 @@ class ProductGalleryThumbnails extends AbstractBlock {
 
 		$html                         = '';
 		$default_thumbnail_size       = '115px';
-		$thumbnail_size               = isset( $attributes['thumbnailSize'] ) && is_numeric( $attributes['thumbnailSize'] ) ? $attributes['thumbnailSize'] : $default_thumbnail_size;
+		$thumbnail_size               = isset( $attributes['thumbnailSize'] ) ? $attributes['thumbnailSize'] : $default_thumbnail_size;
 
 		foreach ( $product_gallery_images as $product_gallery_image_html ) {
 			$processor = new \WP_HTML_Tag_Processor( $product_gallery_image_html );
