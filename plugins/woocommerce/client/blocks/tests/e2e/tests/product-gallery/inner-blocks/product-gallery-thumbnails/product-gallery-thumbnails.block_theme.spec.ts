@@ -44,7 +44,7 @@ test.describe( 'Product Gallery Thumbnails block', () => {
 				)
 			).toBeVisible();
 
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 		} );

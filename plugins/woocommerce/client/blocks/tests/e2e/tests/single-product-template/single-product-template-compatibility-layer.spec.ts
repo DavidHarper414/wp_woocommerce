@@ -200,7 +200,7 @@ test.describe( 'Compatibility Layer in Single Product template', () => {
 				'Block: Quantity Selector (Experimental)'
 			)
 		).toBeVisible();
-		await editor.saveSiteEditorEntities( {
+		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 

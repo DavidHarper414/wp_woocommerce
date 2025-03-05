@@ -104,7 +104,7 @@ test.describe( `${ blockData.name }`, () => {
 	} ) => {
 		await addBlock( admin, editor );
 
-		await editor.saveSiteEditorEntities( {
+		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 
@@ -153,7 +153,7 @@ test.describe( `${ blockData.name }`, () => {
 				editorBoundingClientRect.gallery.right
 			);
 
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -201,7 +201,7 @@ test.describe( `${ blockData.name }`, () => {
 
 			await expect( block ).toHaveCSS( 'align-items', 'flex-end' );
 
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 

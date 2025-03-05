@@ -38,7 +38,7 @@ test.describe( 'Single Product Template', () => {
 			name: 'core/paragraph',
 			attributes: { content: userText },
 		} );
-		await editor.saveSiteEditorEntities( {
+		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 		await page.goto( testData.permalink );

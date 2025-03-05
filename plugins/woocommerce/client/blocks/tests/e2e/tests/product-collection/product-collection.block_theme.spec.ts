@@ -205,7 +205,7 @@ test.describe( 'Product Collection', () => {
 			).toHaveCount( 16 );
 
 			await pageObject.insertProductElements();
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 			await pageObject.goToProductCatalogFrontend();
@@ -233,7 +233,7 @@ test.describe( 'Product Collection', () => {
 			).toHaveCount( 9 );
 
 			await pageObject.insertProductElements();
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 			await pageObject.goToHomePageFrontend();
@@ -679,7 +679,7 @@ test.describe( 'Product Collection', () => {
 			await expect( productTemplate ).toHaveCount( 2 );
 
 			// Refresh the template and verify "On Sale Products" collection is still visible
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 			await page.reload();
@@ -783,9 +783,11 @@ test.describe( 'Product Collection', () => {
 
 					await editor.insertBlock( { name: legacyBlockName } );
 
-					await editor.saveSiteEditorEntities( {
-						isOnlyCurrentEntityDirty: true,
-					} );
+					await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices(
+						{
+							isOnlyCurrentEntityDirty: true,
+						}
+					);
 
 					await page.goto( frontendPage );
 
@@ -838,7 +840,7 @@ test.describe( 'Product Collection', () => {
 
 			await expect( editorProductTitle ).toHaveText( 'Sunglasses' );
 
-			await editor.saveSiteEditorEntities();
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices();
 			await pageObject.goToProductCatalogFrontend();
 
 			const frontendProductTitle = page

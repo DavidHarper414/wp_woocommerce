@@ -110,7 +110,7 @@ test.describe( `${ blockData.name }`, () => {
 		} ) => {
 			await pageObject.addProductGalleryBlock( { cleanContent: true } );
 
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -139,7 +139,7 @@ test.describe( `${ blockData.name }`, () => {
 		} ) => {
 			await pageObject.addProductGalleryBlock( { cleanContent: true } );
 
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -187,7 +187,7 @@ test.describe( `${ blockData.name }`, () => {
 		} ) => {
 			await pageObject.addProductGalleryBlock( { cleanContent: true } );
 
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -250,7 +250,7 @@ test.describe( `${ blockData.name }`, () => {
 		} ) => {
 			await pageObject.addProductGalleryBlock( { cleanContent: true } );
 
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -287,7 +287,7 @@ test.describe( `${ blockData.name }`, () => {
 		} ) => {
 			await pageObject.addProductGalleryBlock( { cleanContent: false } );
 
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -370,7 +370,7 @@ test.describe( `${ blockData.name }`, () => {
 			editor,
 		} ) => {
 			await pageObject.addProductGalleryBlock( { cleanContent: true } );
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -395,7 +395,7 @@ test.describe( `${ blockData.name }`, () => {
 			await pageObject.addProductGalleryBlock( { cleanContent: true } );
 			await editor.openDocumentSettingsSidebar();
 			await pageObject.toggleFullScreenOnClickSetting( false );
-			await editor.saveSiteEditorEntities( {
+			await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 				isOnlyCurrentEntityDirty: true,
 			} );
 
@@ -477,7 +477,7 @@ test.describe( `${ blockData.name }`, () => {
 			.locator( blockData.selectors.editor.settings.cropImagesOption )
 			.click();
 
-		await editor.saveSiteEditorEntities( {
+		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 
@@ -509,7 +509,7 @@ test.describe( `${ blockData.name }`, () => {
 		page,
 	} ) => {
 		await pageObject.addProductGalleryBlock( { cleanContent: true } );
-		await editor.saveSiteEditorEntities( {
+		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 

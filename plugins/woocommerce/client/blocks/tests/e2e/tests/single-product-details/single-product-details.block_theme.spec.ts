@@ -95,7 +95,7 @@ test.describe( `${ blockData.slug } Block`, () => {
 			editor.canvas.locator( 'h2:has-text("Description")' )
 		).toBeHidden();
 
-		await editor.saveSiteEditorEntities( {
+		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 

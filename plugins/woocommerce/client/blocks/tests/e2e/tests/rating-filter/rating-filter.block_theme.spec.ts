@@ -121,7 +121,7 @@ test.describe( `${ blockData.name } Block - with PHP classic template`, () => {
 		} );
 
 		await page.keyboard.press( 'Escape' );
-		await editor.saveSiteEditorEntities( {
+		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 
@@ -224,7 +224,7 @@ test.describe( `${ blockData.name } Block - with Product Collection`, () => {
 		await editor.openDocumentSettingsSidebar();
 		await page.getByText( "Show 'Apply filters' button" ).click();
 
-		await editor.saveSiteEditorEntities( {
+		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 		await page.goto( '/shop' );

@@ -242,7 +242,7 @@ test.describe( `${ blockData.name } Block `, () => {
 			attributes: { content: 'Hello World' },
 		} );
 
-		await editor.saveSiteEditorEntities( {
+		await editor.saveSiteEditorEntitiesIgnoringDuplicateNotices( {
 			isOnlyCurrentEntityDirty: true,
 		} );
 
