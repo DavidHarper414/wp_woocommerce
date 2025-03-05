@@ -1820,6 +1820,12 @@ importers:
       prettier:
         specifier: npm:wp-prettier@^3.0.3
         version: wp-prettier@3.0.3
+      typescript:
+        specifier: 5.7.x
+        version: 5.7.2
+      wireit:
+        specifier: 0.14.10
+        version: 0.14.10
       wp-types:
         specifier: ^3.65.0
         version: 3.66.1
@@ -34297,7 +34303,10 @@ snapshots:
       jest-runner: 25.5.4
       jest-runtime: 25.5.4
     transitivePeerDependencies:
+      - bufferutil
+      - canvas
       - supports-color
+      - utf-8-validate
 
   '@jest/test-sequencer@26.6.3':
     dependencies:
