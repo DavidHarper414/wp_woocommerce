@@ -8837,7 +8837,7 @@ html:has(#status-table-templates){
 
 body.woocommerce_page_wc-settings {
 	#wpbody-content, #wpcontent {
-		background: #FCFCFC;
+		background: var(--setting_color_content, '#FCFCFC');
 	}
 
 	.woocommerce-layout__primary {
@@ -8860,7 +8860,7 @@ body.woocommerce_page_wc-settings {
 
 	.settings-content {
 		padding: 0 30px;
-		background: #FCFCFC;
+		background: var(--setting_color_content, '#FCFCFC');
 		margin-top: 24px;
 
 		h2 {
@@ -8908,7 +8908,7 @@ body.woocommerce_page_wc-settings {
 			}
 		}
 		margin: 0;
-		background: #FFF;
+		background: var(--setting_color_menu, '#FFF');
 		border-bottom: 1px solid #EBEBEB;
 
 		.nav-tab-active, .nav-tab-active:focus, .nav-tab-active:focus:active, .nav-tab-active:hover {
