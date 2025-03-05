@@ -366,25 +366,8 @@
 		@include breakpoint(">782px") {// sticky footer shouldn't apply to mobile layout
 			// since the height of each card is more or less fixed (actually its variable but we limit text to 2 lines),
 			// we can estimate the visual breakpoints that are required to "unstick" the footer from the bottom of the page.
-			&.rows-1 {
-				@media screen and ( max-height: 520px ) {
-					@include sticky-footer-scroll-padding;
-				}
-			}
-			&.rows-2 {
-				@media screen and ( max-height: 650px ) {
-					@include sticky-footer-scroll-padding;
-				}
-			}
-			&.rows-3 {
-				@media screen and ( max-height: 780px ) {
-					@include sticky-footer-scroll-padding;
-				}
-			}
-			&.rows-4 {
-				@media screen and ( max-height: 910px ) {
-					@include sticky-footer-scroll-padding;
-				}
+			&.sticky-footer {
+				@include sticky-footer-scroll-padding;
 			}
 		}
 	}
@@ -435,25 +418,8 @@
 		@include breakpoint(">782px") { // sticky footer shouldn't apply to mobile layout
 			// since the height of each card is more or less fixed (actually its variable but we limit text to 2 lines),
 			// we can estimate the visual breakpoints that are required to "unstick" the footer from the bottom of the page.
-			&.rows-1 {
-				@media screen and ( max-height: 520px ) {
-					@include plugins-sticky-footer;
-				}
-			}
-			&.rows-2 {
-				@media screen and ( max-height: 650px ) {
-					@include plugins-sticky-footer;
-				}
-			}
-			&.rows-3 {
-				@media screen and ( max-height: 780px ) {
-					@include plugins-sticky-footer;
-				}
-			}
-			&.rows-4 {
-				@media screen and ( max-height: 910px ) {
-					@include plugins-sticky-footer;
-				}
+			&.sticky-footer {
+				@include plugins-sticky-footer;
 			}
 		}
 

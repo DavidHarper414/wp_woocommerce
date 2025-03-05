@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Extension, ExtensionList } from '@woocommerce/data';
 import { useState, useMemo } from '@wordpress/element';
+import { useMediaQuery } from '@wordpress/compose';
 import clsx from 'clsx';
 
 /**
@@ -164,6 +165,13 @@ export const Plugins = ( {
 		[ context.pluginsAvailable ]
 	);
 
+	const baseHeight = 520;
+	const rowHeight = 130;
+	const listHeight = baseHeight + rowHeight * pluginsCardRowCount;
+	const shouldShowStickyFooter = useMediaQuery(
+		`(max-height: ${ listHeight }px)`
+	);
+
 	return (
 		<div
 			className="woocommerce-profiler-plugins"
@@ -195,10 +203,9 @@ export const Plugins = ( {
 					/>
 				) }
 				<div
-					className={ clsx(
-						'woocommerce-profiler-plugins__list',
-						`rows-${ pluginsCardRowCount }`
-					) }
+					className={ clsx( 'woocommerce-profiler-plugins__list', {
+						'sticky-footer': shouldShowStickyFooter,
+					} ) }
 				>
 					{ context.pluginsAvailable.map( ( plugin ) => {
 						const {
@@ -234,10 +241,9 @@ export const Plugins = ( {
 					} ) }
 				</div>
 				<div
-					className={ clsx(
-						'woocommerce-profiler-plugins__footer',
-						`rows-${ pluginsCardRowCount }`
-					) }
+					className={ clsx( 'woocommerce-profiler-plugins__footer', {
+						'sticky-footer': shouldShowStickyFooter,
+					} ) }
 				>
 					<div className="woocommerce-profiler-plugins-continue-button-container">
 						<Button
