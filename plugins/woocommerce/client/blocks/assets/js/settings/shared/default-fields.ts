@@ -40,7 +40,7 @@ export interface Field {
 	// Set to true if the field should not be rendered or a JSON schema object.
 	hidden: boolean | JSONSchemaType< DocumentObject< 'global' > > | [];
 	// A JSON schema object for validation.
-	validation?: JSONSchemaType< DocumentObject< 'global' > > | [];
+	validation: JSONSchemaType< DocumentObject< 'global' > > | [];
 	// Fields will be sorted and render in this order, lowest to highest.
 	index: number;
 	// The type of input to render. Defaults to text.
@@ -99,12 +99,22 @@ export type FormFields = AddressForm & ContactForm & OrderForm;
  * KeyedFormFields is the array shape of FormFields object with the key added to each field.
  */
 export type KeyedFormFields = Array<
-	{
+	FormFields[ keyof FormFields ] & {
 		key: keyof FormFields;
 		errorMessage?: string;
-		required: boolean;
+	}
+>;
+
+/**
+ * KeyedParsedFormFields is the array shape of FormFields object with the key added to each field.
+ */
+export type KeyedParsedFormFields = Array<
+	FormFields[ keyof FormFields ] & {
+		key: keyof FormFields;
+		errorMessage?: string;
 		hidden: boolean;
-	} & FormFields[ keyof FormFields ]
+		required: boolean;
+	}
 >;
 /**
  * All possible values for a form.
@@ -123,11 +133,6 @@ export type ShippingAddress = AddressFormValues;
 export interface BillingAddress extends AddressFormValues {
 	email: string;
 }
-
-export type KeyedFormField< T extends keyof FormFields > = FormField & {
-	key: T;
-	errorMessage?: string;
-};
 
 export type CountryAddressFields = Record< string, FormFields >;
 

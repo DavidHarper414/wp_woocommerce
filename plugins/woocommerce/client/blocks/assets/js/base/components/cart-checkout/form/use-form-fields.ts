@@ -6,7 +6,7 @@ import {
 	CURRENT_USER_IS_ADMIN,
 	FormFields,
 	FormType,
-	KeyedFormField,
+	KeyedParsedFormFields,
 } from '@woocommerce/settings';
 import { useRef } from '@wordpress/element';
 import fastDeepEqual from 'fast-deep-equal/es6';
@@ -29,8 +29,8 @@ export const useFormFields = < T extends keyof FormFields >(
 	formType: FormType,
 	// Address country.
 	addressCountry = ''
-): KeyedFormField< T >[] => {
-	const currentResults = useRef< KeyedFormField< T >[] >( [] );
+): KeyedParsedFormFields => {
+	const currentResults = useRef< KeyedParsedFormFields >( [] );
 	const { parser, data } = useSchemaParser( formType );
 
 	const formFields = prepareFormFields(
@@ -41,6 +41,7 @@ export const useFormFields = < T extends keyof FormFields >(
 
 	const updatedFields = formFields.map( ( field ) => {
 		const defaultConfig = defaultFields[ field.key ] || {};
+
 		if ( parser ) {
 			if ( hasSchemaRules( defaultConfig, 'required' ) ) {
 				let schema = {};
@@ -93,7 +94,15 @@ export const useFormFields = < T extends keyof FormFields >(
 		! currentResults.current ||
 		! fastDeepEqual( currentResults.current, updatedFields )
 	) {
-		currentResults.current = updatedFields;
+		// Default required and hidden to their boolean values if they exist
+		const sanitizedFields = updatedFields.map( ( field ) => ( {
+			...field,
+			hidden: typeof field.hidden === 'boolean' ? field.hidden : false,
+			required:
+				typeof field.required === 'boolean' ? field.required : false,
+		} ) );
+
+		currentResults.current = sanitizedFields;
 	}
 
 	return currentResults.current;
