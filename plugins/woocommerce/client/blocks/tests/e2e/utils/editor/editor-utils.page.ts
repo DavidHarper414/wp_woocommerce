@@ -145,7 +145,7 @@ export class Editor extends CoreEditor {
 		isOnlyCurrentEntityDirty?: boolean;
 	} = {} ) => {
 		try {
-			await CoreEditor.prototype.saveSiteEditorEntities( {
+			await new CoreEditor( { page: this.page } ).saveSiteEditorEntities( {
 				isOnlyCurrentEntityDirty,
 			} );
 		} catch ( error ) {
