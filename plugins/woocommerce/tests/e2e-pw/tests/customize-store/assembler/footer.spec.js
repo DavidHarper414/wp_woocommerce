@@ -165,7 +165,7 @@ test.describe(
 					extractFooterClass( footerPickerClass );
 
 				const footerPattern = editor.locator(
-					`footer div.wc-blocks-footer-pattern`
+					`div.wc-blocks-footer-pattern`
 				);
 
 				await footerPattern.waitFor();
