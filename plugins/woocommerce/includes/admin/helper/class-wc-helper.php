@@ -1860,6 +1860,11 @@ class WC_Helper {
 	 * @return bool True if installed, false otherwise.
 	 */
 	public static function is_subscription_installed( $subscription, $subscriptions ) {
+		// WMB subscriptions are handled differently because they don't have a local install.
+		if ( WC_Helper_WMB_Subscriptions::is_wmb_subscription( $subscription ) ) {
+			return WC_Helper_WMB_Subscriptions::is_subscription_installed( $subscription );
+		}
+
 		if ( false === $subscription['local']['installed'] ) {
 			return false;
 		}
