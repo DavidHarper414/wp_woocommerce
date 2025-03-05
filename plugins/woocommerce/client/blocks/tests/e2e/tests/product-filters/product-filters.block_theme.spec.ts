@@ -19,12 +19,12 @@ const blockData = {
 				'.wp-block-woocommerce-product-filters-is-layout-flex',
 			blocks: {
 				filters: {
-					title: 'Product Filters (Experimental)',
-					label: 'Block: Product Filters (Experimental)',
+					title: 'Product Filters',
+					label: 'Block: Product Filters',
 				},
 				overlay: {
-					title: 'Overlay Navigation (Experimental)',
-					label: 'Block: Overlay Navigation (Experimental)',
+					title: 'Overlay Navigation',
+					label: 'Block: Overlay Navigation',
 				},
 			},
 		},
@@ -46,8 +46,7 @@ const test = base.extend< { pageObject: ProductFiltersPage } >( {
 } );
 
 test.describe( `${ blockData.name }`, () => {
-	test.beforeEach( async ( { admin, requestUtils } ) => {
-		await requestUtils.setFeatureFlag( 'experimental-blocks', true );
+	test.beforeEach( async ( { admin } ) => {
 		await admin.visitSiteEditor( {
 			postId: `woocommerce/woocommerce//${ blockData.slug }`,
 			postType: 'wp_template',
@@ -67,7 +66,7 @@ test.describe( `${ blockData.name }`, () => {
 		await expect( block ).toBeVisible();
 
 		const activeFilterBlock = block.getByLabel(
-			'Block: Active (Experimental)'
+			'Block: Active'
 		);
 		await expect( activeFilterBlock ).toBeVisible();
 
@@ -75,7 +74,7 @@ test.describe( `${ blockData.name }`, () => {
 			exact: true,
 		} );
 		const colorFilterBlock = block.getByLabel(
-			'Block: Color (Experimental)'
+			'Block: Color'
 		);
 		const expectedColorFilterOptions = [
 			'Blue',
@@ -122,13 +121,12 @@ test.describe( `${ blockData.name }`, () => {
 		} );
 		await expect( productFilterHeadingListItem ).toBeVisible();
 
-		const productFilterActiveBlocksListItem = listView.getByText(
-			'Active (Experimental)'
-		);
+		const productFilterActiveBlocksListItem =
+			listView.getByText( 'Active' );
 		await expect( productFilterActiveBlocksListItem ).toBeVisible();
 
 		const productFilterAttributeBlockListItem = listView.getByText(
-			'Color (Experimental)' // it must select the attribute with the highest product count
+			'Color' // it must select the attribute with the highest product count
 		);
 		await expect( productFilterAttributeBlockListItem ).toBeVisible();
 	} );
