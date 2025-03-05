@@ -116,9 +116,40 @@ class Init {
 	 * @return array
 	 */
 	public function get_step_groups_for_js() {
-		$all_plugins    = $this->wp_get_plugins();
-		$active_plugins = array_intersect_key( $all_plugins, array_flip( get_option( 'active_plugins', array() ) ) );
+		$plugins        = $this->wp_get_plugins();
+		$themes         = $this->wp_get_themes();
+		$active_plugins = get_option( 'active_plugins', array() );
 		$active_theme   = $this->wp_get_theme();
+
+		$plugins = array_map(
+			function ( $key, $plugin ) use ( $active_plugins ) {
+				return array(
+					'id'      => $key,
+					'label'   => $plugin['Name'],
+					'checked' => in_array( $key, $active_plugins, true ),
+				);
+			},
+			array_keys( $plugins ),
+			$plugins
+		);
+
+		usort(
+			$plugins,
+			function ( $a, $b ) {
+				return $b['checked'] <=> $a['checked'];
+			}
+		);
+
+		$themes = array_map(
+			function ( $theme ) use ( $active_theme ) {
+				return array(
+					'id'      => $theme->get_stylesheet(),
+					'label'   => $theme->get( 'Name' ),
+					'checked' => $theme->get_stylesheet() === $active_theme->get_stylesheet(),
+				);
+			},
+			$themes
+		);
 
 		return array(
 			array(
@@ -142,28 +173,14 @@ class Init {
 				'description' => __( 'It includes all the installed plugins and extensions.', 'woocommerce' ),
 				'label'       => __( 'Plugins and extensions', 'woocommerce' ),
 				'icon'        => 'plugins',
-				'items'       => array_map(
-					function ( $key, $plugin ) {
-						return array(
-							'id'    => $key,
-							'label' => $plugin['Name'],
-						);
-					},
-					array_keys( $active_plugins ),
-					$active_plugins
-				),
+				'items'       => $plugins,
 			),
 			array(
 				'id'          => 'themes',
 				'description' => __( 'It includes all the installed themes.', 'woocommerce' ),
 				'label'       => __( 'Themes', 'woocommerce' ),
 				'icon'        => 'brush',
-				'items'       => array(
-					array(
-						'id'    => $active_theme->get_stylesheet(),
-						'label' => $active_theme->get( 'Name' ),
-					),
-				),
+				'items'       => array_values( $themes ),
 			),
 		);
 	}
@@ -183,7 +200,7 @@ class Init {
 		if ( 'woocommerce_page_wc-settings-advanced-blueprint' === PageController::get_instance()->get_current_screen_id() ) {
 			// Used on the settings page.
 			// wcSettings.admin.blueprint_step_groups.
-			$settings['blueprint_step_groups'] = $this->get_step_groups_for_js();
+			$settings['blueprint_step_groups']         = $this->get_step_groups_for_js();
 			$settings['blueprint_max_step_size_bytes'] = RestApi::MAX_FILE_SIZE;
 		}
 
