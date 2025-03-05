@@ -40,7 +40,7 @@ class WC_Tests_Admin_Dashboard extends WC_Unit_Test_Case {
 	/**
 	 * Test: get_status_widget
 	 */
-	public function test_status_widget() {
+	public function test_status_widget_content() {
 		$this->skip_if_hpos_enabled( 'We don\'t support legacy reports on HPOS' );
 		wp_set_current_user( $this->user );
 		$order = WC_Helper_Order::create_order();
