@@ -169,25 +169,19 @@ final class ProductFilterAttribute extends AbstractBlock {
 		$orderby           = $block_attributes['sortOrder'] ? explode( '-', $block_attributes['sortOrder'] )[0] : 'name';
 		$order             = $block_attributes['sortOrder'] ? strtoupper( explode( '-', $block_attributes['sortOrder'] )[1] ) : 'DESC';
 
+		$args = array(
+			'taxonomy' => $product_attribute->slug,
+			'orderby'  => $orderby,
+			'order'    => $order,
+		);
+
 		if ( $hide_empty ) {
-			$attribute_terms = get_terms(
-				array(
-					'taxonomy' => $product_attribute->slug,
-					'include'  => array_keys( $attribute_counts ),
-					'orderby'  => $orderby,
-					'order'    => $order,
-				)
-			);
+			$args['include'] = array_keys( $attribute_counts );
 		} else {
-			$attribute_terms = get_terms(
-				array(
-					'taxonomy'   => $product_attribute->slug,
-					'hide_empty' => false,
-					'orderby'    => $orderby,
-					'order'      => $order,
-				)
-			);
+			$args['hide_empty'] = false;
 		}
+
+		$attribute_terms = get_terms( $args );
 
 		$filter_param_key = 'filter_' . str_replace( 'pa_', '', $product_attribute->slug );
 		$filter_params    = $block->context['filterParams'] ?? array();
