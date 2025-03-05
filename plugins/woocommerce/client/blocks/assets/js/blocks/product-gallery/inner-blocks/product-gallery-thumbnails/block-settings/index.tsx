@@ -30,9 +30,13 @@ export const ProductGalleryThumbnailsBlockSettings = ( {
 			units={ [ { value: 'px', label: 'px' } ] }
 			min={ 10 }
 			max={ 300 }
-			step={ 10 }
+			step={ 5 }
 			size="default"
 			__next36pxDefaultSize
+			help={ __(
+				'Choose the size of each thumbnail. If thumbnails size is bigger than the product image, thumbnails will turn to slider.',
+				'woocommerce'
+			) }
 		/>
 	);
 };
