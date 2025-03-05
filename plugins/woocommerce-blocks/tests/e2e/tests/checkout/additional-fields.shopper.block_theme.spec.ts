@@ -909,7 +909,7 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 			);
 		} );
 
-		test( 'Shopper can refresh the page, and not loose any entered data', async ( {
+		test( 'Shopper can refresh the page, and not lose any entered data', async ( {
 			checkoutPageObject,
 		} ) => {
 			await checkoutPageObject.editShippingDetails();
