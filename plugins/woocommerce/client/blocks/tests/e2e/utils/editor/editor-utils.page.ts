@@ -149,7 +149,7 @@ export class Editor extends CoreEditor {
 		} catch ( error ) {
 			if (
 				! ( error instanceof Error ) ||
-				! error.message.includes( 'Strict mode violation' )
+				! error.message.includes( 'strict mode violation' )
 			) {
 				throw error;
 			}
