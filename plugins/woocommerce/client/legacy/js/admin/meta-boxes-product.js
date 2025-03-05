@@ -144,6 +144,20 @@ jQuery( function ( $ ) {
 				$( 'input#_virtual' ).prop( 'checked', false );
 			}
 
+			const cogs_field_tip = $( '._cogs_value_field' ).find( '.woocommerce-help-tip' );
+			const cogs_field_tip_text =
+				'variable' === select_val ?
+					woocommerce_admin_meta_boxes.cogs_value_tooltip_variable_products :
+					woocommerce_admin_meta_boxes.cogs_value_tooltip_simple_products;
+			$( cogs_field_tip ).attr( 'aria-label', cogs_field_tip_text );
+			$( cogs_field_tip ).tipTip( {
+				attribute: 'aria-label',
+				fadeIn: 50,
+				fadeOut: 50,
+				delay: 200,
+				keepAlive: true,
+			} );
+
 			show_and_hide_panels();
 			change_product_type_tip( get_product_tip_content( select_val ) );
 

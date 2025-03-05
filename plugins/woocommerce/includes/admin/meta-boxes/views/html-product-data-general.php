@@ -41,7 +41,8 @@ use Automattic\WooCommerce\Enums\ProductTaxStatus;
 	</div>
 
 	<?php
-		$cogs_is_enabled = wc_get_container()->get( CostOfGoodsSoldController::class )->feature_is_enabled();
+		$cogs_controller = wc_get_container()->get( CostOfGoodsSoldController::class );
+		$cogs_is_enabled = $cogs_controller->feature_is_enabled();
 	?>
 	<div class="options_group pricing show_if_simple show_if_external show_if_variable hidden<?php echo $cogs_is_enabled ? ' show_if_variable' : ''; ?>">
 		<?php if ( $cogs_is_enabled ) : ?>
@@ -98,10 +99,7 @@ use Automattic\WooCommerce\Enums\ProductTaxStatus;
 						'data_type'   => 'price',
 						'desc_tip'    => 'true',
 						'placeholder' => '0',
-						'description' =>
-							$is_variable ?
-								__( 'Add the amount it costs you to buy or make this product. This will be applied as the default value for variations.', 'woocommerce' ) :
-								__( 'Add the amount it costs you to buy or make this product.', 'woocommerce' ),
+						'description' => $cogs_controller->get_general_cost_edit_field_tooltip( $is_variable ),
 					)
 				);
 				?>
