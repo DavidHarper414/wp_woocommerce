@@ -781,7 +781,8 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 		WC_Helper_Queue::run_all_pending( 'wc-admin-data' );
 
 		// Get the last order item from the order.
-		$order_item_id = end( $order->get_items() )->get_id();
+		$order_items   = $order->get_items();
+		$order_item_id = end( $order_items )->get_id();
 
 		// Get the refund order id.
 		$refund_order_id = $order->get_refunds()[0]->get_id();
@@ -924,10 +925,12 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 		WC_Helper_Queue::run_all_pending( 'wc-admin-data' );
 
 		// Get the last order item (product_3) from the order.
-		$order_item_id = end( $order->get_items() )->get_id();
+		$order_items   = $order->get_items();
+		$order_item_id = end( $order_items )->get_id();
 
 		// Get the last refund order id.
-		$refund_order_id = end( $order->get_refunds() )->get_id();
+		$refunds         = $order->get_refunds();
+		$refund_order_id = end( $refunds )->get_id();
 
 		$result = $wpdb->get_results(
 			$wpdb->prepare(
@@ -1044,7 +1047,8 @@ class WC_Admin_Tests_Reports_Products extends WC_Unit_Test_Case {
 		WC_Helper_Queue::run_all_pending( 'wc-admin-data' );
 
 		// Get the last order item from the order.
-		$order_item_id = end( $order->get_items() )->get_id();
+		$order_items   = $order->get_items();
+		$order_item_id = end( $order_items )->get_id();
 
 		// Get the refund order id.
 		$refund_order_id = $order->get_refunds()[0]->get_id();
