@@ -126,8 +126,6 @@ class WC_Settings_Products_Test extends WC_Settings_Unit_Test_Case {
 			'woocommerce_notify_no_stock_amount'                         => 'number',
 			'woocommerce_hide_out_of_stock_items'                        => 'checkbox',
 			'woocommerce_stock_format'                                   => 'select',
-			'product_inventory_notifications_options'                    => array( 'title', 'sectionend' ),
-			'wc_feature_woocommerce_back_in_stock_notifications_enabled' => 'checkbox'
 		);
 
 		$this->assertEquals( $expected, $setting_ids_and_types );
