@@ -6,7 +6,7 @@ tags: reference
 
 ## The problem
 
-You added custom data to the [Store API](https://github.com/woocommerce/woocommerce/blob/1675c63bba94c59703f57c7ef06e7deff8fd6bba/plugins/woocommerce-blocks/docs/third-party-developers/extensibility/rest-api/extend-rest-api-add-data.md). You changed several strings using [Checkout filters](./category/cart-and-checkout-blocks/available-filters/). Now you want to render your own components in specific places in the Cart and Checkout.
+You added custom data to the [Store API](https://github.com/woocommerce/woocommerce/blob/1675c63bba94c59703f57c7ef06e7deff8fd6bba/plugins/woocommerce-blocks/docs/third-party-developers/extensibility/rest-api/extend-rest-api-add-data.md). You changed several strings using [Checkout filters](./available-filters/README.md). Now you want to render your own components in specific places in the Cart and Checkout.
 
 ## Solution
 
@@ -32,14 +32,14 @@ const { registerPlugin } = wp.plugins;
 const { ExperimentalOrderMeta } = wc.blocksCheckout;
 
 const MyCustomComponent = ( { cart, extensions } ) => {
-	return <div className="my-component">Hello WooCommerce</div>;
+	return &lt;div className="my-component"&gt;Hello WooCommerce&lt;/div&gt;;
 };
 
 const render = () => {
 	return (
-		<ExperimentalOrderMeta>
-			<MyCustomComponent />
-		</ExperimentalOrderMeta>
+		&lt;ExperimentalOrderMeta&gt;
+			&lt;MyCustomComponent /&gt;
+		&lt;/ExperimentalOrderMeta&gt;
 	);
 };
 

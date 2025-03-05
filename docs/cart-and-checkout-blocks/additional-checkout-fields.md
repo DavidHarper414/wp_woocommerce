@@ -12,9 +12,11 @@ This document will outline the steps an extension should take to register some a
 
 Additional checkout fields can be registered in three different places:
 
-- Contact information
-- Addresses (Shipping **and** Billing)
-- Order information
+| Title                                | Identifier |
+| ------------------------------------ | ---------- |
+| Contact information                  | **`contact`**  |
+| Addresses (Shipping **and** Billing) | **`address`**  |
+| Order information                    | **`order`**    |
 
 A field can only be shown in one location, it is not possible to render the same field in multiple locations in the same registration.
 
@@ -254,7 +256,7 @@ You can set a placeholder to be shown on the select by passing a `placeholder` v
 |-----|-----|-----|----------------|--------------|
 | `options` | An array of options to show in the select input. Each options must be an array containing a `label` and `value` property. Each entry must have a unique `value`. Any duplicate options will be removed. The `value` is what gets submitted to the server during checkout and the `label` is simply a user-friendly representation of this value. It is not transmitted to the server in any way. | Yes | see below | No default - this must be provided. |
 | `required` | If this is `true` then the shopper _must_ provide a value for this field during the checkout process. | No | `true` | `false` |
-| `placeholder` | If this value is set, the shopper will see this option in the select. If the select is required, the shopper cannot select this option. | No | `Select a role | Select a $label |
+| `placeholder` | If this value is set, the shopper will see this option in the select. If the select is required, the shopper cannot select this option. | No | `Select a role` | Select a $label |
 
 ##### Example of `options` value
 
@@ -278,7 +280,12 @@ You can set a placeholder to be shown on the select by passing a `placeholder` v
 
 #### Options for `checkbox` fields
 
-The checkbox field type does not have any specific options, however `required` will always be `false` for a checkbox field. Making a checkbox field required is not supported.
+As well as the options above, checkbox fields also support a `required` option. If this is `true` then the shopper _must_ check this box to place the order.
+
+| Option name     | Description                                                                  | Required? | Example                                                      | Default value |
+|-----------------|------------------------------------------------------------------------------|-----------|--------------------------------------------------------------|---|
+| `required`      | If this is `true` then the shopper _must_ check this box to place the order. | No | `true`                                                       | `false` |
+| `error_message` | A custom message to show if the box is unchecked.                            | No | `You must confirm you are over 18 before placing the order.` | `Please check this box if you want to proceed.` |
 
 ### Attributes
 
@@ -339,11 +346,11 @@ This results in the following address form (the billing form will be the same):
 The rendered markup looks like this:
 
 ```html
-<input type="text" id="shipping-namespace-gov-id" autocapitalize="off"
+	&lt;input type="text" id="shipping-namespace-gov-id" autocapitalize="off"
        autocomplete="government-id" aria-label="custom aria label"
        aria-describedby="some-element" required="" aria-invalid="true"
        title="Title to show on hover" pattern="[A-Z0-9]{5}"
-       data-custom="custom data" value="" >
+       data-custom="custom data" value="" &gt;
 ```
 
 ### Rendering a checkbox field
@@ -454,7 +461,7 @@ add_action(
 	'woocommerce_sanitize_additional_field',
 	function ( $field_value, $field_key ) {
 		if ( 'namespace/gov-id' === $field_key ) {
-			$field_value = str_replace( ' ', '', $field_key );
+			$field_value = str_replace( ' ', '', $field_value );
 			$field_value = strtoupper( $field_value );
 		}
 		return $field_value;
@@ -568,7 +575,7 @@ Due to technical reasons, it's not yet possible to specify the meta key for fiel
 
 Assuming 2 fields, named `my-plugin-namespace/address-field` in the address step and `my-plugin-namespace/my-other-field` in the order step, you can:
 
-### React to to saving fields
+### React to saving fields
 
 You can react to those fields being saved by hooking into `woocommerce_set_additional_field_value` action.
 
@@ -617,7 +624,7 @@ You can use the `woocommerce_get_default_value_for_{$key}` filters to provide a 
 
 ```php
 add_filter(
-	"woocommerce_blocks_get_default_value_for_my-plugin-namespace/address-field",
+	"woocommerce_get_default_value_for_my-plugin-namespace/address-field",
 	function ( $value, $group, $wc_object ) {
 
 		if ( 'billing' === $group ) {
@@ -633,7 +640,7 @@ add_filter(
 );
 
 add_filter(
-	"woocommerce_blocks_get_default_value_for_my-plugin-namespace/my-other-field",
+	"woocommerce_get_default_value_for_my-plugin-namespace/my-other-field",
 	function ( $value, $group, $wc_object ) {
 
 		$my_plugin_key = 'existing_order_field_key';
@@ -686,7 +693,7 @@ add_action(
 			'woocommerce_sanitize_additional_field',
 			function ( $field_value, $field_key ) {
 				if ( 'namespace/gov-id' === $field_key || 'namespace/confirm-gov-id' === $field_key ) {
-					$field_value = str_replace( ' ', '', $field_key );
+					$field_value = str_replace( ' ', '', $field_value );
 					$field_value = strtoupper( $field_value );
 				}
 				return $field_value;

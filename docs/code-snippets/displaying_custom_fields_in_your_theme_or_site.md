@@ -11,7 +11,7 @@ You can use the metadata from custom fields you add to your products to display 
 
 To display the custom fields for each product, you have to edit your theme’s files. Here’s an example of how you might display a custom field within the single product pages after the short description:
 
-![image](https://github.com/woocommerce/woocommerce-developer-advocacy/assets/15178758/ed417ed8-4462-45b9-96b6-c0141afaeb2b)
+![image](./_media/custom-field-value.png)
 
 ```php
 <?php
@@ -33,7 +33,7 @@ function woocommerce_custom_field_example() {
     $custom_field_value = get_post_meta( $product->get_id(), 'woo_custom_field', true );
     
     if ( ! empty( $custom_field_value ) ) {
-       echo '<div class="custom-field">' . esc_html( $custom_field_value ) . '</div>';
+       echo '&lt;div class="custom-field"&gt;' . esc_html( $custom_field_value ) . '&lt;/div&gt;';
     }
 }
 

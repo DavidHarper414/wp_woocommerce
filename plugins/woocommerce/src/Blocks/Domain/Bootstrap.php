@@ -17,7 +17,6 @@ use Automattic\WooCommerce\Blocks\QueryFilters;
 use Automattic\WooCommerce\Blocks\Domain\Services\CreateAccount;
 use Automattic\WooCommerce\Blocks\Domain\Services\Notices;
 use Automattic\WooCommerce\Blocks\Domain\Services\DraftOrders;
-use Automattic\WooCommerce\Blocks\Domain\Services\FeatureGating;
 use Automattic\WooCommerce\Blocks\Domain\Services\GoogleAnalytics;
 use Automattic\WooCommerce\Blocks\Domain\Services\Hydration;
 use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
@@ -38,9 +37,6 @@ use Automattic\WooCommerce\StoreApi\RoutesController;
 use Automattic\WooCommerce\StoreApi\SchemaController;
 use Automattic\WooCommerce\StoreApi\StoreApi;
 use Automattic\WooCommerce\Blocks\Shipping\ShippingController;
-use Automattic\WooCommerce\Blocks\Templates\SingleProductTemplateCompatibility;
-use Automattic\WooCommerce\Blocks\Templates\ArchiveProductTemplatesCompatibility;
-use Automattic\WooCommerce\Blocks\Domain\Services\OnboardingTasks\TasksController;
 use Automattic\WooCommerce\Blocks\TemplateOptions;
 
 
@@ -132,18 +128,6 @@ class Bootstrap {
 				$is_store_api_request = wc()->is_store_api_request();
 
 				if ( ! $is_store_api_request && ( wc_current_theme_is_fse_theme() || current_theme_supports( 'block-template-parts' ) ) ) {
-					$this->container->register(
-						BlockTemplatesRegistry::class,
-						function () {
-							return new BlockTemplatesRegistry();
-						}
-					);
-					$this->container->register(
-						BlockTemplatesController::class,
-						function () {
-							return new BlockTemplatesController();
-						}
-					);
 					$this->container->get( BlockTemplatesRegistry::class )->init();
 					$this->container->get( BlockTemplatesController::class )->init();
 				}
@@ -160,7 +144,6 @@ class Bootstrap {
 		$this->container->get( DraftOrders::class )->init();
 		$this->container->get( CreateAccount::class )->init();
 		$this->container->get( ShippingController::class )->init();
-		$this->container->get( TasksController::class )->init();
 		$this->container->get( CheckoutFields::class )->init();
 
 		// Load assets in admin and on the frontend.
@@ -181,8 +164,6 @@ class Bootstrap {
 			$this->container->get( BlockPatterns::class );
 			$this->container->get( BlockTypesController::class );
 			$this->container->get( ClassicTemplatesCompatibility::class );
-			$this->container->get( ArchiveProductTemplatesCompatibility::class )->init();
-			$this->container->get( SingleProductTemplateCompatibility::class )->init();
 			$this->container->get( Notices::class )->init();
 			$this->container->get( PTKPatternsStore::class );
 			$this->container->get( TemplateOptions::class )->init();
@@ -238,12 +219,6 @@ class Bootstrap {
 	 */
 	protected function register_dependencies() {
 		$this->container->register(
-			FeatureGating::class,
-			function () {
-				return new FeatureGating();
-			}
-		);
-		$this->container->register(
 			AssetApi::class,
 			function ( Container $container ) {
 				return new AssetApi( $container->get( Package::class ) );
@@ -286,18 +261,6 @@ class Bootstrap {
 			function ( Container $container ) {
 				$asset_data_registry = $container->get( AssetDataRegistry::class );
 				return new ClassicTemplatesCompatibility( $asset_data_registry );
-			}
-		);
-		$this->container->register(
-			ArchiveProductTemplatesCompatibility::class,
-			function () {
-				return new ArchiveProductTemplatesCompatibility();
-			}
-		);
-		$this->container->register(
-			SingleProductTemplateCompatibility::class,
-			function () {
-				return new SingleProductTemplateCompatibility();
 			}
 		);
 		$this->container->register(
@@ -437,15 +400,21 @@ class Bootstrap {
 			}
 		);
 		$this->container->register(
-			TasksController::class,
-			function () {
-				return new TasksController();
-			}
-		);
-		$this->container->register(
 			QueryFilters::class,
 			function () {
 				return new QueryFilters();
+			}
+		);
+		$this->container->register(
+			BlockTemplatesRegistry::class,
+			function () {
+				return new BlockTemplatesRegistry();
+			}
+		);
+		$this->container->register(
+			BlockTemplatesController::class,
+			function () {
+				return new BlockTemplatesController();
 			}
 		);
 	}

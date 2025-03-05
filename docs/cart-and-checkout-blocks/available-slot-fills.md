@@ -7,9 +7,9 @@ tags: reference
 
 This document presents the list of available Slots that you can use for adding your custom content (Fill).
 
-If you want to add a new SlotFill component, check the [Checkout - Slot Fill document](https://github.com/woocommerce/woocommerce/blob/1675c63bba94c59703f57c7ef06e7deff8fd6bba/plugins/woocommerce-blocks/packages/checkout/slot/README.md). To read more about Slot and Fill, check the [Slot and Fill document](./cart-and-checkout-slot-and-fill/).
+If you want to add a new SlotFill component, check the [Checkout - Slot Fill document](../../plugins/woocommerce/client/blocks/packages/checkout/slot/README.md). To read more about Slot and Fill, check the [Slot and Fill document](./slot-fills.md).
 
-**Note About Naming:** Slots that are prefixed with `Experimental` are experimental and subject to change or remove. Once they graduate from the experimental stage, the naming would change and the `Experimental` prefix would be dropped. Check the [Feature Gating document](https://github.com/woocommerce/woocommerce/blob/1675c63bba94c59703f57c7ef06e7deff8fd6bba/plugins/woocommerce-blocks/docs/internal-developers/blocks/feature-flags-and-experimental-interfaces.md) from more information.
+**Note About Naming:** Slots that are prefixed with `Experimental` are experimental and subject to change or remove. Once they graduate from the experimental stage, the naming would change and the `Experimental` prefix would be dropped. Check the [Feature Gating document](../../plugins/woocommerce/client/blocks/docs/internal-developers/blocks/feature-flags-and-experimental-interfaces.md) from more information.
 
 ## ExperimentalOrderMeta
 
@@ -22,11 +22,11 @@ const { ExperimentalOrderMeta } = window.wc.blocksCheckout;
 
 const render = () => {
 	return (
-		<ExperimentalOrderMeta>
-			<div class="wc-block-components-totals-wrapper">
+		&lt;ExperimentalOrderMeta&gt;
+			&lt;div class="wc-block-components-totals-wrapper"&gt;
 				{ __( 'Yearly recurring total ...', 'YOUR-TEXTDOMAIN' ) }
-			</div>
-		</ExperimentalOrderMeta>
+			&lt;/div&gt;
+		&lt;/ExperimentalOrderMeta&gt;
 	);
 };
 
@@ -61,9 +61,9 @@ const { ExperimentalOrderShippingPackages } = window.wc.blocksCheckout;
 
 const render = () => {
 	return (
-		<ExperimentalOrderShippingPackages>
-			<div>{ __( 'Express Shipping', 'YOUR-TEXTDOMAIN' ) }</div>
-		</ExperimentalOrderShippingPackages>
+		&lt;ExperimentalOrderShippingPackages&gt;
+			&lt;div&gt;{ __( 'Express Shipping', 'YOUR-TEXTDOMAIN' ) }&lt;/div&gt;
+		&lt;/ExperimentalOrderShippingPackages&gt;
 	);
 };
 
@@ -104,14 +104,14 @@ const { ExperimentalOrderLocalPickupPackages } = window.wc.blocksCheckout;
 
 const render = () => {
 	return (
-		<ExperimentalOrderLocalPickupPackages>
-			<div>
+		&lt;ExperimentalOrderLocalPickupPackages&gt;
+			&lt;div&gt;
 				{ __(
 					'By using our convenient local pickup option, you can come to our store and pick up your order. We will send you and email when your order is ready for pickup.',
 					'YOUR-TEXTDOMAIN'
 				) }
-			</div>
-		</ExperimentalOrderLocalPickupPackages>
+			&lt;/div&gt;
+		&lt;/ExperimentalOrderLocalPickupPackages&gt;
 	);
 };
 
@@ -143,11 +143,11 @@ const { ExperimentalDiscountsMeta } = window.wc.blocksCheckout;
 
 const render = () => {
 	return (
-		<ExperimentalDiscountsMeta>
-			<div class="wc-block-components-totals-wrapper">
+		&lt;ExperimentalDiscountsMeta&gt;
+			&lt;div class="wc-block-components-totals-wrapper"&gt;
 				{ __( 'You have 98683 coins to spend ...', 'YOUR-TEXTDOMAIN' ) }
-			</div>
-		</ExperimentalDiscountsMeta>
+			&lt;/div&gt;
+		&lt;/ExperimentalDiscountsMeta&gt;
 	);
 };
 

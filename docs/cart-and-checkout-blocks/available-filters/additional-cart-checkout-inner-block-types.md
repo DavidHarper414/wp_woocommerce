@@ -24,7 +24,7 @@ This filter is called once for each inner block area, so it is possible to be ve
 -   _extensions_ `object` (default: `{}`) - The extensions object.
 -   _args_ `object` - The arguments object with the following key:
     -   _block_ `string` - The block name of the inner block area, e.g. `woocommerce/checkout-shipping-address-block`.
--   _validation_ `boolean` or `Error` - Checks if the returned value is an arry of strings. If an error occurs, it will be thrown.
+-   _validation_ `boolean` or `Error` - Checks if the returned value is an array of strings. If an error occurs, it will be thrown.
 
 ### Returns <!-- omit in toc -->
 
@@ -66,7 +66,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 
 To call this filter within the editor, wrap the filter registration in a `DOMContentLoaded` event listener and ensure the code runs in the admin panel.
 
-> Filters can be also combined. See [Combined filters](./category/cart-and-checkout-blocks/available-filters/) for an example.
+> Filters can be also combined. See [Combined filters](../available-filters/README.md) for an example.
 
 ### Screenshots <!-- omit in toc -->
 

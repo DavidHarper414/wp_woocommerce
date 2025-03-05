@@ -21,15 +21,19 @@ defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Admin\Notes\Note;
 use Automattic\WooCommerce\Admin\Notes\Notes;
 use Automattic\WooCommerce\Database\Migrations\MigrationHelper;
+use Automattic\WooCommerce\Enums\ProductStockStatus;
+use Automattic\WooCommerce\Enums\ProductType;
 use Automattic\WooCommerce\Internal\Admin\Marketing\MarketingSpecs;
 use Automattic\WooCommerce\Internal\Admin\Notes\WooSubscriptionsNotes;
 use Automattic\WooCommerce\Internal\AssignDefaultCategory;
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use Automattic\WooCommerce\Internal\DataStores\Orders\DataSynchronizer;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 use Automattic\WooCommerce\Internal\ProductAttributesLookup\DataRegenerator;
 use Automattic\WooCommerce\Internal\ProductAttributesLookup\LookupDataStore;
 use Automattic\WooCommerce\Internal\ProductDownloads\ApprovedDirectories\Register as Download_Directories;
 use Automattic\WooCommerce\Internal\ProductDownloads\ApprovedDirectories\Synchronize as Download_Directories_Sync;
+use Automattic\WooCommerce\Internal\Utilities\DatabaseUtil;
 use Automattic\WooCommerce\Utilities\StringUtil;
 
 /**
@@ -416,7 +420,7 @@ function wc_update_209_brazillian_state() {
 
 	// phpcs:disable WordPress.DB.SlowDBQuery
 
-	// Update brazillian state codes.
+	// Update Brazilian state codes.
 	$wpdb->update(
 		$wpdb->postmeta,
 		array(
@@ -555,6 +559,8 @@ function wc_update_220_shipping() {
 
 /**
  * Update order statuses for 2.2
+ *
+ * Keeping the internal statuses names as strings to avoid regression issues (not referencing Automattic\WooCommerce\Enums\OrderInternalStatus class).
  *
  * @return void
  */
@@ -991,7 +997,7 @@ function wc_update_241_variations() {
 		$parent_stock_status = get_post_meta( $variation->variation_parent, '_stock_status', true );
 
 		// Set the _stock_status.
-		add_post_meta( $variation->variation_id, '_stock_status', $parent_stock_status ? $parent_stock_status : 'instock', true );
+		add_post_meta( $variation->variation_id, '_stock_status', $parent_stock_status ? $parent_stock_status : ProductStockStatus::IN_STOCK, true );
 
 		// Delete old product children array.
 		delete_transient( 'wc_product_children_' . $variation->variation_parent );
@@ -1266,7 +1272,7 @@ function wc_update_300_grouped_products() {
 	$parents = $wpdb->get_col( "SELECT DISTINCT( post_parent ) FROM {$wpdb->posts} WHERE post_parent > 0 AND post_type = 'product';" );
 	foreach ( $parents as $parent_id ) {
 		$parent = wc_get_product( $parent_id );
-		if ( $parent && $parent->is_type( 'grouped' ) ) {
+		if ( $parent && $parent->is_type( ProductType::GROUPED ) ) {
 			$children_ids = get_posts(
 				array(
 					'post_parent'    => $parent_id,
@@ -1331,7 +1337,7 @@ function wc_update_300_product_visibility() {
 		$wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO {$wpdb->term_relationships} SELECT post_id, %d, 0 FROM {$wpdb->postmeta} WHERE meta_key = '_visibility' AND meta_value IN ('hidden', 'search');", $exclude_catalog_term->term_taxonomy_id ) );
 	}
 
-	$outofstock_term = get_term_by( 'name', 'outofstock', 'product_visibility' );
+	$outofstock_term = get_term_by( 'name', ProductStockStatus::OUT_OF_STOCK, 'product_visibility' );
 
 	if ( $outofstock_term ) {
 		$wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO {$wpdb->term_relationships} SELECT post_id, %d, 0 FROM {$wpdb->postmeta} WHERE meta_key = '_stock_status' AND meta_value = 'outofstock';", $outofstock_term->term_taxonomy_id ) );
@@ -2598,7 +2604,7 @@ function wc_update_770_remove_multichannel_marketing_feature_options() {
 /**
  * Migrate transaction data which was being incorrectly stored in the postmeta table to HPOS tables.
  *
- * @return bool Whether there are pending migration recrods.
+ * @return bool Whether there are pending migration records.
  */
 function wc_update_810_migrate_transactional_metadata_for_hpos() {
 	global $wpdb;
@@ -2691,7 +2697,7 @@ function wc_update_890_update_connect_to_woocommerce_note() {
  * Disables the PayPal Standard gateway for stores that aren't using it.
  *
  * PayPal Standard has been deprecated since WooCommerce 5.5, but there are some stores that have it showing up in their
- * list of available Payment methods even if it's not setup. In WooComerce 8.9 we will disable PayPal Standard for those stores
+ * list of available Payment methods even if it's not setup. In WooCommerce 8.9 we will disable PayPal Standard for those stores
  * to reduce the amount of new connections to the legacy gateway.
  *
  * Shows an admin notice to inform the store owner that PayPal Standard has been disabled and suggests installing PayPal Payments.
@@ -2779,14 +2785,16 @@ function wc_update_920_add_wc_hooked_blocks_version_option() {
 function wc_update_910_remove_obsolete_user_meta() {
 	global $wpdb;
 
-	$deletions = $wpdb->query( "
+	$deletions = $wpdb->query(
+		"
 		DELETE FROM $wpdb->usermeta
 		WHERE meta_key IN (
 			'_last_order',
 			'_order_count',
 			'_money_spent'
 		)
-	" );
+	"
+	);
 
 	$logger = wc_get_logger();
 
@@ -2814,4 +2822,134 @@ function wc_update_910_remove_obsolete_user_meta() {
 			)
 		);
 	}
+}
+
+/**
+ * Add woocommerce_coming_soon option when it is not currently present.
+ */
+function wc_update_930_add_woocommerce_coming_soon_option() {
+	add_option( 'woocommerce_coming_soon', 'no' );
+}
+
+/**
+ * Migrate Launch Your Store tour meta keys to the woocommerce_meta user data fields.
+ */
+function wc_update_930_migrate_user_meta_for_launch_your_store_tour() {
+	// Rename `woocommerce_launch_your_store_tour_hidden` meta key to `woocommerce_admin_launch_your_store_tour_hidden`.
+	global $wpdb;
+	$wpdb->query(
+		$wpdb->prepare(
+			"UPDATE {$wpdb->usermeta}
+			SET meta_key = %s
+			WHERE meta_key = %s",
+			'woocommerce_admin_launch_your_store_tour_hidden',
+			'woocommerce_launch_your_store_tour_hidden'
+		)
+	);
+
+	// Rename `woocommerce_coming_soon_banner_dismissed` meta key to `woocommerce_admin_coming_soon_banner_dismissed`.
+	$wpdb->query(
+		$wpdb->prepare(
+			"UPDATE {$wpdb->usermeta}
+			SET meta_key = %s
+			WHERE meta_key = %s",
+			'woocommerce_admin_coming_soon_banner_dismissed',
+			'woocommerce_coming_soon_banner_dismissed'
+		)
+	);
+}
+
+/**
+ * Recreate FTS index if it already exists, so that phone number can be added to the index.
+ */
+function wc_update_940_add_phone_to_order_address_fts_index(): void {
+	$fts_already_exists = get_option( CustomOrdersTableController::HPOS_FTS_ADDRESS_INDEX_CREATED_OPTION ) === 'yes';
+	if ( ! $fts_already_exists ) {
+		return;
+	}
+
+	$hpos_controller = wc_get_container()->get( CustomOrdersTableController::class );
+	$result          = $hpos_controller->recreate_order_address_fts_index();
+	if ( ! $result['status'] ) {
+		if ( class_exists( 'WC_Admin_Settings ' ) ) {
+			WC_Admin_Settings::add_error( $result['message'] );
+		}
+	}
+}
+
+/**
+ * Remove user meta associated with the key 'woocommerce_admin_help_panel_highlight_shown'.
+ *
+ * This key is no longer needed since the help panel spotlight tour has been removed.
+ *
+ * @return void
+ */
+function wc_update_940_remove_help_panel_highlight_shown() {
+	global $wpdb;
+
+	$meta_key = 'woocommerce_admin_help_panel_highlight_shown';
+
+	$deletions = $wpdb->query(
+		$wpdb->prepare(
+			"DELETE FROM $wpdb->usermeta WHERE meta_key = %s",
+			$meta_key
+		)
+	);
+
+	// Get the WooCommerce logger to track the results of the deletion.
+	$logger = wc_get_logger();
+
+	if ( null === $logger ) {
+		return;
+	}
+
+	if ( false === $deletions ) {
+		$logger->notice(
+			'During the update to 9.4.0, WooCommerce attempted to remove user meta with the key "woocommerce_admin_help_panel_highlight_shown", but was unable to do so.',
+			array(
+				'source' => 'wc-updater',
+			)
+		);
+	} else {
+		$logger->info(
+			sprintf(
+				1 === $deletions
+					? 'During the update to 9.4.0, WooCommerce removed %d user meta row associated with the meta key "woocommerce_admin_help_panel_highlight_shown".'
+					: 'During the update to 9.4.0, WooCommerce removed %d user meta rows associated with the meta key "woocommerce_admin_help_panel_highlight_shown".',
+				number_format_i18n( $deletions )
+			),
+			array(
+				'source' => 'wc-updater',
+			)
+		);
+	}
+}
+
+/**
+ * Autoloads woocommerce_allow_tracking option.
+ */
+function wc_update_950_tracking_option_autoload() {
+	$options = array(
+		'woocommerce_allow_tracking' => 'yes',
+	);
+	wp_set_option_autoload_values( $options );
+}
+
+/**
+ * Update the base color for emails as part of the WooCommerce rebranding,
+ * but only if the user hasn't specified a custom color.
+ */
+function wc_update_961_migrate_default_email_base_color() {
+	$color = get_option( 'woocommerce_email_base_color' );
+	if ( '#7f54b3' === $color ) {
+		update_option( 'woocommerce_email_base_color', '#720eec' );
+	}
+}
+
+/**
+ * Remove the option woocommerce_order_attribution_install_banner_dismissed.
+ * This data is now stored in the user meta table in the PR #55715.
+ */
+function wc_update_980_remove_order_attribution_install_banner_dismissed_option() {
+	delete_option( 'woocommerce_order_attribution_install_banner_dismissed' );
 }

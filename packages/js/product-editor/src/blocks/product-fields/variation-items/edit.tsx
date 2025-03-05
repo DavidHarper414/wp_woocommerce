@@ -3,10 +3,11 @@
  */
 import { sprintf, __ } from '@wordpress/i18n';
 import {
-	EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME,
 	PartialProductVariation,
+	ProductVariation,
 	Product,
 	useUserPreferences,
+	experimentalProductVariationsStore,
 } from '@woocommerce/data';
 import { useWooBlockProps } from '@woocommerce/block-templates';
 import { recordEvent } from '@woocommerce/tracks';
@@ -34,9 +35,9 @@ export function Edit( {
 	attributes,
 	context: { isInSelectedTab },
 }: ProductEditorBlockEditProps< VariationOptionsBlockAttributes > ) {
-	const noticeDimissed = useRef( false );
+	const noticeDismissed = useRef( false );
 	const { invalidateResolution } = useDispatch(
-		EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
+		experimentalProductVariationsStore
 	);
 	const productId = useEntityId( 'postType', 'product' );
 	const blockProps = useWooBlockProps( attributes );
@@ -65,8 +66,8 @@ export function Edit( {
 	const totalCountWithoutPriceRequestParams = useMemo(
 		() => ( {
 			product_id: productId,
-			order: 'asc',
-			orderby: 'menu_order',
+			order: 'asc' as const,
+			orderby: 'menu_order' as const,
 			has_price: false,
 		} ),
 		[ productId ]
@@ -75,12 +76,12 @@ export function Edit( {
 	const { totalCountWithoutPrice } = useSelect(
 		( select ) => {
 			const { getProductVariationsTotalCount } = select(
-				EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
+				experimentalProductVariationsStore
 			);
 
 			return {
 				totalCountWithoutPrice: productHasOptions
-					? getProductVariationsTotalCount< number >(
+					? getProductVariationsTotalCount(
 							totalCountWithoutPriceRequestParams
 					  )
 					: 0,
@@ -107,7 +108,7 @@ export function Edit( {
 			 */
 			if (
 				totalCountWithoutPrice > 0 &&
-				! noticeDimissed.current &&
+				! noticeDismissed.current &&
 				productStatus !== 'publish' &&
 				// New status.
 				newData?.status === 'publish'
@@ -138,11 +139,11 @@ export function Edit( {
 			source: TRACKS_SOURCE,
 		} );
 		const productVariationsListPromise = resolveSelect(
-			EXPERIMENTAL_PRODUCT_VARIATIONS_STORE_NAME
-		).getProductVariations< PartialProductVariation[] >( {
+			experimentalProductVariationsStore
+		).getProductVariations( {
 			product_id: productId,
-			order: 'asc',
-			orderby: 'menu_order',
+			order: 'asc' as const,
+			orderby: 'menu_order' as const,
 			has_price: false,
 			_fields: [ 'id' ],
 			per_page: totalCountWithoutPrice,
@@ -152,14 +153,16 @@ export function Edit( {
 				recordEvent( 'product_variations_set_prices_update', {
 					source: TRACKS_SOURCE,
 				} );
-				productVariationsListPromise.then( ( variations ) => {
-					handleUpdateAll(
-						variations.map( ( { id } ) => ( {
-							id,
-							regular_price: value,
-						} ) )
-					);
-				} );
+				productVariationsListPromise.then(
+					( variations: ProductVariation[] ) => {
+						handleUpdateAll(
+							variations.map( ( { id } ) => ( {
+								id,
+								regular_price: value,
+							} ) )
+						);
+					}
+				);
 			},
 		} );
 	}
@@ -198,7 +201,7 @@ export function Edit( {
 				ref={ variationTableRef as React.Ref< HTMLDivElement > }
 				noticeText={ noticeText }
 				onNoticeDismiss={ () => {
-					noticeDimissed.current = true;
+					noticeDismissed.current = true;
 					updateUserPreferences( {
 						variable_items_without_price_notice_dismissed: {
 							...( itemsWithoutPriceNoticeDismissed || {} ),
