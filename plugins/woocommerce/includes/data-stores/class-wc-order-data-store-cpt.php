@@ -457,7 +457,7 @@ class WC_Order_Data_Store_CPT extends Abstract_WC_Order_Data_Store_CPT implement
 	 *
 	 * @param  WC_Order $order Order object.
 	 *
-	 * @since 9.8.0
+	 * @since 9.9.0
 	 * @return float
 	 */
 	public function get_total_shipping_tax_refunded( $order ) {

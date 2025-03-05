@@ -2182,7 +2182,7 @@ class WC_Order extends WC_Abstract_Order {
 	/**
 	 * Get the total shipping tax refunded.
 	 *
-	 * @since  9.8.0
+	 * @since  9.9.0
 	 * @return float
 	 */
 	public function get_total_shipping_tax_refunded() {
