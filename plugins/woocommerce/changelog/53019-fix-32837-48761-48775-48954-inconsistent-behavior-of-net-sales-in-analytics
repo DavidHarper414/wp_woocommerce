@@ -1,4 +1,4 @@
 Significance: minor
 Type: fix
 
-Fix inconsistent behaviour for Net Sales in Analytics for partial and full refunds
+Fix incorrect net sales in analytics product reports for partial and full refunds
