@@ -41,30 +41,31 @@ export class FrontendUtils {
 				url.includes( 'batch' )
 			);
 		} );
+		// Wait for all XHR requests to finish. Some blocks do another request to the cart endpoint after the above.
+		// eslint-disable-next-line playwright/no-networkidle
+		await this.page.waitForLoadState( 'networkidle' );
 	}
 
 	async goToCheckout() {
-		// Wait for any existing navigation to complete
-		await this.page.waitForLoadState( 'domcontentloaded' );
-		await this.page.goto( '/checkout', { waitUntil: 'domcontentloaded' } );
+		await this.page.goto( this.requestUtils.baseURL + '/checkout' );
 		// Wait for the email field to be visible
 		await this.page.locator( '#email' ).waitFor();
 	}
 
 	async goToCart() {
-		await this.page.goto( '/cart' );
+		await this.page.goto( this.requestUtils.baseURL + '/cart' );
 	}
 
 	async goToCartShortcode() {
-		await this.page.goto( '/cart-shortcode' );
+		await this.page.goto( this.requestUtils.baseURL + '/cart-shortcode' );
 	}
 
 	async goToMiniCart() {
-		await this.page.goto( '/mini-cart' );
+		await this.page.goto( this.requestUtils.baseURL + '/mini-cart' );
 	}
 
 	async goToShop() {
-		await this.page.goto( '/shop' );
+		await this.page.goto( this.requestUtils.baseURL + '/shop' );
 	}
 
 	async emptyCart() {
@@ -97,6 +98,6 @@ export class FrontendUtils {
 	}
 
 	async gotoMyAccount() {
-		await this.page.goto( '/my-account' );
+		await this.page.goto( this.requestUtils.baseURL + '/my-account' );
 	}
 }
