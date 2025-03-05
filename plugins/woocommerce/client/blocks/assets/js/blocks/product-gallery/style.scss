@@ -145,6 +145,7 @@ $dialog-padding: 20px;
 .wc-block-product-gallery-thumbnails {
 	display: flex;
 	gap: $thumbnails-gap;
+	overflow: auto;
 
 	&__image {
 		cursor: pointer;
