@@ -27,7 +27,7 @@ import { dispatch } from '@wordpress/data';
  */
 import './style.scss';
 import { OverwriteConfirmationModal } from '../settings/overwrite-confirmation-modal';
-
+import { getOptionGroupsFromSteps } from './get-option-groups';
 type BlueprintQueueResponse = {
 	reference?: string;
 	error_type?: string;
@@ -53,6 +53,10 @@ type BlueprintImportResponse = {
 	};
 };
 
+type BlueprintStep = {
+	step: string;
+};
+
 type BlueprintImportStepResponse = {
 	success: boolean;
 	messages: {
@@ -62,7 +66,29 @@ type BlueprintImportStepResponse = {
 	}[];
 };
 
-const importBlueprint = async ( file: File ) => {
+const parseSteps = async ( file: File ) => {
+	// Create a FileReader instance
+	const reader = new FileReader();
+
+	// Create a promise to handle async file reading
+	const fileContent: string = await new Promise( ( resolve, reject ) => {
+		reader.onload = () => resolve( reader.result as string );
+		reader.onerror = () => reject( reader.error );
+		reader.readAsText( file );
+	} );
+
+	// Parse the file content as JSON
+	const steps = JSON.parse( fileContent ).steps;
+
+	// Ensure the parsed data is an array
+	if ( ! Array.isArray( steps ) ) {
+		throw new Error( 'Invalid JSON format: Expected an array.' );
+	}
+
+	return steps;
+};
+
+const importBlueprint = async ( steps: BlueprintStep[] ) => {
 	const errors = [] as {
 		step: string;
 		messages: {
@@ -73,19 +99,6 @@ const importBlueprint = async ( file: File ) => {
 	}[];
 
 	try {
-		// Create a FileReader instance
-		const reader = new FileReader();
-
-		// Create a promise to handle async file reading
-		const fileContent: string = await new Promise( ( resolve, reject ) => {
-			reader.onload = () => resolve( reader.result as string );
-			reader.onerror = () => reject( reader.error );
-			reader.readAsText( file );
-		} );
-
-		// Parse the file content as JSON
-		const steps = JSON.parse( fileContent ).steps;
-
 		// Ensure the parsed data is an array
 		if ( ! Array.isArray( steps ) ) {
 			throw new Error( 'Invalid JSON format: Expected an array.' );
@@ -158,6 +171,7 @@ const importBlueprint = async ( file: File ) => {
 
 interface FileUploadContext {
 	file?: File;
+	steps?: BlueprintStep[];
 	process_nonce?: string;
 	reference?: string;
 	error?: Error;
@@ -220,8 +234,12 @@ export const fileUploadMachine = setup( {
 		},
 	},
 	actors: {
-		importer: fromPromise( ( { input }: { input: { file: File } } ) =>
-			importBlueprint( input.file )
+		importer: fromPromise(
+			( { input }: { input: { steps: BlueprintStep[] } } ) =>
+				importBlueprint( input.steps )
+		),
+		parseSteps: fromPromise( ( { input }: { input: { file: File } } ) =>
+			parseSteps( input.file )
 		),
 	},
 	guards: {
@@ -239,7 +257,7 @@ export const fileUploadMachine = setup( {
 		idle: {
 			on: {
 				UPLOAD: {
-					target: 'success',
+					target: 'parseSteps',
 					actions: assign( {
 						file: ( { event } ) => event.file,
 						error: () => undefined,
@@ -259,12 +277,38 @@ export const fileUploadMachine = setup( {
 				target: 'idle',
 			},
 		},
+		parseSteps: {
+			invoke: {
+				src: 'parseSteps',
+				input: ( { context } ) => {
+					return {
+						file: context.file!,
+					};
+				},
+				onDone: {
+					target: 'success',
+					actions: assign( {
+						error: () => undefined,
+						steps: ( { event } ) => event.output,
+						settings_to_overwrite: ( { event } ) => {
+							return getOptionGroupsFromSteps(
+								event.output
+							) as string[];
+						},
+					} ),
+				},
+				onError: {
+					target: 'error',
+				},
+			},
+		},
 		success: {
 			on: {
 				DISMISS: {
 					actions: assign( {
 						error: () => undefined,
 						file: () => undefined,
+						steps: () => undefined,
 					} ),
 					target: 'idle',
 				},
@@ -290,7 +334,7 @@ export const fileUploadMachine = setup( {
 				src: 'importer',
 				input: ( { context } ) => {
 					return {
-						file: context.file!,
+						steps: context.steps!,
 					};
 				},
 				onDone: {
