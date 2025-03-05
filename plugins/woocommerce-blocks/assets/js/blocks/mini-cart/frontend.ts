@@ -165,6 +165,14 @@ window.addEventListener( 'load', () => {
 			loadContents();
 		};
 
+		// Auto-open the drawer if the cookie is set from the single product page.
+		// Remove the cookie before opening the drawer to prevent reopening on page refresh.
+		if ( document.cookie.includes( 'open_mini_cart_drawer=true' ) ) {
+			document.cookie =
+				'open_mini_cart_drawer=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+			openDrawer();
+		}
+
 		// Load the scripts if a device is touch-enabled. We don't get the mouseover or focus events on touch devices,
 		// so the event listeners below won't work.
 		if (
