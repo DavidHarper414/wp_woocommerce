@@ -904,7 +904,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 				expect.arrayContaining( [
 					expect.objectContaining( {
 						id: 'woocommerce_notify_low_stock',
-						label: 'Admin notifications',
+						label: 'Notifications',
 						description: 'Enable low stock notifications',
 						type: 'checkbox',
 						default: 'yes',
