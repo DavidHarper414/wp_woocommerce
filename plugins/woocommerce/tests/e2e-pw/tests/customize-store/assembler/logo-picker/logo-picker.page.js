@@ -36,7 +36,7 @@ export class LogoPickerPage {
 	 * @return {import('@playwright/test').Locator} Locator for the logo in the editor or page
 	 */
 	getLogoLocator( editorOrPageLocator ) {
-		return editorOrPageLocator.locator( 'img.custom-logo' );
+		return editorOrPageLocator.locator( 'header img.custom-logo' );
 	}
 
 	async pickImage( assemblerLocator ) {

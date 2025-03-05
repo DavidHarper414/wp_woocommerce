@@ -164,7 +164,7 @@ test.describe(
 					extractHeaderClass( headerPickerClass );
 
 				const headerPattern = editor.locator(
-					'div.wc-blocks-header-pattern'
+					'header div.wc-blocks-header-pattern'
 				);
 
 				await expect(
