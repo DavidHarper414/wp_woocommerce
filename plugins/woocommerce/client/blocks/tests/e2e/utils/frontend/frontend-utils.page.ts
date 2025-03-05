@@ -44,7 +44,10 @@ export class FrontendUtils {
 	}
 
 	async goToCheckout() {
-		await this.page.goto( '/checkout' );
+		// Wait for any existing navigation to complete
+		await this.page.waitForLoadState( 'domcontentloaded' );
+		await this.page.goto( '/checkout', { waitUntil: 'domcontentloaded' } );
+		// Wait for the email field to be visible
 		await this.page.locator( '#email' ).waitFor();
 	}
 
