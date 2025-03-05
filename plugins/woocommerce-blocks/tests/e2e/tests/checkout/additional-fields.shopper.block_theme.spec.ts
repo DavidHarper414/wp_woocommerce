@@ -988,7 +988,7 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 				.check();
 
 			// This should generate a PUT request to checkout.
-			await checkoutPageObject.page.waitForRequest(
+			await checkoutPageObject.page.waitForResponse(
 				'**/wc/store/v1/checkout**'
 			);
 
