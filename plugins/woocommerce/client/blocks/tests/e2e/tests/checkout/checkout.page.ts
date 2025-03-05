@@ -226,7 +226,9 @@ export class CheckoutPage {
 		await this.waitForCheckoutToFinishUpdating();
 		await this.page.getByText( 'Place Order', { exact: true } ).click();
 		if ( waitForRedirect ) {
-			await this.page.waitForURL( /order-received/ );
+			await this.page.waitForURL( /order-received/, {
+				timeout: 15000,
+			} );
 		}
 	}
 
