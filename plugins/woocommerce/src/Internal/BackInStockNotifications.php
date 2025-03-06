@@ -68,9 +68,8 @@ class BackInStockNotifications {
 		add_action( 'add_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_add_option' ), 10, 2 );
 		add_action( 'delete_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_delete_option' ), 10, 1 );
 
+		// Add feature definition to WC > Settings > Advanced > Features page.
 		add_action( 'woocommerce_register_feature_definitions', array( __CLASS__, 'add_feature_definition' ), 10, 1 );
-
-		
 	}
 
 	/**	
@@ -233,11 +232,17 @@ class BackInStockNotifications {
 	 */
 	public static function prepare() {
 
+		// Set flag for activation request to prevent fatal errors when BIS is activated while WC+BIS is already active.
+		$bis_plugin_name = 'woocommerce-back-in-stock-notifications/woocommerce-back-in-stock-notifications.php';
+
 		// This needs to run after the standalone plugin is deactivated to restore the daily task.
-		add_action( 'deactivate_woocommerce-back-in-stock-notifications/woocommerce-back-in-stock-notifications.php', array( __CLASS__, 'maybe_setup_events' ), 20 );
+		add_action( 'deactivate_' . $bis_plugin_name, array( __CLASS__, 'maybe_setup_events' ), 20 );
 		
 		// Cleanup events when WooCommerce is deactivated.
 		add_action( 'deactivate_woocommerce/woocommerce.php', array( __CLASS__, 'cleanup_events' ), 20 );
+
+		// Update BIS infrastructure after WooCommerce is installed.
+		add_action( 'woocommerce_installed', array( __CLASS__, 'maybe_update_bis_infrastructure' ), 10, 1 );
 
 		if ( function_exists( 'WC_BIS' ) ) {
 			// This skips the initialization of BIS plugin to avoid duplicate code & fatal errors 
@@ -249,10 +254,7 @@ class BackInStockNotifications {
 			// so init() needs to be skipped. This should only be triggered once after 
 			// a plugin update during the request when BIS plugin is deactivated.
 			self::$bis_plugin_is_active = true;
-		}
-
-		// Set flag for activation request to prevent fatal errors when BIS is activated while WC+BIS is already active.
-		$bis_plugin_name = 'woocommerce-back-in-stock-notifications/woocommerce-back-in-stock-notifications.php';
+		}		
 
 		// Check for CLI activation via WP-CLI
 		if ( defined('WP_CLI') && WP_CLI ) {
