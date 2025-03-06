@@ -16,6 +16,8 @@ class ProductGalleryUtils {
 	 */
 	public static function get_product_gallery_image_data( $product ) {
 		$image_data = array(
+			// Image src data.
+			'images'           => array(),
 			// Images specifically added to the gallery.
 			'gallery_images'   => array(),
 			// Images that are variations of the product. These may not exist in the gallery.
@@ -26,20 +28,15 @@ class ProductGalleryUtils {
 
 		$gallery_image_ids           = self::get_product_gallery_image_ids( $product );
 		$product_variation_image_ids = self::get_product_variation_image_ids( $product );
+		$all_image_ids               = array_unique( array_merge( $gallery_image_ids, $product_variation_image_ids ) );
 
-		$image_data['gallery_images']   = self::get_image_src_data( $gallery_image_ids );
-		$image_data['variation_images'] = self::get_image_src_data( $product_variation_image_ids );
-
-		$all_images    = array_merge( $image_data['gallery_images'], $image_data['variation_images'] );
-		$unique_images = array();
-		$seen_ids      = array();
-		foreach ( $all_images as $image ) {
-			if ( ! isset( $seen_ids[ $image['id'] ] ) ) {
-				$unique_images[]          = $image;
-				$seen_ids[ $image['id'] ] = true;
-			}
-		}
-		$image_data['all_images'] = $unique_images;
+		$image_data['gallery_images']   = $gallery_image_ids;
+		$image_data['variation_images'] = $product_variation_image_ids;
+		$image_data['all_images']       = $all_image_ids;
+		$image_data['images']           = array_combine(
+			$all_image_ids,
+			self::get_image_src_data( $all_image_ids )
+		);
 
 		return $image_data;
 	}

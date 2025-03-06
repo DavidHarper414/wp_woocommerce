@@ -19,7 +19,8 @@ interface ImageDataItem {
 }
 
 export interface ImageDataObject {
-	gallery_images: ImageDataItem[];
-	variation_images: ImageDataItem[];
-	all_images: ImageDataItem[];
+	images: Record<string, ImageDataItem>;
+	gallery_images: string[];
+	variation_images: string[];
+	all_images: string[];
 }
