@@ -109,19 +109,14 @@ class Init {
 	}
 
 	/**
-	 * Return step groups for JS.
+	 * Get plugins for export group.
 	 *
-	 * This is used to populate exportable items on the blueprint settings page.
-	 *
-	 * @return array
+	 * @return array|array[] $plugins
 	 */
-	public function get_step_groups_for_js() {
+	public function get_plugins_for_export_group() {
 		$plugins        = $this->wp_get_plugins();
-		$themes         = $this->wp_get_themes();
-		$active_plugins = get_option( 'active_plugins', array() );
-		$active_theme   = $this->wp_get_theme();
-
-		$plugins = array_map(
+		$active_plugins = $this->wp_get_option( 'active_plugins', array() );
+		$plugins        = array_map(
 			function ( $key, $plugin ) use ( $active_plugins ) {
 				return array(
 					'id'      => $key,
@@ -140,6 +135,18 @@ class Init {
 			}
 		);
 
+		return $plugins;
+	}
+
+	/**
+	 * Get themes for export group.
+	 *
+	 * @return array $themes
+	 */
+	public function get_themes_for_export_group() {
+		$themes       = $this->wp_get_themes();
+		$active_theme = $this->wp_get_theme();
+
 		$themes = array_map(
 			function ( $theme ) use ( $active_theme ) {
 				return array(
@@ -151,6 +158,24 @@ class Init {
 			$themes
 		);
 
+		usort(
+			$themes,
+			function ( $a, $b ) {
+				return $b['checked'] <=> $a['checked'];
+			}
+		);
+
+		return array_values( $themes );
+	}
+
+	/**
+	 * Return step groups for JS.
+	 *
+	 * This is used to populate exportable items on the blueprint settings page.
+	 *
+	 * @return array
+	 */
+	public function get_step_groups_for_js() {
 		return array(
 			array(
 				'id'          => 'settings',
@@ -174,14 +199,14 @@ class Init {
 				'description' => __( 'It includes all the installed plugins and extensions.', 'woocommerce' ),
 				'label'       => __( 'Plugins and extensions', 'woocommerce' ),
 				'icon'        => 'plugins',
-				'items'       => $plugins,
+				'items'       => $this->get_plugins_for_export_group(),
 			),
 			array(
 				'id'          => 'themes',
 				'description' => __( 'It includes all the installed themes.', 'woocommerce' ),
 				'label'       => __( 'Themes', 'woocommerce' ),
 				'icon'        => 'brush',
-				'items'       => array_values( $themes ),
+				'items'       => $this->get_themes_for_export_group(),
 			),
 		);
 	}
