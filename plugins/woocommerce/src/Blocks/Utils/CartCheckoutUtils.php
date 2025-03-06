@@ -94,7 +94,6 @@ class CartCheckoutUtils {
 				if ( isset( $block['attrs'][ $attribute ] ) && $value === $block['attrs'][ $attribute ] ) {
 					return true;
 				}
-				// Cart is default so it will be empty.
 
 				// `Cart` is default for `woocommerce/classic-shortcode` so it will be empty in the block attributes.
 				if ( 'woocommerce/classic-shortcode' === $block_id && 'shortcode' === $attribute && 'cart' === $value && ! isset( $block['attrs']['shortcode'] ) ) {
@@ -333,11 +332,12 @@ class CartCheckoutUtils {
 	 * Removes accents from an array of values, sorts by the values, then returns the original array values sorted.
 	 *
 	 * @param array $array Array of values to sort.
+	 * @param array $sort_array Array of values to sort.
 	 * @return array Sorted array.
 	 */
-	protected static function deep_sort_with_accents( $array ) {
-		if ( ! is_array( $array ) || empty( $array ) ) {
-			return $array;
+	protected static function deep_sort_with_accents( $sort_array ) {
+		if ( ! is_array( $sort_array ) || empty( $sort_array ) ) {
+			return $sort_array;
 		}
 
 		$array_without_accents = array_map(
@@ -346,11 +346,11 @@ class CartCheckoutUtils {
 					? self::deep_sort_with_accents( $value )
 					: remove_accents( wc_strtolower( html_entity_decode( $value ) ) );
 			},
-			$array
+			$sort_array
 		);
 
 		asort( $array_without_accents );
-		return array_replace( $array_without_accents, $array );
+		return array_replace( $array_without_accents, $sort_array );
 	}
 
 	/**
