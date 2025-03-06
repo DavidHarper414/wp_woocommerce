@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Fix product visibility handling for hand-picked products in Product Collection block/Hand-Picked Products block.
