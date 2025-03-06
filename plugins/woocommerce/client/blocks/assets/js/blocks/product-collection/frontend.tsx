@@ -57,13 +57,13 @@ async function fetchUrlAndReplaceState( url: string ): Promise< string > {
 	const response = await window.fetch( url );
 	const html = await response.text();
 	const dom = new window.DOMParser().parseFromString( html, 'text/html' );
-	const data = dom.getElementById( 'wp-interactivity-data' );
+	const dataElement = dom.getElementById( 'wp-interactivity-data' );
 	const interactivityData = JSON.parse( data.textContent );
 
 	if ( interactivityData.state?.[ 'woocommerce/product-button' ] ) {
 		interactivityData.state[ 'woocommerce/product-button' ].addToCartText =
 			undefined;
-		data.textContent = JSON.stringify( interactivityData );
+		dataElement.textContent = JSON.stringify( interactivityData );
 	}
 
 	return dom.documentElement.outerHTML;
