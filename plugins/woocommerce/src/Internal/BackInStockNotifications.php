@@ -47,6 +47,13 @@ class BackInStockNotifications {
 	public static $ENABLE_OPTION_NAME = 'wc_feature_woocommerce_back_in_stock_notifications_enabled';
 
 	/**
+	 * Package name.
+	 * 
+	 * @var string
+	 */
+	public static $PACKAGE_NAME = 'woocommerce-back-in-stock-notifications';
+
+	/**
 	 * Prepare method that runs code irrespective of whether the feature is enabled or not.
 	 * 
 	 * These hooks need to be always registered to be able to react to changes in the feature flag
@@ -69,7 +76,7 @@ class BackInStockNotifications {
 	final public static function init() {
 
 		// If this is an activation request for BIS, included code can't be loaded, as it will end up with a fatal error.
-		if ( ! self::is_really_enabled() || self::$is_activation_request || self::$bis_plugin_is_active ) { 
+		if ( self::$is_activation_request || self::$bis_plugin_is_active ) { 
 			return;
 		}
 
@@ -153,7 +160,7 @@ class BackInStockNotifications {
 	 * @return bool
 	 */
 	public static function is_really_enabled() {
-		return Packages::is_package_enabled('woocommerce-back-in-stock-notifications');
+		return Packages::is_package_enabled( self::$PACKAGE_NAME );
 	}
 
 	/**
@@ -170,10 +177,6 @@ class BackInStockNotifications {
 		
 		// Cleanup events when WooCommerce is deactivated.
 		add_action( 'deactivate_woocommerce/woocommerce.php', array( __CLASS__, 'cleanup_events' ), 20 );
-
-		if ( ! self::is_really_enabled() ) {
-			return;
-		}
 
 		if ( function_exists( 'WC_BIS' ) ) {
 			// This skips the initialization of BIS plugin to avoid duplicate code & fatal errors 
