@@ -40,7 +40,6 @@ const test = baseTest.extend( {
 		const timestamp = Date.now().toString();
 		const reviews = [];
 
-		// Create the product reviews
 		for ( const product of products ) {
 			await restApi
 				.post( `${ WC_API_PATH }/products/reviews`, {
@@ -57,10 +56,18 @@ const test = baseTest.extend( {
 
 		await use( reviews );
 
-		// Cleanup
-		await restApi.delete( `${ WC_API_PATH }/products/reviews/batch`, {
-			delete: reviews.map( ( review ) => review.id ),
-		} );
+		for ( const review of reviews ) {
+			try {
+				await restApi.delete(
+					`${ WC_API_PATH }/products/reviews/${ review.id }`
+				);
+			} catch ( error ) {
+				// Ignore 410 error - which is expected if the review was already trashed
+				if ( error.data?.data?.status !== 410 ) {
+					throw error;
+				}
+			}
+		}
 	},
 } );
 
