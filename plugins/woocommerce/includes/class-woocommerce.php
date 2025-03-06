@@ -1191,7 +1191,7 @@ final class WooCommerce {
 	/**
 	 *
 	 *
-	 * @return WC_BIS_Notifications|WC_BIS_Noop
+	 * @return WC_Back_In_Stock|WC_BIS_Noop
 	 */
 	public function bis_notifications() {
 		static $noop_instance = null;
@@ -1203,7 +1203,7 @@ final class WooCommerce {
 			return $noop_instance;
 		}
 
-		return WC_BIS_Notifications::instance();
+		return WC_Back_In_Stock::instance();
 	}
 
 	/**
