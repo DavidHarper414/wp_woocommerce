@@ -1,16 +1,21 @@
-const { test: baseTest, expect, tags } = require( '../../fixtures/fixtures' );
-const { CUSTOMER_STATE_PATH } = require( '../../playwright.config' );
+/**
+ * Internal dependencies
+ */
+import { test as baseTest, expect, tags } from '../../fixtures/fixtures';
+import { CUSTOMER_STATE_PATH } from '../../playwright.config';
+import { WP_API_PATH } from '../../utils/api-client';
+
 const test = baseTest.extend( {
 	storageState: CUSTOMER_STATE_PATH,
 } );
 
-test.beforeAll( async ( { wpApi } ) => {
+test.beforeAll( async ( { restApi } ) => {
 	// Jetpack Comments replaces the default WordPress comment form when activated, and will cause this test to fail.
 	// Make sure it's disabled prior to running this test.
 	const is_jetpack_active =
 		await test.step( 'See if Jetpack is installed and active', async () => {
-			const response = await wpApi.get(
-				'wp-json/wp/v2/plugins/jetpack/jetpack'
+			const response = await restApi.get(
+				`${ WP_API_PATH }/plugins/jetpack/jetpack`
 			);
 
 			if ( response.statusText() !== 'OK' ) {
@@ -23,11 +28,11 @@ test.beforeAll( async ( { wpApi } ) => {
 
 	if ( is_jetpack_active ) {
 		await test.step( 'Disable Jetpack Comments', async () => {
-			await wpApi.post( 'wp-json/jetpack/v4/settings', {
+			await restApi.post( `jetpack/v4/settings`, {
 				data: { comments: false },
 			} );
 
-			const response = await wpApi.get( 'wp-json/jetpack/v4/settings' );
+			const response = await restApi.get( `jetpack/v4/settings` );
 			const { comments } = await response.json();
 			expect( comments ).toEqual( false );
 		} );
