@@ -65,7 +65,7 @@ const CTA = () => {
 	return (
 		<a
 			aria-label={ productCartDetails?.description || '' }
-			className="wp-block-button__link wp-element-button add_to_cart_button wc-block-components-product-button__button"
+			className="button wp-element-button add_to_cart_button wc-block-components-product-button__button"
 			href={ permalink }
 		>
 			{ productCartDetails?.text || __( 'Add to Cart', 'woocommerce' ) }
