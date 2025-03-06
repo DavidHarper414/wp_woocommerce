@@ -17,25 +17,24 @@ const productData = {
 	summary: 'This is a product summary',
 };
 
-const groupedProductsData = [ getFakeProduct(), getFakeProduct() ];
-
-const productIds = [];
+const groupedProducts = [];
 
 test.describe( 'General tab', { tag: tags.GUTENBERG }, () => {
 	test.describe( 'Grouped product', () => {
 		test.beforeAll( async ( { restApi } ) => {
-			for ( const product of groupedProductsData ) {
-				const id = await restApi
-					.post( `${ WC_API_PATH }/products`, { product } )
-					.then( ( response ) => response.data.id );
-				productIds.push( id );
+			for ( let i = 0; i < 2; i++ ) {
+				await restApi
+					.post( `${ WC_API_PATH }/products`, getFakeProduct() )
+					.then( ( response ) =>
+						groupedProducts.push( response.data )
+					);
 			}
 		} );
 
 		test.afterAll( async ( { restApi } ) => {
-			for ( const productId of productIds ) {
+			for ( const p of groupedProducts ) {
 				await restApi
-					.delete( `${ WC_API_PATH }/products/${ productId }`, {
+					.delete( `${ WC_API_PATH }/products/${ p.id }`, {
 						force: true,
 					} )
 					.catch( ( err ) => {
@@ -94,7 +93,7 @@ test.describe( 'General tab', { tag: tags.GUTENBERG }, () => {
 				} )
 				.isVisible();
 
-			for ( const product of groupedProductsData ) {
+			for ( const product of groupedProducts ) {
 				await page
 					.locator(
 						'.woocommerce-add-products-modal__form-group-content'
@@ -102,6 +101,7 @@ test.describe( 'General tab', { tag: tags.GUTENBERG }, () => {
 					.getByPlaceholder( 'Search for products' )
 					.fill( product.name );
 
+				// await page.pause();
 				await page.getByText( product.name ).click();
 			}
 
@@ -147,7 +147,7 @@ test.describe( 'General tab', { tag: tags.GUTENBERG }, () => {
 				page.getByRole( 'heading', { name: productData.name } )
 			).toBeVisible();
 
-			for ( const product of groupedProductsData ) {
+			for ( const product of groupedProducts ) {
 				await expect(
 					page.getByRole( 'link', { name: product.name } ).first()
 				).toBeVisible();
