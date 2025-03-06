@@ -35,7 +35,7 @@ import {
 	BlueprintImportStepResponse,
 } from './types';
 
-const parseSteps = async ( file: File ) => {
+const parseBlueprintSteps = async ( file: File ) => {
 	// Create a FileReader instance
 	const reader = new FileReader();
 
@@ -203,8 +203,8 @@ export const fileUploadMachine = setup( {
 			( { input }: { input: { steps: BlueprintStep[] } } ) =>
 				importBlueprint( input.steps )
 		),
-		parseSteps: fromPromise( ( { input }: { input: { file: File } } ) =>
-			parseSteps( input.file )
+		stepsParser: fromPromise( ( { input }: { input: { file: File } } ) =>
+			parseBlueprintSteps( input.file )
 		),
 	},
 	guards: {
@@ -222,7 +222,7 @@ export const fileUploadMachine = setup( {
 		idle: {
 			on: {
 				UPLOAD: {
-					target: 'parseSteps',
+					target: 'parsingSteps',
 					actions: assign( {
 						file: ( { event } ) => event.file,
 						error: () => undefined,
@@ -242,9 +242,9 @@ export const fileUploadMachine = setup( {
 				target: 'idle',
 			},
 		},
-		parseSteps: {
+		parsingSteps: {
 			invoke: {
-				src: 'parseSteps',
+				src: 'stepsParser',
 				input: ( { context } ) => {
 					return {
 						file: context.file!,
