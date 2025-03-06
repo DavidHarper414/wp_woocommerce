@@ -401,8 +401,6 @@ class Note extends \WC_Data {
 		}
 
 		if ( in_array( $type, self::get_deprecated_types(), true ) ) {
-			$this->delete();
-
 			$this->error(
 				'admin_note_invalid_data',
 				__( 'The admin note type prop is deprecated.', 'woocommerce' )
