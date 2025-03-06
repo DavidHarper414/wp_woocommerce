@@ -97,7 +97,7 @@ class DefaultFreeExtensions {
 		);
 
 		if ( Features::is_enabled( 'disable-core-profiler-fallback' ) ) {
-			$remote_variant_assignment = (int) get_option( 'woocommerce_remote_variant_assignment', 1 ); // 1-120
+			$remote_variant_assignment = (int) get_option( 'woocommerce_remote_variant_assignment', 61 ); // 1-120
 			$should_rollout_to_users   = $remote_variant_assignment <= 60; // Rollout to 50% of users.
 
 			if ( $should_rollout_to_users ) {
