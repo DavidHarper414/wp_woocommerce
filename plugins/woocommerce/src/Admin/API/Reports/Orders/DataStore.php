@@ -7,13 +7,12 @@ namespace Automattic\WooCommerce\Admin\API\Reports\Orders;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Internal\Traits\OrderAttributionMeta;
-use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
-use Automattic\WooCommerce\Utilities\OrderUtil;
 use Automattic\WooCommerce\Admin\API\Reports\DataStore as ReportsDataStore;
 use Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use Automattic\WooCommerce\Admin\API\Reports\SqlQuery;
-use Automattic\WooCommerce\Admin\API\Reports\Cache;
+use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
+use Automattic\WooCommerce\Internal\Traits\OrderAttributionMeta;
+use Automattic\WooCommerce\Utilities\OrderUtil;
 
 
 /**
@@ -30,6 +29,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public function __construct() {
 		$this->date_column_name = get_option( 'woocommerce_date_type', 'date_paid' );
 		parent::__construct();
+	}
+
+	/**
+	 * Set up all the hooks for maintaining data consistency (transients and co).
+	 */
+	public static function init() {
+		add_action( 'woocommerce_analytics_update_order_stats', array( __CLASS__, 'actualize_all_statuses_transient_if_necessary' ) );
 	}
 
 	/**
@@ -612,9 +618,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function get_all_statuses() {
 		global $wpdb;
 
-		$cache_key = 'orders-all-statuses';
-		$statuses  = Cache::get( $cache_key );
-
+		$statuses = get_transient( 'woocommerce_analytics_orders_statuses_all' );
 		if ( false === $statuses ) {
 			/* phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
 			$table_name = self::get_db_table_name();
@@ -623,10 +627,34 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			);
 			/* phpcs:enable */
 
-			Cache::set( $cache_key, $statuses );
+			set_transient( 'woocommerce_analytics_orders_statuses_all', $statuses, YEAR_IN_SECONDS );
 		}
 
 		return $statuses;
+	}
+
+	/**
+	 * Ensure the order status will present in `get_all_statuses` call result.
+	 *
+	 * @param int $order_id Order ID.
+	 */
+	public static function actualize_all_statuses_transient_if_necessary( $order_id ) {
+		$order = wc_get_order( $order_id );
+		if ( $order ) {
+			$status = self::normalize_order_status( $order->get_status() );
+			if ( 'shop_order_refund' === $order->get_type() ) {
+				$parent_order = wc_get_order( $order->get_parent_id() );
+				if ( $parent_order ) {
+					$status = self::normalize_order_status( $parent_order->get_status() );
+				}
+			}
+
+			$statuses = self::get_all_statuses();
+			if ( ! in_array( $status, $statuses, true ) ) {
+				$statuses []= $status;
+				set_transient( 'woocommerce_analytics_orders_statuses_all', $statuses, YEAR_IN_SECONDS );
+			}
+		}
 	}
 
 	/**

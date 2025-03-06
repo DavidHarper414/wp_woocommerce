@@ -214,12 +214,9 @@ class Settings {
 		$settings['woocommerceTranslation'] = __( 'WooCommerce', 'woocommerce' );
 
 		if ( PageController::is_admin_page() && Features::is_enabled( 'analytics' ) ) {
-			$is_analytics_page = str_starts_with( wc_clean( wp_unslash( $_GET['path'] ?? '' ) ), '/analytics/' );
-			if ( $is_analytics_page ) {
-				// We may have synced orders with a now-unregistered status.
-				// E.g. an extension that added statuses is now inactive or removed.
-				$settings['unregisteredOrderStatuses'] = $this->get_unregistered_order_statuses();
-			}
+			// We may have synced orders with a now-unregistered status.
+			// E.g. an extension that added statuses is now inactive or removed.
+			$settings['unregisteredOrderStatuses'] = $this->get_unregistered_order_statuses();
 		}
 
 		// The separator used for attributes found in Variation titles.
