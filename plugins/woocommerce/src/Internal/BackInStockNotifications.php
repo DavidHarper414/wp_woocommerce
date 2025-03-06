@@ -47,6 +47,21 @@ class BackInStockNotifications {
 	public static $ENABLE_OPTION_NAME = 'wc_feature_woocommerce_back_in_stock_notifications_enabled';
 
 	/**
+	 * Prepare method that runs code irrespective of whether the feature is enabled or not.
+	 * 
+	 * These hooks need to be always registered to be able to react to changes in the feature flag
+	 * changes via Settings UI.
+	 *
+	 * @internal
+	 */
+	public static function prepare_always() {
+		// Enable/disable events when the feature flag is changed.
+		add_action( 'update_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'maybe_update_bis_infrastructure' ), 10, 3 );
+		add_action( 'add_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_add_option' ), 10, 2 );
+		add_action( 'delete_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_delete_option' ), 10, 1 );
+	}
+
+	/**
 	 * Class initialization
 	 *
 	 * @internal
@@ -58,14 +73,6 @@ class BackInStockNotifications {
 			return;
 		}
 
-		//TODO: can init run only in some contexts? admin + front end, rest api if it's related to BIS, but it needs to react to changes in stock levels, so can it actually be reduced..?
-		self::$db_utils = wc_get_container()->get( DatabaseUtil::class );
-
-		// Enable/disable events when the feature flag is changed.
-		add_action( 'update_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'maybe_update_bis_infrastructure' ), 10, 3 );
-		add_action( 'add_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_add_option' ), 10, 2 );
-		add_action( 'delete_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_delete_option' ), 10, 1 );
-
 		// Deactivate signups for BIS to prevent changing the single product screen.
 		add_action( 'woocommerce_updated', array( __CLASS__, 'maybe_deactivate_signups' ) );
 
@@ -74,7 +81,6 @@ class BackInStockNotifications {
 
 		$wc_bis = wc_get_container()->get( LegacyProxy::class )->call_function( 'WC_BIS' );
 		$wc_bis->initialize_plugin();
-
 	}
 
 	/**
@@ -250,6 +256,8 @@ class BackInStockNotifications {
 			include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
 		}
 
+		self::$db_utils = wc_get_container()->get( DatabaseUtil::class );
+
 		$missing_tables = self::$db_utils->get_missing_tables( wc_get_container()->get( LegacyProxy::class )->call_static( 'WC_BIS_Install', 'get_schema' ) );
 
 		if ( 0 === count( $missing_tables ) ) {
@@ -271,6 +279,10 @@ class BackInStockNotifications {
 			include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
 		}
 
+		if ( ! isset( self::$db_utils ) ) {	
+			self::$db_utils = wc_get_container()->get( DatabaseUtil::class );
+		}
+
 		$db_schema = wc_get_container()->get( LegacyProxy::class )->call_static( 'WC_BIS_Install', 'get_schema' );
 		self::$db_utils->dbdelta( $db_schema );
 		$success = self::bis_tables_exist();
@@ -289,7 +301,7 @@ class BackInStockNotifications {
 	 * This should be called from the feature flag change hook.
 	 */
 	public static function maybe_create_database_tables() {
-		if ( ! self::is_enabled() ) {
+		if ( ! self::is_really_enabled() ) {
 			return;
 		}
 
@@ -337,7 +349,11 @@ class BackInStockNotifications {
 	 * This should be called from the feature flag change hook.
 	 */
 	public static function maybe_setup_events() {
-		if ( ! self::is_enabled() ) {
+		if ( ! self::is_really_enabled() ) {
+			return;
+		}
+
+		if ( wp_next_scheduled( 'wc_bis_daily' ) ) {
 			return;
 		}
 
@@ -345,9 +361,7 @@ class BackInStockNotifications {
 			include_once WC_ABSPATH . '/includes/bis/class-wc-bis-install.php';
 		}
 		
-		if ( ! wp_next_scheduled( 'wc_bis_daily' ) ) {
-			wc_get_container()->get( LegacyProxy::class )->call_static( 'WC_BIS_Install', 'create_events' );
-		}
+		wc_get_container()->get( LegacyProxy::class )->call_static( 'WC_BIS_Install', 'create_events' );
 	}
 
 	/**
