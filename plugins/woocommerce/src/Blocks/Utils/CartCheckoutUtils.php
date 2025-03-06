@@ -73,6 +73,7 @@ class CartCheckoutUtils {
 	 * @param string $block_id The block ID to check for.
 	 * @param string $attribute The attribute to check.
 	 * @param string $value The value to check for.
+	 * @param string $post_content The post content to check.
 	 * @return boolean
 	 */
 	public static function has_block_variation( $block_id, $attribute, $value, $post_content ) {
@@ -84,10 +85,18 @@ class CartCheckoutUtils {
 			$blocks = (array) parse_blocks( $post_content );
 
 			foreach ( $blocks as $block ) {
+				$block_name = $block['blockName'] ?? '';
+
+				if ( $block_name !== $block_id ) {
+					continue;
+				}
+
 				if ( isset( $block['attrs'][ $attribute ] ) && $value === $block['attrs'][ $attribute ] ) {
 					return true;
 				}
 				// Cart is default so it will be empty.
+
+				// `Cart` is default for `woocommerce/classic-shortcode` so it will be empty in the block attributes.
 				if ( 'woocommerce/classic-shortcode' === $block_id && 'shortcode' === $attribute && 'cart' === $value && ! isset( $block['attrs']['shortcode'] ) ) {
 					return true;
 				}
