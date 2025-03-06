@@ -2,7 +2,7 @@
  * Internal dependencies
  */
 import { setOption } from '../../utils/options';
-import { activateTheme } from '../../utils/themes';
+import { activateTheme, getCurrentTheme } from '../../utils/themes';
 import AcceptanceHelper from './helper';
 const { test, request } = require( '@playwright/test' );
 const { CUSTOMER_STATE_PATH } = require( '../../playwright.config' );
@@ -10,9 +10,15 @@ const { CUSTOMER_STATE_PATH } = require( '../../playwright.config' );
 [ 'twentytwentyfour', 'storefront' ].forEach( ( theme ) => {
 	test.describe( `Feature: Receiving Notifications: ${ theme }`, () => {
 		let helper;
+		let originalTheme;
 
 		test.beforeAll( async ( { baseURL } ) => {
-			activateTheme( baseURL, theme );
+			originalTheme = await getCurrentTheme( baseURL );
+			await activateTheme( baseURL, theme );
+		} );
+
+		test.afterAll( async ( { baseURL } ) => {
+			await activateTheme( baseURL, originalTheme );
 		} );
 
 		test.beforeEach( async ( { baseURL, page } ) => {

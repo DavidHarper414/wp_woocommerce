@@ -3,16 +3,22 @@
  */
 import { setOption } from '../../utils/options';
 import AcceptanceHelper from './helper';
-import { activateTheme } from '../../utils/themes';
+import { activateTheme, getCurrentTheme } from '../../utils/themes';
 const { CUSTOMER_STATE_PATH } = require( '../../playwright.config' );
 const { test, request } = require( '@playwright/test' );
 
 [ 'twentytwentyfour', 'storefront' ].forEach( ( theme ) => {
 	test.describe( `Feature: Signing up: ${ theme }`, () => {
 		let helper;
+		let originalTheme;
 
 		test.beforeAll( async ( { baseURL } ) => {
-			activateTheme( baseURL, theme );
+			originalTheme = await getCurrentTheme( baseURL );
+			await activateTheme( baseURL, theme );
+		} );
+
+		test.afterAll( async ( { baseURL } ) => {
+			await activateTheme( baseURL, originalTheme );
 		} );
 
 		test.beforeEach( async ( { baseURL, page } ) => {
