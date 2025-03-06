@@ -6,6 +6,20 @@ namespace Automattic\WooCommerce\Blocks\Utils;
  */
 class CartCheckoutUtils {
 	/**
+	 * Caches if we're on the cart page.
+	 *
+	 * @var bool
+	 */
+	private static $is_cart_page = null;
+
+	/**
+	 * Caches if we're on the checkout page.
+	 *
+	 * @var bool
+	 */
+	private static $is_checkout_page = null;
+
+	/**
 	 * Returns true if:
 	 * - The cart page is being viewed.
 	 * - The page contains a cart block, cart shortcode or classic shortcode block with the cart attribute.
@@ -13,17 +27,22 @@ class CartCheckoutUtils {
 	 * @return bool
 	 */
 	public static function is_cart_page() {
-		global $post;
+		if ( null !== self::$is_cart_page ) {
+			return self::$is_cart_page;
+		}
 
 		$page_id      = wc_get_page_id( 'cart' );
 		$is_cart_page = $page_id && is_page( $page_id );
 
 		if ( $is_cart_page ) {
-			return true;
+			self::$is_cart_page = true;
+		} else {
+			global $post;
+			// Check page contents for block/shortcode.
+			self::$is_cart_page = is_a( $post, 'WP_Post' ) && ( wc_post_content_has_shortcode( 'woocommerce_cart' ) || self::has_block_variation( 'woocommerce/classic-shortcode', 'shortcode', 'cart', $post->post_content ) );
 		}
 
-		// Check page contents for block/shortcode.
-		return is_a( $post, 'WP_Post' ) && ( wc_post_content_has_shortcode( 'woocommerce_cart' ) || self::has_block_variation( 'woocommerce/classic-shortcode', 'shortcode', 'cart', $post->post_content ) );
+		return self::$is_cart_page;
 	}
 
 	/**
@@ -54,17 +73,22 @@ class CartCheckoutUtils {
 	 * @return bool
 	 */
 	public static function is_checkout_page() {
-		global $post;
+		if ( null !== self::$is_checkout_page ) {
+			return self::$is_checkout_page;
+		}
 
 		$page_id          = wc_get_page_id( 'checkout' );
 		$is_checkout_page = $page_id && is_page( $page_id );
 
 		if ( $is_checkout_page ) {
-			return true;
+			self::$is_checkout_page = true;
+		} else {
+			global $post;
+			// Check page contents for block/shortcode.
+			self::$is_checkout_page = is_a( $post, 'WP_Post' ) && ( wc_post_content_has_shortcode( 'woocommerce_checkout' ) || self::has_block_variation( 'woocommerce/classic-shortcode', 'shortcode', 'checkout', $post->post_content ) );
 		}
 
-		// Check page contents for block/shortcode.
-		return is_a( $post, 'WP_Post' ) && ( wc_post_content_has_shortcode( 'woocommerce_checkout' ) || self::has_block_variation( 'woocommerce/classic-shortcode', 'shortcode', 'checkout', $post->post_content ) );
+		return self::$is_checkout_page;
 	}
 
 	/**
@@ -331,7 +355,6 @@ class CartCheckoutUtils {
 	/**
 	 * Removes accents from an array of values, sorts by the values, then returns the original array values sorted.
 	 *
-	 * @param array $array Array of values to sort.
 	 * @param array $sort_array Array of values to sort.
 	 * @return array Sorted array.
 	 */
