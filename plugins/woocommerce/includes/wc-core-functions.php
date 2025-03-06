@@ -2729,7 +2729,7 @@ function _wc_delete_transients( $transients ) {
 			$success = true;
 
 			foreach ( $chunks as $chunk ) {
-				$result = wc_delete_transients( $chunk );
+				$result = _wc_delete_transients( $chunk );
 				if ( ! $result ) {
 					$success = false;
 				}
