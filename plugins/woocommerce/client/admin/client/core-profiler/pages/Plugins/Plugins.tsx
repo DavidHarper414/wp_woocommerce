@@ -208,10 +208,7 @@ export const Plugins = ( {
 					} ) }
 				>
 					{ context.pluginsAvailable.map( ( plugin ) => {
-						const {
-							key: pluginSlug,
-							learn_more_link: learnMoreLink,
-						} = plugin;
+						const { key: pluginSlug } = plugin;
 						return (
 							<PluginCard
 								key={ pluginSlug }
@@ -222,21 +219,7 @@ export const Plugins = ( {
 									}
 								} }
 								checked={ selectedPlugins.has( plugin ) }
-							>
-								{ learnMoreLink && (
-									<PluginCard.LearnMoreLink
-										onClick={ () => {
-											sendEvent( {
-												type: 'PLUGINS_LEARN_MORE_LINK_CLICKED',
-												payload: {
-													plugin: pluginSlug,
-													learnMoreLink,
-												},
-											} );
-										} }
-									/>
-								) }
-							</PluginCard>
+							></PluginCard>
 						);
 					} ) }
 				</div>
