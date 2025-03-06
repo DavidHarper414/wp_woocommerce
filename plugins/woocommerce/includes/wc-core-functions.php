@@ -2723,7 +2723,7 @@ function _wc_delete_transients( $transients ) {
 		}
 
 		// Limit the number of items in a single query to avoid exceeding database query parameter limits.
-		if ( count( $transients) > 199 ) {
+		if ( count( $transients ) > 199 ) {
 			// Process in smaller chunks to reduce memory usage.
 			$chunks  = array_chunk( $transients, 100 );
 			$success = true;
