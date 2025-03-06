@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Internal;
 use Automattic\WooCommerce\Internal\Utilities\DatabaseUtil;
 use Automattic\WooCommerce\Proxies\LegacyProxy;
 use Automattic\WooCommerce\Packages;
+use Automattic\Jetpack\Constants;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -66,6 +67,52 @@ class BackInStockNotifications {
 		add_action( 'update_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'maybe_update_bis_infrastructure' ), 10, 3 );
 		add_action( 'add_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_add_option' ), 10, 2 );
 		add_action( 'delete_option_wc_feature_woocommerce_back_in_stock_notifications_enabled', array( __CLASS__, 'handle_delete_option' ), 10, 1 );
+
+		add_action( 'woocommerce_register_feature_definitions', array( __CLASS__, 'add_feature_definition' ), 10, 1 );
+
+		
+	}
+
+	/**	
+	 * Add feature definition.
+	 * 
+	 * Note: By default, WC core adds options for all settings in WC_Install::create_options.
+	 * This doesn't work for merged BIS, because the setting option is acting as an _override_
+	 * for the rollout period flag. Thus, the feature definition won't be added during activation
+	 * to skip creating the option.
+	 * 
+	 * @param FeaturesController $features_controller The instance of FeaturesController to use.
+	 * @internal
+	 */
+	public static function add_feature_definition( $features_controller ) {
+		// Only add feature definition if WooCommerce is not currently being activated to avoid
+		// adding the wc_feature_woocommerce_back_in_stock_notifications_enabled option during activation.
+		if ( ! Constants::is_defined( 'WC_INSTALLING' ) ) {
+			
+			$definition = array(
+				'name'               => __( 'Back in stock notifications', 'woocommerce' ),
+				'description'        => self::is_really_enabled() ? 
+					sprintf(
+						__( 'Enable back in stock notifications for customers. Configure the options in <a href="%s">WooCommerce > Settings > Products > Customer stock notifications</a>.', 'woocommerce' ),
+						esc_url( admin_url( 'admin.php?page=wc-settings&tab=products&section=bis_settings' ) )
+					) 
+					: __(
+						'Enable back in stock notifications for customers.',
+						'woocommerce'
+					),
+				'enabled_by_default' => self::is_enabled(),
+				'is_experimental'    => false,
+				'is_legacy'          => true,
+				'disable_ui'         => false,
+				'option_key'         => self::$ENABLE_OPTION_NAME,
+			);
+
+			$features_controller->add_feature_definition(
+				'back_in_stock_notifications',
+				__( 'Back in stock notifications', 'woocommerce' ),
+				$definition
+			);
+		}
 	}
 
 	/**
