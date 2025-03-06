@@ -12,7 +12,7 @@ Customizing WooCommerce functionality often requires adding code snippets to mod
 
 ## Why Use the Code Snippets Plugin?  
 
-Editing your theme’s `functions.php` file or adding custom code directly to WooCommerce files can lead to several issues:  
+Editing your `functions.php` file or adding custom code directly to WooCommerce files can lead to several issues:  
 
 - **Loss of Custom Code on Theme Updates:** When you update your theme, modifications made in `functions.php` are lost.  
 - **Potential for Errors and Site Breakage:** A single syntax error can make your website inaccessible.  
