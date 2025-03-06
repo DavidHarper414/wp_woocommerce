@@ -90,11 +90,11 @@ class PageRenderer {
 
 		// Email editor rich text JS - Because the Personalization Tags depend on Gutenberg 19.8.0 and higher
 		// the following code replaces used Rich Text for the version containing the necessary changes.
-		$rich_text_assets_params = require $email_editor_assets_path . 'rich-text.asset.php';
+		$rich_text_assets_params = require $email_editor_assets_path . 'assets/rich-text.asset.php';
 		wp_deregister_script( 'wp-rich-text' );
 		wp_enqueue_script(
 			'wp-rich-text',
-			$email_editor_assets_url . 'rich-text.js',
+			$email_editor_assets_url . 'assets/rich-text.js',
 			$rich_text_assets_params['dependencies'],
 			$rich_text_assets_params['version'],
 			true

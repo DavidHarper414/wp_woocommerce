@@ -104,14 +104,17 @@
 		"@types/wordpress__edit-post": "^7.5.7",
 		"@types/wordpress__editor": "^13.6.8",
 		"@types/wordpress__media-utils": "^4.14.4",
+		"@woocommerce/dependency-extraction-webpack-plugin": "workspace:*",
 		"@woocommerce/eslint-plugin": "workspace:*",
 		"@wordpress/prettier-config": "2.17.0",
 		"@wordpress/scripts": "wp-6.6",
 		"@wordpress/stylelint-config": "^21.36.0",
+		"copy-webpack-plugin": "^10.2.4",
 		"prettier": "npm:wp-prettier@^3.0.3",
-		"wp-types": "^3.65.0",
+		"ts-loader": "9.5.x",
 		"typescript": "5.7.x",
-		"wireit": "0.14.10"
+		"wireit": "0.14.10",
+		"wp-types": "^3.65.0"
 	},
 	"config": {
 		"ci": {
@@ -125,12 +128,22 @@
 		"build:project:editor": {
 			"command": "wp-scripts build",
 			"clean": "if-file-deleted",
+			"env": {
+				"NODE_ENV": {
+					"external": true,
+					"default": "production"
+				}
+			},
 			"files": [
+				"webpack.config.js",
 				"tsconfig.json",
 				"src/*"
 			],
 			"output": [
 				"build"
+			],
+			"dependencies": [
+				"dependencyOutputs"
 			]
 		},
 		"watch:build:project:editor": {
@@ -141,6 +154,8 @@
 			"allowUsuallyExcludedPaths": true,
 			"files": [
 				"package.json",
+				"node_modules/@woocommerce/dependency-extraction-webpack-plugin/src/",
+				"node_modules/@woocommerce/dependency-extraction-webpack-plugin/assets/",
 				"node_modules/@woocommerce/eslint-plugin/configs",
 				"node_modules/@woocommerce/eslint-plugin/rules",
 				"node_modules/@woocommerce/eslint-plugin/index.js"
