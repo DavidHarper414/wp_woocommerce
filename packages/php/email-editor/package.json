@@ -7,14 +7,17 @@
 		"lint:fix": "pnpm --if-present '/^lint:fix:lang:.*$/'",
 		"lint:fix:lang:php": "composer run-script phpcbf",
 		"lint:lang:php": "composer run-script phpcs",
-		"lint:ci": "XDEBUG_MODE=off composer install --quiet && composer run-script phpcs"
+		"postinstall": "XDEBUG_MODE=off composer install --quiet"
 	},
 	"license": "GPL-3.0-or-later",
 	"dependencies": {},
+	"devDependencies": {
+		"rimraf": "5.0.5"
+	},
 	"config": {
 		"ci": {
 			"lint": {
-				"command": "lint:ci",
+				"command": "lint",
 				"changes": "src/**/*.{php}"
 			}
 		}

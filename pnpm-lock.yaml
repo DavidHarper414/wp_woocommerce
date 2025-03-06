@@ -3333,7 +3333,11 @@ importers:
         specifier: 0.14.10
         version: 0.14.10
 
-  packages/php/email-editor: {}
+  packages/php/email-editor:
+    devDependencies:
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
 
   packages/php/remote-specs-validation:
     dependencies:
