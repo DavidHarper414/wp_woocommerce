@@ -500,7 +500,7 @@ final class BlockTypesController {
 			MiniCartContents::get_mini_cart_block_types()
 		);
 
-		// Update plugins/woocommerce-blocks/docs/internal-developers/blocks/feature-flags-and-experimental-interfaces.md
+		// Update plugins/woocommerce/client/blocks/docs/internal-developers/blocks/feature-flags-and-experimental-interfaces.md
 		// when modifying this list.
 		if ( Features::is_enabled( 'experimental-blocks' ) ) {
 			$block_types[] = 'ProductFilters';
@@ -518,6 +518,9 @@ final class BlockTypesController {
 				$block_types[] = 'AddToCartWithOptions';
 				$block_types[] = 'AddToCartWithOptionsQuantitySelector';
 				$block_types[] = 'AddToCartWithOptionsVariationSelector';
+				$block_types[] = 'AddToCartWithOptionsVariationSelectorItemTemplate';
+				$block_types[] = 'AddToCartWithOptionsVariationSelectorAttributeName';
+				$block_types[] = 'AddToCartWithOptionsVariationSelectorAttributeOptions';
 				$block_types[] = 'AddToCartWithOptionsGroupedProductSelector';
 				$block_types[] = 'AddToCartWithOptionsGroupedProductSelectorItemTemplate';
 			}

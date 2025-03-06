@@ -61,6 +61,7 @@ class Integration {
 		$container->get( PatternsController::class );
 		$container->get( TemplatesController::class );
 		$container->get( PersonalizationTagManager::class );
+		$container->get( BlockEmailRenderer::class );
 		$this->editor_page_renderer = $container->get( PageRenderer::class );
 	}
 
@@ -94,7 +95,7 @@ class Integration {
 				),
 				'rewrite'      => array( 'slug' => self::EMAIL_POST_TYPE ),
 				'supports'     => array( 'title', 'editor' ),
-				'public'       => true,
+				'public'       => false,
 				'show_ui'      => true,  // Showing in the admin UI is temporary, it will be removed in the future.
 				'show_in_menu' => true,
 				'show_in_rest' => true,
