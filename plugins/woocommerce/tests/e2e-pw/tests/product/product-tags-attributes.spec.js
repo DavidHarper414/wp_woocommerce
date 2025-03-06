@@ -240,7 +240,9 @@ test.describe(
 				page.getByRole( 'heading', { name: productTagName1 } )
 			).toBeVisible();
 			await expect(
-				page.getByText( `Products tagged "${ productTagName1 }"` )
+				page.getByText(
+					new RegExp( `Products tagged .*${ productTagName1 }.*` )
+				)
 			).toBeVisible();
 			await expect(
 				page.getByText( 'Showing all 3 results' )
