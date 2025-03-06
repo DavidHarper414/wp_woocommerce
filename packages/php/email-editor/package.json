@@ -5,15 +5,16 @@
 		"changelog": "XDEBUG_MODE=off composer install --quiet && composer exec -- changelogger",
 		"lint": "pnpm --if-present '/^lint:lang:.*$/'",
 		"lint:fix": "pnpm --if-present '/^lint:fix:lang:.*$/'",
-		"lint:fix:lang:php": "composer code-style-fix",
-		"lint:lang:php": "composer code-style"
+		"lint:fix:lang:php": "composer run-script phpcbf",
+		"lint:lang:php": "composer run-script phpcs",
+		"lint:ci": "XDEBUG_MODE=off composer install --quiet && composer run-script phpcs"
 	},
 	"license": "GPL-3.0-or-later",
 	"dependencies": {},
 	"config": {
 		"ci": {
 			"lint": {
-				"command": "lint",
+				"command": "lint:ci",
 				"changes": "src/**/*.{php}"
 			}
 		}
