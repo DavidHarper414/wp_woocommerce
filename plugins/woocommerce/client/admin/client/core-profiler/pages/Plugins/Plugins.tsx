@@ -166,7 +166,7 @@ export const Plugins = ( {
 	);
 
 	const baseHeight = 520;
-	const rowHeight = 110; // include the gap between the cards
+	const rowHeight = 100; // include the gap between the cards
 	const listHeight = baseHeight + rowHeight * pluginsCardRowCount;
 	const shouldShowStickyFooter = useMediaQuery(
 		`(max-height: ${ listHeight }px)`
