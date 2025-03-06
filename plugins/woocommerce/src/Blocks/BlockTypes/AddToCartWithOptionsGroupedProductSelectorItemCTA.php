@@ -62,16 +62,9 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 	 * @return string The HTML markup for the add to cart button.
 	 */
 	private function get_button_markup( $product_to_render ) {
-		global $product;
-
-		$previous_product = $product;
-		$product          = $product_to_render;
-
 		ob_start();
 		woocommerce_template_loop_add_to_cart();
 		$button_html = ob_get_clean();
-
-		$product = $previous_product;
 
 		return $button_html;
 	}
@@ -112,11 +105,18 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 	 */
 	protected function render( $attributes, $content, $block ): string {
 		$post_id = isset( $block->context['postId'] ) ? $block->context['postId'] : '';
-		$product = wc_get_product( $post_id );
+
+		global $product;
+
+		$previous_product = $product;
+
+		if ( ! empty( $post_id ) ) {
+			$product = wc_get_product( $post_id );
+		}
+
+		$markup = '';
 
 		if ( $product instanceof \WC_Product ) {
-			$markup = '';
-
 			if ( ! $product->is_purchasable() || $product->has_options() || ! $product->is_in_stock() ) {
 				$markup = $this->get_button_markup( $product );
 			} elseif ( $product->is_sold_individually() ) {
@@ -126,10 +126,12 @@ class AddToCartWithOptionsGroupedProductSelectorItemCTA extends AbstractBlock {
 			}
 
 			if ( $markup ) {
-				return '<div class="wp-block-add-to-cart-with-options-grouped-product-selector-item-cta wc-block-add-to-cart-with-options-grouped-product-selector-item-cta">' . $markup . '</div>';
+				$markup = '<div class="wp-block-add-to-cart-with-options-grouped-product-selector-item-cta wc-block-add-to-cart-with-options-grouped-product-selector-item-cta">' . $markup . '</div>';
 			}
 		}
 
-		return '';
+		$product = $previous_product;
+
+		return $markup;
 	}
 }
