@@ -643,7 +643,7 @@ jobs:
             if [ -n "$added_and_modified_docs" ]; then
               for file in $added_and_modified_docs; do
                 lint_result=$( { cat "$file" | markdownlint --stdin -c docs/.markdownlint.json ; } 2>&1 ) || rc="$?"
-                if [ $rc -ne 0 ]; 
+                if [ $rc -ne 0 ]; then
                   echo -e "${RED}[err] $file${NC}"
                   lint_results="$lint_results\n>>>Linting failed for file: $file <<<\n$lint_result\n--------"
                 else
