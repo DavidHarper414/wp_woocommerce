@@ -59,10 +59,12 @@ function useProducts(
 						// user needs to type more characters to get closer to actual
 						// product name.
 						per_page: 40,
+						catalog_visibility: 'visible',
 				  }
 				: {
 						// For a small catalog we fetch all the products.
 						per_page: 0,
+						catalog_visibility: 'visible',
 				  },
 		};
 		getProducts( query ).then( ( results ) => {
