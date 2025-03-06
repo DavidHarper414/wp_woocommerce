@@ -5,12 +5,12 @@ import { getCanvas, goToPageEditor } from '@woocommerce/e2e-utils-playwright';
 /**
  * Internal dependencies
  */
-import { tags } from '../../fixtures/fixtures';
+import { tags, test, expect, request } from '../../fixtures/fixtures';
 import { ADMIN_STATE_PATH } from '../../playwright.config';
-const { test, expect, request } = require( '@playwright/test' );
-const { admin } = require( '../../test-data/data' );
+import { admin } from '../../test-data/data';
+import { WC_API_PATH } from '../../utils/api-client';
+
 const pageTitle = 'Product Showcase';
-const wcApi = require( '@woocommerce/woocommerce-rest-api' ).default;
 const singleProductPrice1 = '5.00';
 const singleProductPrice2 = '10.00';
 const singleProductPrice3 = '15.00';
@@ -38,38 +38,32 @@ test.describe(
 	() => {
 		test.use( { storageState: ADMIN_STATE_PATH } );
 
-		test.beforeAll( async ( { baseURL } ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
+		test.beforeAll( async ( { restApi } ) => {
 			// make sure the attribute term page is visible in the shop
-			await api.put(
-				'settings/products/woocommerce_attribute_lookup_enabled',
+			await restApi.put(
+				`${ WC_API_PATH }/settings/products/woocommerce_attribute_lookup_enabled`,
 				{
 					value: 'yes',
 				}
 			);
 
 			// add product tags
-			await api
-				.post( 'products/tags', {
+			await restApi
+				.post( `${ WC_API_PATH }/products/tags`, {
 					name: productTagName1,
 				} )
 				.then( ( response ) => {
 					productTag1Id = response.data.id;
 				} );
-			await api
-				.post( 'products/tags', {
+			await restApi
+				.post( `${ WC_API_PATH }/products/tags`, {
 					name: productTagName2,
 				} )
 				.then( ( response ) => {
 					productTag2Id = response.data.id;
 				} );
-			await api
-				.post( 'products/tags', {
+			await restApi
+				.post( `${ WC_API_PATH }/products/tags`, {
 					name: productTagName3,
 				} )
 				.then( ( response ) => {
@@ -77,8 +71,8 @@ test.describe(
 				} );
 
 			// add product attribute
-			await api
-				.post( 'products/attributes', {
+			await restApi
+				.post( `${ WC_API_PATH }/products/attributes`, {
 					name: productAttributeName,
 					has_archives: true,
 				} )
@@ -87,13 +81,16 @@ test.describe(
 				} );
 
 			// add product attribute term
-			await api.post( `products/attributes/${ attributeId }/terms`, {
-				name: productAttributeTerm,
-			} );
+			await restApi.post(
+				`${ WC_API_PATH }/products/attributes/${ attributeId }/terms`,
+				{
+					name: productAttributeTerm,
+				}
+			);
 
 			// add products
-			await api
-				.post( 'products', {
+			await restApi
+				.post( `${ WC_API_PATH }/products`, {
 					name: simpleProductName + ' 1',
 					type: 'simple',
 					regular_price: singleProductPrice1,
@@ -117,8 +114,8 @@ test.describe(
 				.then( ( response ) => {
 					product1Id = response.data.id;
 				} );
-			await api
-				.post( 'products', {
+			await restApi
+				.post( `${ WC_API_PATH }/products`, {
 					name: simpleProductName + ' 2',
 					type: 'simple',
 					regular_price: singleProductPrice2,
@@ -139,8 +136,8 @@ test.describe(
 				.then( ( response ) => {
 					product2Id = response.data.id;
 				} );
-			await api
-				.post( 'products', {
+			await restApi
+				.post( `${ WC_API_PATH }/products`, {
 					name: simpleProductName + ' 3',
 					type: 'simple',
 					regular_price: singleProductPrice3,
@@ -158,24 +155,18 @@ test.describe(
 				} );
 		} );
 
-		test.afterAll( async ( { baseURL } ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
-			await api.post( 'products/batch', {
+		test.afterAll( async ( { baseURL, restApi } ) => {
+			await restApi.post( `${ WC_API_PATH }/products/batch`, {
 				delete: [ product1Id, product2Id, product3Id ],
 			} );
-			await api.post( 'products/tags/batch', {
+			await restApi.post( `${ WC_API_PATH }/products/tags/batch`, {
 				delete: [ productTag1Id, productTag2Id, productTag3Id ],
 			} );
-			await api.post( 'products/attributes/batch', {
+			await restApi.post( `${ WC_API_PATH }/products/attributes/batch`, {
 				delete: [ attributeId ],
 			} );
-			await api.put(
-				'settings/products/woocommerce_attribute_lookup_enabled',
+			await restApi.put(
+				`${ WC_API_PATH }/settings/products/woocommerce_attribute_lookup_enabled`,
 				{
 					value: 'no',
 				}
@@ -242,7 +233,7 @@ test.describe(
 				page.getByRole( 'heading', { name: productTagName1 } )
 			).toBeVisible();
 			await expect(
-				page.getByText( `Products tagged “${ productTagName1 }”` )
+				page.getByText( `Products tagged "${ productTagName1 }"` )
 			).toBeVisible();
 			await expect(
 				page.getByText( 'Showing all 3 results' )
