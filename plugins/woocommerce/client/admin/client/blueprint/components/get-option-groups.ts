@@ -128,8 +128,8 @@ const OPTIONS_GROUPS = {
  *
  * In this context, groups are the sections in the settings page (e.g. General, Products, Payments, etc).
  *
- * @param  options a list of options
- * @return {string[]} a list of groups
+ * @param options a list of options
+ * @return string[] a list of groups
  */
 export const getOptionGroups = ( options: string[] ) => {
 	const groups = new Set();
@@ -153,7 +153,6 @@ export const getOptionGroupsFromSteps = (
 	steps: ( BlueprintStep & { options?: Record< string, string > } )[]
 ) => {
 	const options = steps.reduce< string[] >( ( acc, step ) => {
-		// Explicitly set acc as string[]
 		if ( step.step === 'setSiteOptions' && step.options ) {
 			acc.push( ...Object.keys( step.options ) );
 		}
