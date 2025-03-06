@@ -152,7 +152,14 @@ const productCollectionStore = {
 				const { actions } = yield import(
 					'@wordpress/interactivity-router'
 				);
-				yield actions.prefetch( ref.href );
+
+				// Todo: Remove after support for WP .6.6 is dropped.
+				if ( document.getElementById( 'wp-interactivity-data' ) ) {
+					const html = yield fetchUrlAndReplaceState( ref.href );
+					yield actions.prefetch( ref.href, { html } );
+				} else {
+					yield actions.prefetch( ref.href );
+				}
 			}
 		},
 		*onRender() {
