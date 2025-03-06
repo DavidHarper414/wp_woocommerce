@@ -2773,12 +2773,12 @@ function _wc_delete_transients( $transients ) {
 							wp_cache_delete( $option_name, 'options' );
 						}
 					}
-	
+
 					// Also update alloptions cache if needed.
 					// This is required to prevent phantom transients from being returned.
 					$alloptions         = wp_load_alloptions( true );
 					$updated_alloptions = false;
-	
+
 					if ( is_array( $alloptions ) ) {
 						foreach ( $options_to_clear as $option_name ) {
 							if ( isset( $alloptions[ $option_name ] ) ) {
@@ -2786,14 +2786,13 @@ function _wc_delete_transients( $transients ) {
 								$updated_alloptions = true;
 							}
 						}
-	
+
 						if ( $updated_alloptions ) {
 							wp_cache_set( 'alloptions', $alloptions, 'options' );
 						}
 					}
 				}
 			}
-
 
 			return true;
 		} catch ( Exception $e ) {
