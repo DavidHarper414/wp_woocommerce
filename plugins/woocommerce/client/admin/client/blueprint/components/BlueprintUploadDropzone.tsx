@@ -264,6 +264,11 @@ export const fileUploadMachine = setup( {
 				},
 				onError: {
 					target: 'error',
+					actions: assign( {
+						error: new Error(
+							'Error reading or parsing file. Please check the schema.'
+						),
+					} ),
 				},
 			},
 		},
