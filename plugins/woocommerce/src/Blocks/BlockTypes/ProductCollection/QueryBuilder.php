@@ -257,14 +257,15 @@ class QueryBuilder {
 		$orderby_query    = $query['orderby'] ? $this->get_custom_orderby_query( $query['orderby'] ) : array();
 		$on_sale_query    = $this->get_on_sale_products_query( $query['on_sale'] );
 		$stock_query      = $this->get_stock_status_query( $query['stock_status'] );
-		$visibility_query = is_array( $query['stock_status'] ) ? $this->get_product_visibility_query( $stock_query, $query['stock_status'] ) : array();
 		$featured_query   = $this->get_featured_query( $query['featured'] ?? false );
 		$attributes_query = $this->get_product_attributes_query( $query['product_attributes'] );
 		$taxonomies_query = $query['taxonomies_query'] ?? array();
-		$tax_query        = $this->merge_tax_queries( $visibility_query, $attributes_query, $taxonomies_query, $featured_query );
 		$date_query       = $this->get_date_query( $query['timeFrame'] ?? array() );
 		$price_query_args = $this->get_price_range_query_args( $query['priceRange'] ?? array() );
 		$handpicked_query = $this->get_handpicked_query( $query['handpicked_products'] ?? false );
+
+		$visibility_query = $this->get_product_visibility_query( $query, $stock_query );
+		$tax_query        = $this->merge_tax_queries( $visibility_query, $attributes_query, $taxonomies_query, $featured_query );
 
 		// We exclude applied filters to generate product ids for the filter blocks.
 		$applied_filters_query = $is_exclude_applied_filters ? array() : $this->get_queries_by_applied_filters();
@@ -733,18 +734,26 @@ class QueryBuilder {
 	/**
 	 * Return a query for product visibility depending on their stock status.
 	 *
-	 * @param array $stock_query  Stock status query.
-	 * @param array $stock_status Selected stock status.
+	 * @param array $query       The query args.
+	 * @param array $stock_query Stock status query.
 	 *
 	 * @return array Tax query for product visibility.
 	 */
-	private function get_product_visibility_query( $stock_query, $stock_status ) {
+	private function get_product_visibility_query( $query, $stock_query ) {
+		if ( ! is_array( $query['stock_status'] ) && ! is_array( $query['handpicked_products'] ) ) {
+			return array();
+		}
+
 		$product_visibility_terms  = wc_get_product_visibility_term_ids();
 		$product_visibility_not_in = array( is_search() ? $product_visibility_terms['exclude-from-search'] : $product_visibility_terms['exclude-from-catalog'] );
 
-		// Hide out of stock products.
-		if ( empty( $stock_query ) && ! in_array( ProductStockStatus::OUT_OF_STOCK, $stock_status, true ) ) {
+			// Hide out of stock products.
+		if ( is_array( $query['stock_status'] ) && empty( $stock_query ) && ! in_array( ProductStockStatus::OUT_OF_STOCK, $query['stock_status'], true ) ) {
 			$product_visibility_not_in[] = $product_visibility_terms[ ProductStockStatus::OUT_OF_STOCK ];
+		}
+
+		if ( is_array( $query['handpicked_products'] ) ) {
+			$product_visibility_not_in = array_diff( $product_visibility_not_in, array( $product_visibility_terms['exclude-from-catalog'], $product_visibility_terms['exclude-from-search'] ) );
 		}
 
 		return array(
