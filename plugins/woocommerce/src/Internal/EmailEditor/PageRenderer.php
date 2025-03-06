@@ -113,13 +113,13 @@ class PageRenderer {
 		);
 		wp_enqueue_style(
 			'woocommerce_email_editor',
-			$email_editor_assets_url . "{$file_name}.css",
+			$email_editor_assets_url . "style-{$file_name}.css",
 			array(),
 			$assets_params['version']
 		);
 
 		$current_user_email = wp_get_current_user()->user_email;
-		
+
 		// Fetch all email types from WooCommerce including those added by other plugins.
 		$wc_emails = \WC_Emails::instance();
 		$email_types = $wc_emails->get_emails();
