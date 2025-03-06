@@ -65,6 +65,10 @@ class AddToCartWithOptionsGroupedProductSelectorItemTemplate extends AbstractBlo
 	protected function render( $attributes, $content, $block ): string {
 		global $product;
 
+		if ( ! $product instanceof \WC_Product_Grouped ) {
+			return '';
+		}
+
 		$content = '';
 
 		$children = array_filter( array_map( 'wc_get_product', $product->get_children() ), 'wc_products_array_filter_visible_grouped' );
