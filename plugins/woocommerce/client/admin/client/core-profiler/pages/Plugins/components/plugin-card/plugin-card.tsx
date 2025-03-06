@@ -56,33 +56,34 @@ export const PluginCard = ( {
 			} );
 		}
 	} );
+
 	return (
-		<div
+		<label
 			className={ clsx( 'woocommerce-profiler-plugins-plugin-card', {
 				'is-installed': installed,
 				disabled,
 			} ) }
 			data-slug={ slug }
+			htmlFor={ `${ pluginKey }-checkbox` }
 		>
-			<label htmlFor={ `${ pluginKey }-checkbox` }>
-				{ /* this label element acts as the catchment area for the checkbox */ }
-				<div className="woocommerce-profiler-plugin-card-top">
-					{ ! installed && (
-						<CheckboxControl
-							id={ `${ pluginKey }-checkbox` }
-							className="core-profiler__checkbox"
-							disabled={ disabled }
-							checked={ checked }
-							onChange={ ( event ) => {
-								if ( ! disabled ) {
-									onChange( event );
-								}
-							} }
-						/>
-					) }
-					{ imageUrl ? (
-						<img src={ imageUrl } alt={ pluginKey } />
-					) : null }
+			{ /* this label element acts as the catchment area for the checkbox */ }
+			{ ! installed && (
+				<CheckboxControl
+					id={ `${ pluginKey }-checkbox` }
+					className="woocommerce-profiler__checkbox"
+					disabled={ disabled }
+					checked={ checked }
+					onChange={ ( event ) => {
+						if ( ! disabled ) {
+							onChange( event );
+						}
+					} }
+				/>
+			) }
+			<div className="woocommerce-profiler-plugins-plugin-card-main">
+				{ imageUrl ? <img src={ imageUrl } alt={ pluginKey } /> : null }
+
+				<div className="woocommerce-profiler-plugins-plugin-card-content">
 					<div
 						className={ clsx(
 							'woocommerce-profiler-plugins-plugin-card-text-header',
@@ -91,26 +92,25 @@ export const PluginCard = ( {
 							}
 						) }
 					>
-						<h3>{ title }</h3>
+						<h3 className="woocommerce-profiler-plugins-plugin-card-title">
+							{ title }
+						</h3>
 						{ installed && (
 							<span>{ __( 'Installed', 'woocommerce' ) }</span>
 						) }
 					</div>
-				</div>
 
-				<div
-					className={ clsx(
-						'woocommerce-profiler-plugins-plugin-card-text',
-						{ 'smaller-margin-left': installed }
-					) }
-				>
-					<p
-						dangerouslySetInnerHTML={ sanitizeHTML( description ) }
-					/>
-					{ learnMoreLink }
+					<div className="woocommerce-profiler-plugins-plugin-card-text">
+						<p
+							dangerouslySetInnerHTML={ sanitizeHTML(
+								description
+							) }
+						/>
+						{ learnMoreLink }
+					</div>
 				</div>
-			</label>
-		</div>
+			</div>
+		</label>
 	);
 };
 
