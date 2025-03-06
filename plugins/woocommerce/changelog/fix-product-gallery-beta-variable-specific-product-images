@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Product Gallery: If a user selects the attributes of a product which has a specific image that is not present in the product gallery metabox, ensure it loads
