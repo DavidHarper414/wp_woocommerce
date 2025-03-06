@@ -22,7 +22,15 @@ export class FrontendUtils {
 	}
 
 	async addToCart( itemName = '' ) {
-		await this.page.waitForLoadState( 'domcontentloaded' );
+		const cartResponsePromise = this.page.waitForResponse( ( response ) => {
+			const url = response.url();
+			return (
+				url.includes( 'cart/items' ) ||
+				url.includes( 'add_to_cart' ) ||
+				url.includes( 'batch' )
+			);
+		} );
+
 		if ( itemName !== '' ) {
 			// We can't use `getByRole()` here because the Add to Cart button
 			// might be a button (in blocks) or a link (in the legacy template).
@@ -33,14 +41,7 @@ export class FrontendUtils {
 			await this.page.click( 'text=Add to cart' );
 		}
 
-		await this.page.waitForResponse( ( response ) => {
-			const url = response.url();
-			return (
-				url.includes( 'cart/items' ) ||
-				url.includes( 'add_to_cart' ) ||
-				url.includes( 'batch' )
-			);
-		} );
+		await cartResponsePromise;
 	}
 
 	async goToCheckout() {
