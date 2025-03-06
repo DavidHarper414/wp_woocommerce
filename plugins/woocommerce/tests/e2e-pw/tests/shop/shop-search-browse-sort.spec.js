@@ -131,7 +131,11 @@ test.describe(
 			await test.step( 'Go to the shop and sort by price high to low', async () => {
 				await page.goto( 'shop/' );
 				await expect(
-					page.getByLabel( `Add to cart: "${ products[ 0 ].name }"` )
+					page.getByLabel(
+						new RegExp(
+							`Add to cart: ["|“]${ products[ 0 ].name }["|”]`
+						)
+					)
 				).toBeVisible();
 
 				// sort by price high to low
@@ -163,7 +167,11 @@ test.describe(
 			await test.step( 'Go to the shop and sort by price low to high', async () => {
 				await page.goto( 'shop/' );
 				await expect(
-					page.getByLabel( `Add to cart: "${ products[ 0 ].name }"` )
+					page.getByLabel(
+						new RegExp(
+							`Add to cart: ["|“]${ products[ 0 ].name }["|”]`
+						)
+					)
 				).toBeVisible();
 
 				// sort by price low to high
