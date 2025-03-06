@@ -350,7 +350,7 @@
 		}
 	}
 
-	$sticky-footer-height: 120px;
+	$sticky-footer-height: 132px;
 
 	.woocommerce-profiler-plugins__list {
 		display: flex;
@@ -400,6 +400,7 @@
 	.woocommerce-profiler-plugins-jetpack-agreement {
 		color: $gray-700;
 		font-size: 12px;
+		margin: 12px 0 24px 0;
 	}
 
 	.woocommerce-profiler-plugins__footer {
