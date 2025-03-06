@@ -212,7 +212,9 @@ test(
 			await page.locator( 'button[name="add-to-cart"]' ).click();
 			await expect(
 				page.getByText(
-					`2 × "${ product.name }" have been added to your cart.`
+					new RegExp(
+						`2 × ["|“]${ product.name }["|”] have been added to your cart.`
+					)
 				)
 			).toBeVisible();
 		} );
