@@ -20,7 +20,7 @@ class WC_Comments {
 	/**
 	 * @var string COMMENT_COUNT_CACHE_GROUP The cache group to use for comment counts.
 	 */
-	private CONST COMMENT_COUNT_CACHE_GROUP = 'wc_comment_counts';
+	private const COMMENT_COUNT_CACHE_GROUP = 'wc_comment_counts';
 
 	/**
 	 * Hook in methods.
@@ -43,8 +43,11 @@ class WC_Comments {
 		add_filter( 'comments_clauses', array( __CLASS__, 'exclude_webhook_comments' ), 10, 1 );
 		add_filter( 'comment_feed_where', array( __CLASS__, 'exclude_webhook_comments_from_feed_where' ) );
 
+		// Secure potential remaining Action Logs.
+		add_filter( 'comments_clauses', array( __CLASS__, 'exclude_action_log_comments' ), 10, 2 );
+
 		// Exclude product reviews.
-		add_filter( 'comments_clauses', array( ReviewsUtil::class, 'comments_clauses_without_product_reviews' ), 10, 1 );
+		add_filter( 'comments_clauses', array( ReviewsUtil::class, 'comments_clauses_without_product_reviews' ), 10, 2 );
 
 		// Count comments.
 		add_filter( 'wp_count_comments', array( __CLASS__, 'wp_count_comments' ), 10, 2 );
@@ -155,6 +158,23 @@ class WC_Comments {
 	}
 
 	/**
+	 * Exclude action_log comments from queries.
+	 *
+	 * @param array            $clauses       A compacted array of comment query clauses.
+	 * @param WP_Comment_Query $comment_query The WP_Comment_Query being filtered.
+	 *
+	 * @return array
+	 * @since  9.9
+	 */
+	public static function exclude_action_log_comments( $clauses, $comment_query ) {
+		if ( 'action_log' !== $comment_query->query_vars['type'] ) {
+			$clauses['where'] .= ( $clauses['where'] ? ' AND ' : '' ) . " comment_type != 'action_log' ";
+		}
+
+		return $clauses;
+	}
+
+	/**
 	 * Validate the comment ratings.
 	 *
 	 * @param  array $comment_data Comment data.
@@ -230,7 +250,10 @@ class WC_Comments {
 	 */
 	public static function increment_comments_count_cache_on_wp_insert_comment( $comment_id, $comment ) {
 		if ( ! self::is_comment_excluded_from_wp_comment_counts( $comment ) ) {
-			wp_cache_incr( 'wc_count_comments_' . $comment->comment_approved, 1, self::COMMENT_COUNT_CACHE_GROUP );
+			$comment_status = wp_get_comment_status( $comment );
+			if ( false !== $comment_status ) {
+				wp_cache_incr( 'wc_count_comments_' . $comment_status, 1, self::COMMENT_COUNT_CACHE_GROUP );
+			}
 		}
 	}
 
@@ -245,14 +268,7 @@ class WC_Comments {
 	 */
 	public static function update_comments_count_cache_on_comment_status_change( $new_status, $old_status, $comment ) {
 		if ( ! self::is_comment_excluded_from_wp_comment_counts( $comment ) ) {
-			// WP Core uses different strings for the hooks than what is represented by the comment_approved value.
-			$old_status_map = [
-				'approved'   => '1',
-				'unapproved' => '0',
-			];
-			$old_status     = $old_status_map[ $old_status ] ?? $old_status;
-
-			wp_cache_incr( 'wc_count_comments_' . $comment->comment_approved, 1, self::COMMENT_COUNT_CACHE_GROUP );
+			wp_cache_incr( 'wc_count_comments_' . $new_status, 1, self::COMMENT_COUNT_CACHE_GROUP );
 			wp_cache_decr( 'wc_count_comments_' . $old_status, 1, self::COMMENT_COUNT_CACHE_GROUP );
 		}
 	}
@@ -280,15 +296,15 @@ class WC_Comments {
 		if ( wp_cache_supports( 'flush_group' ) ) {
 			wp_cache_flush_group( self::COMMENT_COUNT_CACHE_GROUP );
 		} else {
-			$comment_approved_values = array(
-				'0',
-				'1',
+			$comment_statuses = array(
+				'approved',
+				'unapproved',
 				'spam',
 				'trash',
 				'post-trashed',
 			);
-			foreach ( $comment_approved_values as $approved_value ) {
-				wp_cache_delete( 'wc_count_comments_' . $approved_value, self::COMMENT_COUNT_CACHE_GROUP );
+			foreach ( $comment_statuses as $comment_status ) {
+				wp_cache_delete( 'wc_count_comments_' . $comment_status, self::COMMENT_COUNT_CACHE_GROUP );
 			}
 		}
 	}
@@ -296,60 +312,58 @@ class WC_Comments {
 	/**
 	 * Remove order notes, webhook delivery logs, and product reviews from wp_count_comments().
 	 *
-	 * @param object $stats   Comment stats.
-	 * @param int    $post_id Post ID.
+	 * @param array|object $stats   Comment stats.
+	 * @param int          $post_id Post ID.
 	 *
 	 * @return object
 	 * @since  2.2
 	 */
 	public static function wp_count_comments( $stats, $post_id ) {
-		global $wpdb;
-
-		if ( 0 === $post_id ) {
-			$comment_counts = array(
-				'approved'     => 0,
-				'moderated'    => 0,
-				'spam'         => 0,
-				'trash'        => 0,
-				'post-trashed' => 0,
-			);
-
-			$mapping = array(
-				'0'            => 'moderated',
-				'1'            => 'approved',
-				'spam'         => 'spam',
-				'trash'        => 'trash',
-				'post-trashed' => 'post-trashed',
-			);
-
-			foreach ( $mapping as $comment_approved => $comment_status ) {
-				// Cache is by comment_approved value as WP core uses different terms for the same value increasing the likelihood of bugs being introduced.
-				$cache_key = 'wc_count_comments_' . $comment_approved;
-				$count     = wp_cache_get( $cache_key, self::COMMENT_COUNT_CACHE_GROUP );
-				if ( $count === false ) {
-					$count = $wpdb->get_var(
-						$wpdb->prepare(
-							"
-							SELECT COUNT(*)
-							FROM {$wpdb->comments}
-							LEFT JOIN {$wpdb->posts} ON comment_post_ID = {$wpdb->posts}.ID
-							WHERE comment_type NOT IN ('action_log', 'order_note', 'webhook_delivery') AND {$wpdb->posts}.post_type NOT IN ('product')
-							AND comment_approved = %s
-							",
-							$comment_approved
-						)
-					);
-					wp_cache_set( $cache_key, $count, self::COMMENT_COUNT_CACHE_GROUP, 3 * DAY_IN_SECONDS );
-				}
-				$comment_counts[ $comment_status ] = (int) $count;
-			}
-
-			$comment_counts['all']            = $comment_counts['approved'] + $comment_counts['moderated'];
-			$comment_counts['total_comments'] = $comment_counts['all'] + $comment_counts['spam'];
-			$stats                            = (object) $comment_counts;
+		if ( 0 !== $post_id || ! empty( $stats ) ) {
+			// If $stats isn't empty, another plugin may have already made changes to the values that we can't account for, so we don't attempt to modify it.
+			return $stats;
 		}
 
-		return $stats;
+		$comment_counts = array();
+
+		// WordPress is inconsistent in the names it uses for approved/unapproved comment statuses, so we need to remap the names.
+		$stat_key_to_comment_query_status_mapping = array(
+			'approved'     => 'approve',
+			'moderated'    => 'hold',
+			'spam'         => 'spam',
+			'trash'        => 'trash',
+			'post-trashed' => 'post-trashed',
+		);
+
+		$comment_query_status_to_comment_status_mapping = array(
+			'approve'      => 'approved',
+			'hold'         => 'unapproved',
+			'spam'         => 'spam',
+			'trash'        => 'trash',
+			'post-trashed' => 'post-trashed',
+		);
+
+		$args = array(
+			'count'                     => true,
+			'update_comment_meta_cache' => false,
+			'orderby'                   => 'none',
+		);
+
+		foreach ( $stat_key_to_comment_query_status_mapping as $stat_key => $query_status ) {
+			// For simplicity, the cache key is by the comment status returned by wp_get_comment_status() and used by wp_transition_comment_status().
+			$cache_key = 'wc_count_comments_' . $comment_query_status_to_comment_status_mapping[ $query_status ];
+			$count     = wp_cache_get( $cache_key, self::COMMENT_COUNT_CACHE_GROUP );
+			if ( false === $count ) {
+				$count = get_comments( array_merge( $args, array( 'status' => $query_status ) ) );
+				wp_cache_set( $cache_key, $count, self::COMMENT_COUNT_CACHE_GROUP, 3 * DAY_IN_SECONDS );
+			}
+			$comment_counts[ $stat_key ] = (int) $count;
+		}
+
+		$comment_counts['all']            = $comment_counts['approved'] + $comment_counts['moderated'];
+		$comment_counts['total_comments'] = $comment_counts['all'] + $comment_counts['spam'];
+
+		return (object) $comment_counts;
 	}
 
 	/**
