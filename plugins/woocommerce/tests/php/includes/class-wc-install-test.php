@@ -251,9 +251,9 @@ class WC_Install_Test extends \WC_Unit_Test_Case {
 	 *           [false]
 	 *           [null]
 	 *
-	 * @since 9.8.0
+	 * @since 9.9.0
 	 *
-	 * @param bool|null $auto_update Whether to enable auto-updates (TRUE) or not. NULL doesn't override the defaults.
+	 * @param bool|null $auto_update Whether to enable auto-updates (TRUE) or not. NULL means use the defaults.
 	 */
 	public function test_db_auto_updates( ?bool $auto_update = null ): void {
 		$options = array( 'woocommerce_db_version', 'woocommerce_version' );

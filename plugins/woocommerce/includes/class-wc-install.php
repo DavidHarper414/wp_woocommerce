@@ -763,7 +763,7 @@ class WC_Install {
 			 *
 			 * @since 9.9.0
 			 *
-			 * @param int $delay Delay to add. Default is 0 (updates will run as soon as possible).
+			 * @param int $delay Delay to add (in seconds). Default is 0 (updates will run as soon as possible).
 			 */
 			$scheduled_time_delay = absint( apply_filters( 'woocommerce_db_update_schedule_delay', 0 ) );
 
