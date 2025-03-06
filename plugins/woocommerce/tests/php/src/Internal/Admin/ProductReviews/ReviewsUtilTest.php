@@ -64,4 +64,42 @@ class ReviewsUtilTest extends WC_Unit_Test_Case {
 		}
 	}
 
+	/** @see test_comments_clauses_without_product_reviews_filter */
+	public function provider_comments_clauses_without_product_reviews_filter() {
+		yield 'Query for product comments' => [
+			'args' => [
+				'post_type' => 'product',
+			],
+			'should_exclude_reviews' => false,
+		];
+
+		yield 'Query for product and post comments' => [
+			'args' => [
+				'post_type' => 'post,product',
+			],
+			'should_exclude_reviews' => false,
+		];
+
+		yield 'Query for post comments' => [
+			'args' => [
+				'post_type' => 'post',
+			],
+			'should_exclude_reviews' => true,
+		];
+
+		yield 'Query by comment ID' => [
+			'args' => [
+				'type' => 'comment',
+			],
+			'should_exclude_reviews' => false,
+		];
+
+		yield 'Query by non-Product Post ID' => [
+			'args' => [
+				'post_id' => PHP_INT_MAX,
+			],
+			'should_exclude_reviews' => true,
+		];
+	}
+
 }
