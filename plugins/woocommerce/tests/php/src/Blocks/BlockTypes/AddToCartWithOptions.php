@@ -96,9 +96,6 @@ class AddToCartWithOptions extends \WP_UnitTestCase {
 		$grouped_product->set_children( array( $simple_product_id ) );
 		$grouped_product_id = $grouped_product->save();
 
-		global $product;
-		$product = $grouped_product;
-
 		$markup = do_blocks( '<!-- wp:woocommerce/single-product {"productId":' . $grouped_product_id . '} --><!-- wp:woocommerce/add-to-cart-with-options /--><!-- /wp:woocommerce/single-product -->' );
 		$this->assertStringContainsString( 'type="number"', $markup, 'The Grouped Product Add to Cart with Options form contains a numeric input.' );
 
