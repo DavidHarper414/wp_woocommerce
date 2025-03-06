@@ -5,11 +5,13 @@ import { store, getElement, getContext } from '@wordpress/interactivity';
 
 // Todo: Remove after support for WP .6.6 is dropped.
 const data = document.getElementById( 'wp-interactivity-data' );
-const interactivityData = JSON.parse( data.textContent );
-if ( interactivityData.state?.[ 'woocommerce/product-button' ] ) {
-	interactivityData.state[ 'woocommerce/product-button' ].addToCartText =
-		undefined;
-	data.textContent = JSON.stringify( interactivityData );
+if ( data ) {
+	const interactivityData = JSON.parse( data.textContent );
+	if ( interactivityData.state?.[ 'woocommerce/product-button' ] ) {
+		interactivityData.state[ 'woocommerce/product-button' ].addToCartText =
+			undefined;
+		data.textContent = JSON.stringify( interactivityData );
+	}
 }
 
 /**
@@ -86,9 +88,12 @@ const productCollectionStore = {
 				);
 
 				// Todo: Remove after support for WP .6.6 is dropped.
-				const html = yield fetchUrlAndReplaceState( ref.href );
-
-				yield actions.navigate( ref.href, { html } );
+				if ( document.getElementById( 'wp-interactivity-data' ) ) {
+					const html = yield fetchUrlAndReplaceState( ref.href );
+					yield actions.navigate( ref.href, { html } );
+				} else {
+					yield actions.navigate( ref.href );
+				}
 
 				ctx.isPrefetchNextOrPreviousLink = ref.href;
 
@@ -117,9 +122,12 @@ const productCollectionStore = {
 				);
 
 				// Todo: Remove after support for WP .6.6 is dropped.
-				const html = yield fetchUrlAndReplaceState( ref.href );
-
-				yield actions.prefetch( ref.href, { html } );
+				if ( document.getElementById( 'wp-interactivity-data' ) ) {
+					const html = yield fetchUrlAndReplaceState( ref.href );
+					yield actions.prefetch( ref.href, { html } );
+				} else {
+					yield actions.prefetch( ref.href );
+				}
 			}
 		},
 		*viewProduct() {
