@@ -89,7 +89,9 @@ export const Edit = ( {
 	attributes,
 	setAttributes,
 }: BlockEditProps< ProductGalleryBlockAttributes > ) => {
-	const blockProps = useBlockProps();
+	const blockProps = useBlockProps( {
+		className: 'wc-block-product-gallery',
+	} );
 
 	return (
 		<div { ...blockProps }>
