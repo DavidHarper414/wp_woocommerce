@@ -16,7 +16,7 @@ describe( 'getOptionGroups', () => {
 	it( 'should return option groups for matched options', () => {
 		const options = [ 'woocommerce_store_address' ];
 		const result = getOptionGroups( options );
-		expect( result ).toEqual( [ 'general' ] );
+		expect( result ).toEqual( [ 'General' ] );
 	} );
 } );
 
@@ -32,6 +32,6 @@ describe( 'getOptionGroupsFromSteps', () => {
 		];
 
 		const result = getOptionGroupsFromSteps( steps );
-		expect( result ).toEqual( [ 'general' ] );
+		expect( result ).toEqual( [ 'General' ] );
 	} );
 } );
