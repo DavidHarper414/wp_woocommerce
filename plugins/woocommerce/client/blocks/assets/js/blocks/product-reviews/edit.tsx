@@ -86,7 +86,7 @@ const TEMPLATE: InnerBlockTemplate[] = [
 		],
 	],
 	[ 'core/comments-pagination' ],
-	[ 'core/post-comments-form' ],
+	[ 'woocommerce/product-review-form' ],
 ];
 
 const Edit = () => {

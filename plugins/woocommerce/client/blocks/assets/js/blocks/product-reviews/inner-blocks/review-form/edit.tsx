@@ -10,6 +10,7 @@ import {
 import { VisuallyHidden } from '@wordpress/components';
 import { useInstanceId } from '@wordpress/compose';
 import { __, sprintf } from '@wordpress/i18n';
+import type { BlockEditProps } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
@@ -20,6 +21,10 @@ export default function PostCommentsFormEdit( {
 	attributes,
 	context,
 	setAttributes,
+}: BlockEditProps< {
+	textAlign: string;
+} > & {
+	context: { postId: string; postType: string };
 } ) {
 	const { textAlign } = attributes;
 	const { postId, postType } = context;
@@ -39,7 +44,7 @@ export default function PostCommentsFormEdit( {
 			<BlockControls group="block">
 				<AlignmentControl
 					value={ textAlign }
-					onChange={ ( nextAlign ) => {
+					onChange={ ( nextAlign: string ) => {
 						setAttributes( { textAlign: nextAlign } );
 					} }
 				/>
@@ -47,7 +52,7 @@ export default function PostCommentsFormEdit( {
 			<div { ...blockProps }>
 				<CommentsForm postId={ postId } postType={ postType } />
 				<VisuallyHidden id={ instanceIdDesc }>
-					{ __( 'Comments form disabled in editor.' ) }
+					{ __( 'Comments form disabled in editor.', 'woocommerce' ) }
 				</VisuallyHidden>
 			</div>
 		</>

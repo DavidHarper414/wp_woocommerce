@@ -1,11 +1,6 @@
 /**
  * External dependencies
  */
-import clsx from 'clsx';
-
-/**
- * WordPress dependencies
- */
 import { __, _x, sprintf } from '@wordpress/i18n';
 import {
 	Warning,
@@ -22,38 +17,22 @@ const CommentsFormPlaceholder = () => {
 
 	return (
 		<div className="comment-respond">
-			<h3 className="comment-reply-title">{ __( 'Leave a Reply' ) }</h3>
-			<form
-				noValidate
-				className="comment-form"
-				onSubmit={ ( event ) => event.preventDefault() }
-			>
-				<p>
-					<label htmlFor={ `comment-${ instanceId }` }>
-						{ __( 'Comment' ) }
-					</label>
-					<textarea
-						id={ `comment-${ instanceId }` }
-						name="comment"
-						cols="45"
-						rows="8"
-						readOnly
-					/>
-				</p>
-				<p className="form-submit wp-block-button">
-					<input
-						name="submit"
-						type="submit"
-						className={ clsx(
-							'wp-block-button__link',
-							__experimentalGetElementClassName( 'button' )
-						) }
-						label={ __( 'Post Comment' ) }
-						value={ __( 'Post Comment' ) }
-						aria-disabled="true"
-					/>
-				</p>
-			</form>
+			<h3>{ __( 'Add a review', 'woocommerce' ) }</h3>
+			<div className="wp-block-woocommerce-product-reviews__editor__form-container">
+				<div className="wp-block-woocommerce-product-reviews__editor__row">
+					<span>{ __( 'Your rating *', 'woocommerce' ) }</span>
+					<p className="wp-block-woocommerce-product-reviews__editor__stars"></p>
+				</div>
+				<div className="wp-block-woocommerce-product-reviews__editor__row">
+					<span>{ __( 'Your review *', 'woocommerce' ) }</span>
+					<textarea />
+				</div>
+				<input
+					type="submit"
+					className="submit wp-block-button__link wp-element-button"
+					value={ __( 'Submit', 'woocommerce' ) }
+				/>
+			</div>
 		</div>
 	);
 };
@@ -91,14 +70,16 @@ const CommentsForm = ( { postId, postType } ) => {
 				>
 					{ _x(
 						'Enable comments',
-						'action that affects the current post'
+						'action that affects the current post',
+						'woocommerce'
 					) }
 				</Button>,
 			];
 			return (
 				<Warning actions={ actions }>
 					{ __(
-						'Post Comments Form block: Comments are not enabled for this item.'
+						'Post Comments Form block: Comments are not enabled for this item.',
+						'woocommerce'
 					) }
 				</Warning>
 			);
@@ -108,7 +89,8 @@ const CommentsForm = ( { postId, postType } ) => {
 					{ sprintf(
 						/* translators: 1: Post type (i.e. "post", "page") */
 						__(
-							'Post Comments Form block: Comments are not enabled for this post type (%s).'
+							'Post Comments Form block: Comments are not enabled for this post type (%s).',
+							'woocommerce'
 						),
 						postType
 					) }
@@ -118,7 +100,8 @@ const CommentsForm = ( { postId, postType } ) => {
 			return (
 				<Warning>
 					{ __(
-						'Post Comments Form block: Comments are not enabled.'
+						'Post Comments Form block: Comments are not enabled.',
+						'woocommerce'
 					) }
 				</Warning>
 			);
