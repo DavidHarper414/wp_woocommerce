@@ -331,12 +331,14 @@ body.wc-block-product-gallery-dialog-open {
 // - Product gallery groups are stacked vertically
 // - Thumbnails appear below the main gallery image and are arranged horizontally in a row
 @include breakpoint("<600px") {
-	.wp-block-group.is-layout-flex {
-		flex-direction: column !important;
-		order: -1;
-	}
+	.wc-block-product-gallery {
+		.wp-block-group.is-layout-flex {
+			flex-direction: column;
+			order: -1;
+		}
 
-	.wc-block-product-gallery-thumbnails {
-		flex-direction: row !important;
+		.wc-block-product-gallery-thumbnails {
+			flex-direction: row;
+		}
 	}
 }
