@@ -673,8 +673,6 @@ function wc_prepare_attachment_for_js( $response ) {
 		}
 	}
 
-
-
     return $response;
 }
 add_filter( 'wp_prepare_attachment_for_js', 'wc_prepare_attachment_for_js' );
