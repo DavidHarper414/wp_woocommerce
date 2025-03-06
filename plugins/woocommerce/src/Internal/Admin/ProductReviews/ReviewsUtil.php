@@ -23,13 +23,14 @@ class ReviewsUtil {
 			if ( ! is_array( $post_type ) ) {
 				$post_type = explode( ',', $post_type );
 			}
-			if ( ! in_array( 'product', $post_type ) ) {
+			if ( in_array( 'product', $post_type ) ) {
 				return $clauses;
 			}
 		}
 
 		/**
 		 * Any comment queries with these values are likely to be custom handling where we don't want to change default behavior.
+		 * This may change for the `type` query vars in the future if we break out review replies as their own type.
 		 */
 		foreach ( [ 'ID', 'parent', 'parent__in', 'post_author__in', 'post_author', 'post_name', 'type', 'type__in', 'type__not_in', 'post_type__in' ] as $arg ) {
 			if ( ! empty( $comment_query->query_vars[ $arg ] ) ) {
