@@ -624,11 +624,15 @@ export class CheckoutPage {
 	}
 
 	async syncBillingWithShipping() {
-		await this.page.getByLabel( 'Use same address for billing' ).check();
+		const checkbox = this.page.getByLabel( 'Use same address for billing' );
+		await checkbox.waitFor( { state: 'visible' } );
+		await checkbox.check();
 	}
 
 	async unsyncBillingWithShipping() {
-		await this.page.getByLabel( 'Use same address for billing' ).uncheck();
+		const checkbox = this.page.getByLabel( 'Use same address for billing' );
+		await checkbox.waitFor( { state: 'visible' } );
+		await checkbox.uncheck();
 	}
 
 	getOrderId() {
