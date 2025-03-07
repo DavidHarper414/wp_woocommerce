@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+Comment: Product filters block should load wc-settings script
+
