@@ -22,15 +22,21 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 	test.describe( 'Guest shopper', () => {
 		test.use( { storageState: guestFile } );
 
-		test.beforeEach( async ( { frontendUtils, requestUtils } ) => {
-			await requestUtils.activatePlugin(
-				'woocommerce-blocks-test-additional-checkout-fields'
-			);
+		test.beforeEach(
+			async ( { frontendUtils, requestUtils, checkoutPageObject } ) => {
+				await requestUtils.activatePlugin(
+					'woocommerce-blocks-test-additional-checkout-fields'
+				);
 
-			await frontendUtils.goToShop();
-			await frontendUtils.addToCart( REGULAR_PRICED_PRODUCT_NAME );
-			await frontendUtils.goToCheckout();
-		} );
+				await frontendUtils.goToShop();
+				await frontendUtils.addToCart( REGULAR_PRICED_PRODUCT_NAME );
+				await frontendUtils.goToCheckout();
+				// Wait for the email field to be visible before filling in the form.
+				await checkoutPageObject.page
+					.locator( '#email' )
+					.waitFor( { state: 'visible' } );
+			}
+		);
 
 		test( 'Shopper can see an error message when a required field is not filled in the checkout form', async ( {
 			checkoutPageObject,
@@ -161,7 +167,6 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 				} )
 				.getByLabel( 'Can a truck fit down your road?' )
 				.check();
-
 			await checkoutPageObject.page
 				.getByRole( 'group', {
 					name: 'Billing address',

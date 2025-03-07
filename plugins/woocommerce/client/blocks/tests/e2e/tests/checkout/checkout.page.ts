@@ -68,9 +68,6 @@ export class CheckoutPage {
 			contact: {},
 		}
 	) {
-		// Wait for the email field to be visible before filling in the form.
-		await this.page.locator( '#email' ).waitFor( { state: 'visible' } );
-
 		const isShippingOpen = await this.page
 			.getByRole( 'group', {
 				name: 'Shipping address',
