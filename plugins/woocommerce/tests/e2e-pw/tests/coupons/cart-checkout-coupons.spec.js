@@ -261,6 +261,9 @@ test.describe(
 
 					await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
 					await page
+						.locator( 'text=Click here to enter your code' )
+						.click();
+					await page
 						.locator( '#coupon_code' )
 						.fill( coupons[ 0 ].code );
 					await page
@@ -274,6 +277,9 @@ test.describe(
 					// If not waiting the next coupon is not applied correctly. This should be temporary, we need a better way to handle this.
 					await page.waitForTimeout( 2000 );
 
+					await page
+						.locator( 'text=Click here to enter your code' )
+						.click();
 					await page
 						.locator( '#coupon_code' )
 						.fill( coupons[ 2 ].code );
