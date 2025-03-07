@@ -8,15 +8,15 @@ import { addAProductToCart } from '@woocommerce/e2e-utils-playwright';
  */
 import { expect, tags, test as baseTest } from '../../fixtures/fixtures';
 import { getFakeProduct } from '../../utils/data';
-import { createBlocksCartPage, BLOCKS_CART_PAGE } from '../../utils/pages';
+import { createClassicCartPage, CLASSIC_CART_PAGE } from '../../utils/pages';
 import { updateIfNeeded, resetValue } from '../../utils/settings';
 import { WC_API_PATH } from '../../utils/api-client';
 
-const cartPages = [ { name: 'classic cart', slug: 'cart' }, BLOCKS_CART_PAGE ];
+const cartPages = [ { name: 'blocks cart', slug: 'cart' }, CLASSIC_CART_PAGE ];
 
 /* region helpers */
-function isBlocksCart( page ) {
-	return page.url().includes( BLOCKS_CART_PAGE.slug );
+function isClassicCart( page ) {
+	return page.url().includes( CLASSIC_CART_PAGE.slug );
 }
 
 function formatAmount( amount ) {
@@ -100,15 +100,15 @@ async function checkCartContent( slug, page, products, tax ) {
 		);
 	}, 0 );
 
-	if ( isBlocksCart( page ) ) {
-		await checkCartContentInBlocksCart(
+	if ( isClassicCart( page ) ) {
+		await checkCartContentInClassicCart(
 			page,
 			products,
 			tax,
 			expectedTotal
 		);
 	} else {
-		await checkCartContentInClassicCart(
+		await checkCartContentInBlocksCart(
 			page,
 			products,
 			tax,
@@ -122,7 +122,7 @@ async function checkCartContent( slug, page, products, tax ) {
 /* region fixtures */
 const test = baseTest.extend( {
 	page: async ( { page, restApi }, use ) => {
-		await createBlocksCartPage( page.context().browser() );
+		await createClassicCartPage();
 
 		const calcTaxesState = await updateIfNeeded(
 			`general/woocommerce_calc_taxes`,
@@ -245,13 +245,13 @@ cartPages.forEach( ( { name, slug } ) => {
 
 			await test.step( 'can increase quantity', async () => {
 				// eslint-disable-next-line playwright/no-conditional-in-test
-				if ( isBlocksCart( page ) ) {
+				if ( isClassicCart( page ) ) {
+					await page.locator( 'input.qty' ).fill( '3' );
+					await page.locator( 'button[name="update_cart"]' ).click();
+				} else {
 					await page
 						.getByRole( 'spinbutton', { name: 'Quantity of ' } )
 						.fill( '3' );
-				} else {
-					await page.locator( 'input.qty' ).fill( '3' );
-					await page.locator( 'button[name="update_cart"]' ).click();
 				}
 				await checkCartContent(
 					slug,
