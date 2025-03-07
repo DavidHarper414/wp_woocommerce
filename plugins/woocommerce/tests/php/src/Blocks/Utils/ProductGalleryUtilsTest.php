@@ -13,8 +13,11 @@ class ProductGalleryUtilsTest extends \WP_UnitTestCase {
 	 * Test get_product_gallery_image_data method.
 	 */
 	public function test_get_product_gallery_image_data() {
+		// Create the variable product.
 		$variable_product = \WC_Helper_Product::create_variation_product();
-		$image_id         = wp_insert_attachment(
+
+		// Create and set the main product image.
+		$image_id = wp_insert_attachment(
 			array(
 				'post_title'     => 'Test Image',
 				'post_type'      => 'attachment',
@@ -22,6 +25,25 @@ class ProductGalleryUtilsTest extends \WP_UnitTestCase {
 			)
 		);
 		$variable_product->set_image_id( $image_id );
+
+		// Create a variation image but don't add it to the gallery.
+		$variation_image_id = wp_insert_attachment(
+			array(
+				'post_title'     => 'Variation Image',
+				'post_type'      => 'attachment',
+				'post_mime_type' => 'image/jpeg',
+			)
+		);
+
+		// Get the variations.
+		$variations = $variable_product->get_children();
+		if ( ! empty( $variations ) ) {
+			$variation = wc_get_product( $variations[0] );
+			$variation->set_image_id( $variation_image_id );
+			$variation->save();
+		}
+
+		// Create and set gallery images (separate from the variation image).
 		$gallery_image_ids = array(
 			wp_insert_attachment(
 				array(
@@ -66,6 +88,17 @@ class ProductGalleryUtilsTest extends \WP_UnitTestCase {
 			$this->assertArrayHasKey( 'sizes', $image );
 			$this->assertArrayHasKey( 'src_set', $image );
 			$this->assertArrayHasKey( 'src', $image );
+		}
+
+		// Assert that the child product image is included in the image_ids array.
+		$this->assertContains( (string) $variation_image_id, $image_data['image_ids'] );
+
+		// Clean up.
+		$variable_product->delete( true );
+		wp_delete_attachment( $image_id, true );
+		wp_delete_attachment( $variation_image_id, true );
+		foreach ( $gallery_image_ids as $gallery_image_id ) {
+			wp_delete_attachment( $gallery_image_id, true );
 		}
 	}
 }
