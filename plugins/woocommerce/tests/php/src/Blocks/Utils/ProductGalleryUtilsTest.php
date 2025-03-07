@@ -72,8 +72,6 @@ class ProductGalleryUtilsTest extends \WP_UnitTestCase {
 
 		// Assert that the keys of $image_data['image_ids'] are IDs.
 		foreach ( $image_data['image_ids'] as $image_id ) {
-			$this->assertIsString( $image_id );
-			$image_id = intval( $image_id );
 			$this->assertIsInt( $image_id );
 		}
 
@@ -91,7 +89,7 @@ class ProductGalleryUtilsTest extends \WP_UnitTestCase {
 		}
 
 		// Assert that the child product image is included in the image_ids array.
-		$this->assertContains( (string) $variation_image_id, $image_data['image_ids'] );
+		$this->assertContains( $variation_image_id, $image_data['image_ids'] );
 
 		// Clean up.
 		$variable_product->delete( true );

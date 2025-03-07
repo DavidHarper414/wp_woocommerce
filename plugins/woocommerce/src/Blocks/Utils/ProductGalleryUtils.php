@@ -29,7 +29,7 @@ class ProductGalleryUtils {
 
 		$gallery_image_ids           = self::get_product_gallery_image_ids( $product );
 		$product_variation_image_ids = self::get_product_variation_image_ids( $product );
-		$all_image_ids               = array_unique( array_merge( $gallery_image_ids, $product_variation_image_ids ) );
+		$all_image_ids               = array_map( 'intval', array_unique( array_merge( $gallery_image_ids, $product_variation_image_ids ) ) );
 
 		if ( empty( $all_image_ids ) ) {
 			return $image_data;
@@ -54,10 +54,10 @@ class ProductGalleryUtils {
 		$image_src_data = array();
 
 		foreach ( $image_ids as $image_id ) {
-			if ( '0' === $image_id ) {
+			if ( 0 === $image_id ) {
 				// Handle placeholder image.
 				$image_src_data[] = array(
-					'id'      => '0',
+					'id'      => 0,
 					'src'     => wc_placeholder_img_src(),
 					'src_set' => '',
 					'sizes'   => '',
@@ -111,7 +111,7 @@ class ProductGalleryUtils {
 				}
 			}
 		} catch ( \Exception $e ) {
-			// Log the error but continue execution
+			// Log the error but continue execution.
 			error_log( 'Error getting product variation image IDs: ' . $e->getMessage() );
 		}
 

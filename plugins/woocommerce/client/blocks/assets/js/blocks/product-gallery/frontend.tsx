@@ -15,7 +15,7 @@ import type { StorePart } from '@woocommerce/utils';
 import type { ImageDataObject } from './types';
 
 export interface ProductGalleryContext {
-	selectedImageId: string;
+	selectedImageId: number;
 	isDialogOpen: boolean;
 	productId: string;
 	disableLeft: boolean;
@@ -44,7 +44,7 @@ const getArrowsState = ( imageNumber: number, totalImages: number ) => ( {
  *
  * @param {string} imageId - The ID of the image to scroll into view.
  */
-const scrollImageIntoView = ( imageId: string ) => {
+const scrollImageIntoView = ( imageId: number ) => {
 	if ( ! imageId ) {
 		return;
 	}
@@ -63,13 +63,13 @@ const scrollImageIntoView = ( imageId: string ) => {
 /**
  * Gets the number of the active image.
  *
- * @param {string[]} imageIds        - The IDs of the images.
- * @param {string}   selectedImageId - The ID of the selected image.
+ * @param {number[]} imageIds        - The IDs of the images.
+ * @param {number}   selectedImageId - The ID of the selected image.
  * @return {number} The number of the active image.
  */
 const getSelectedImageNumber = (
-	imageIds: string[],
-	selectedImageId: string
+	imageIds: number[],
+	selectedImageId: number
 ) => imageIds.indexOf( selectedImageId ) + 1;
 
 const productGallery = {
@@ -174,10 +174,11 @@ const productGallery = {
 			if ( ! element ) {
 				return;
 			}
-			const imageId = element.getAttribute( 'data-image-id' );
-			if ( ! imageId ) {
+			const imageIdValue = element.getAttribute( 'data-image-id' );
+			if ( ! imageIdValue ) {
 				return;
 			}
+			const imageId = parseInt( imageIdValue, 10 );
 			const context = getContext();
 			const { imageData } = context;
 			const allImageIds = imageData?.image_ids || [];
@@ -372,13 +373,16 @@ const productGallery = {
 						const mutationTarget = mutation.target as HTMLElement;
 						const currentImageAttribute =
 							mutationTarget.getAttribute( 'current-image' );
+						const currentImageId = currentImageAttribute
+							? parseInt( currentImageAttribute, 10 )
+							: null;
 						if (
 							mutation.type === 'attributes' &&
-							currentImageAttribute &&
-							allImageIds.includes( currentImageAttribute )
+							currentImageId &&
+							allImageIds.includes( currentImageId )
 						) {
 							const nextImageNumber =
-								allImageIds.indexOf( currentImageAttribute ) + 1;
+								allImageIds.indexOf( currentImageId ) + 1;
 
 							actions.selectImage( nextImageNumber );
 						} else {

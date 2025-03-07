@@ -12,13 +12,13 @@ export interface ProductGallerySettingsProps {
 }
 
 interface ImageDataItem {
-	id: string;
+	id: number;
 	src: string;
 	srcSet: string;
 	sizes: string;
 }
 
 export interface ImageDataObject {
-	images: Record<string, ImageDataItem>;
-	image_ids: string[];
+	images: Record<number, ImageDataItem>;
+	image_ids: number[];
 }
