@@ -48,6 +48,10 @@ class WC_Comments {
 		add_action( 'wp_insert_comment', array( __CLASS__, 'delete_comments_count_cache' ) );
 		add_action( 'wp_set_comment_status', array( __CLASS__, 'delete_comments_count_cache' ) );
 
+		// Count product reviews that pending moderation.
+		add_action( 'wp_insert_comment', array( __CLASS__, 'maybe_bump_products_reviews_pending_moderation_counter' ), 10, 2 );
+		add_action( 'transition_comment_status', array( __CLASS__, 'maybe_adjust_products_reviews_pending_moderation_counter' ), 10, 3 );
+
 		// Support avatars for `review` comment type.
 		add_filter( 'get_avatar_comment_types', array( __CLASS__, 'add_avatar_for_review_comment_type' ) );
 
@@ -223,6 +227,75 @@ class WC_Comments {
 	 */
 	public static function delete_comments_count_cache() {
 		delete_transient( 'wc_count_comments' );
+	}
+
+	/**
+	 * Fetches (and populates if needed) transient holding the counter.
+	 *
+	 * @return int
+	 */
+	public static function get_products_reviews_pending_moderation_counter() {
+		$count = get_transient( 'woocommerce_product_reviews_pending_count' );
+		if ( false === $count ) {
+			$count = (int) get_comments(
+				array(
+					'type__in'  => array( 'review', 'comment' ),
+					'status'    => '0',
+					'post_type' => 'product',
+					'count'     => true,
+				)
+			);
+			set_transient( 'woocommerce_product_reviews_pending_count', $count, DAY_IN_SECONDS );
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Handles `wp_insert_comment` hook processing and actualizes transient holding the counter.
+	 *
+	 * @param int         $comment_id Comment ID.
+	 * @param \WP_Comment $comment    Comment object.
+	 */
+	public static function maybe_bump_products_reviews_pending_moderation_counter( $comment_id, $comment ) {
+		//var_dump( $comment_id, $comment ); exit;
+
+		$needs_bump = '0' === $comment->comment_approved;
+		if ( $needs_bump && in_array( $comment->comment_type, array( 'review', 'comment' ), true) ) {
+			$is_product = 'product' === get_post_type( $comment->comment_post_ID );
+			if ( $is_product ) {
+				// If transient not yet populated, it'll be freshly populated and therefore increment is 0
+				$increment = (int) ( false !== get_transient( 'woocommerce_product_reviews_pending_count' ) );
+				$count     = self::get_products_reviews_pending_moderation_counter() + $increment;
+				set_transient( 'woocommerce_product_reviews_pending_count', $count, DAY_IN_SECONDS );
+			}
+		}
+	}
+
+	/**
+	 * Handles `transition_comment_status` hook processing and actualizes transient holding the counter.
+	 *
+	 * @param int|string  $new_status New status.
+	 * @param int|string  $old_status Old status.
+	 * @param \WP_Comment $comment    Comment object.
+	 */
+	public static function maybe_adjust_products_reviews_pending_moderation_counter( $new_status, $old_status, $comment )
+	{
+		//var_dump( $new_status, $old_status, $comment ); exit;
+
+		$needs_adjustments = 'unapproved' === $new_status || 'unapproved' === $old_status;
+		if ( $needs_adjustments && in_array( $comment->comment_type, array( 'review', 'comment' ), true ) ) {
+			$is_product = 'product' === get_post_type( $comment->comment_post_ID );
+			if ( $is_product ) {
+				$count = self::get_products_reviews_pending_moderation_counter();
+				if ( '0' === $comment->comment_approved ) {
+					++$count;
+				} else {
+					--$count;
+				}
+				set_transient( 'woocommerce_product_reviews_pending_count', $count, DAY_IN_SECONDS );
+			}
+		}
 	}
 
 	/**
