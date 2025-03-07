@@ -19,10 +19,19 @@ class BlockTemplatesController {
 	const TEMPLATES_ROOT_DIR = 'templates';
 
 	/**
+	 * Array of critical template parts to always resolve.
+	 *
+	 * @var array
+	 */
+	private $critical_template_parts = [ 'header', 'footer' ];
+
+	/**
 	 * Initialization method.
 	 */
 	public function init() {
 		add_filter( 'pre_get_block_template', array( $this, 'get_block_template_fallback' ), 10, 3 );
+		add_filter( 'pre_get_block_template', array( $this, 'resolve_template_part' ), 11, 3 );
+		add_filter( 'render_block', array( $this, 'ensure_template_part_rendering' ), 10, 2 );
 		add_filter( 'pre_get_block_file_template', array( $this, 'get_block_file_template' ), 10, 3 );
 		add_filter( 'get_block_template', array( $this, 'add_block_template_details' ), 10, 3 );
 		add_filter( 'get_block_templates', array( $this, 'add_block_templates' ), 10, 3 );
@@ -30,6 +39,7 @@ class BlockTemplatesController {
 		add_filter( 'block_type_metadata_settings', array( $this, 'add_plugin_templates_parts_support' ), 10, 2 );
 		add_filter( 'block_type_metadata_settings', array( $this, 'prevent_shortcodes_html_breakage' ), 10, 2 );
 		add_action( 'current_screen', array( $this, 'hide_template_selector_in_cart_checkout_pages' ), 10 );
+		add_action( 'switch_theme', array( $this, 'on_theme_switch' ) );
 	}
 
 	/**
@@ -134,6 +144,71 @@ class BlockTemplatesController {
 		}
 
 		return $template;
+	}
+
+	/**
+	 * Resolve any template part with proper fallback.
+	 *
+	 * @param WP_Block_Template|null $template The pre-resolved template.
+	 * @param string                 $id        Template ID (e.g., 'theme-slug//header').
+	 * @param string                 $template_type 'wp_template' or 'wp_template_part'.
+	 * @return WP_Block_Template|null
+	 */
+	public function resolve_template_part( $template, $id, $template_type ) {
+		// Only intervene for template parts.
+		if ( 'wp_template_part' !== $template_type ) {
+			return $template;
+		}
+
+		// Extract the slug from the ID (e.g., 'theme-slug//header' -> 'header').
+		$parts       = explode( '//', $id );
+		$slug        = end( $parts );
+		$theme       = wp_get_theme()->get_stylesheet();
+		$expected_id = "{$theme}//{$slug}";
+
+		// If this is a critical template part and either the ID is outdated or the template is invalid, re-resolve.
+		if ( in_array( $slug, $this->critical_template_parts, true ) && ( $id !== $expected_id || ! $template || empty( $template->content ) ) ) {
+			// Temporarily remove our filter to prevent recursion.
+			remove_filter( 'pre_get_block_template', array( $this, 'resolve_template_part' ), 11 );
+
+			// Get the template.
+			$template = get_block_template( $expected_id, 'wp_template_part' );
+
+			// Re-add our filter.
+			add_filter( 'pre_get_block_template', array( $this, 'resolve_template_part' ), 11, 3 );
+		}
+
+		return $template;
+	}
+
+	/**
+	 * Ensure template parts render correctly on the frontend.
+	 *
+	 * @param string $block_content The rendered block content.
+	 * @param array  $block         The block data.
+	 * @return string
+	 */
+	public function ensure_template_part_rendering( $block_content, $block ) {
+		if ( 'core/template-part' !== $block['blockName'] ) {
+			return $block_content;
+		}
+
+		$slug = ! empty( $block['attrs']['slug'] ) ? $block['attrs']['slug'] : '';
+		if ( ! $slug || ! in_array( $slug, $this->critical_template_parts, true ) ) {
+			return $block_content;
+		}
+
+		// If the content is empty, force re-rendering with the resolved template.
+		if ( empty( $block_content ) ) {
+			$theme       = wp_get_theme()->get_stylesheet();
+			$template_id = "{$theme}//{$slug}";
+			$template    = get_block_template( $template_id, 'wp_template_part' );
+
+			// Render the template part content.
+			$block_content = do_blocks( $template->content );
+		}
+
+		return $block_content;
 	}
 
 	/**
@@ -514,5 +589,15 @@ class BlockTemplatesController {
 		return is_readable(
 			$directory
 		) || $this->get_block_templates( array( $template_name ), $template_type );
+	}
+
+	/**
+	 * Clear caches or reset state on theme switch.
+	 *
+	 * @param string $new_theme The new theme slug.
+	 */
+	public function on_theme_switch( $new_theme ) {
+		// Clear cached template parts to force re-evaluation.
+		wp_cache_delete( 'block_templates', 'woocommerce' );
 	}
 }
