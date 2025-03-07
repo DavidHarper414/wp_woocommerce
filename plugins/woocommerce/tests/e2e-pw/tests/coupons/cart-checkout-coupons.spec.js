@@ -8,6 +8,12 @@ import { addAProductToCart } from '@woocommerce/e2e-utils-playwright';
  */
 import { tags, test, expect } from '../../fixtures/fixtures';
 import { WC_API_PATH } from '../../utils/api-client';
+import {
+	createClassicCartPage,
+	createClassicCheckoutPage,
+	CLASSIC_CART_PAGE,
+	CLASSIC_CHECKOUT_PAGE,
+} from '../../utils/pages';
 
 const firstProductName = 'Coupon test product';
 const coupons = [
@@ -39,6 +45,10 @@ test.describe(
 		const couponBatchId = [];
 
 		test.beforeAll( async ( { restApi } ) => {
+			// Make sure the classic cart and checkout pages exist
+			await createClassicCartPage();
+			await createClassicCheckoutPage();
+
 			// make sure the currency is USD
 			await restApi.put(
 				`${ WC_API_PATH }/settings/general/woocommerce_currency`,
@@ -100,7 +110,7 @@ test.describe(
 					await test.step( 'Load cart page and apply coupons', async () => {
 						await addAProductToCart( page, firstProductId );
 
-						await page.goto( 'cart/' );
+						await page.goto( CLASSIC_CART_PAGE.slug );
 						await page
 							.locator( '#coupon_code' )
 							.fill( coupons[ i ].code );
@@ -132,7 +142,7 @@ test.describe(
 					await test.step( 'Load checkout page and apply coupons', async () => {
 						await addAProductToCart( page, firstProductId );
 
-						await page.goto( 'checkout' );
+						await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
 						await page
 							.locator( 'text=Click here to enter your code' )
 							.click();
@@ -168,7 +178,7 @@ test.describe(
 				await test.step( 'Load cart page and try applying same coupon twice', async () => {
 					await addAProductToCart( page, firstProductId );
 
-					await page.goto( 'cart/' );
+					await page.goto( CLASSIC_CART_PAGE.slug );
 					await page
 						.locator( '#coupon_code' )
 						.fill( coupons[ 0 ].code );
@@ -181,7 +191,7 @@ test.describe(
 					).toBeVisible();
 
 					// try to apply the same coupon
-					await page.goto( 'cart/' );
+					await page.goto( CLASSIC_CART_PAGE.slug );
 					await page
 						.locator( '#coupon_code' )
 						.fill( coupons[ 0 ].code );
@@ -207,7 +217,7 @@ test.describe(
 				await test.step( 'Load checkout page and try applying same coupon twice', async () => {
 					await addAProductToCart( page, firstProductId );
 
-					await page.goto( 'checkout/' );
+					await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
 					await page
 						.locator( 'text=Click here to enter your code' )
 						.click();
@@ -249,7 +259,7 @@ test.describe(
 				await test.step( 'Load cart page and try applying multiple coupons', async () => {
 					await addAProductToCart( page, firstProductId );
 
-					await page.goto( 'cart/' );
+					await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
 					await page
 						.locator( '#coupon_code' )
 						.fill( coupons[ 0 ].code );
@@ -291,7 +301,7 @@ test.describe(
 				await test.step( 'Load checkout page and try applying multiple coupons', async () => {
 					await addAProductToCart( page, firstProductId );
 
-					await page.goto( 'checkout/' );
+					await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
 					await page
 						.locator( 'text=Click here to enter your code' )
 						.click();
@@ -339,7 +349,7 @@ test.describe(
 				await test.step( 'Load cart page and try restoring total when removed coupons', async () => {
 					await addAProductToCart( page, firstProductId );
 
-					await page.goto( 'cart/' );
+					await page.goto( CLASSIC_CART_PAGE.slug );
 					await page
 						.locator( '#coupon_code' )
 						.fill( coupons[ 0 ].code );
@@ -367,7 +377,7 @@ test.describe(
 				await test.step( 'Load checkout page and try restoring total when removed coupons', async () => {
 					await addAProductToCart( page, firstProductId );
 
-					await page.goto( 'checkout/' );
+					await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
 					await page
 						.locator( 'text=Click here to enter your code' )
 						.click();
