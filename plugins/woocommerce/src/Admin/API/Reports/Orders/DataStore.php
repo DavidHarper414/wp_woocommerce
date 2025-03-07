@@ -35,7 +35,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Set up all the hooks for maintaining data consistency (transients and co).
 	 */
 	public static function init() {
-		add_action( 'woocommerce_analytics_update_order_stats', array( __CLASS__, 'actualize_all_statuses_transient_if_necessary' ) );
+		add_action( 'woocommerce_analytics_update_order_stats', array( __CLASS__, 'maybe_update_order_statuses_transient' ) );
 	}
 
 	/**
@@ -638,7 +638,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @param int $order_id Order ID.
 	 */
-	public static function actualize_all_statuses_transient_if_necessary( $order_id ) {
+	public static function maybe_update_order_statuses_transient( $order_id ) {
 		$order = wc_get_order( $order_id );
 		if ( $order ) {
 			$status = self::normalize_order_status( $order->get_status() );
