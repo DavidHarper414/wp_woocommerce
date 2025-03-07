@@ -68,6 +68,9 @@ export class CheckoutPage {
 			contact: {},
 		}
 	) {
+		// Wait for the email field to be visible before filling in the form.
+		await this.page.locator( '#email' ).waitFor( { state: 'visible' } );
+
 		const isShippingOpen = await this.page
 			.getByRole( 'group', {
 				name: 'Shipping address',
@@ -224,7 +227,13 @@ export class CheckoutPage {
 				// your road?" field.
 			} );
 		await this.waitForCheckoutToFinishUpdating();
-		await this.page.getByText( 'Place Order', { exact: true } ).click();
+
+		const placeOrderButton = this.page.getByText( 'Place Order', {
+			exact: true,
+		} );
+		await placeOrderButton.waitFor( { state: 'visible' } );
+		await placeOrderButton.click();
+
 		if ( waitForRedirect ) {
 			await this.page.waitForURL( /order-received/ );
 

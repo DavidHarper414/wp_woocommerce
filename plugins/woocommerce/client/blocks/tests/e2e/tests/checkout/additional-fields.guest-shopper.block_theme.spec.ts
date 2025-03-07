@@ -186,8 +186,6 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 				.getByLabel( 'Test required checkbox' )
 				.check();
 
-			await checkoutPageObject.waitForCustomerDataUpdate();
-
 			await checkoutPageObject.placeOrder();
 
 			expect(
