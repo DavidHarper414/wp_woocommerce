@@ -18,7 +18,7 @@ class ProductFilters extends AbstractBlock {
 	 * @return string[]
 	 */
 	protected function get_block_type_uses_context() {
-		return array( 'postId', 'query', 'queryId', 'woocommerce/product-collection' );
+		return array( 'postId', 'query', 'queryId' );
 	}
 
 	/**
