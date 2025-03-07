@@ -29,7 +29,7 @@ class ProductGalleryUtils {
 
 		$gallery_image_ids           = self::get_product_gallery_image_ids( $product );
 		$product_variation_image_ids = self::get_product_variation_image_ids( $product );
-		$all_image_ids               = array_map( 'intval', array_unique( array_merge( $gallery_image_ids, $product_variation_image_ids ) ) );
+		$all_image_ids               = array_values( array_map( 'intval', array_unique( array_merge( $gallery_image_ids, $product_variation_image_ids ) ) ) );
 
 		if ( empty( $all_image_ids ) ) {
 			return $image_data;

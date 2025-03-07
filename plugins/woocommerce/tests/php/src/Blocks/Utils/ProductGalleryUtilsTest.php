@@ -70,10 +70,10 @@ class ProductGalleryUtilsTest extends \WP_UnitTestCase {
 		$this->assertNotEmpty( $image_data['image_ids'] );
 		$this->assertNotEmpty( $image_data['images'] );
 
-		// Assert that the keys of $image_data['image_ids'] are IDs.
-		foreach ( $image_data['image_ids'] as $image_id ) {
-			$this->assertIsInt( $image_id );
-		}
+		// Assert that $image_data['image_ids'] is a flat array of numbers.
+		$this->assertIsArray( $image_data['image_ids'] );
+		$this->assertContainsOnly( 'integer', $image_data['image_ids'] );
+		$this->assertEquals( array_values( $image_data['image_ids'] ), $image_data['image_ids'], 'Array should have no keys' );
 
 		// Assert that the keys of $image_data['images'] are IDs.
 		foreach ( $image_data['images'] as $key => $image ) {
