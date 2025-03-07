@@ -23,11 +23,10 @@ export class FrontendUtils {
 
 	async addToCart( itemName = '' ) {
 		const cartResponsePromise = this.page.waitForResponse( ( response ) => {
-			const url = response.url();
 			return (
-				url.includes( 'cart/items' ) ||
-				url.includes( 'add_to_cart' ) ||
-				url.includes( 'batch' )
+				response.url().includes( 'wc/store/v1/cart' ) &&
+				response.status() === 200 &&
+				response.request().method() === 'GET'
 			);
 		} );
 
@@ -42,15 +41,6 @@ export class FrontendUtils {
 		}
 
 		await cartResponsePromise;
-
-		/**
-		 * There's a race condition where the cart is not fully updated
-		 * immediately when adding multiple items one by one, even though the
-		 * response is received. This timeout ensures the cart is updated before
-		 * the next test step.
-		 */
-		// eslint-disable-next-line playwright/no-wait-for-timeout, no-restricted-syntax
-		await this.page.waitForTimeout( 2000 );
 	}
 
 	async goToCheckout() {
