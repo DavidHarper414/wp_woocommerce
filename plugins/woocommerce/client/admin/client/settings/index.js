@@ -70,10 +70,12 @@ const Settings = () => {
 	return <SettingsEditor />;
 };
 
-if ( node ) {
-	createRoot( node ).render(
-		<RouterProvider>
-			<Settings />
-		</RouterProvider>
-	);
-}
+// if ( node ) {
+// 	createRoot( node ).render(
+// 		<RouterProvider>
+// 			<Settings />
+// 		</RouterProvider>
+// 	);
+// }
+
+createRoot( node ).render( <SettingsEditor /> );

@@ -15,6 +15,7 @@ import { unlock } from '@wordpress/edit-site/build-module/lock-unlock';
 // @ts-ignore No types for this exist yet.
 import { store as editSiteStore } from '@wordpress/edit-site/build-module/store';
 /* eslint-enable @woocommerce/dependency-group */
+import { RouterProvider as DamianRouterProvider } from '@automattic/site-admin';
 
 /**
  * Internal dependencies
@@ -56,6 +57,23 @@ const SettingsApp = () => {
 	);
 };
 
+const Demo = () => {
+	return <div>Demo</div>;
+};
+
+const routes = [
+	{
+		name: 'home',
+		path: '/wc-settings',
+		areas: {
+			content: <Demo />,
+		},
+		widths: {
+			content: 100,
+		},
+	},
+];
+
 export const SettingsEditor = () => {
 	const isRequiredGutenbergVersion = isGutenbergVersionAtLeast( 19.0 );
 
@@ -72,10 +90,14 @@ export const SettingsEditor = () => {
 	}
 
 	return (
-		<SettingsDataProvider>
-			<SettingsApp />
-			<Notices />
-		</SettingsDataProvider>
+		<DamianRouterProvider routes={ routes } pathArg="page">
+			<RouterProvider>
+				<SettingsDataProvider>
+					<SettingsApp />
+					<Notices />
+				</SettingsDataProvider>
+			</RouterProvider>
+		</DamianRouterProvider>
 	);
 };
 
