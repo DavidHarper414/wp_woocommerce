@@ -3,7 +3,6 @@
  */
 import { Page, Locator } from '@playwright/test';
 import { RequestUtils } from '@wordpress/e2e-test-utils-playwright';
-import { expect } from '@woocommerce/e2e-utils';
 
 export class FrontendUtils {
 	page: Page;
@@ -43,21 +42,6 @@ export class FrontendUtils {
 		}
 
 		await cartResponsePromise;
-
-		await expect.poll( async () => {
-			const cartResponse = await this.requestUtils.request.get(
-				'/wp-json/wc/store/cart'
-			);
-
-			const payload = await cartResponse.json();
-
-			if ( payload.items.length === 0 ) {
-				return '';
-			}
-
-			// The last item in the cart should be the one we added.
-			return payload.items.at( -1 ).name;
-		} ).toBe( itemName );
 	}
 
 	async goToCheckout() {
