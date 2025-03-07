@@ -32,6 +32,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 		$this->label = __( 'Emails', 'woocommerce' );
 
 		add_action( 'woocommerce_admin_field_email_notification', array( $this, 'email_notification_setting' ) );
+		add_action( 'woocommerce_admin_field_email_notification_block_emails', array( $this, 'email_notification_setting_block_emails' ) );
 		add_action( 'woocommerce_admin_field_email_preview', array( $this, 'email_preview' ) );
 		add_action( 'woocommerce_admin_field_email_image_url', array( $this, 'email_image_url' ) );
 		add_action( 'woocommerce_admin_field_email_font_family', array( $this, 'email_font_family' ) );
@@ -206,6 +207,13 @@ class WC_Settings_Emails extends WC_Settings_Page {
 			);
 		}
 
+		if ( FeaturesUtil::feature_is_enabled( 'block_email_editor' ) ) { 
+			$email_notifications_field = 'email_notification_block_emails';
+		} else {
+			$email_notifications_field = 'email_notification';
+		}
+
+
 		// Reorder email color settings based on the email_improvements feature flag.
 
 		$base_color_setting = array(
@@ -287,7 +295,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 					'id'    => 'email_notification_settings',
 				),
 
-				array( 'type' => 'email_notification' ),
+				array( 'type' => $email_notifications_field ),
 
 				array(
 					'type' => 'sectionend',
@@ -617,6 +625,17 @@ class WC_Settings_Emails extends WC_Settings_Page {
 				</table>
 			</td>
 		</tr>
+		<?php
+	}
+
+	/**
+	 * Creates the React mount point for listing of block based emails.
+	 */
+	public function email_notification_setting_block_emails() {
+		?>
+		<div
+			id="wc_settings_email_listing_slotfill"
+		></div>
 		<?php
 	}
 

@@ -26,6 +26,7 @@ import { registerSettingsEmailColorPaletteFill } from '../../settings-email/sett
 import { registerSettingsEmailImageUrlFill } from '../../settings-email/settings-email-image-url-slotfill';
 import { registerSettingsEmailPreviewFill } from '../../settings-email/settings-email-preview-slotfill';
 import { registerSettingsEmailFeedbackFill } from '~/settings-email/settings-email-feedback-slotfill';
+import { registerSettingsEmailListingFill } from '../../settings-email/settings-email-listing-slotfill';
 
 const renderPaymentsSettings = () => {
 	if (
@@ -94,6 +95,10 @@ const registerSlotFills = () => {
 		registerSettingsEmailImageUrlFill();
 	} else {
 		registerSettingsEmailPreviewFill( false );
+	}
+
+	if ( isFeatureEnabled( 'block_email_editor' ) ) {
+		registerSettingsEmailListingFill();
 	}
 
 	registerSettingsEmailFeedbackFill();
