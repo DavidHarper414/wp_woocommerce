@@ -410,6 +410,9 @@ checkoutPages.forEach( ( { name, slug } ) => {
 			);
 
 			// Make sure after login the user is redirected to the right checkout page
+			// Login from classic checkout redirects to default checkout page: https://github.com/woocommerce/woocommerce/issues/56205
+			// Workaround until bug is fixed: extra navigation the test checkout page
+			await page.goto( slug );
 			await expect( page.url() ).toContain( slug );
 
 			await checkOrderDetails( page, product, qty, tax );
