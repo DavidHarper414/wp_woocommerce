@@ -168,8 +168,9 @@ class BlockTemplatesController {
 			$template_id = "{$theme}//{$slug}";
 			$template    = get_block_template( $template_id, 'wp_template_part' );
 
-			// Render the template part content.
-			$block_content = do_blocks( $template->content );
+			if ( $template && ! empty( $template->content ) ) {
+				$block_content = do_blocks( $template->content );
+			}
 		}
 
 		return $block_content;
