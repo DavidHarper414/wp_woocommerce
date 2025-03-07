@@ -8,13 +8,14 @@ import { registerPlugin } from '@wordpress/plugins';
  * Internal dependencies
  */
 import { SETTINGS_SLOT_FILL_CONSTANT } from '~/settings/settings-slots';
+import { ListView } from './settings-email-listing-listview';
 
 const { Fill } = createSlotFill( SETTINGS_SLOT_FILL_CONSTANT );
 
 const EmailListingFill: React.FC< {} > = () => {
 	return (
 		<Fill>
-			<h1>Block emails</h1>
+			<ListView />
 		</Fill>
 	);
 };
