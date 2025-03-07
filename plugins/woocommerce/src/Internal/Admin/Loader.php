@@ -448,6 +448,7 @@ class Loader {
 	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function get_order_statuses( $statuses ) {
+		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0', '\Automattic\WooCommerce\Internal\Admin\Settings::get_order_statuses' );
 		return Settings::get_order_statuses( $statuses );
 	}
 
@@ -459,6 +460,8 @@ class Loader {
 	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function get_unregistered_order_statuses() {
+		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0', 'Direct `\Automattic\WooCommerce\Internal\Admin\Settings` use' );
+
 		$registered_statuses   = wc_get_order_statuses();
 		$all_synced_statuses   = OrdersDataStore::get_all_statuses();
 		$unregistered_statuses = array_diff( $all_synced_statuses, array_keys( $registered_statuses ) );
@@ -477,6 +480,7 @@ class Loader {
 	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function add_settings_group( $groups ) {
+		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0', '\Automattic\WooCommerce\Internal\Admin\Settings::add_settings_group' );
 		return Settings::get_instance()->add_settings_group( $groups );
 	}
 
@@ -489,6 +493,7 @@ class Loader {
 	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function add_settings( $settings ) {
+		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0', '\Automattic\WooCommerce\Internal\Admin\Settings::add_settings' );
 		return Settings::get_instance()->add_settings( $settings );
 	}
 
@@ -501,6 +506,8 @@ class Loader {
 	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function get_custom_settings( $settings ) {
+		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0', 'Direct `\Automattic\WooCommerce\Internal\Admin\Settings` use' );
+
 		$wc_rest_settings_options_controller = new \WC_REST_Setting_Options_Controller();
 		$wc_admin_group_settings             = $wc_rest_settings_options_controller->get_group_settings( 'wc_admin' );
 		$settings['wcAdminSettings']         = array();
@@ -527,6 +534,8 @@ class Loader {
 	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function get_currency_settings() {
+		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0', '\Automattic\WooCommerce\Internal\Admin\Settings::get_currency_settings' );
+
 		return Settings::get_currency_settings();
 	}
 
