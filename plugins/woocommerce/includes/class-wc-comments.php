@@ -258,8 +258,6 @@ class WC_Comments {
 	 * @param \WP_Comment $comment    Comment object.
 	 */
 	public static function maybe_bump_products_reviews_pending_moderation_counter( $comment_id, $comment ) {
-		//var_dump( $comment_id, $comment ); exit;
-
 		$needs_bump = '0' === $comment->comment_approved;
 		if ( $needs_bump && in_array( $comment->comment_type, array( 'review', 'comment' ), true) ) {
 			$is_product = 'product' === get_post_type( $comment->comment_post_ID );
@@ -281,8 +279,6 @@ class WC_Comments {
 	 */
 	public static function maybe_adjust_products_reviews_pending_moderation_counter( $new_status, $old_status, $comment )
 	{
-		//var_dump( $new_status, $old_status, $comment ); exit;
-
 		$needs_adjustments = 'unapproved' === $new_status || 'unapproved' === $old_status;
 		if ( $needs_adjustments && in_array( $comment->comment_type, array( 'review', 'comment' ), true ) ) {
 			$is_product = 'product' === get_post_type( $comment->comment_post_ID );
