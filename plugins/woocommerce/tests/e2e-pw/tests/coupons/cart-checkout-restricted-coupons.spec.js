@@ -371,7 +371,7 @@ test.describe(
 		} ) => {
 			await test.step( 'Load cart page and try coupon usage on sale item', async () => {
 				await addAProductToCart( page, secondProductId );
-				await page.goto( 'cart/' );
+				await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
 				await applyCoupon( page, 'no-sale-use-limit' );
 				// failed because this product is on sale.
 				await expect(
