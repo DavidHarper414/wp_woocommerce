@@ -19,6 +19,6 @@ interface ImageDataItem {
 }
 
 export interface ImageDataObject {
-	images: Record<number, ImageDataItem>;
+	images: Record< number, ImageDataItem >;
 	image_ids: number[];
 }
