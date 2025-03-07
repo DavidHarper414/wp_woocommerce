@@ -325,7 +325,6 @@
 .woocommerce-profiler-plugins {
 	display: flex;
 	flex-direction: column;
-	padding-inline: 20px;
 
 	.woocommerce-profiler-plugins__content {
 		display: flex;
@@ -334,6 +333,10 @@
 		max-width: 1020px;
 		width: 100%;
 		padding: 0;
+
+		@media screen and (max-width: $break-xlarge) {
+			padding-inline: 20px;
+		}
 	}
 	.woocommerce-profiler-heading {
 		max-width: 615px;
