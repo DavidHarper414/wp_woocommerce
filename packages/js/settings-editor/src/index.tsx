@@ -15,7 +15,7 @@ import { unlock } from '@wordpress/edit-site/build-module/lock-unlock';
 // @ts-ignore No types for this exist yet.
 import { store as editSiteStore } from '@wordpress/edit-site/build-module/store';
 /* eslint-enable @woocommerce/dependency-group */
-import { RouterProvider as DamianRouterProvider } from '@automattic/site-admin';
+import { RouterProvider } from '@automattic/site-admin';
 
 /**
  * Internal dependencies
@@ -25,7 +25,8 @@ import { Layout } from './layout';
 import { useActiveRoute } from './route';
 import { SettingsDataProvider } from './data';
 
-const { RouterProvider } = unlock( routerPrivateApis );
+const { RouterProvider: OldGutenbergRouterProvider } =
+	unlock( routerPrivateApis );
 
 // Set the back button to go to the WooCommerce home page.
 dispatch( editSiteStore ).updateSettings( {
@@ -90,18 +91,17 @@ export const SettingsEditor = () => {
 	}
 
 	return (
-		<DamianRouterProvider routes={ routes } pathArg="page">
-			<RouterProvider>
+		<RouterProvider routes={ routes } pathArg="page">
+			<OldGutenbergRouterProvider>
 				<SettingsDataProvider>
 					<SettingsApp />
 					<Notices />
 				</SettingsDataProvider>
-			</RouterProvider>
-		</DamianRouterProvider>
+			</OldGutenbergRouterProvider>
+		</RouterProvider>
 	);
 };
 
 export * from './components';
 export * from './legacy';
 export * from './route';
-export { RouterProvider };
