@@ -697,6 +697,22 @@
 						"resultsPath": "tests/e2e-pw/test-results",
 						"allure": true
 					}
+				},
+				{
+					"name": "Core e2e tests - Subdirectory site",
+					"testType": "e2e",
+					"command": "test:e2e:subdir",
+					"shardingArguments": [],
+					"changes": [],
+					"events": [
+						"on-demand",
+						"core-e2e-pressable"
+					],
+					"report": {
+						"resultsBlobName": "default-subdir-core-e2e-and-api",
+						"resultsPath": "tests/e2e-pw/test-results",
+						"allure": true
+					}
 				}
 			]
 		}
