@@ -449,6 +449,7 @@ class Loader {
 	 */
 	public static function get_order_statuses( $statuses ) {
 		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0', '\Automattic\WooCommerce\Internal\Admin\Settings::get_order_statuses' );
+
 		return Settings::get_order_statuses( $statuses );
 	}
 
@@ -481,6 +482,7 @@ class Loader {
 	 */
 	public static function add_settings_group( $groups ) {
 		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0', '\Automattic\WooCommerce\Internal\Admin\Settings::add_settings_group' );
+
 		return Settings::get_instance()->add_settings_group( $groups );
 	}
 
@@ -494,6 +496,7 @@ class Loader {
 	 */
 	public static function add_settings( $settings ) {
 		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0', '\Automattic\WooCommerce\Internal\Admin\Settings::add_settings' );
+
 		return Settings::get_instance()->add_settings( $settings );
 	}
 
