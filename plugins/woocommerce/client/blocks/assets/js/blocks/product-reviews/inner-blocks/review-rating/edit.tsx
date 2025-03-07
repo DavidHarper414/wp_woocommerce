@@ -33,11 +33,7 @@ export default function Edit( {
 	context: { commentId: string };
 } ) {
 	const { textAlign } = attributes;
-	const blockProps = useBlockProps();
 	const styleProps = useStyleProps( attributes );
-	let [ rating ] = useEntityProp( 'root', 'comment', 'rating', commentId );
-	rating = rating ?? 4;
-
 	const className = clsx(
 		styleProps.className,
 		'wc-block-components-product-review-rating',
@@ -45,6 +41,11 @@ export default function Edit( {
 			[ `has-text-align-${ textAlign }` ]: textAlign,
 		}
 	);
+	const blockProps = useBlockProps( {
+		className,
+	} );
+	let [ rating ] = useEntityProp( 'root', 'comment', 'rating', commentId );
+	rating = rating ?? 4;
 
 	const starStyle = {
 		width: ( rating / 5 ) * 100 + '%',
@@ -74,7 +75,7 @@ export default function Edit( {
 					} }
 				/>
 			</BlockControls>
-			<div { ...blockProps } className={ className }>
+			<div { ...blockProps }>
 				<div
 					className={ 'wc-block-components-product-rating__stars' }
 					role="img"

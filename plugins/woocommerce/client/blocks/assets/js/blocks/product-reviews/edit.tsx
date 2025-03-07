@@ -72,12 +72,6 @@ const TEMPLATE: InnerBlockTemplate[] = [
 								],
 							],
 							[ 'core/comment-content' ],
-							[
-								'core/comment-reply-link',
-								{
-									fontSize: 'small',
-								},
-							],
 						],
 					],
 					[
