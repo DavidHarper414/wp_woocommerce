@@ -9,9 +9,7 @@ import React from 'react';
 import '../../style.scss';
 import Sidebar from '../../components/sidebar';
 import Modal from '../../components/modal';
-import RecommendedMethods from './steps/recommeded-methods';
-
-
+import RecommendedMethods from './steps/recommended-methods';
 import { WooPaymentsModalProps } from '~/settings-payments/onboarding/types';
 
 /**
@@ -29,7 +27,7 @@ export default function WooPaymentsModal( {
 			setIsOpen={ setIsOpen }
 		>
 			<Sidebar steps={ [] } />
-			<div className="payments_onboarding_modal__main_content">
+			<div className="settings-payments-onboarding-modal__content">
 				<RecommendedMethods />
 			</div>
 		</Modal>

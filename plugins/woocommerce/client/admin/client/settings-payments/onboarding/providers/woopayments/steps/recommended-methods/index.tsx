@@ -9,6 +9,7 @@ import { close } from '@wordpress/icons';
  * Internal dependencies
  */
 import { WC_ASSET_URL } from '~/utils/admin-settings';
+import './style.scss';
 
 /**
  * RecommendedMethods component for WooPayments onboarding

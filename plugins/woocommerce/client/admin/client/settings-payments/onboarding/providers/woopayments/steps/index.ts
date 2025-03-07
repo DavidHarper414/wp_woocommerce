@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import RecommendedMethods from './recommeded-methods';
+import RecommendedMethods from './recommended-methods';
 
 /**
  * Steps for WooPayments onboarding
