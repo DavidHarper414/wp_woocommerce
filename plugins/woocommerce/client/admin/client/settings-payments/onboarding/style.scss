@@ -1,0 +1,228 @@
+.payments_onboarding_modal {
+	.payment_onboarding_modal__sidebar_steps_badge {
+		color: #1e1e1e;
+		font-size: 12px;
+		font-style: normal;
+		line-height: 20px;
+		padding: 4px 8px;
+		background-color: white;
+		border-radius: 2px;
+		display: none;
+	}
+
+	.components-modal__content {
+		padding: 0;
+		margin: 0;
+		height: 100vh;
+		max-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		margin-top: 0;
+
+		&::before {
+			margin: 0;
+		}
+
+		// Target the unnamed div that's a direct parent of our content
+		> div {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+		}
+	}
+
+	.payment_onboarding_modal__sidebar {
+		width: 280px;
+		background-color: #f0f0f0;
+		display: flex;
+		flex-direction: column;
+		flex-shrink: 0;
+
+		.payment_onboarding_modal__sidebar_header {
+			padding: 48px 24px 16px;
+
+			.payment_onboarding_modal__sidebar_title {
+				font-size: 15px;
+				line-height: 1.333;
+				font-weight: 500;
+				color: #1e1e1e;
+				margin: 0;
+			}
+		}
+
+		.payment_onboarding_modal__sidebar_navigation {
+			padding: 0 16px;
+			overflow-y: auto;
+			flex: 1;
+		}
+
+		.payment_onboarding_modal__sidebar_item {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			padding: 8px;
+			border-radius: 2px;
+			font-size: 13px;
+			line-height: 1.538;
+			color: #757575;
+			margin-bottom: 4px;
+			cursor: default;
+
+			&.is-active {
+				background-color: #e0e0e0;
+				color: #1e1e1e;
+
+				.payment_onboarding_modal__sidebar_item_icon {
+					color: #1e1e1e;
+				}
+			}
+
+			&.is-completed {
+				.payment_onboarding_modal__sidebar_item_icon {
+					color: #00a32a;
+				}
+			}
+
+			.payment_onboarding_modal__sidebar_item_icon {
+				width: 20px;
+				height: 20px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 16px;
+				color: #949494;
+			}
+
+			.payment_onboarding_modal__sidebar_item_label {
+				flex: 1;
+			}
+		}
+	}
+
+	.payments_onboarding_modal__wrapper {
+		display: flex;
+		height: 100%;
+		flex: 1;
+		min-height: 0; // Important for Firefox
+		background-color: #f0f0f0;
+
+		@media (max-width: 768px) {
+			// In mobile, the sidebar navigation is hidden
+			.payment_onboarding_modal__sidebar_navigation {
+				display: none;
+			}
+
+			// The content is displayed in column
+			flex-direction: column;
+
+			.payment_onboarding_modal__sidebar_steps_badge {
+				display: block;
+			}
+
+			.payment_onboarding_modal__sidebar_header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 24px 24px 0px;
+			}
+
+			.payment_onboarding_modal__sidebar {
+				width: 100%;
+			}
+
+			.payments_onboarding_modal__main_content {
+				padding: 0;
+			}
+		}
+
+		.payments_onboarding_modal__main_content {
+			flex: 1;
+			padding: 0 32px;
+			display: flex;
+			flex-direction: column;
+			overflow-y: auto;
+			min-height: 0; // Important for Firefox
+			margin: $gap;
+			background-color: white;
+			border-radius: $gap-smaller;
+		}
+
+		.woopayments-welcome-step {
+			max-width: 648px;
+			margin: 0 auto;
+			padding: $gap-small 0;
+			text-align: center;
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+
+			.welcome-illustration {
+				margin-bottom: 24px;
+				max-width: 100%;
+				height: auto;
+			}
+
+			.welcome-title {
+				font-size: 20px;
+				line-height: 1.2;
+				font-weight: 500;
+				margin: 0 0 12px;
+			}
+
+			.welcome-description {
+				font-size: 13px;
+				line-height: 1.538;
+				color: #757575;
+				margin: 0 0 24px;
+			}
+
+			.features-grid {
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+				max-width: 480px;
+				margin: 0 auto;
+				padding: 24px;
+				border: 1px solid #e0e0e0;
+				border-radius: 2px;
+
+				.feature-item {
+					display: flex;
+					align-items: center;
+					gap: 16px;
+
+					.feature-icon {
+						width: 20px;
+						height: 20px;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						color: #1e1e1e;
+					}
+
+					.feature-text {
+						font-size: 13px;
+						line-height: 1.538;
+						color: #1e1e1e;
+					}
+				}
+			}
+		}
+
+		.woopayments_modal_step__header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 16px;
+
+			&__logo {
+				width: 64px;
+			}
+		}
+	}
+
+	@media (max-width: 768px) {
+			border-radius: 0;
+	}
+}
