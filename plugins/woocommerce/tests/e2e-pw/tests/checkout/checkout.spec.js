@@ -408,6 +408,10 @@ checkoutPages.forEach( ( { name, slug } ) => {
 				customer.password,
 				false
 			);
+
+			// Make sure after login the user is redirected to the right checkout page
+			await expect( page.url() ).toContain( slug );
+
 			await checkOrderDetails( page, product, qty, tax );
 
 			const shippingAddress = {
