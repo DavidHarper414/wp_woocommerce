@@ -111,7 +111,7 @@ class ProductGallery extends AbstractBlock {
 		$product_gallery_thumbnail_images = ProductGalleryUtils::get_product_gallery_images( $post_id, 'thumbnail', array() );
 		$product_gallery_full_images      = ProductGalleryUtils::get_product_gallery_images( $post_id, 'full', array() );
 		$image_src_data                   = ProductGalleryUtils::get_product_gallery_image_data( $product );
-		$initial_image_id                 = count( $image_src_data['all_images'] ) > 0 ? $image_src_data['all_images'][0] : -1;
+		$initial_image_id                 = count( $image_src_data['image_ids'] ) > 0 ? $image_src_data['image_ids'][0] : -1;
 		$classname_single_image           = '';
 
 		if ( count( $product_gallery_thumbnail_images ) < 2 ) {

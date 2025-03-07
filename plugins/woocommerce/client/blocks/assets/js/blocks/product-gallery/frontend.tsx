@@ -81,7 +81,7 @@ const productGallery = {
 		 */
 		get selectedImageNumber(): number {
 			const { imageData, selectedImageId } = getContext();
-			const allImageIds = imageData?.all_images || [];
+			const allImageIds = imageData?.image_ids || [];
 			return getSelectedImageNumber( allImageIds, selectedImageId );
 		},
 		/**
@@ -91,7 +91,7 @@ const productGallery = {
 		 */
 		get imageIndex(): number {
 			const { imageData, selectedImageId } = getContext();
-			const allImageIds = imageData?.all_images || [];
+			const allImageIds = imageData?.image_ids || [];
 			return allImageIds.indexOf( selectedImageId );
 		},
 		/**
@@ -106,7 +106,7 @@ const productGallery = {
 			const { imageData, userHasInteracted, selectedImageId } =
 				getContext();
 
-			const allImageIds = imageData?.all_images || [];
+			const allImageIds = imageData?.image_ids || [];
 			const selectedImageNumber = getSelectedImageNumber(
 				allImageIds,
 				selectedImageId
@@ -148,7 +148,7 @@ const productGallery = {
 			const context = getContext();
 			const { imageData } = context;
 
-			const allImageIds = imageData?.all_images || [];
+			const allImageIds = imageData?.image_ids || [];
 			const { disableLeft, disableRight } = getArrowsState(
 				newImageNumber,
 				allImageIds.length
@@ -180,7 +180,7 @@ const productGallery = {
 			}
 			const context = getContext();
 			const { imageData } = context;
-			const allImageIds = imageData?.all_images || [];
+			const allImageIds = imageData?.image_ids || [];
 			const newImageNumber = allImageIds.indexOf( imageId ) + 1;
 			actions.selectImage( newImageNumber );
 		},
@@ -190,7 +190,7 @@ const productGallery = {
 			}
 
 			const { imageData, selectedImageId } = getContext();
-			const allImageIds = imageData?.all_images || [];
+			const allImageIds = imageData?.image_ids || [];
 			const selectedImageNumber = getSelectedImageNumber(
 				allImageIds,
 				selectedImageId
@@ -208,7 +208,7 @@ const productGallery = {
 			}
 
 			const { imageData, selectedImageId } = getContext();
-			const allImageIds = imageData?.all_images || [];
+			const allImageIds = imageData?.image_ids || [];
 			const selectedImageNumber = getSelectedImageNumber(
 				allImageIds,
 				selectedImageId
@@ -337,7 +337,7 @@ const productGallery = {
 			// This have a diffent context in current setup.
 			const selectImage = ( newImageNumber: number ) => {
 				const { imageData } = getContext();
-				const allImageIds = imageData?.all_images || [];
+				const allImageIds = imageData?.image_ids || [];
 				const { disableLeft, disableRight } = getArrowsState(
 					newImageNumber,
 					allImageIds.length
@@ -367,7 +367,7 @@ const productGallery = {
 						}
 
 						const { imageData } = getContext();
-						const allImageIds = imageData?.all_images || [];
+						const allImageIds = imageData?.image_ids || [];
 
 						const mutationTarget = mutation.target as HTMLElement;
 						const currentImageAttribute =
@@ -411,7 +411,7 @@ const productGallery = {
 		dialogStateChange: () => {
 			const { imageData, selectedImageId, isDialogOpen } = getContext();
 
-			const allImageIds = imageData?.all_images || [];
+			const allImageIds = imageData?.image_ids || [];
 			const { ref: dialogRef } = getElement() || {};
 
 			const selectedImageNumber = getSelectedImageNumber(

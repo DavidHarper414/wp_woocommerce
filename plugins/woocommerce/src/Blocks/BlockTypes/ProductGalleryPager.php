@@ -62,7 +62,7 @@ class ProductGalleryPager extends AbstractBlock {
 		}
 
 		$product_image_data = ProductGalleryUtils::get_product_gallery_image_data( $product );
-		$all_image_ids      = array_column( $product_image_data['all_images'], 'id' );
+		$all_image_ids      = $product_image_data['image_ids'] ?? [];
 		$total_images       = count( $all_image_ids );
 
 		if ( 0 === $total_images ) {
