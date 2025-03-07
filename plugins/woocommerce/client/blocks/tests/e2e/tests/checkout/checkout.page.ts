@@ -227,6 +227,11 @@ export class CheckoutPage {
 		await this.page.getByText( 'Place Order', { exact: true } ).click();
 		if ( waitForRedirect ) {
 			await this.page.waitForURL( /order-received/ );
+
+			// Wait for order confirmation page to be fully rendered.
+			await this.page
+				.getByText( 'Thank you. Your order has been received.' )
+				.waitFor( { state: 'visible' } );
 		}
 	}
 
@@ -235,13 +240,13 @@ export class CheckoutPage {
 	 */
 	async verifyAdditionalFieldsDetails( values: [ string, string ][] ) {
 		for ( const [ label, value ] of values ) {
-			const visible = await this.page
-				.getByText(
-					`${ label }${ value }` // No space between these due to the way the markup is output on the confirmation page.
-				)
-				.isVisible();
-
-			if ( ! visible ) {
+			try {
+				await this.page
+					.getByText(
+						`${ label }${ value }` // No space between these due to the way the markup is output on the confirmation page.
+					)
+					.waitFor( { state: 'visible' } );
+			} catch {
 				return false;
 			}
 		}
