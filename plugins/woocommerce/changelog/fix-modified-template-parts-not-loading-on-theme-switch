@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Ensures correct themes header renders after switching theme
