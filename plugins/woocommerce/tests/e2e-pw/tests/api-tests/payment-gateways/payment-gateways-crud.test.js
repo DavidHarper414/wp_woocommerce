@@ -1,7 +1,7 @@
 const {
 	test,
 	expect,
-	apiRequest,
+	request: apiRequest,
 } = require( '../../../fixtures/api-tests-fixtures' );
 const { setOption } = require( '../../../utils/options' );
 

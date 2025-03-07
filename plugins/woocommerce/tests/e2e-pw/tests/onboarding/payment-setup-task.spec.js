@@ -2,7 +2,7 @@ const {
 	test: baseTest,
 	expect,
 	tags,
-	apiRequest,
+	request: apiRequest,
 } = require( '../../fixtures/fixtures' );
 const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
 const { setOption } = require( '../../utils/options' );
