@@ -110,11 +110,13 @@
 					flex: 1;
 				}
 			}
+			@media (max-width: 768px) {
+				display: none;
+			}
 		}
 
 		@media (max-width: 768px) {
 			width: 100%;
-			display: none;
 		}
 	}
 
@@ -143,7 +145,7 @@
 		border-radius: $gap-smaller;
 
 		@media (max-width: 768px) {
-			padding: 0;
+			padding: 0 $gap;
 		}
 	}
 
