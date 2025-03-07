@@ -124,7 +124,7 @@ const test = baseTest.extend( {
 /* region tests */
 cartPages.forEach( ( { name, slug } ) => {
 	test(
-		`check ${ name }`,
+		`can add and remove products, increase quantity and proceed to checkout - ${ name }`,
 		{ tag: [ tags.PAYMENTS, tags.SERVICES, tags.HPOS ] },
 		async ( { page, products, tax } ) => {
 			await test.step( 'empty cart is displayed', async () => {
@@ -216,6 +216,7 @@ cartPages.forEach( ( { name, slug } ) => {
 					tax
 				);
 			} );
+
 			await test.step( 'can remove the last product', async () => {
 				await page
 					.getByRole( 'button', {
