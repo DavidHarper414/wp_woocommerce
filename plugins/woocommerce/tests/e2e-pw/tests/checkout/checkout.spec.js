@@ -230,9 +230,9 @@ const test = baseTest.extend( {
 
 		await use( product );
 
-		await restApi.delete( `${ WC_API_PATH }/products/${ product.id }`, {
-			force: true,
-		} );
+		// await restApi.delete( `${ WC_API_PATH }/products/${ product.id }`, {
+		// 	force: true,
+		// } );
 	},
 	tax: async ( { restApi }, use ) => {
 		let tax;
