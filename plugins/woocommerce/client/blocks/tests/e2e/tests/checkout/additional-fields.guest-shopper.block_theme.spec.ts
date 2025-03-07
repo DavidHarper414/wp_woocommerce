@@ -178,12 +178,16 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 				.getByLabel( 'Can a truck fit down your road?' )
 				.uncheck();
 
+			await checkoutPageObject.waitForCustomerDataUpdate();
+
+			await checkoutPageObject.waitForCheckoutToFinishUpdating();
+
 			await checkoutPageObject.page
 				.getByLabel( 'Test required checkbox' )
 				.check();
 
-			await checkoutPageObject.waitForCustomerDataUpdate();
 			await checkoutPageObject.waitForCheckoutToFinishUpdating();
+
 			await checkoutPageObject.placeOrder();
 
 			expect(
