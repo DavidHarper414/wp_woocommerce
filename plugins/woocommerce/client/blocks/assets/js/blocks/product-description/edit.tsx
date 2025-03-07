@@ -88,7 +88,6 @@ function ReadOnlyContent( {
 }
 
 function EditableContent( { context = {} } ) {
-	// TODO At every place where postType is used, should I replace it with 'product'?
 	const { postType, postId } = context;
 
 	const [ blocks, onInput, onChange ] = useEntityBlockEditor(
@@ -113,8 +112,7 @@ function EditableContent( { context = {} } ) {
 	const initialInnerBlocks = [ [ 'core/paragraph' ] ];
 
 	const props = useInnerBlocksProps(
-		// TODO Change className?
-		useBlockProps( { className: 'entry-content' } ),
+		useBlockProps( { className: 'product-description__editable-content' } ),
 		{
 			value: blocks,
 			onInput,
@@ -135,7 +133,7 @@ function Content( props ) {
 		return null;
 	}
 
-	// TODO Review it again.
+	// Show warning if the block is not used in a product context.
 	if ( postType && postType !== 'product' ) {
 		return (
 			<div { ...blockProps }>
@@ -149,9 +147,8 @@ function Content( props ) {
 		);
 	}
 
-	// TODO Update this, as it's for Query Loop block.
-	const isDescendentOfQueryLoop = Number.isFinite( queryId );
-	const isEditable = userCanEdit && ! isDescendentOfQueryLoop;
+	const isDescendentOfProductCollection = Number.isFinite( queryId );
+	const isEditable = userCanEdit && ! isDescendentOfProductCollection;
 
 	return isEditable ? (
 		<EditableContent { ...props } />
@@ -171,7 +168,6 @@ function Placeholder( { layoutClassNames } ) {
 	return (
 		<div { ...blockProps }>
 			<p>
-				{ /* TODO Will there be always same placeholder text? Or should it change based on the context? */ }
 				{ __(
 					'This block displays the product description. When viewing a product page, the description content will automatically appear here.',
 					'woocommerce'
@@ -200,11 +196,9 @@ export default function ProductDescriptionEdit( {
 	__unstableLayoutClassNames: layoutClassNames,
 	__unstableParentLayout: parentLayout,
 } ) {
-	// TODO Should I check if postType is product?
 	const { postId: contextPostId, postType: contextPostType } = context;
 	const hasAlreadyRendered = useHasRecursion( contextPostId );
 
-	// TODO Why there is recursion error when added to a new post?
 	if ( contextPostId && contextPostType && hasAlreadyRendered ) {
 		return <RecursionError />;
 	}
