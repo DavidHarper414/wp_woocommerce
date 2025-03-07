@@ -8,7 +8,9 @@ const TEMPLATE: InnerBlockTemplate[] = [
 	[ 'core/comments-title' ],
 	[
 		'core/comment-template',
-		{},
+		{
+			__woocommerceNamespace: 'woocommerce/product-review-template',
+		},
 		[
 			[
 				'core/columns',
@@ -34,9 +36,11 @@ const TEMPLATE: InnerBlockTemplate[] = [
 						{},
 						[
 							[
-								'woocommerce/product-review-author-name',
+								'core/comment-author-name',
 								{
 									fontSize: 'small',
+									__woocommerceNamespace:
+										'woocommerce/product-review-author-name',
 								},
 							],
 							[

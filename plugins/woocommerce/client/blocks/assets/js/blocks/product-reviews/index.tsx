@@ -12,6 +12,7 @@ import save from './save';
 import edit from './edit';
 import icon from './icon';
 import { registerProductReviewAuthorVariation } from './variations/review-author';
+import { registerProductReviewTemplateVariation } from './variations/review-template';
 
 if ( isExperimentalBlocksEnabled() ) {
 	// @ts-expect-error metadata is not typed.
@@ -22,4 +23,5 @@ if ( isExperimentalBlocksEnabled() ) {
 	} );
 
 	registerProductReviewAuthorVariation();
+	registerProductReviewTemplateVariation();
 }
