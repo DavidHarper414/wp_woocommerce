@@ -2393,7 +2393,7 @@ ul.wc_coupon_list_block {
 				text-align: center;
 			}
 
-			.item_cost {
+			.item_cost_of_goods {
 				.view {
 					opacity: 50%;
 				}
@@ -2405,7 +2405,7 @@ ul.wc_coupon_list_block {
 			.line_cost,
 			.line_tax,
 			.tax_class,
-			.item_price,
+			.item_cost_of_goods,
 			.item_cost {
 				text-align: right;
 
@@ -3921,7 +3921,7 @@ table.wc_input_table {
 		background-color: #fefbcc;
 	}
 
-	.item_price,
+	.item_cost_of_goods,
 	.item_cost,
 	.cost {
 		text-align: right;

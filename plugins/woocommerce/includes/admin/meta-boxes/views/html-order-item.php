@@ -50,7 +50,7 @@ $row_class    = apply_filters( 'woocommerce_admin_html_order_item_class', ! empt
 	<?php do_action( 'woocommerce_admin_order_item_values', $product, $item, absint( $item_id ) ); ?>
 
 	<?php if ( wc_get_container()->get( CostOfGoodsSoldController::class )->feature_is_enabled() ) : ?>
-		<td class="item_cost" width="1%" data-sort-value="<?php echo esc_attr( $item->get_cogs_value() ); ?>">
+		<td class="item_cost_of_goods" width="1%" data-sort-value="<?php echo esc_attr( $item->get_cogs_value() ); ?>">
 			<div class="view">
 				<?php
 				echo $item->get_cogs_value_html();
@@ -58,7 +58,7 @@ $row_class    = apply_filters( 'woocommerce_admin_html_order_item_class', ! empt
 			</div>
 		</td>
 	<?php endif; ?>
-	<td class="item_price" width="1%" data-sort-value="<?php echo esc_attr( $order->get_item_subtotal( $item, false, true ) ); ?>">
+	<td class="item_cost" width="1%" data-sort-value="<?php echo esc_attr( $order->get_item_subtotal( $item, false, true ) ); ?>">
 		<div class="view">
 			<?php
 			echo wc_price( $order->get_item_subtotal( $item, false, true ), array( 'currency' => $order->get_currency() ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
