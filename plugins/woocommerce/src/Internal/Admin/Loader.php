@@ -316,9 +316,9 @@ class Loader {
 		if ( ! function_exists( 'wc_blocks_container' ) ) {
 			global $wp_locale;
 			// inject data not available via older versions of wc_blocks/woo.
-			$settings['orderStatuses'] = self::get_order_statuses( wc_get_order_statuses() );
-			$settings['stockStatuses'] = self::get_order_statuses( wc_get_product_stock_status_options() );
-			$settings['currency']      = self::get_currency_settings();
+			$settings['orderStatuses'] = Settings::get_order_statuses( wc_get_order_statuses() );
+			$settings['stockStatuses'] = Settings::get_order_statuses( wc_get_product_stock_status_options() );
+			$settings['currency']      = Settings::get_currency_settings();
 			$settings['locale']        = array(
 				'siteLocale'    => isset( $settings['siteLocale'] )
 					? $settings['siteLocale']
@@ -462,7 +462,7 @@ class Loader {
 		$registered_statuses   = wc_get_order_statuses();
 		$all_synced_statuses   = OrdersDataStore::get_all_statuses();
 		$unregistered_statuses = array_diff( $all_synced_statuses, array_keys( $registered_statuses ) );
-		$formatted_status_keys = self::get_order_statuses( array_fill_keys( $unregistered_statuses, '' ) );
+		$formatted_status_keys = Settings::get_order_statuses( array_fill_keys( $unregistered_statuses, '' ) );
 		$formatted_statuses    = array_keys( $formatted_status_keys );
 
 		return array_combine( $formatted_statuses, $formatted_statuses );
