@@ -112,29 +112,27 @@ const productGallery = {
 				selectedImageId
 			);
 
-			const processedImageData = allImageIds.map(
-				( imageId, index ) => {
-					const isActive = selectedImageNumber === index + 1;
-					const tabIndex = isActive ? '0' : '-1';
-					const imageObject = imageData?.images[ imageId ];
+			const processedImageData = allImageIds.map( ( imageId, index ) => {
+				const isActive = selectedImageNumber === index + 1;
+				const tabIndex = isActive ? '0' : '-1';
+				const imageObject = imageData?.images[ imageId ];
 
-					if ( ! userHasInteracted && index >= 2 ) {
-						// Return a copy with empty src and srcSet for images beyond the first two
-						return {
-							...imageObject,
-							isActive,
-							tabIndex,
-							src: '',
-							src_set: '',
-						};
-					}
+				if ( ! userHasInteracted && index >= 2 ) {
+					// Return a copy with empty src and srcSet for images beyond the first two
 					return {
 						...imageObject,
 						isActive,
 						tabIndex,
+						src: '',
+						src_set: '',
 					};
 				}
-			);
+				return {
+					...imageObject,
+					isActive,
+					tabIndex,
+				};
+			} );
 
 			return processedImageData;
 		},
@@ -343,8 +341,7 @@ const productGallery = {
 					newImageNumber,
 					allImageIds.length
 				);
-				context.selectedImageId =
-					allImageIds[ newImageNumber - 1 ];
+				context.selectedImageId = allImageIds[ newImageNumber - 1 ];
 				context.disableLeft = disableLeft;
 				context.disableRight = disableRight;
 				scrollImageIntoView( allImageIds[ newImageNumber - 1 ] );
