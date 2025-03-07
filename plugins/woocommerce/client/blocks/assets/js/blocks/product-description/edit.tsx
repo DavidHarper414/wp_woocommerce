@@ -141,7 +141,7 @@ function Content( props ) {
 			<div { ...blockProps }>
 				<Warning>
 					{ __(
-						'This block can only be used with products.',
+						'This block requires a product context to function. You can use it inside a Single Product template, Single Product block, Product Collection block, or within other product-related blocks.',
 						'woocommerce'
 					) }
 				</Warning>
