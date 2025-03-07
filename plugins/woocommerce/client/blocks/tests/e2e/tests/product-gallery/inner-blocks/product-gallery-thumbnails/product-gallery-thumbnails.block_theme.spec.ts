@@ -72,7 +72,50 @@ test.describe( 'Product Gallery Thumbnails block', () => {
 	} );
 
 	test.describe( 'settings', () => {
-		test( 'rounds the number of thumbnails to integer', async ( {
+		test( 'updates thumbnail size', async ( { page, editor } ) => {
+			const thumbnailsBlock =
+				editor.canvas.getByLabel( 'Block: Thumbnails' );
+
+			await editor.selectBlocks( thumbnailsBlock );
+
+			await editor.openDocumentSettingsSidebar();
+			const thumbnailSizeInput = page
+				.getByLabel( 'Editor settings' )
+				.getByRole( 'textbox', {
+					name: 'Thumbnail Size',
+				} );
+
+			await thumbnailSizeInput.fill( '100' );
+			await page.keyboard.press( 'Enter' );
+
+			const thumbnailImages = thumbnailsBlock.locator(
+				'.wc-block-product-gallery-thumbnails__image'
+			);
+
+			await expect( thumbnailImages ).toHaveCount( 4 );
+			await expect( thumbnailImages.first() ).toHaveAttribute(
+				'width',
+				'100'
+			);
+			await expect( thumbnailImages.first() ).toHaveAttribute(
+				'height',
+				'100'
+			);
+
+			await thumbnailSizeInput.fill( '150' );
+			await page.keyboard.press( 'Enter' );
+
+			await expect( thumbnailImages.first() ).toHaveAttribute(
+				'width',
+				'150'
+			);
+			await expect( thumbnailImages.first() ).toHaveAttribute(
+				'height',
+				'150'
+			);
+		} );
+
+		test( 'respects minimum and maximum values', async ( {
 			page,
 			editor,
 		} ) => {
@@ -82,25 +125,41 @@ test.describe( 'Product Gallery Thumbnails block', () => {
 			await editor.selectBlocks( thumbnailsBlock );
 
 			await editor.openDocumentSettingsSidebar();
-			const numberOfThumbnailInput = page
+			const thumbnailSizeInput = page
 				.getByLabel( 'Editor settings' )
-				.getByRole( 'spinbutton', {
-					name: 'Number of Thumbnails',
+				.getByRole( 'textbox', {
+					name: 'Thumbnail Size',
 				} );
 
-			await numberOfThumbnailInput.fill( '4.2' );
+			// Test minimum value (10px)
+			await thumbnailSizeInput.fill( '5' );
 			await page.keyboard.press( 'Enter' );
 
-			const numberOfThumbnailsOnScreen = thumbnailsBlock.locator(
-				'.wc-block-product-gallery-thumbnails__thumbnail'
+			const thumbnailImages = thumbnailsBlock.locator(
+				'.wc-block-product-gallery-thumbnails__image'
 			);
 
-			await expect( numberOfThumbnailsOnScreen ).toHaveCount( 4 );
+			await expect( thumbnailImages.first() ).toHaveAttribute(
+				'width',
+				'10'
+			);
+			await expect( thumbnailImages.first() ).toHaveAttribute(
+				'height',
+				'10'
+			);
 
-			await numberOfThumbnailInput.fill( '4.7' );
+			// Test maximum value (300px)
+			await thumbnailSizeInput.fill( '350' );
 			await page.keyboard.press( 'Enter' );
 
-			await expect( numberOfThumbnailsOnScreen ).toHaveCount( 5 );
+			await expect( thumbnailImages.first() ).toHaveAttribute(
+				'width',
+				'300'
+			);
+			await expect( thumbnailImages.first() ).toHaveAttribute(
+				'height',
+				'300'
+			);
 		} );
 	} );
 } );
