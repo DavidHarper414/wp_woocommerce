@@ -1,6 +1,23 @@
-const { test, expect } = require( '../../../fixtures/api-tests-fixtures' );
+const {
+	test,
+	expect,
+	apiRequest,
+} = require( '../../../fixtures/api-tests-fixtures' );
+const { setOption } = require( '../../../utils/options' );
 
+const { BASE_URL } = process.env;
+
+const disableNewPaymentsSettingsFeature = async () => {
+	await setOption(
+		apiRequest,
+		BASE_URL,
+		'woocommerce_feature_reactify-classic-payments-settings',
+		'no'
+	);
+};
 test.describe( 'Payment Gateways API tests', () => {
+	test.beforeAll( disableNewPaymentsSettingsFeature );
+
 	test( 'can view all payment gateways', async ( { request } ) => {
 		// call API to retrieve the payment gateways
 		const response = await request.get(

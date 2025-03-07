@@ -1,5 +1,22 @@
-const { test: baseTest, expect, tags } = require( '../../fixtures/fixtures' );
+const {
+	test: baseTest,
+	expect,
+	tags,
+	apiRequest,
+} = require( '../../fixtures/fixtures' );
 const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
+const { setOption } = require( '../../utils/options' );
+
+const { BASE_URL } = process.env;
+
+const disableNewPaymentsSettingsFeature = async () => {
+	await setOption(
+		apiRequest,
+		BASE_URL,
+		'woocommerce_feature_reactify-classic-payments-settings',
+		'no'
+	);
+};
 
 const test = baseTest.extend( {
 	storageState: ADMIN_STATE_PATH,
@@ -47,15 +64,12 @@ const test = baseTest.extend( {
 			value: initialDefaultCountry.data.value,
 		} );
 		await wcAdminApi.put( 'options', initialTaskListHiddenState.data );
-
-		// Make sure the new Payments Settings page feature flag is disabled.
-		await wcAdminApi.put( 'options', {
-			'woocommerce_feature_reactify-classic-payments-settings': 'no',
-		} );
 	},
 } );
 
 test.describe( 'Payment setup task', () => {
+	test.beforeAll( disableNewPaymentsSettingsFeature );
+
 	test(
 		'Saving valid bank account transfer details enables the payment method',
 		{ tag: [ tags.COULD_BE_LOWER_LEVEL_TEST ] },

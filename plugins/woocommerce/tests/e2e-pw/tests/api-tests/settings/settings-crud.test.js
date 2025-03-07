@@ -32,9 +32,22 @@ const disableEmailImprovementsFeature = async () => {
 	);
 };
 
+const disableNewPaymentsSettingsFeature = async () => {
+	await setOption(
+		apiRequest,
+		BASE_URL,
+		'woocommerce_feature_reactify-classic-payments-settings',
+		'no'
+	);
+};
+
 test.describe( 'Settings API tests: CRUD', () => {
 	test.describe( 'List all settings groups', () => {
-		test.beforeAll( disableEmailImprovementsFeature );
+		test.beforeAll( async () => {
+			await disableNewPaymentsSettingsFeature();
+			await disableEmailImprovementsFeature();
+		} );
+
 		test( 'can retrieve all settings groups', async ( { request } ) => {
 			// call API to retrieve all settings groups
 			const response = await request.get( './wp-json/wc/v3/settings' );
