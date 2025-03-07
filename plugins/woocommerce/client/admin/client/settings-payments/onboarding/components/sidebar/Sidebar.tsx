@@ -35,16 +35,16 @@ export default function OnboardingSidebar( {
 	} ) );
 
 	return (
-		<div className="woopayments_onboarding_modal__sidebar">
-			<div className="woopayments_onboarding_modal__sidebar_header">
-				<h2 className="woopayments_onboarding_modal__sidebar_title">
+		<div className="payment_onboarding_modal__sidebar">
+			<div className="payment_onboarding_modal__sidebar_header">
+				<h2 className="payment_onboarding_modal__sidebar_title">
 					{ __( 'Set up WooPayments', 'woocommerce' ) }
 				</h2>
-				<div className="woopayments_onboarding_modal__sidebar_steps_badge">
+				<div className="payment_onboarding_modal__sidebar_steps_badge">
 					{ __( 'Step 3 of 5', 'woocommerce' ) }
 				</div>
 			</div>
-			<div className="woopayments_onboarding_modal__sidebar_navigation">
+			<div className="payment_onboarding_modal__sidebar_navigation">
 				{ sidebarItems.map( ( item ) => (
 					<SidebarItem
 						key={ item.key }

@@ -25,11 +25,11 @@ export default function SidebarItem( {
 }: SidebarItemProps ): React.ReactNode {
 	return (
 		<div
-			className={ `woopayments_onboarding_modal__sidebar_item ${
+			className={ `payment_onboarding_modal__sidebar_item ${
 				isActive ? 'is-active' : ''
 			} ${ isCompleted ? 'is-completed' : '' }` }
 		>
-			<span className="woopayments_onboarding_modal__sidebar_item_icon">
+			<span className="payment_onboarding_modal__sidebar_item_icon">
 				{ isCompleted ? (
 					<svg
 						width="24"
@@ -60,7 +60,7 @@ export default function SidebarItem( {
 					</svg>
 				) }
 			</span>
-			<span className="woopayments_onboarding_modal__sidebar_item_label">
+			<span className="payment_onboarding_modal__sidebar_item_label">
 				{ label }
 			</span>
 		</div>
