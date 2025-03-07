@@ -59,11 +59,11 @@ async function createShortcodePage( slug, title, shortcode ) {
 			} )
 			.then( ( r ) => r.data );
 		console.log(
-			`Created page: ${ {
+			`Created page: ${ JSON.stringify( {
 				title: page.title,
 				slug: page.slug,
 				id: page.id,
-			} }`
+			} ) }`
 		);
 	}
 }
