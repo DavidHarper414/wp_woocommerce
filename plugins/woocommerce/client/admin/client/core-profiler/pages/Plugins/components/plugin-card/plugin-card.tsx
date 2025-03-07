@@ -6,7 +6,12 @@ import { __ } from '@wordpress/i18n';
 import clsx from 'clsx';
 import { Extension } from '@woocommerce/data';
 import { Link } from '@woocommerce/components';
-import React from 'react';
+import {
+	useMemo,
+	Children,
+	isValidElement,
+	cloneElement,
+} from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -45,17 +50,24 @@ export const PluginCard = ( {
 } ) => {
 	let learnMoreLink = null;
 	const slug = pluginKey.replace( ':alt', '' );
-	React.Children.forEach( children, ( child ) => {
+
+	Children.forEach( children, ( child ) => {
 		if (
-			React.isValidElement( child ) &&
+			isValidElement( child ) &&
 			child.type === PluginCard.LearnMoreLink
 		) {
-			learnMoreLink = React.cloneElement( child, {
+			learnMoreLink = cloneElement( child, {
 				// @ts-expect-error -- @types/react is deficient here
 				learnMoreLink: learnMoreLinkUrl,
 			} );
 		}
 	} );
+
+	const descriptionText = useMemo( () => {
+		const descriptionElement = document.createElement( 'div' );
+		descriptionElement.innerHTML = description;
+		return descriptionElement.textContent || '';
+	}, [ description ] );
 
 	return (
 		<label
@@ -81,7 +93,13 @@ export const PluginCard = ( {
 				/>
 			) }
 			<div className="woocommerce-profiler-plugins-plugin-card-main">
-				{ imageUrl ? <img src={ imageUrl } alt={ pluginKey } /> : null }
+				{ imageUrl ? (
+					<img
+						className="woocommerce-profiler-plugins-plugin-card-logo"
+						src={ imageUrl }
+						alt={ pluginKey }
+					/>
+				) : null }
 
 				<div className="woocommerce-profiler-plugins-plugin-card-content">
 					<div
@@ -105,6 +123,7 @@ export const PluginCard = ( {
 							dangerouslySetInnerHTML={ sanitizeHTML(
 								description
 							) }
+							title={ descriptionText }
 						/>
 						{ learnMoreLink }
 					</div>
