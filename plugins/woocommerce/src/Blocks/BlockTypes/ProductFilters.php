@@ -105,7 +105,6 @@ class ProductFilters extends AbstractBlock {
 			'style'                            => $styles,
 		);
 
-		// phpcs:ignore
 		// TODO: Remove this conditional once the fix is released in WP. https://github.com/woocommerce/gutenberg/pull/4.
 		if ( ! isset( $block->context['productCollectionLocation'] ) ) {
 			$wrapper_attributes['data-wp-router-region'] = $this->generate_navigation_id( $block );
