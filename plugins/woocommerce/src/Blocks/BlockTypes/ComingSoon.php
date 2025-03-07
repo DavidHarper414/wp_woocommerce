@@ -38,6 +38,12 @@ class ComingSoon extends AbstractBlock {
 				'wc-blocks-style',
 				':root{--woocommerce-coming-soon-color: ' . esc_html( $attributes['style']['color']['background'] ) . '}'
 			);
+		} else if ( isset( $attributes['color'] ) ) {
+			// Deprecated: To support coming soon templates created before WooCommerce 9.8.0
+			wp_add_inline_style(
+				'wc-blocks-style',
+				':root{--woocommerce-coming-soon-color: ' . esc_html( $attributes['color'] ) . '}'
+			);
 		}
 	}
 

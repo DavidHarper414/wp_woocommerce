@@ -15,6 +15,7 @@ import deprecated from './deprecated';
 import NewsletterPanel from './newsletter-panel';
 import './store-only.scss';
 import './entire-site.scss';
+import './entire-site-deprecated.scss';
 
 registerBlockType( metadata, {
 	title: __( 'Coming Soon', 'woocommerce' ),
