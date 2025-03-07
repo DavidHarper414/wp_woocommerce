@@ -77,7 +77,7 @@ describe( 'Plugins Component', () => {
 		);
 		expect(
 			screen.getByText(
-				/Enhance your store by installing these free business features/
+				/No commitment required – you can remove them at any time/
 			)
 		).toBeInTheDocument();
 		expect( screen.getByText( 'Plugin 1' ) ).toBeInTheDocument();
