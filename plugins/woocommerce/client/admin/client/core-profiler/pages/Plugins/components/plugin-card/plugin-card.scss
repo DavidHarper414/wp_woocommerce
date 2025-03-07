@@ -1,12 +1,7 @@
 @import "../../../../shared.scss";
 
 .woocommerce-profiler-plugins-plugin-card {
-	// The max-width property is set using the clamp() function, which takes three parameters:
-	// 1. The minimum value (374px)
-	// 2. The preferred value (48% of the parent container's width)
-	// 3. The maximum value (492px)
-	// This ensures that the element's width will be responsive, adjusting between 384px and 492px based on the available space.
-	max-width: 492px;
+	max-width: 500px;
 	border: 1px solid #e0e0e0;
 	box-sizing: border-box;
 	border-radius: 4px;
@@ -31,7 +26,7 @@
 		cursor: initial;
 	}
 
-	@include breakpoint( "<960px" ) {
+	@media screen and (max-width: $break-xlarge) {
 		align-items: flex-start;
 	}
 
@@ -41,7 +36,7 @@
 	}
 
 	.woocommerce-profiler__checkbox {
-		@include breakpoint( "<960px" ) {
+		@media screen and (max-width: $break-xlarge) {
 			height: 28px;
 			display: flex;
 			align-items: center;
@@ -85,14 +80,14 @@
 		min-width: 0;
 		flex-grow: 1;
 
-		@include breakpoint( "<960px" ) {
+		@media screen and (max-width: $break-xlarge) {
 			align-items: flex-start;
 		}
 
 		.woocommerce-profiler-plugins-plugin-card-logo {
 			width: 31px;
 
-			@include breakpoint( "<960px" ) {
+			@media screen and (max-width: $break-xlarge) {
 				width: 28px;
 			}
 
@@ -129,7 +124,7 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 
-			@include breakpoint( "<960px" ) {
+			@media screen and (max-width: $break-xlarge) {
 				white-space: initial;
 				overflow: initial;
 				text-overflow: initial;
