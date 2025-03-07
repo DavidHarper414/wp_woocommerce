@@ -372,6 +372,7 @@ test.describe(
 			await test.step( 'Load cart page and try coupon usage on sale item', async () => {
 				await addAProductToCart( page, secondProductId );
 				await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
+				await expandCouponForm( page );
 				await applyCoupon( page, 'no-sale-use-limit' );
 				// failed because this product is on sale.
 				await expect(
@@ -434,6 +435,7 @@ test.describe(
 			await test.step( 'Load cart page and try over limit coupon usage', async () => {
 				await addAProductToCart( page, firstProductId );
 				await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
+				await expandCouponForm( page );
 				await applyCoupon( page, 'no-sale-use-limit' );
 				// failed because this coupon code has been used too much
 				await expect(
@@ -458,7 +460,6 @@ test.describe(
 				).toBeVisible();
 			} );
 
-			await console.log( orderIds );
 			// clean up the orders
 			await restApi.post( `${ WC_API_PATH }/orders/batch`, {
 				delete: [ ...orderIds ],
@@ -472,6 +473,7 @@ test.describe(
 			await test.step( 'Load cart page and try included certain items coupon usage', async () => {
 				await addAProductToCart( page, secondProductId );
 				await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
+				await expandCouponForm( page );
 				await applyCoupon( page, 'product-and-category-included' );
 				// failed because this product is not included for coupon
 				await expect(
@@ -504,6 +506,7 @@ test.describe(
 			await test.step( 'Load cart page and try on certain products coupon usage', async () => {
 				await addAProductToCart( page, firstProductId );
 				await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
+				await expandCouponForm( page );
 				await applyCoupon( page, 'product-and-category-included' );
 				// succeeded
 				await expect(
@@ -533,6 +536,7 @@ test.describe(
 			await test.step( 'Load cart page and try excluded items coupon usage', async () => {
 				await addAProductToCart( page, secondProductId );
 				await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
+				await expandCouponForm( page );
 				await applyCoupon( page, 'product-and-category-included' );
 				// failed because this product is excluded from coupon
 				await expect(
@@ -565,6 +569,7 @@ test.describe(
 			await test.step( 'Load cart page and try coupon usage on other items', async () => {
 				await addAProductToCart( page, firstProductId );
 				await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
+				await expandCouponForm( page );
 				await applyCoupon( page, 'product-and-category-included' );
 				// succeeded
 				await expect(
@@ -592,10 +597,11 @@ test.describe(
 		} ) => {
 			await addAProductToCart( page, firstProductId );
 			await page.goto( CLASSIC_CHECKOUT_PAGE.slug );
+			await expandCouponForm( page );
 			await applyCoupon( page, 'email-restricted' );
 			await expect(
 				page.getByText(
-					'Please enter a valid email at checkout to use coupon code "email-restricted".'
+					'Please enter a valid email to use coupon code "email-restricted".'
 				)
 			).toBeVisible();
 		} );
