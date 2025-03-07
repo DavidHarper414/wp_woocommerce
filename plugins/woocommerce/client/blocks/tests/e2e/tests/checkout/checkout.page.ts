@@ -240,17 +240,12 @@ export class CheckoutPage {
 	 */
 	async verifyAdditionalFieldsDetails( values: [ string, string ][] ) {
 		for ( const [ label, value ] of values ) {
-			try {
-				await this.page
-					.getByText(
-						`${ label }${ value }` // No space between these due to the way the markup is output on the confirmation page.
-					)
-					.waitFor( { state: 'visible' } );
-			} catch {
-				return false;
-			}
+			await this.page
+				.getByText(
+					`${ label }${ value }` // No space between these due to the way the markup is output on the confirmation page.
+				)
+				.waitFor( { state: 'visible' } );
 		}
-		// If one of the fields above is false the function would have returned early.
 		return true;
 	}
 
