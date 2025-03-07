@@ -42,6 +42,15 @@ export class FrontendUtils {
 		}
 
 		await cartResponsePromise;
+
+		/**
+		 * There's a race condition where the cart is not fully updated
+		 * immediately when adding multiple items one by one, even though the
+		 * response is received. This timeout ensures the cart is updated before
+		 * the next test step.
+		 */
+		// eslint-disable-next-line playwright/no-wait-for-timeout, no-restricted-syntax
+		await this.page.waitForTimeout( 1000 );
 	}
 
 	async goToCheckout() {
