@@ -4639,9 +4639,6 @@ importers:
       '@woocommerce/eslint-plugin':
         specifier: workspace:*
         version: link:../../../../packages/js/eslint-plugin
-      '@woocommerce/woocommerce-rest-api':
-        specifier: 1.0.1
-        version: 1.0.1
       '@wordpress/api-fetch':
         specifier: 6.21.0
         version: 6.21.0
@@ -11721,10 +11718,6 @@ packages:
 
   '@woocommerce/settings@1.0.0':
     resolution: {integrity: sha512-BjrT56Cz8XTRHw2JNPmANRkYh2rzdF33wOa56lah1qb/MjHUKuVJ0PTSZ19S5Trb92IkxfcIVB26CSdxXnf5Og==}
-
-  '@woocommerce/woocommerce-rest-api@1.0.1':
-    resolution: {integrity: sha512-YBk3EEYE0zax/egx6Rhpbu6hcCFyZpYQrjH9JO4NUGU3n3T0W9Edn7oAUbjL/c7Oezcg+UaQluCaKjY/B3zwxg==}
-    engines: {node: '>=8.0.0'}
 
   '@wordpress/a11y@3.57.0':
     resolution: {integrity: sha512-paf4pp+ze6zk47jDStE1AyO61USvAioIi+gy4lEBKv8LI6LapdYFWR4c/Lta5/aeHPlIHi6J5DkYZpPyVXFueA==}
@@ -41540,15 +41533,6 @@ snapshots:
   '@woocommerce/settings@1.0.0':
     dependencies:
       '@babel/runtime-corejs2': 7.5.5
-
-  '@woocommerce/woocommerce-rest-api@1.0.1':
-    dependencies:
-      axios: 0.19.2
-      create-hmac: 1.1.7
-      oauth-1.0a: 2.2.6
-      url-parse: 1.5.10
-    transitivePeerDependencies:
-      - supports-color
 
   '@wordpress/a11y@3.57.0':
     dependencies:
