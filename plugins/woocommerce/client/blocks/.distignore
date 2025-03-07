@@ -24,14 +24,10 @@
 .wp-env.json
 babel.config.js
 blocks.ini
-composer.json
-composer.lock
 docker-compose.yml
 global.d.ts
 package.json
 package-lock.json
-phpcs.xml
-phpunit.xml.dist
 postcss.config.js
 README.md
 renovate.json
