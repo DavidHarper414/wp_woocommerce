@@ -1684,6 +1684,15 @@ jQuery( function ( $ ) {
 
 				};
 
+				// Work around to deal with the lack of responsive support from Select2 until a better replacement can be integrated.
+				let resizeTimer;
+				$( window ).on( 'resize', function () {
+					clearTimeout( resizeTimer );
+					resizeTimer = setTimeout( function () {
+						metakey_select.selectWoo( select2_args );
+					}, 300 );
+				});
+
 				$(this).selectWoo(select2_args).addClass('enhanced');
 			});
 		}
