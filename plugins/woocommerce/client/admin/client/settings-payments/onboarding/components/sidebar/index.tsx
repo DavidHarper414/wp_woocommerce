@@ -6,20 +6,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import SidebarItem from './SidebarItem';
-
-/**
- * Props for the OnboardingSidebar component
- */
-interface OnboardingSidebarProps {
-	steps: {
-		key: string;
-		label: string;
-		isCompleted?: boolean;
-		isActive?: boolean;
-		content?: React.ReactNode;
-	}[];
-}
+import { OnboardingSidebarProps } from '~/settings-payments/onboarding/types';
+import SidebarItem from './item';
 
 /**
  * Sidebar component for the onboarding modal
@@ -35,16 +23,16 @@ export default function OnboardingSidebar( {
 	} ) );
 
 	return (
-		<div className="payment_onboarding_modal__sidebar">
-			<div className="payment_onboarding_modal__sidebar_header">
-				<h2 className="payment_onboarding_modal__sidebar_title">
+		<div className="settings-payments-onboarding-modal__sidebar">
+			<div className="settings-payments-onboarding-modal__sidebar--header">
+				<h2 className="settings-payments-onboarding-modal__sidebar--header-title">
 					{ __( 'Set up WooPayments', 'woocommerce' ) }
 				</h2>
-				<div className="payment_onboarding_modal__sidebar_steps_badge">
+				<div className="settings-payments-onboarding-modal__sidebar--header-steps">
 					{ __( 'Step 3 of 5', 'woocommerce' ) }
 				</div>
 			</div>
-			<div className="payment_onboarding_modal__sidebar_navigation">
+			<div className="settings-payments-onboarding-modal__sidebar--list">
 				{ sidebarItems.map( ( item ) => (
 					<SidebarItem
 						key={ item.key }

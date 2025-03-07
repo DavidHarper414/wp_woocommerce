@@ -13,11 +13,7 @@ import { WC_ASSET_URL } from '~/utils/admin-settings';
 /**
  * RecommendedMethods component for WooPayments onboarding
  */
-export default function RecommendedMethods( {
-	setIsOpen,
-}: {
-	setIsOpen: ( isOpen: boolean ) => void;
-} ): React.ReactNode {
+export default function RecommendedMethods(): React.ReactNode {
 	return (
 		<div>
 			<div className="woopayments_modal_step__header">
@@ -28,7 +24,7 @@ export default function RecommendedMethods( {
 				/>
 				<Button
 					className="woopayments-close-button"
-					onClick={ () => setIsOpen( false ) }
+					onClick={ () => {} }
 				>
 					<Icon icon={ close } />
 				</Button>
