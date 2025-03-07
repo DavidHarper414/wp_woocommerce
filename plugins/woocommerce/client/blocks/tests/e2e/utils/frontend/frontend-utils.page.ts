@@ -50,7 +50,7 @@ export class FrontendUtils {
 		 * the next test step.
 		 */
 		// eslint-disable-next-line playwright/no-wait-for-timeout, no-restricted-syntax
-		await this.page.waitForTimeout( 1000 );
+		await this.page.waitForTimeout( 2000 );
 	}
 
 	async goToCheckout() {
