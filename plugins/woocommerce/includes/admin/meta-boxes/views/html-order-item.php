@@ -53,7 +53,7 @@ $row_class    = apply_filters( 'woocommerce_admin_html_order_item_class', ! empt
 		<td class="item_cost_of_goods" width="1%" data-sort-value="<?php echo esc_attr( $item->get_cogs_value() ); ?>">
 			<div class="view">
 				<?php
-				echo $item->get_cogs_value_html();
+				echo wp_kses_post( $item->get_cogs_value_html() );
 				?>
 			</div>
 		</td>
