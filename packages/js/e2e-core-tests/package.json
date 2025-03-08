@@ -56,8 +56,8 @@
 		"wireit": "0.14.10"
 	},
 	"peerDependencies": {
-		"@woocommerce/api": "^0.2.0",
-		"@woocommerce/e2e-utils": "^0.1.6"
+		"@woocommerce/api": "workspace:*",
+		"@woocommerce/e2e-utils": "workspace:*"
 	},
 	"publishConfig": {
 		"access": "public"

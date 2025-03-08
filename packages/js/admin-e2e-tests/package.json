@@ -50,8 +50,8 @@
 		"config": "3.3.7"
 	},
 	"peerDependencies": {
-		"@woocommerce/e2e-environment": "^0.2.3 || ^0.3.0",
-		"@woocommerce/e2e-utils": "^0.2.0",
+		"@woocommerce/e2e-environment": "workspace:*",
+		"@woocommerce/e2e-utils": "workspace:*",
 		"puppeteer": "^2.0.0"
 	},
 	"devDependencies": {
@@ -60,7 +60,7 @@
 		"@types/expect-puppeteer": "^4.4.7",
 		"@types/puppeteer": "^5.4.7",
 		"@typescript-eslint/eslint-plugin": "^5.62.0",
-		"@woocommerce/api": "^0.2.0",
+		"@woocommerce/api": "workspace:*",
 		"@woocommerce/eslint-plugin": "workspace:*",
 		"eslint": "^8.55.0",
 		"jest": "27.5.x",

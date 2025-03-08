@@ -52,9 +52,6 @@
 		"eslint-plugin-jest": "23.20.0",
 		"wireit": "0.14.10"
 	},
-	"peerDependencies": {
-		"@woocommerce/api": "^0.2.0"
-	},
 	"publishConfig": {
 		"access": "public"
 	},
