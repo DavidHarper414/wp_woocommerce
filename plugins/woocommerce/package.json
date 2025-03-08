@@ -64,6 +64,8 @@
 		"test:e2e:bluehost": "pnpm test:e2e:with-env default-bluehost",
 		"test:e2e:ionos": "pnpm test:e2e:with-env default-ionos",
 		"test:e2e:dreamhost": "pnpm test:e2e:with-env default-dreamhost",
+		"test:e2e:hetzner": "pnpm test:e2e:with-env default-hetzner",
+		"test:e2e:googlecloud": "pnpm test:e2e:with-env default-googlecloud",
 		"test:e2e:hpos": "pnpm test:e2e:with-env default-hpos-disabled --project=e2e-hpos-disabled",
 		"test:e2e:gb-stable": "pnpm test:e2e:with-env gutenberg-stable",
 		"test:e2e:gb-nightly": "pnpm test:e2e:with-env gutenberg-nightly",
@@ -778,6 +780,38 @@
 					],
 					"report": {
 						"resultsBlobName": "default-dreamhost-core-e2e-and-api",
+						"resultsPath": "tests/e2e-pw/test-results",
+						"allure": true
+					}
+				},
+				{
+					"name": "Core e2e tests - Hetzner site",
+					"testType": "e2e",
+					"command": "test:e2e:hetzner",
+					"shardingArguments": [],
+					"changes": [],
+					"events": [
+						"on-demand",
+						"core-e2e-hetzner"
+					],
+					"report": {
+						"resultsBlobName": "default-hetzner-core-e2e-and-api",
+						"resultsPath": "tests/e2e-pw/test-results",
+						"allure": true
+					}
+				},
+				{
+					"name": "Core e2e tests - Google Cloud site",
+					"testType": "e2e",
+					"command": "test:e2e:googlecloud",
+					"shardingArguments": [],
+					"changes": [],
+					"events": [
+						"on-demand",
+						"core-e2e-googlecloud"
+					],
+					"report": {
+						"resultsBlobName": "default-googlecloud-core-e2e-and-api",
 						"resultsPath": "tests/e2e-pw/test-results",
 						"allure": true
 					}
