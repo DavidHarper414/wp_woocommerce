@@ -16,17 +16,19 @@ config = {
 		},
 		{
 			name: 'e2e-ionos',
-			// testIgnore: [ '**/api-tests/**', '**/js-file-monitor/**' ],
-			testMatch: [ '**/basic/basic.spec.js' ],
+			testIgnore: [
+				'**/api-tests/**',
+				'**/js-file-monitor/**',
+			],
 			grepInvert,
 			dependencies: [ 'reset', 'site setup' ],
 		},
-		// {
-		// 	name: 'api-ionos',
-		// 	testMatch: [ '**/api-tests/**' ],
-		// 	grepInvert,
-		// 	dependencies: [ 'reset', 'site setup' ],
-		// },
+		{
+			name: 'api-ionos',
+			testMatch: [ '**/api-tests/**' ],
+			grepInvert,
+			dependencies: [ 'reset', 'site setup' ],
+		},
 	],
 };
 

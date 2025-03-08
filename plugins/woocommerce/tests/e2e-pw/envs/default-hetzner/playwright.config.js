@@ -16,17 +16,19 @@ config = {
 		},
 		{
 			name: 'e2e-hetzner',
-			// testIgnore: [ '**/api-tests/**', '**/js-file-monitor/**' ],
-			testMatch: [ '**/basic/basic.spec.js' ],
+			testIgnore: [
+				'**/api-tests/**',
+				'**/js-file-monitor/**',
+			],
 			grepInvert,
 			dependencies: [ 'reset', 'site setup' ],
 		},
-		// {
-		// 	name: 'api-hetzner',
-		// 	testMatch: [ '**/api-tests/**' ],
-		// 	grepInvert,
-		// 	dependencies: [ 'reset', 'site setup' ],
-		// },
+		{
+			name: 'api-hetzner',
+			testMatch: [ '**/api-tests/**' ],
+			grepInvert,
+			dependencies: [ 'reset', 'site setup' ],
+		},
 	],
 };
 
