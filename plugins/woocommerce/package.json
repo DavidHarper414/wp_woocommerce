@@ -60,6 +60,7 @@
 		"test:e2e:pressable": "pnpm test:e2e:with-env default-pressable",
 		"test:e2e:wpcom": "pnpm test:e2e:with-env default-wpcom",
 		"test:e2e:subdir": "pnpm test:e2e:with-env default-subdir",
+		"test:e2e:hostinger": "pnpm test:e2e:with-env default-hostinger",
 		"test:e2e:hpos": "pnpm test:e2e:with-env default-hpos-disabled --project=e2e-hpos-disabled",
 		"test:e2e:gb-stable": "pnpm test:e2e:with-env gutenberg-stable",
 		"test:e2e:gb-nightly": "pnpm test:e2e:with-env gutenberg-nightly",
@@ -706,10 +707,26 @@
 					"changes": [],
 					"events": [
 						"on-demand",
-						"core-e2e-pressable"
+						"core-e2e-subdir"
 					],
 					"report": {
 						"resultsBlobName": "default-subdir-core-e2e-and-api",
+						"resultsPath": "tests/e2e-pw/test-results",
+						"allure": true
+					}
+				},
+				{
+					"name": "Core e2e tests - Hostinger site",
+					"testType": "e2e",
+					"command": "test:e2e:hostinger",
+					"shardingArguments": [],
+					"changes": [],
+					"events": [
+						"on-demand",
+						"core-e2e-hostinger"
+					],
+					"report": {
+						"resultsBlobName": "default-hostinger-core-e2e-and-api",
 						"resultsPath": "tests/e2e-pw/test-results",
 						"allure": true
 					}
