@@ -124,7 +124,7 @@ final class ProductFilterPrice extends AbstractBlock {
 			return '';
 		}
 
-		wp_enqueue_script_module( $this->get_full_block_name() );
+		// wp_enqueue_script_module( $this->get_full_block_name() );
 
 		$price_range   = $this->get_filtered_price( $block );
 		$min_range     = $price_range['min_price'] ?? 0;

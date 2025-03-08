@@ -31,15 +31,12 @@ final class ProductFilterActive extends AbstractBlock {
 
 		$filter_context = array(
 			'items'  => $active_filters,
-			'parent' => $this->get_full_block_name(),
 		);
 
 		$wrapper_attributes = array(
-			'data-wp-interactive'  => $this->get_full_block_name(),
-			'data-wp-key'          => wp_unique_prefixed_id( $this->get_full_block_name() ),
-			'data-wp-bind--hidden' => '!state.hasSelectedFilters',
+			'data-wp-bind--hidden' => '!state.hasFilterOptions',
 			/* translators:  {{label}} is the label of the active filter item. */
-			'data-wp-context'      => wp_json_encode( array( 'removeLabelTemplate' => __( 'Remove filter: {{label}}', 'woocommerce' ) ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
+			'data-wp-context'      => wp_json_encode( array( 'filterType' => 'active', 'removeLabelTemplate' => __( 'Remove filter: {{label}}', 'woocommerce' ) ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
 		);
 
 		if ( empty( $active_filters ) ) {

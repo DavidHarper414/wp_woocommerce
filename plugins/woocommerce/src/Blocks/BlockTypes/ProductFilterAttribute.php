@@ -123,18 +123,16 @@ final class ProductFilterAttribute extends AbstractBlock {
 			}
 			$terms           = explode( ',', $params[ "filter_{$product_attribute}" ] );
 			$attribute_label = wc_attribute_label( "pa_{$product_attribute}" );
+			$attribute_query_type = $params[ "query_type_{$product_attribute}" ] ?? 'or';
 
 			// Get attribute term by slug.
 			foreach ( $terms as $term ) {
 				$term_object = get_term_by( 'slug', $term, "pa_{$product_attribute}" );
 				$items[]     = array(
-					'type'      => 'attribute',
+					'type'      => 'attribute_' . $product_attribute,
 					'value'     => $term,
-					'label'     => $attribute_label . ': ' . $term_object->name,
-					'attribute' => array(
-						'slug'      => $product_attribute,
-						'queryType' => 'or',
-					),
+					'activeLabel'     => $attribute_label . ': ' . $term_object->name,
+					'attributeQueryType' => $attribute_query_type,
 				);
 			}
 		}
@@ -161,7 +159,7 @@ final class ProductFilterAttribute extends AbstractBlock {
 			return '';
 		}
 
-		wp_enqueue_script_module( $this->get_full_block_name() );
+		// wp_enqueue_script_module( $this->get_full_block_name() );
 
 		$product_attribute = wc_get_attribute( $block_attributes['attributeId'] );
 		$attribute_counts  = $this->get_attribute_counts( $block, $product_attribute->slug, $block_attributes['queryType'] );
@@ -195,7 +193,7 @@ final class ProductFilterAttribute extends AbstractBlock {
 
 		if ( ! empty( $attribute_counts ) ) {
 			$attribute_options = array_map(
-				function ( $term ) use ( $block_attributes, $attribute_counts, $selected_terms ) {
+				function ( $term ) use ( $block_attributes, $attribute_counts, $selected_terms, $product_attribute ) {
 					$term          = (array) $term;
 					$term['count'] = $attribute_counts[ $term['term_id'] ] ?? 0;
 					return array(
@@ -203,8 +201,9 @@ final class ProductFilterAttribute extends AbstractBlock {
 						'ariaLabel' => $block_attributes['showCounts'] ? sprintf( '%1$s (%2$d)', $term['name'], $term['count'] ) : $term['name'],
 						'value'     => $term['slug'],
 						'selected'  => in_array( $term['slug'], $selected_terms, true ),
-						'type'      => 'attribute',
-						'data'      => $term,
+						'count'     => $term['count'],
+						'type'      => 'attribute_' . str_replace( 'pa_', '', $product_attribute->slug ),
+						'attributeQueryType' => $block_attributes['queryType'],
 					);
 				},
 				$attribute_terms

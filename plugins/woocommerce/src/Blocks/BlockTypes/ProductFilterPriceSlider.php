@@ -34,7 +34,7 @@ class ProductFilterPriceSlider extends AbstractBlock {
 			return '';
 		}
 
-		wp_enqueue_script_module( $this->get_full_block_name() );
+		// wp_enqueue_script_module( $this->get_full_block_name() );
 
 		$price_data = $block->context['filterData']['price'];
 		$min_price  = $price_data['minPrice'];

@@ -7,7 +7,7 @@ import type { HTMLElementEvent } from '@woocommerce/types';
 /**
  * Internal dependencies
  */
-import { ActiveFilter, ProductFiltersStore } from '../../frontend';
+import { ActiveFilterItem, ProductFiltersStore } from '../../frontend';
 import { formatPrice, getCurrency } from '../../utils';
 
 export type ProductFilterPriceContext = {
@@ -110,7 +110,7 @@ const { state, actions } = store( 'woocommerce/product-filter-price', {
 				'woocommerce/product-filters'
 			);
 
-			const price: ActiveFilter[ 'price' ] = {
+			const price: ActiveFilterItem[ 'price' ] = {
 				min: state.minPrice,
 				max: state.maxPrice,
 			};

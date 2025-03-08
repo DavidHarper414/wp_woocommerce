@@ -31,7 +31,7 @@ final class ProductFilterChips extends AbstractBlock {
 			return '';
 		}
 
-		wp_enqueue_script_module( $this->get_full_block_name() );
+		// wp_enqueue_script_module( $this->get_full_block_name() );
 
 		$block_context = $block->context['filterData'];
 		$parent        = $block_context['parent'];
@@ -51,13 +51,16 @@ final class ProductFilterChips extends AbstractBlock {
 				return $item['selected'];
 			}
 		);
-		$show_initially              = $context['show_initially'] ?? 15;
+		$show_initially              = $context['show_initially'] ?? 2;
 		$remaining_initial_unchecked = count( $checked_items ) > $show_initially ? count( $checked_items ) : $show_initially - count( $checked_items );
 		$count                       = 0;
 
+		$block_id = wp_unique_prefixed_id( $this->get_full_block_name() );
+
 		$wrapper_attributes = array(
-			'data-wp-interactive' => $this->get_full_block_name(),
-			'data-wp-key'         => wp_unique_prefixed_id( $this->get_full_block_name() ),
+			'data-wp-interactive' => 'woocommerce/product-filters',
+			'data-wp-key'         => $block_id,
+			'data-wp-context'     => '{"activeLabelTemplate": "Color: %s"}',
 			'class'               => esc_attr( $classes ),
 			'style'               => esc_attr( $style ),
 		);
@@ -81,8 +84,8 @@ final class ProductFilterChips extends AbstractBlock {
 						aria-label="<?php echo esc_attr( $aria_label ); ?>"
 						data-wp-on--click--parent-action="<?php echo esc_attr( $parent . '::actions.toggleFilter' ); ?>"
 						value="<?php echo esc_attr( $item['value'] ); ?>"
-						data-wp-bind--aria-checked="<?php echo esc_attr( $parent . '::state.isItemSelected' ); ?>"
-						data-filter-item="<?php echo esc_attr( wp_json_encode( $item, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) ); ?>"
+						data-wp-bind--aria-checked="state.isChipSelected"
+						data-wp-context="<?php echo esc_attr( wp_json_encode( array( 'item' => $item ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) ); ?>"
 						<?php if ( ! $item['selected'] ) : ?>
 							<?php if ( $count >= $remaining_initial_unchecked ) : ?>
 								data-wp-bind--hidden="!context.showAll"
@@ -101,8 +104,8 @@ final class ProductFilterChips extends AbstractBlock {
 			<?php if ( count( $items ) > $show_initially ) : ?>
 				<button
 					class="wc-block-product-filter-chips__show-more"
+					data-wp-on--click="actions.showAllChips"
 					data-wp-bind--hidden="context.showAll"
-					data-wp-on--click="actions.showAllItems"
 					hidden
 				>
 					<?php echo esc_html__( 'Show more...', 'woocommerce' ); ?>
