@@ -307,6 +307,21 @@
 			"pinVersion": "^1.15.0"
 		},
 		{
+			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself - exceptions.",
+			"dependencyTypes": [
+				"prod",
+				"dev",
+				"peer"
+			],
+			"dependencies": [
+				"@woocommerce/settings"
+			],
+			"packages": [
+				"**"
+			],
+			"pinVersion": "1.0.0"
+		},
+		{
 			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself.",
 			"dependencyTypes": [
 				"prod",

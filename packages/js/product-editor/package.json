@@ -47,7 +47,7 @@
 		"@woocommerce/expression-evaluation": "workspace:*",
 		"@woocommerce/navigation": "workspace:*",
 		"@woocommerce/number": "workspace:*",
-		"@woocommerce/settings": "workspace:*",
+		"@woocommerce/settings": "1.0.0",
 		"@woocommerce/tracks": "workspace:*",
 		"@wordpress/api-fetch": "wp-6.6",
 		"@wordpress/block-editor": "wp-6.6",

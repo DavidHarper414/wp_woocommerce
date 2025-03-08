@@ -106,6 +106,13 @@
 			"allowUsuallyExcludedPaths": true,
 			"files": [
 				"package.json",
+				"node_modules/@woocommerce/api/dist/",
+				"!node_modules/@woocommerce/api/*.ts.map",
+				"!node_modules/@woocommerce/api/*.tsbuildinfo",
+				"!node_modules/@woocommerce/api/dist/**/__tests__/",
+				"!node_modules/@woocommerce/api/dist/**/__mocks__/",
+				"!node_modules/@woocommerce/api/dist/**/__snapshops__/",
+				"!node_modules/@woocommerce/api/dist/**/__test_data__/",
 				"node_modules/@woocommerce/eslint-plugin/configs",
 				"node_modules/@woocommerce/eslint-plugin/rules",
 				"node_modules/@woocommerce/eslint-plugin/index.js"
