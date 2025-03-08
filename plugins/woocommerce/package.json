@@ -62,6 +62,7 @@
 		"test:e2e:subdir": "pnpm test:e2e:with-env default-subdir",
 		"test:e2e:hostinger": "pnpm test:e2e:with-env default-hostinger",
 		"test:e2e:bluehost": "pnpm test:e2e:with-env default-bluehost",
+		"test:e2e:ionos": "pnpm test:e2e:with-env default-ionos",
 		"test:e2e:hpos": "pnpm test:e2e:with-env default-hpos-disabled --project=e2e-hpos-disabled",
 		"test:e2e:gb-stable": "pnpm test:e2e:with-env gutenberg-stable",
 		"test:e2e:gb-nightly": "pnpm test:e2e:with-env gutenberg-nightly",
@@ -744,6 +745,22 @@
 					],
 					"report": {
 						"resultsBlobName": "default-bluehost-core-e2e-and-api",
+						"resultsPath": "tests/e2e-pw/test-results",
+						"allure": true
+					}
+				},
+				{
+					"name": "Core e2e tests - Ionos site",
+					"testType": "e2e",
+					"command": "test:e2e:ionos",
+					"shardingArguments": [],
+					"changes": [],
+					"events": [
+						"on-demand",
+						"core-e2e-ionos"
+					],
+					"report": {
+						"resultsBlobName": "default-ionos-core-e2e-and-api",
 						"resultsPath": "tests/e2e-pw/test-results",
 						"allure": true
 					}
