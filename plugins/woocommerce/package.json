@@ -807,7 +807,6 @@
 					"shardingArguments": [],
 					"changes": [],
 					"events": [
-						"on-demand",
 						"core-e2e-googlecloud"
 					],
 					"report": {
