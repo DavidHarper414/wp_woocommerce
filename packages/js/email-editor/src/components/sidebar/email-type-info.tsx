@@ -14,6 +14,7 @@ import { __ } from '@wordpress/i18n';
 import { Icon, megaphone } from '@wordpress/icons';
 import { useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
+import { store as coreStore } from '@wordpress/core-data';
 
 /**
  * Internal dependencies
@@ -24,13 +25,23 @@ import { SelectTemplateModal } from '../template-select';
 import { recordEvent } from '../../events';
 
 export function EmailTypeInfo() {
-	const { template, currentEmailContent } = useSelect(
-		( select ) => ( {
-			template: select( storeName ).getCurrentTemplate(),
-			currentEmailContent: select( storeName ).getEditedEmailContent(),
-		} ),
+	const { template, currentEmailContent, canCreateTemplates } = useSelect(
+		( select ) => {
+			const { canUser } = select( coreStore );
+			return {
+				template: select( storeName ).getCurrentTemplate(),
+				currentEmailContent:
+					select( storeName ).getEditedEmailContent(),
+				// @ts-expect-error Selector is not typed
+				canCreateTemplates: canUser( 'create', {
+					kind: 'postType',
+					name: 'wp_template',
+				} ),
+			};
+		},
 		[]
 	);
+
 	const [ isEditTemplateModalOpen, setEditTemplateModalOpen ] =
 		useState( false );
 	const [ isSelectTemplateModalOpen, setSelectTemplateModalOpen ] =
@@ -82,22 +93,25 @@ export function EmailTypeInfo() {
 									>
 										{ ( { onClose } ) => (
 											<>
-												<MenuItem
-													onClick={ () => {
-														recordEvent(
-															'sidebar_template_actions_edit_template_clicked'
-														);
-														setEditTemplateModalOpen(
-															true
-														);
-														onClose();
-													} }
-												>
-													{ __(
-														'Edit template',
-														'woocommerce'
-													) }
-												</MenuItem>
+												{ canCreateTemplates && (
+													<MenuItem
+														onClick={ () => {
+															recordEvent(
+																'sidebar_template_actions_edit_template_clicked'
+															);
+															setEditTemplateModalOpen(
+																true
+															);
+															onClose();
+														} }
+													>
+														{ __(
+															'Edit template',
+															'woocommerce'
+														) }
+													</MenuItem>
+												) }
+
 												<MenuItem
 													onClick={ () => {
 														recordEvent(
