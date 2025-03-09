@@ -1,12 +1,8 @@
 /**
  * External dependencies
  */
-import { createRoot, useEffect, useLayoutEffect } from '@wordpress/element';
-import {
-	SettingsEditor,
-	useActiveRoute,
-	RouterProvider,
-} from '@woocommerce/settings-editor';
+import { createRoot } from '@wordpress/element';
+import { SettingsEditor } from '@woocommerce/settings-editor';
 
 /**
  * Internal dependencies
@@ -22,17 +18,6 @@ const node = document.getElementById( 'wc-settings-page' );
 registerTaxSettingsConflictErrorFill();
 registerPaymentsSettingsBannerFill();
 registerSiteVisibilitySlotFill();
-
-const Settings = () => {
-	const { activePage, activeSection } = useActiveRoute();
-
-	// Render the settings slots every time the page or section changes.
-	useEffect( () => {
-		possiblyRenderSettingsSlots();
-	}, [ activePage, activeSection ] );
-
-	return <SettingsEditor />;
-};
 
 createRoot( node ).render(
 	<SettingsEditor renderSlots={ possiblyRenderSettingsSlots } />
