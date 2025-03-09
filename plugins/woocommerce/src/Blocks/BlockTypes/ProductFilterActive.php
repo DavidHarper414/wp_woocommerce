@@ -34,7 +34,7 @@ final class ProductFilterActive extends AbstractBlock {
 		);
 
 		$wrapper_attributes = array(
-			'data-wp-bind--hidden' => '!state.hasFilterOptions',
+			'data-wp-bind--hidden' => '!state.hasActiveFilters',
 			/* translators:  {{label}} is the label of the active filter item. */
 			'data-wp-context'      => wp_json_encode( array( 'filterType' => 'active', 'removeLabelTemplate' => __( 'Remove filter: {{label}}', 'woocommerce' ) ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
 		);

@@ -19,6 +19,10 @@ const { actions } = store( 'woocommerce/product-filters', {
 			const { item, removeLabelTemplate } = getContext< ActiveFiltersContext >();
 			return removeLabelTemplate.replace( '{{label}}', item.activeLabel );
 		},
+		get hasActiveFilters() {
+			const { activeFilters } = getContext< ProductFiltersContext >();
+			return activeFilters.length > 0;
+		},
 	},
 	actions: {
 		removeAllActiveFilters: () => {

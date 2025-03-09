@@ -141,13 +141,6 @@ const { state, actions } = store( 'woocommerce/product-filters', {
 					uid: `${ item.type }/${ item.value }`,
 				} ) );
 		},
-		get hasFilterOptions() {
-			const {activeFilters, filterType } = getContext< ProductFiltersContext >();
-			if( filterType === 'active' ) {
-				return activeFilters.length > 0;
-			}
-			return activeFilters.some( item => item.type === filterType )
-		},
 	},
 	actions: {
 		openOverlay: () => {
