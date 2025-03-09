@@ -211,15 +211,10 @@ final class ProductFilterAttribute extends AbstractBlock {
 
 			$filter_context = array(
 				'items'  => $attribute_options,
-				'parent' => $this->get_full_block_name(),
 			);
 		}
 
 		$context = array(
-			'attributeSlug'       => str_replace( 'pa_', '', $product_attribute->slug ),
-			'queryType'           => $block_attributes['queryType'],
-			'selectType'          => 'multiple',
-			'hasFilterOptions'    => ! empty( $filter_context ),
 			/* translators: {{label}} is the product attribute filter item label. */
 			'activeLabelTemplate' => "{$product_attribute->name}: {{label}}",
 		);
