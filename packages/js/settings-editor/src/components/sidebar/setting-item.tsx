@@ -23,11 +23,7 @@ type SettingItemProps = {
 	isActive: boolean;
 };
 
-function useLink(
-	params: Record< string, string | undefined >,
-	state?: Record< string, string | undefined >,
-	shouldReplace = false
-) {
+function useLink( params: Record< string, string | undefined > ) {
 	const { navigate } = useHistory();
 	function onClick( event: Event ) {
 		event?.preventDefault();

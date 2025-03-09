@@ -1,7 +1,12 @@
 /**
  * External dependencies
  */
-import { createElement } from '@wordpress/element';
+import {
+	createElement,
+	useLayoutEffect,
+	useContext,
+	useEffect,
+} from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { getAdminLink } from '@woocommerce/settings';
 import { dispatch, useSelect } from '@wordpress/data';
@@ -23,7 +28,7 @@ import { RouterProvider } from '@automattic/site-admin';
 import { isGutenbergVersionAtLeast } from './utils';
 import { Layout } from './layout';
 import { useActiveRoute } from './route';
-import { SettingsDataProvider } from './data';
+import { SettingsDataProvider, SettingsDataContext } from './data';
 
 const { RouterProvider: OldGutenbergRouterProvider } =
 	unlock( routerPrivateApis );
@@ -45,8 +50,53 @@ const Notices = () => {
 	return <SnackbarList notices={ notices } onRemove={ () => {} } />;
 };
 
-const SettingsApp = () => {
-	const { route, settingsPage, tabs, activeSection } = useActiveRoute();
+const appendSettingsScripts = ( scripts: string[] ) => {
+	return scripts.map( ( script ) => {
+		const scriptElement = document.createElement( 'script' );
+		scriptElement.src = script;
+		scriptElement.onerror = () => {
+			// eslint-disable-next-line no-console
+			console.error( `Failed to load script: ${ script }` );
+		};
+		document.body.appendChild( scriptElement );
+		return scriptElement;
+	} );
+};
+
+const removeSettingsScripts = ( scripts: HTMLScriptElement[] ) => {
+	scripts.forEach( ( script ) => {
+		document.body.removeChild( script );
+	} );
+};
+
+const SettingsApp = ( { renderSlots }: { renderSlots: () => void } ) => {
+	const { route, settingsPage, tabs, activeSection, activePage } =
+		useActiveRoute();
+	const { settingsScripts } = useContext( SettingsDataContext );
+
+	useLayoutEffect( () => {
+		if ( ! activePage ) {
+			return;
+		}
+
+		const scripts = Array.from(
+			new Set( [
+				...( settingsScripts._default || [] ),
+				...( settingsScripts[ activePage ] || [] ),
+			] )
+		);
+
+		const scriptsElements = appendSettingsScripts( scripts );
+
+		return () => {
+			removeSettingsScripts( scriptsElements );
+		};
+	}, [ activePage, activeSection ] );
+
+	// Render the settings slots every time the page or section changes.
+	useEffect( () => {
+		renderSlots();
+	}, [ activePage, activeSection, route ] );
 
 	return (
 		<Layout
@@ -58,24 +108,11 @@ const SettingsApp = () => {
 	);
 };
 
-const Demo = () => {
-	return <div>Demo</div>;
-};
-
-const routes = [
-	{
-		name: 'home',
-		path: '/wc-settings',
-		areas: {
-			content: <Demo />,
-		},
-		widths: {
-			content: 100,
-		},
-	},
-];
-
-export const SettingsEditor = () => {
+export const SettingsEditor = ( {
+	renderSlots,
+}: {
+	renderSlots: () => void;
+} ) => {
 	const isRequiredGutenbergVersion = isGutenbergVersionAtLeast( 19.0 );
 
 	if ( ! isRequiredGutenbergVersion ) {
@@ -91,10 +128,10 @@ export const SettingsEditor = () => {
 	}
 
 	return (
-		<RouterProvider routes={ routes } pathArg="page">
+		<RouterProvider routes={ [] } pathArg="page">
 			<OldGutenbergRouterProvider>
 				<SettingsDataProvider>
-					<SettingsApp />
+					<SettingsApp renderSlots={ renderSlots } />
 					<Notices />
 				</SettingsDataProvider>
 			</OldGutenbergRouterProvider>
