@@ -21,7 +21,7 @@ const { actions } = store( 'woocommerce/product-filters', {
 		},
 	},
 	actions: {
-		clearActiveFilters: () => {
+		removeAllActiveFilters: () => {
 			const context = getContext< ProductFiltersContext >();
 			context.activeFilters = [];
 			actions.navigate();

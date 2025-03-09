@@ -143,7 +143,6 @@ const { state, actions } = store( 'woocommerce/product-filters', {
 		},
 		get hasFilterOptions() {
 			const {activeFilters, filterType } = getContext< ProductFiltersContext >();
-			console.log( activeFilters, filterType );
 			if( filterType === 'active' ) {
 				return activeFilters.length > 0;
 			}
