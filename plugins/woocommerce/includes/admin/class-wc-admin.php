@@ -214,7 +214,13 @@ class WC_Admin {
 				$message = $email_preview->ensure_links_open_in_new_tab( $message );
 			} catch ( Throwable $e ) {
 				ob_end_clean();
-				wp_die( esc_html__( 'There was an error rendering an email preview.', 'woocommerce' ), 404 );
+				wp_die(
+					esc_html__(
+						'There was an error rendering the email preview. This doesn’t affect actual email delivery. Please contact the extension author for assistance.',
+						'woocommerce'
+					),
+					404
+				);
 			}
 			ob_end_clean();
 
