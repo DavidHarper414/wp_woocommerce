@@ -4,7 +4,6 @@
 import { useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
-import { store as coreStore } from '@wordpress/core-data';
 import { __ } from '@wordpress/i18n';
 import {
 	__experimentalConfirmDialog as ConfirmDialog,
@@ -15,6 +14,7 @@ import {
 /**
  * Internal dependencies
  */
+import { storeName } from '../../../store';
 import { recordEvent, recordEventOnce } from '../../../events';
 
 /**
@@ -31,12 +31,11 @@ import { recordEvent, recordEventOnce } from '../../../events';
  *                                                                  editor iframe canvas.
  */
 export default function EditTemplateBlocksNotification( { contentRef } ) {
-	const { onNavigateToEntityRecord, templateId, canCreateTemplates } =
+	const { onNavigateToEntityRecord, templateId, canUpdateTemplates } =
 		useSelect( ( select ) => {
 			// @ts-expect-error getCurrentTemplateId is missing in types.
 			const { getEditorSettings, getCurrentTemplateId } =
 				select( editorStore );
-			const { canUser } = select( coreStore );
 
 			return {
 				// onNavigateToEntityRecord is missing in EditorSettings.
@@ -44,11 +43,7 @@ export default function EditTemplateBlocksNotification( { contentRef } ) {
 				onNavigateToEntityRecord: // @ts-expect-error onNavigateToEntityRecord is not typed on EditorSettings.
 				getEditorSettings().onNavigateToEntityRecord,
 				templateId: getCurrentTemplateId(),
-				// @ts-expect-error Selector is not typed
-				canCreateTemplates: canUser( 'create', {
-					kind: 'postType',
-					name: 'wp_template',
-				} ),
+				canUpdateTemplates: select( storeName ).canUserEditTemplates(),
 			};
 		}, [] );
 
@@ -61,7 +56,7 @@ export default function EditTemplateBlocksNotification( { contentRef } ) {
 			if ( ! event.target.classList.contains( 'is-root-container' ) ) {
 				return;
 			}
-			setIsDialogOpen( canCreateTemplates ? 'confirm' : 'info' );
+			setIsDialogOpen( canUpdateTemplates ? 'confirm' : 'info' );
 			recordEventOnce( 'edit_template_blocks_notification_opened' );
 		};
 
@@ -70,7 +65,7 @@ export default function EditTemplateBlocksNotification( { contentRef } ) {
 		return () => {
 			canvas?.removeEventListener( 'dblclick', handleDblClick );
 		};
-	}, [ contentRef ] );
+	}, [ contentRef, canUpdateTemplates ] );
 
 	return (
 		<>

@@ -14,7 +14,6 @@ import { __ } from '@wordpress/i18n';
 import { Icon, megaphone } from '@wordpress/icons';
 import { useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
-import { store as coreStore } from '@wordpress/core-data';
 
 /**
  * Internal dependencies
@@ -25,18 +24,13 @@ import { SelectTemplateModal } from '../template-select';
 import { recordEvent } from '../../events';
 
 export function EmailTypeInfo() {
-	const { template, currentEmailContent, canCreateTemplates } = useSelect(
+	const { template, currentEmailContent, canUpdateTemplates } = useSelect(
 		( select ) => {
-			const { canUser } = select( coreStore );
 			return {
 				template: select( storeName ).getCurrentTemplate(),
 				currentEmailContent:
 					select( storeName ).getEditedEmailContent(),
-				// @ts-expect-error Selector is not typed
-				canCreateTemplates: canUser( 'create', {
-					kind: 'postType',
-					name: 'wp_template',
-				} ),
+				canUpdateTemplates: select( storeName ).canUserEditTemplates(),
 			};
 		},
 		[]
@@ -93,7 +87,7 @@ export function EmailTypeInfo() {
 									>
 										{ ( { onClose } ) => (
 											<>
-												{ canCreateTemplates && (
+												{ canUpdateTemplates && (
 													<MenuItem
 														onClick={ () => {
 															recordEvent(
