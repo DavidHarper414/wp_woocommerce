@@ -197,6 +197,7 @@ class Products extends Task {
 	public function maybe_set_has_product_transient( $product_id, $product ) {
 		if ( ! $this->has_previously_completed() && $this->is_valid_product( $product ) ) {
 			set_transient( self::HAS_PRODUCT_TRANSIENT, 'yes' );
+			$this->possibly_track_completion();
 		}
 	}
 
@@ -246,7 +247,7 @@ class Products extends Task {
 
 		$value = $products_query->post_count > 0 ? 'yes' : 'no';
 		set_transient( self::HAS_PRODUCT_TRANSIENT, $value );
-		return $value;
+		return 'yes' === $value;
 	}
 
 	/**
