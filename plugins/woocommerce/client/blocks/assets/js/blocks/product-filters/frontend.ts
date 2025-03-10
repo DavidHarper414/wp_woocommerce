@@ -88,7 +88,7 @@ export type ProductFiltersContext = {
 	filterType: string;
 };
 
-const { state, actions } = store( 'woocommerce/product-filters', {
+const productFiltersStore = {
 	state: {
 		get params() {
 			const { activeFilters } = getContext< ProductFiltersContext >();
@@ -251,4 +251,8 @@ const { state, actions } = store( 'woocommerce/product-filters', {
 			}
 		},
 	},
-} );
+};
+
+export type ProductFiltersStore = typeof productFiltersStore;
+
+const { state, actions } = store< ProductFiltersStore >( 'woocommerce/product-filters', productFiltersStore );

@@ -6,14 +6,14 @@ import { store, getContext } from '@wordpress/interactivity';
 /**
  * Internal dependencies
  */
-import type { ActiveFilterItem, ProductFiltersContext } from '../../frontend';
+import type { ActiveFilterItem, ProductFiltersContext, ProductFiltersStore } from '../../frontend';
 
 type ActiveFiltersContext = {
 	removeLabelTemplate: string;
 	item: ActiveFilterItem
 };
 
-const { actions } = store( 'woocommerce/product-filters', {
+const activeFiltersStore = {
 	state: {
 		get removeActiveFilterLabel() {
 			const { item, removeLabelTemplate } = getContext< ActiveFiltersContext >();
@@ -36,4 +36,6 @@ const { actions } = store( 'woocommerce/product-filters', {
 			actions.navigate();
 		},
 	},
-} );
+};
+
+const { actions } = store< ProductFiltersStore & typeof activeFiltersStore >( 'woocommerce/product-filters', activeFiltersStore );
