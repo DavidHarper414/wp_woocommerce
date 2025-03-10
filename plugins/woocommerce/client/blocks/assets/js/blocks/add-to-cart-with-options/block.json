@@ -4,8 +4,16 @@
 	"title": "Add to Cart with Options (Experimental)",
 	"description": "Create an \"Add To Cart\" composition by using blocks",
 	"category": "woocommerce-product-elements",
-	"attributes": {},
+	"attributes": {
+		"isDescendentOfAddToCartWithOptions": {
+			"type": "boolean",
+			"default": true
+		}
+	},
 	"usesContext": [ "postId" ],
+	"providesContext": {
+		"woocommerce/isDescendentOfAddToCartWithOptions": "isDescendentOfAddToCartWithOptions"
+	},
 	"textdomain": "woocommerce",
 	"supports": {
 		"interactivity": true

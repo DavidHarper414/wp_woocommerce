@@ -155,7 +155,7 @@ class ProductButton extends AbstractBlock {
 		*/
 		$quantity_to_add = apply_filters( 'woocommerce_add_to_cart_quantity', $default_quantity, $product->get_id() );
 
-		$is_descendent_of_add_to_cart_form = isset( $block->context['isDescendentOfAddToCartForm'] ) ? $block->context['isDescendentOfAddToCartForm'] : false;
+		$is_descendent_of_add_to_cart_form = isset( $block->context['woocommerce/isDescendentOfAddToCartForm'] ) ? $block->context['woocommerce/isDescendentOfAddToCartForm'] : false;
 		$add_to_cart_text                  = null !== $product->add_to_cart_text() ? $product->add_to_cart_text() : __( 'Add to cart', 'woocommerce' );
 		if ( $is_descendent_of_add_to_cart_form && null !== $product->single_add_to_cart_text() ) {
 			$add_to_cart_text = $product->single_add_to_cart_text();

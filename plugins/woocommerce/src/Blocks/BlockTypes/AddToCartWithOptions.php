@@ -42,7 +42,7 @@ class AddToCartWithOptions extends AbstractBlock {
 	 */
 	public function set_is_descendent_of_add_to_cart_form_context( $context, $block ) {
 		if ( 'woocommerce/product-button' === $block['blockName'] ) {
-			$context['isDescendentOfAddToCartForm'] = true;
+			$context['woocommerce/isDescendentOfAddToCartForm'] = true;
 		}
 
 		return $context;

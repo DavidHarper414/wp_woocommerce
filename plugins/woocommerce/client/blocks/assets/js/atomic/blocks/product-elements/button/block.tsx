@@ -25,10 +25,41 @@ import type {
 	BlockAttributes,
 	AddToCartButtonAttributes,
 	AddToCartButtonPlaceholderAttributes,
+	AddToCartProductDetails,
 } from './types';
+
+const getButtonText = ( {
+	cartQuantity,
+	productCartDetails,
+	isDescendentOfAddToCartWithOptions,
+}: {
+	cartQuantity: number;
+	productCartDetails: AddToCartProductDetails;
+	isDescendentOfAddToCartWithOptions: boolean | undefined;
+} ) => {
+	const addedToCart = Number.isFinite( cartQuantity ) && cartQuantity > 0;
+
+	if ( addedToCart ) {
+		return sprintf(
+			/* translators: %s number of products in cart. */
+			_n( '%d in cart', '%d in cart', cartQuantity, 'woocommerce' ),
+			cartQuantity
+		);
+	}
+
+	if (
+		isDescendentOfAddToCartWithOptions &&
+		productCartDetails?.single_text
+	) {
+		return productCartDetails?.single_text;
+	}
+
+	return productCartDetails?.text || __( 'Add to cart', 'woocommerce' );
+};
 
 const AddToCartButton = ( {
 	product,
+	isDescendentOfAddToCartWithOptions,
 	className,
 	style,
 }: AddToCartButtonAttributes ): JSX.Element => {
@@ -42,21 +73,16 @@ const AddToCartButton = ( {
 	} = product;
 	const { dispatchStoreEvent } = useStoreEvents();
 	const { cartQuantity, addingToCart, addToCart } = useStoreAddToCart( id );
-
 	const addedToCart = Number.isFinite( cartQuantity ) && cartQuantity > 0;
 	const allowAddToCart = ! hasOptions && isPurchasable && isInStock;
 	const buttonAriaLabel = decodeEntities(
 		productCartDetails?.description || ''
 	);
-	const buttonText = addedToCart
-		? sprintf(
-				/* translators: %s number of products in cart. */
-				_n( '%d in cart', '%d in cart', cartQuantity, 'woocommerce' ),
-				cartQuantity
-		  )
-		: decodeEntities(
-				productCartDetails?.text || __( 'Add to cart', 'woocommerce' )
-		  );
+	const buttonText = getButtonText( {
+		cartQuantity,
+		productCartDetails,
+		isDescendentOfAddToCartWithOptions,
+	} );
 
 	const ButtonTag = allowAddToCart ? 'button' : 'a';
 	const buttonProps = {} as HTMLAnchorElement & { onClick: () => void };
@@ -158,6 +184,11 @@ export const Block = ( props: BlockAttributes ): JSX.Element => {
 					product={ product }
 					style={ styleProps.style }
 					className={ styleProps.className }
+					isDescendentOfAddToCartWithOptions={
+						props[
+							'woocommerce/isDescendentOfAddToCartWithOptions'
+						]
+					}
 				/>
 			) : (
 				<AddToCartButtonPlaceholder
