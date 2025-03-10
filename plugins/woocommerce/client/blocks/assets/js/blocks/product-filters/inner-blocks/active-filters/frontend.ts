@@ -32,7 +32,7 @@ const { actions } = store( 'woocommerce/product-filters', {
 		},
 		removeActiveFilter: () => {
 			const { item } = getContext< ActiveFiltersContext >();
-			actions.removeActiveFiltersBy( ( filter ) => filter.value === item.value && filter.type === item.type );
+			actions._removeActiveFiltersBy( ( filter ) => filter.value === item.value && filter.type === item.type );
 			actions.navigate();
 		},
 	},

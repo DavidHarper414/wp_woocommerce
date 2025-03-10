@@ -25,19 +25,18 @@ final class ProductFilterChips extends AbstractBlock {
 	 */
 	protected function render( $attributes, $content, $block ) {
 		if (
-			empty( $block->context['filterData'] ) ||
-			empty( $block->context['filterData']['parent'] )
+			empty( $block->context['filterData'] )
 		) {
 			return '';
 		}
 
-		// wp_enqueue_script_module( $this->get_full_block_name() );
+		wp_enqueue_script_module( $this->get_full_block_name() );
 
-		$block_context = $block->context['filterData'];
-		$parent        = $block_context['parent'];
-		$items         = $block_context['items'] ?? array();
-		$classes       = '';
-		$style         = '';
+		dd($block);
+		$show_counts = $block->context['showCounts'] ?? false;
+		$items       = $block->context['filterData']['items'] ?? array();
+		$classes     = '';
+		$style       = '';
 
 		$tags = new \WP_HTML_Tag_Processor( $content );
 		if ( $tags->next_tag( array( 'class_name' => 'wc-block-product-filter-chips' ) ) ) {
@@ -51,16 +50,14 @@ final class ProductFilterChips extends AbstractBlock {
 				return $item['selected'];
 			}
 		);
-		$show_initially              = $context['show_initially'] ?? 2;
+		$show_initially              = 15;
 		$remaining_initial_unchecked = count( $checked_items ) > $show_initially ? count( $checked_items ) : $show_initially - count( $checked_items );
 		$count                       = 0;
 
-		$block_id = wp_unique_prefixed_id( $this->get_full_block_name() );
-
 		$wrapper_attributes = array(
 			'data-wp-interactive' => 'woocommerce/product-filters',
-			'data-wp-key'         => $block_id,
-			'data-wp-context'     => '{"activeLabelTemplate": "Color: %s"}',
+			'data-wp-key'         => wp_unique_prefixed_id( $this->get_full_block_name() ),
+			'data-wp-context'     => '{}',
 			'class'               => esc_attr( $classes ),
 			'style'               => esc_attr( $style ),
 		);
@@ -82,9 +79,9 @@ final class ProductFilterChips extends AbstractBlock {
 						class="wc-block-product-filter-chips__item"
 						type="button"
 						aria-label="<?php echo esc_attr( $aria_label ); ?>"
-						data-wp-on--click--parent-action="<?php echo esc_attr( $parent . '::actions.toggleFilter' ); ?>"
+						data-wp-on--click="actions.toggleFilter"
 						value="<?php echo esc_attr( $item['value'] ); ?>"
-						data-wp-bind--aria-checked="state.isChipSelected"
+						data-wp-bind--aria-checked="state.isFilterSelected"
 						data-wp-context="<?php echo esc_attr( wp_json_encode( array( 'item' => $item ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ) ); ?>"
 						<?php if ( ! $item['selected'] ) : ?>
 							<?php if ( $count >= $remaining_initial_unchecked ) : ?>
@@ -97,6 +94,11 @@ final class ProductFilterChips extends AbstractBlock {
 					>
 						<span class="wc-block-product-filter-chips__label">
 							<?php echo wp_kses_post( $item['label'] ); ?>
+							<?php if ( $show_counts ) : ?>
+								<span class="wc-block-product-filter-chips__count">
+									(<?php echo esc_html( $item['count'] ); ?>)
+								</span>
+							<?php endif; ?>
 						</span>
 					</button>
 				<?php } ?>

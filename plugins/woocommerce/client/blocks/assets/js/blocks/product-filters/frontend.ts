@@ -120,7 +120,7 @@ const { state, actions } = store( 'woocommerce/product-filters', {
 				}
 
 				if( type.includes('attribute') ) {
-					const [ , slug ] = type.split( '/' );
+					const [ _attribute, slug ] = type.split( '/' );
 					addParam( `filter_${ slug }`, value );
 					params[ `query_type_${ slug }` ] = filter.attributeQueryType || 'or';
 				}
@@ -140,6 +140,10 @@ const { state, actions } = store( 'woocommerce/product-filters', {
 					...item,
 					uid: `${ item.type }/${ item.value }`,
 				} ) );
+		},
+		get isFilterSelected() {
+			const { activeFilters, item } = getContext< ProductFiltersContext >();
+			return activeFilters.some( ( filter ) => filter.type === item.type && filter.value === item.value );
 		},
 	},
 	actions: {
@@ -168,7 +172,7 @@ const { state, actions } = store( 'woocommerce/product-filters', {
 				actions.closeOverlay();
 			}
 		},
-		removeActiveFiltersBy: (
+		_removeActiveFiltersBy: (
 			callback: ( item: ActiveFilterItem ) => boolean
 		) => {
 			const context = getContext< ProductFiltersContext >();
@@ -176,7 +180,7 @@ const { state, actions } = store( 'woocommerce/product-filters', {
 				( item ) => ! callback( item )
 			);
 		},
-		selectFilter: () => {
+		_selectFilter: () => {
 			const context = getContext< ProductFiltersContext >();
 			const newActiveFilter = {
 				value: context.item.value,
@@ -192,11 +196,19 @@ const { state, actions } = store( 'woocommerce/product-filters', {
 
 			context.activeFilters = newActiveFilters;
 		},
-		unselectFilter: () => {
+		_unselectFilter: () => {
 			const {item} = getContext< ProductFiltersContext >();
-			actions.removeActiveFiltersBy(
+			actions._removeActiveFiltersBy(
 				( activeFilter ) => activeFilter.type === item.type && activeFilter.value === item.value
 			);
+		},
+		toggleFilter: () => {
+			if ( state.isFilterSelected ) {
+				actions._unselectFilter();
+			} else {
+				actions._selectFilter();
+			}
+			actions.navigate();
 		},
 		*navigate() {
 			const { originalParams } = getServerContext

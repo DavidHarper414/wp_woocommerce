@@ -40,7 +40,7 @@ final class ProductFilterActive extends AbstractBlock {
 		);
 
 		$wrapper_attributes = array(
-			'data-wp-bind--hidden' => '!context.hasActiveFilters',
+			'data-wp-bind--hidden' => '!state.hasActiveFilters',
 			'data-wp-context'      => wp_json_encode( $context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
 		);
 

@@ -129,7 +129,7 @@ final class ProductFilterAttribute extends AbstractBlock {
 			foreach ( $terms as $term ) {
 				$term_object = get_term_by( 'slug', $term, "pa_{$product_attribute}" );
 				$items[]     = array(
-					'type'      => 'attribute_' . $product_attribute,
+					'type'      => 'attribute/' . $product_attribute,
 					'value'     => $term,
 					'activeLabel'     => $attribute_label . ': ' . $term_object->name,
 					'attributeQueryType' => $attribute_query_type,
@@ -197,12 +197,12 @@ final class ProductFilterAttribute extends AbstractBlock {
 					$term          = (array) $term;
 					$term['count'] = $attribute_counts[ $term['term_id'] ] ?? 0;
 					return array(
-						'label'     => $block_attributes['showCounts'] ? sprintf( '%1$s (%2$d)', $term['name'], $term['count'] ) : $term['name'],
-						'ariaLabel' => $block_attributes['showCounts'] ? sprintf( '%1$s (%2$d)', $term['name'], $term['count'] ) : $term['name'],
+						'label'     => $term['name'],
+						'ariaLabel' => $term['name'],
 						'value'     => $term['slug'],
 						'selected'  => in_array( $term['slug'], $selected_terms, true ),
 						'count'     => $term['count'],
-						'type'      => 'attribute_' . str_replace( 'pa_', '', $product_attribute->slug ),
+						'type'      => 'attribute/' . str_replace( 'pa_', '', $product_attribute->slug ),
 						'attributeQueryType' => $block_attributes['queryType'],
 					);
 				},
@@ -220,10 +220,8 @@ final class ProductFilterAttribute extends AbstractBlock {
 		);
 
 		$wrapper_attributes = array(
-			'data-wp-interactive'  => $this->get_full_block_name(),
 			'data-wp-key'          => 'product-filter-attribute-' . md5( wp_json_encode( $block_attributes ) ),
 			'data-wp-context'      => wp_json_encode( $context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
-			'data-wp-bind--hidden' => '!context.hasFilterOptions',
 		);
 
 		if ( empty( $filter_context ) ) {
