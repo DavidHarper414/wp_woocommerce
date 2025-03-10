@@ -46,12 +46,11 @@
 	"dependencies": {
 		"@jest/globals": "^27.5.1",
 		"@types/jest": "27.5.x",
+		"@woocommerce/e2e-environment": "workspace:*",
 		"@woocommerce/e2e-utils": "workspace:*",
 		"config": "3.3.7"
 	},
 	"peerDependencies": {
-		"@woocommerce/e2e-environment": "workspace:*",
-		"@woocommerce/e2e-utils": "workspace:*",
 		"puppeteer": "^2.0.0"
 	},
 	"devDependencies": {
