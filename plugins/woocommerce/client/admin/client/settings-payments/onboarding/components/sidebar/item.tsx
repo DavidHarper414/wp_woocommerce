@@ -31,12 +31,17 @@ export default function SidebarItem( {
 			<span className="settings-payments-onboarding-modal__sidebar--list-item-icon">
 				{ isCompleted ? (
 					<img
-						src={ WC_ASSET_URL + 'images/icons/complete.svg' }
-						alt={ __( 'Published', 'woocommerce' ) }
+						src={
+							WC_ASSET_URL +
+							'images/onboarding/icons/complete.svg'
+						}
+						alt={ __( 'Completed', 'woocommerce' ) }
 					/>
 				) : (
 					<img
-						src={ WC_ASSET_URL + 'images/icons/pending.svg' }
+						src={
+							WC_ASSET_URL + 'images/onboarding/icons/pending.svg'
+						}
 						alt={ __( 'Pending', 'woocommerce' ) }
 					/>
 				) }
