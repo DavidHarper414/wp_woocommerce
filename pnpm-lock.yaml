@@ -2891,9 +2891,6 @@ importers:
       '@types/wordpress__core-data':
         specifier: 2.4.5
         version: 2.4.5
-      '@types/wordpress__data':
-        specifier: 6.0.2
-        version: 6.0.2
       '@types/wordpress__date':
         specifier: 3.3.2
         version: 3.3.2
