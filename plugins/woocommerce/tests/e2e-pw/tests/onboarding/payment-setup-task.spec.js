@@ -64,10 +64,11 @@ const test = baseTest.extend( {
 			value: initialDefaultCountry.data.value,
 		} );
 		await wcAdminApi.put( 'options', initialTaskListHiddenState.data );
+
+		// Disable the new payments settings feature.
+		await disableNewPaymentsSettingsFeature();
 	},
 } );
-
-test.beforeAll( disableNewPaymentsSettingsFeature );
 
 test.describe( 'Payment setup task', () => {
 	test(
