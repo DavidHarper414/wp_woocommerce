@@ -16,17 +16,17 @@ export interface BlockAttributes {
 	'woocommerce/isDescendentOfAddToCartWithOptions'?: boolean | undefined;
 }
 
-export interface AddToCartButtonPlaceholderAttributes {
-	className: string;
-	style: React.CSSProperties;
-	isLoading: boolean;
-}
-
 export interface AddToCartProductDetails {
 	url: string;
 	description: string;
 	text: string;
 	single_text: string;
+}
+
+export interface AddToCartButtonPlaceholderAttributes {
+	className: string;
+	style: React.CSSProperties;
+	isLoading: boolean;
 }
 
 export interface AddToCartButtonAttributes {
@@ -35,6 +35,7 @@ export interface AddToCartButtonAttributes {
 	isDescendentOfAddToCartWithOptions: boolean | undefined;
 	product: {
 		id: number;
+		type: string;
 		permalink: string;
 		add_to_cart: AddToCartProductDetails;
 		has_options: boolean;
