@@ -110,7 +110,7 @@
   "config": {
     "ci": {
       "lint": {
-        "command": "lint",
+        "command": "lint:lang:js",
         "changes": [
           "src/**/*.{js,ts,tsx,scss}",
           "tests/**/*.{js,ts,tsx,scss}"
