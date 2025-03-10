@@ -289,9 +289,9 @@ export const SettingsPaymentsMainWrapper = () => {
 			<Header title={ __( 'WooCommerce Settings', 'woocommerce' ) } />
 			<HistoryRouter history={ getHistory() }>
 				<Routes>
-					<Route path="/" element={ <SettingsPaymentsMain /> } />
+					<Route path="/*" element={ <SettingsPaymentsMain /> } />
 					<Route
-						path="/payment-methods"
+						path="/payment-methods/*"
 						element={ <SettingsPaymentsMethods /> }
 					/>
 				</Routes>
