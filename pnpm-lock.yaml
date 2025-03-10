@@ -2750,7 +2750,7 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@woocommerce/tracks':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../tracks
       '@wordpress/api-fetch':
         specifier: wp-6.6
@@ -3073,7 +3073,7 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@woocommerce/tracks':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../tracks
       '@wordpress/api-fetch':
         specifier: wp-6.6
@@ -34100,9 +34100,7 @@ snapshots:
       source-map: 0.6.1
       string-length: 2.0.0
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   '@jest/reporters@25.5.1':
     dependencies:
@@ -55922,9 +55920,7 @@ snapshots:
       pretty-format: 24.9.0
       throat: 4.1.0
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   jest-jasmine2@25.5.4:
     dependencies:

@@ -319,8 +319,7 @@
 		{
 			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself - except certain dependencies (breaks build).",
 			"dependencies": [
-				"@woocommerce/api",
-				"@woocommerce/tracks"
+				"@woocommerce/api"
 			],
 			"packages": [
 				"**"
@@ -328,7 +327,7 @@
 			"isIgnored": true
 		},
 		{
-			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself.",
+			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself (except peer-deps).",
 			"dependencyTypes": [
 				"prod",
 				"dev"
