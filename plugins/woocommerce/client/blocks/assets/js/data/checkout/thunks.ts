@@ -163,9 +163,10 @@ export const __internalEmitAfterProcessingEvents: emitAfterProcessingEventsType 
 	};
 
 export const updateDraftOrder = ( data: CheckoutPutData ) => {
-	return async ( { registry } ) => {
+	return async ( { registry, dispatch } ) => {
 		const { receiveCartContents } = registry.dispatch( CART_STORE_KEY );
 		try {
+			dispatch.__internalIncrementCalculating();
 			const response = await apiFetchWithHeaders( {
 				path: '/wc/store/v1/checkout?__experimental_calc_totals=true',
 				method: 'PUT',
@@ -178,6 +179,8 @@ export const updateDraftOrder = ( data: CheckoutPutData ) => {
 			return response;
 		} catch ( error ) {
 			return Promise.reject( error );
+		} finally {
+			dispatch.__internalDecrementCalculating();
 		}
 	};
 };
