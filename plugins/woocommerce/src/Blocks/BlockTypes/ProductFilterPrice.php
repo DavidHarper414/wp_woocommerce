@@ -1,4 +1,7 @@
 <?php
+
+declare( strict_types = 1 );
+
 namespace Automattic\WooCommerce\Blocks\BlockTypes;
 
 use Automattic\WooCommerce\Blocks\BlockTypes\ProductCollection\Utils as ProductCollectionUtils;
@@ -51,7 +54,7 @@ final class ProductFilterPrice extends AbstractBlock {
 		}
 
 		$item = array(
-			'type'  => 'price',
+			'type' => 'price',
 		);
 
 		if ( $formatted_min_price && $formatted_max_price ) {
@@ -67,13 +70,13 @@ final class ProductFilterPrice extends AbstractBlock {
 		if ( ! $formatted_min_price ) {
 			/* translators: %s is the formatted maximum price. */
 			$item['activeLabel'] = sprintf( __( 'Price: Up to %s', 'woocommerce' ), $formatted_max_price );
-			$item['value'] = "|{$max_price}";
+			$item['value']       = "|{$max_price}";
 		}
 
 		if ( ! $formatted_max_price ) {
 			/* translators: %s is the formatted minimum price. */
 			$item['activeLabel'] = sprintf( __( 'Price: From %s', 'woocommerce' ), $formatted_min_price );
-			$item['value'] = "{$min_price}|";
+			$item['value']       = "{$min_price}|";
 		}
 
 		$items[] = $item;
@@ -127,7 +130,7 @@ final class ProductFilterPrice extends AbstractBlock {
 		$max_price     = intval( $filter_params[ self::MAX_PRICE_QUERY_VAR ] ?? $max_range );
 
 		$filter_context = array(
-			'price'  => array(
+			'price' => array(
 				'minPrice' => $min_price,
 				'maxPrice' => $max_price,
 				'minRange' => $min_range,
@@ -136,8 +139,8 @@ final class ProductFilterPrice extends AbstractBlock {
 		);
 
 		$wrapper_attributes = array(
-			'data-wp-key'          => wp_unique_prefixed_id( $this->get_full_block_name() ),
-			'data-wp-context'      => wp_json_encode(
+			'data-wp-key'     => wp_unique_prefixed_id( $this->get_full_block_name() ),
+			'data-wp-context' => wp_json_encode(
 				array(
 					'activeLabelTemplates' => array(
 						/* translators: {{min}} and {{max}} are the formatted minimum and maximum prices respectively. */

@@ -1,4 +1,7 @@
 <?php
+
+declare( strict_types = 1 );
+
 namespace Automattic\WooCommerce\Blocks\BlockTypes;
 
 /**
@@ -30,12 +33,12 @@ final class ProductFilterActive extends AbstractBlock {
 		$active_filters = $block->context['activeFilters'];
 
 		$filter_context = array(
-			'items'  => $active_filters,
+			'items' => $active_filters,
 		);
 
 		$wrapper_attributes = array(
 			'data-wp-key'          => wp_unique_prefixed_id( $this->get_full_block_name() ),
-			'data-wp-context'      => wp_json_encode( 
+			'data-wp-context'      => wp_json_encode(
 				array(
 					/* translators:  {{label}} is the label of the active filter item. */
 					'removeLabelTemplate' => __( 'Remove filter: {{label}}', 'woocommerce' ),

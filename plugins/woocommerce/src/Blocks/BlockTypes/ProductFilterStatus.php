@@ -85,8 +85,8 @@ final class ProductFilterStatus extends AbstractBlock {
 
 		foreach ( $active_statuses as $status ) {
 			$items[] = array(
-				'type'  => 'status',
-				'value' => $status,
+				'type'        => 'status',
+				'value'       => $status,
 				// translators: %s: status.
 				'activeLabel' => sprintf( __( 'Status: %s', 'woocommerce' ), $status_options[ $status ] ),
 			);
@@ -143,7 +143,7 @@ final class ProductFilterStatus extends AbstractBlock {
 		);
 
 		$filter_context = array(
-			'items'  => array_values( $filter_options ),
+			'items'      => array_values( $filter_options ),
 			'showCounts' => $attributes['showCounts'] ?? false,
 		);
 

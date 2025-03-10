@@ -1,10 +1,12 @@
 <?php
+
+declare( strict_types = 1 );
+
 namespace Automattic\WooCommerce\Blocks\BlockTypes;
 
 use Automattic\WooCommerce\Blocks\BlockTypes\ProductCollection\Utils as ProductCollectionUtils;
 use Automattic\WooCommerce\Blocks\QueryFilters;
 use Automattic\WooCommerce\Blocks\Package;
-
 
 /**
  * Product Filter: Rating Block
@@ -78,8 +80,8 @@ final class ProductFilterRating extends AbstractBlock {
 
 		foreach ( $active_ratings as $rating ) {
 			$items[] = array(
-				'type'  => 'rating',
-				'value' => $rating,
+				'type'        => 'rating',
+				'value'       => $rating,
 				/* translators: %s is referring to rating value. Example: Rated 4 out of 5. */
 				'activeLabel' => sprintf( __( 'Rating: Rated %d out of 5', 'woocommerce' ), $rating ),
 			);
@@ -117,7 +119,7 @@ final class ProductFilterRating extends AbstractBlock {
 
 		$filter_options = array_map(
 			function ( $rating ) use ( $selected_rating, $attributes ) {
-				$value       = (string) $rating['rating'];
+				$value = (string) $rating['rating'];
 
 				$aria_label = sprintf(
 					/* translators: %s is referring to rating value. Example: Rated 4 out of 5. */
@@ -138,7 +140,7 @@ final class ProductFilterRating extends AbstractBlock {
 		);
 
 		$filter_context = array(
-			'items'  => $filter_options,
+			'items'      => $filter_options,
 			'showCounts' => $attributes['showCounts'] ?? false,
 		);
 
@@ -175,7 +177,7 @@ final class ProductFilterRating extends AbstractBlock {
 	/**
 	 * Render the rating label.
 	 *
-	 * @param int    $rating The rating to render.
+	 * @param int $rating The rating to render.
 	 * @return string|false
 	 */
 	private function render_rating_label( $rating ) {

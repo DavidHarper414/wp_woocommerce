@@ -121,17 +121,17 @@ final class ProductFilterAttribute extends AbstractBlock {
 			if ( empty( $params[ "filter_{$product_attribute}" ] ) ) {
 				continue;
 			}
-			$terms           = explode( ',', $params[ "filter_{$product_attribute}" ] );
-			$attribute_label = wc_attribute_label( "pa_{$product_attribute}" );
+			$terms                = explode( ',', $params[ "filter_{$product_attribute}" ] );
+			$attribute_label      = wc_attribute_label( "pa_{$product_attribute}" );
 			$attribute_query_type = $params[ "query_type_{$product_attribute}" ] ?? 'or';
 
 			// Get attribute term by slug.
 			foreach ( $terms as $term ) {
 				$term_object = get_term_by( 'slug', $term, "pa_{$product_attribute}" );
 				$items[]     = array(
-					'type'      => 'attribute/' . $product_attribute,
-					'value'     => $term,
-					'activeLabel'     => $attribute_label . ': ' . $term_object->name,
+					'type'               => 'attribute/' . $product_attribute,
+					'value'              => $term,
+					'activeLabel'        => $attribute_label . ': ' . $term_object->name,
 					'attributeQueryType' => $attribute_query_type,
 				);
 			}
@@ -198,12 +198,12 @@ final class ProductFilterAttribute extends AbstractBlock {
 					$term          = (array) $term;
 					$term['count'] = $attribute_counts[ $term['term_id'] ] ?? 0;
 					return array(
-						'label'     => $term['name'],
-						'ariaLabel' => $term['name'],
-						'value'     => $term['slug'],
-						'selected'  => in_array( $term['slug'], $selected_terms, true ),
-						'count'     => $term['count'],
-						'type'      => 'attribute/' . str_replace( 'pa_', '', $product_attribute->slug ),
+						'label'              => $term['name'],
+						'ariaLabel'          => $term['name'],
+						'value'              => $term['slug'],
+						'selected'           => in_array( $term['slug'], $selected_terms, true ),
+						'count'              => $term['count'],
+						'type'               => 'attribute/' . str_replace( 'pa_', '', $product_attribute->slug ),
 						'attributeQueryType' => $block_attributes['queryType'],
 					);
 				},
@@ -219,7 +219,7 @@ final class ProductFilterAttribute extends AbstractBlock {
 				array(
 					/* translators: {{label}} is the product attribute filter item label. */
 					'activeLabelTemplate' => "{$product_attribute->name}: {{label}}",
-					'filterType' => 'attribute/' . str_replace( 'pa_', '', $product_attribute->slug ),
+					'filterType'          => 'attribute/' . str_replace( 'pa_', '', $product_attribute->slug ),
 				),
 				JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
 			),
