@@ -8,7 +8,10 @@ import type { HTMLElementEvent } from '@woocommerce/types';
  * Internal dependencies
  */
 import type { ProductFiltersStore } from '../../frontend';
-import type { ProductFilterPriceContext, ProductFilterPriceStore } from '../price-filter/frontend';
+import type {
+	ProductFilterPriceContext,
+	ProductFilterPriceStore,
+} from '../price-filter/frontend';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DebouncedFunction< T extends ( ...args: any[] ) => any > = ( (
@@ -45,21 +48,23 @@ const debounce = < T extends ( ...args: any[] ) => any >(
 	return debounced;
 };
 
-	const productFilterPriceSliderStore = {
+const productFilterPriceSliderStore = {
 	state: {
 		rangeStyle: () => {
 			const context = getContext< ProductFilterPriceContext >();
 			return `--low: ${
-				( 100 * ( state.minPrice - context.minRange ) ) / ( context.maxRange - context.minRange )
+				( 100 * ( state.minPrice - context.minRange ) ) /
+				( context.maxRange - context.minRange )
 			}%; --high: ${
-				( 100 * ( state.maxPrice - context.minRange ) ) / ( context.maxRange - context.minRange )
+				( 100 * ( state.maxPrice - context.minRange ) ) /
+				( context.maxRange - context.minRange )
 			}%;`;
 		},
 	},
 	actions: {
 		selectInputContent: () => {
 			const element = getElement();
-			if (element?.ref instanceof HTMLInputElement) {
+			if ( element?.ref instanceof HTMLInputElement ) {
 				element.ref.select();
 			}
 		},
@@ -85,7 +90,8 @@ const debounce = < T extends ( ...args: any[] ) => any >(
 	},
 };
 
-const { state} = store<ProductFiltersStore & ProductFilterPriceStore & typeof productFilterPriceSliderStore>(
-	'woocommerce/product-filters',
-	productFilterPriceSliderStore
-);
+const { state } = store<
+	ProductFiltersStore &
+		ProductFilterPriceStore &
+		typeof productFilterPriceSliderStore
+>( 'woocommerce/product-filters', productFilterPriceSliderStore );

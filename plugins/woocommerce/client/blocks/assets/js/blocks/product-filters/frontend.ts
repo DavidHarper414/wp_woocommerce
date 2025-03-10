@@ -74,7 +74,10 @@ type FilterItem = {
 	attributeQueryType?: 'and' | 'or';
 };
 
-export type ActiveFilterItem = Pick< FilterItem, 'type' | 'value' | 'attributeQueryType' > & {
+export type ActiveFilterItem = Pick<
+	FilterItem,
+	'type' | 'value' | 'attributeQueryType'
+> & {
 	activeLabel: string;
 };
 
@@ -119,10 +122,11 @@ const productFiltersStore = {
 					addParam( `rating_filter`, value );
 				}
 
-				if( type.includes('attribute') ) {
-					const [ _attribute, slug ] = type.split( '/' );
+				if ( type.includes( 'attribute' ) ) {
+					const [ , slug ] = type.split( '/' );
 					addParam( `filter_${ slug }`, value );
-					params[ `query_type_${ slug }` ] = filter.attributeQueryType || 'or';
+					params[ `query_type_${ slug }` ] =
+						filter.attributeQueryType || 'or';
 				}
 			} );
 			return params;
@@ -142,8 +146,12 @@ const productFiltersStore = {
 				} ) );
 		},
 		get isFilterSelected() {
-			const { activeFilters, item } = getContext< ProductFiltersContext >();
-			return activeFilters.some( ( filter ) => filter.type === item.type && filter.value === item.value );
+			const { activeFilters, item } =
+				getContext< ProductFiltersContext >();
+			return activeFilters.some(
+				( filter ) =>
+					filter.type === item.type && filter.value === item.value
+			);
 		},
 	},
 	actions: {
@@ -186,10 +194,17 @@ const productFiltersStore = {
 				value: context.item.value,
 				type: context.item.type,
 				attributeQueryType: context.item.attributeQueryType,
-				activeLabel: context.activeLabelTemplate.replace( '{{label}}', context.item.ariaLabel )
+				activeLabel: context.activeLabelTemplate.replace(
+					'{{label}}',
+					context.item.ariaLabel
+				),
 			};
 			const newActiveFilters = context.activeFilters.filter(
-				( activeFilter ) => ! ( activeFilter.value === newActiveFilter.value && activeFilter.type === newActiveFilter.type )
+				( activeFilter ) =>
+					! (
+						activeFilter.value === newActiveFilter.value &&
+						activeFilter.type === newActiveFilter.type
+					)
 			);
 
 			newActiveFilters.push( newActiveFilter );
@@ -197,9 +212,11 @@ const productFiltersStore = {
 			context.activeFilters = newActiveFilters;
 		},
 		_unselectFilter: () => {
-			const {item} = getContext< ProductFiltersContext >();
+			const { item } = getContext< ProductFiltersContext >();
 			actions._removeActiveFiltersBy(
-				( activeFilter ) => activeFilter.type === item.type && activeFilter.value === item.value
+				( activeFilter ) =>
+					activeFilter.type === item.type &&
+					activeFilter.value === item.value
 			);
 		},
 		toggleFilter: () => {
@@ -215,12 +232,7 @@ const productFiltersStore = {
 				? getServerContext< ProductFiltersContext >()
 				: getContext< ProductFiltersContext >();
 
-			if (
-				isParamsEqual(
-					state.params,
-					originalParams
-				)
-			) {
+			if ( isParamsEqual( state.params, originalParams ) ) {
 				return;
 			}
 
@@ -232,10 +244,7 @@ const productFiltersStore = {
 			}
 
 			for ( const key in state.params ) {
-				searchParams.set(
-					key,
-					state.params[ key ]
-				);
+				searchParams.set( key, state.params[ key ] );
 			}
 
 			yield navigate( url.href );
@@ -255,4 +264,7 @@ const productFiltersStore = {
 
 export type ProductFiltersStore = typeof productFiltersStore;
 
-const { state, actions } = store< ProductFiltersStore >( 'woocommerce/product-filters', productFiltersStore );
+const { state, actions } = store< ProductFiltersStore >(
+	'woocommerce/product-filters',
+	productFiltersStore
+);

@@ -23,19 +23,27 @@ export type ProductFilterPriceContext = {
 const productFilterPriceStore = {
 	state: {
 		get minPrice() {
-			const { activeFilters, minRange } = getContext< ProductFiltersContext & ProductFilterPriceContext >();
-				const priceFilter = activeFilters.find( ( filter ) => filter.type === 'price' );
-				if( priceFilter ) {
-					const [ min, _max ] = priceFilter.value.split( '|' );
-					return min ? parseInt( min, 10 ) : minRange;
-				}
+			const { activeFilters, minRange } = getContext<
+				ProductFiltersContext & ProductFilterPriceContext
+			>();
+			const priceFilter = activeFilters.find(
+				( filter ) => filter.type === 'price'
+			);
+			if ( priceFilter ) {
+				const [ min ] = priceFilter.value.split( '|' );
+				return min ? parseInt( min, 10 ) : minRange;
+			}
 			return minRange;
 		},
 		get maxPrice() {
-			const { activeFilters, maxRange } = getContext< ProductFiltersContext & ProductFilterPriceContext >();
-			const priceFilter = activeFilters.find( ( filter ) => filter.type === 'price' );
-			if( priceFilter ) {
-				const [ _min, max ] = priceFilter.value.split( '|' );
+			const { activeFilters, maxRange } = getContext<
+				ProductFiltersContext & ProductFilterPriceContext
+			>();
+			const priceFilter = activeFilters.find(
+				( filter ) => filter.type === 'price'
+			);
+			if ( priceFilter ) {
+				const [ , max ] = priceFilter.value.split( '|' );
 				return max ? parseInt( max, 10 ) : maxRange;
 			}
 			return maxRange;
@@ -54,7 +62,7 @@ const productFilterPriceStore = {
 		},
 	},
 	actions: {
-		getActivePriceAndLabel( min:  number, max: number ) {
+		getActivePriceAndLabel( min: number, max: number ) {
 			const context = getContext< ProductFilterPriceContext >();
 			if (
 				min &&
@@ -67,13 +75,13 @@ const productFilterPriceStore = {
 					activeLabel: context.activeLabelTemplates.minAndMax
 						.replace(
 							'{{min}}',
-						formatPrice( min, getCurrency( { minorUnit: 0 } ) )
-					)
-					.replace(
-						'{{max}}',
-						formatPrice( max, getCurrency( { minorUnit: 0 } ) )
-					)
-				}
+							formatPrice( min, getCurrency( { minorUnit: 0 } ) )
+						)
+						.replace(
+							'{{max}}',
+							formatPrice( max, getCurrency( { minorUnit: 0 } ) )
+						),
+				};
 
 			if ( min && min > context.minRange ) {
 				return {
@@ -81,8 +89,8 @@ const productFilterPriceStore = {
 					activeLabel: context.activeLabelTemplates.minOnly.replace(
 						'{{min}}',
 						formatPrice( min, getCurrency( { minorUnit: 0 } ) )
-					)
-				}
+					),
+				};
 			}
 
 			if ( max && max < context.maxRange ) {
@@ -91,8 +99,8 @@ const productFilterPriceStore = {
 					activeLabel: context.activeLabelTemplates.maxOnly.replace(
 						'{{max}}',
 						formatPrice( max, getCurrency( { minorUnit: 0 } ) )
-					)
-				}
+					),
+				};
 			}
 
 			return {
@@ -101,8 +109,10 @@ const productFilterPriceStore = {
 			};
 		},
 		setPrice: ( type: 'min' | 'max', value: number ) => {
-			const context = getContext< ProductFilterPriceContext & ProductFiltersContext >();
-			const price: Record<string, number> = {
+			const context = getContext<
+				ProductFilterPriceContext & ProductFiltersContext
+			>();
+			const price: Record< string, number > = {
 				min: state.minPrice,
 				max: state.maxPrice,
 			};
@@ -128,18 +138,22 @@ const productFilterPriceStore = {
 			if ( price.min === context.minRange ) price.min = 0;
 			if ( price.max === context.maxRange ) price.max = 0;
 
+			context.activeFilters = context.activeFilters.filter(
+				( item ) => item.type !== 'price'
+			);
+			const { activeValue, activeLabel } = actions.getActivePriceAndLabel(
+				price.min,
+				price.max
+			);
 
-			context.activeFilters = context.activeFilters.filter( ( item ) => item.type !== 'price' );
-			const { activeValue, activeLabel } = actions.getActivePriceAndLabel( price.min, price.max );
-
-			if( activeValue ) {
+			if ( activeValue ) {
 				const newActivePriceFilter = {
 					type: 'price',
 					value: activeValue,
 					activeLabel,
 				};
 
-				context.activeFilters.push(newActivePriceFilter);
+				context.activeFilters.push( newActivePriceFilter );
 			}
 		},
 		setMinPrice: ( e: HTMLElementEvent< HTMLInputElement > ) => {
@@ -150,12 +164,11 @@ const productFilterPriceStore = {
 			const price = parseInt( e.target.value, 10 );
 			actions.setPrice( 'max', price );
 		},
-	}
+	},
 };
 
 export type ProductFilterPriceStore = typeof productFilterPriceStore;
 
-const { state, actions } = store<ProductFiltersStore & ProductFilterPriceStore>(
-	'woocommerce/product-filters',
-	productFilterPriceStore
-);
+const { state, actions } = store<
+	ProductFiltersStore & ProductFilterPriceStore
+>( 'woocommerce/product-filters', productFilterPriceStore );
