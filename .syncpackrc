@@ -307,12 +307,7 @@
 			"pinVersion": "^1.15.0"
 		},
 		{
-			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself - exceptions.",
-			"dependencyTypes": [
-				"prod",
-				"dev",
-				"peer"
-			],
+			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself - except certain dependencies (migration pending).",
 			"dependencies": [
 				"@woocommerce/settings"
 			],
@@ -320,6 +315,18 @@
 				"**"
 			],
 			"pinVersion": "1.0.0"
+		},
+		{
+			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself - except certain packages (migration pending).",
+			"dependencies": [
+				"@woocommerce/*"
+			],
+			"packages": [
+				"@woocommerce/settings-editor",
+				"@woocommerce/product-editor",
+				"@woocommerce/block-templates"
+			],
+			"isIgnored": true
 		},
 		{
 			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself.",
