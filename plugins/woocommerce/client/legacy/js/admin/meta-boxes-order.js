@@ -1604,27 +1604,28 @@ jQuery( function ( $ ) {
 
 			});
 
-			$( '#order_custom #metakeyselect').filter( ':not(.enhanced)' ).each( function() {
+			$( '#order_custom #metakeyselect').filter( function() {
 				metakey_select = $(this);
+				if(metakey_select.hasClass('enhanced)')) {
+					return;
+				}
+
 				select2_args = {
-					allowClear: !!$(this).data('allow_clear'),
-					placeholder: $(this).data('placeholder'),
-					escapeMarkup: function (m) {
-						return m;
-					},
+					allowClear: !!metakey_select.data('allow_clear'),
+					placeholder: metakey_select.data('placeholder'),
 					ajax: {
 						url: wc_enhanced_select_params.ajax_url,
 						dataType: 'json',
 						delay: 500,
 						data: function (params) {
 							return {
-								order_id: $(this).data('order_id'),
+								order_id: metakey_select.data('order_id'),
 								action: 'woocommerce_json_search_order_metakeys',
 								security: wc_enhanced_select_params.search_order_metakeys_nonce
 							};
 						},
 						success: function (data) {
-							var terms = [];
+							let terms = [];
 							if (data) {
 								$.each(data, function (id, term) {
 									terms.push({
@@ -1638,6 +1639,7 @@ jQuery( function ( $ ) {
 							select2_args.data = terms;
 							delete select2_args.ajax;
 							metakey_select.selectWoo(select2_args).select2('open');
+							return false;
 						},
 						cache: true
 					},
@@ -1687,13 +1689,13 @@ jQuery( function ( $ ) {
 				// Work around to deal with the lack of responsive support from Select2 until a better replacement can be integrated.
 				let resizeTimer;
 				$( window ).on( 'resize', function () {
-					clearTimeout( resizeTimer );
-					resizeTimer = setTimeout( function () {
+					cancelAnimationFrame( resizeTimer );
+					resizeTimer = requestAnimationFrame( function () {
 						metakey_select.selectWoo( select2_args );
-					}, 300 );
+					} );
 				});
 
-				$(this).selectWoo(select2_args).addClass('enhanced');
+				metakey_select.selectWoo(select2_args).addClass('enhanced');
 			});
 		}
 	};
