@@ -9,7 +9,7 @@ type CheckboxListContext = {
 
 store( 'woocommerce/product-filter-checkbox-list', {
 	actions: {
-		showAllItems: () => {
+		showAllListItems: () => {
 			const context = getContext< CheckboxListContext >();
 			context.showAll = true;
 		},

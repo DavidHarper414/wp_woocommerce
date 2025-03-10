@@ -54,11 +54,10 @@ final class ProductFilterChips extends AbstractBlock {
 		$count                       = 0;
 
 		$wrapper_attributes = array(
-			'data-wp-interactive' => 'woocommerce/product-filters',
-			'data-wp-key'         => wp_unique_prefixed_id( $this->get_full_block_name() ),
-			'data-wp-context'     => '{}',
-			'class'               => esc_attr( $classes ),
-			'style'               => esc_attr( $style ),
+			'data-wp-key'     => wp_unique_prefixed_id( $this->get_full_block_name() ),
+			'data-wp-context' => '{}',
+			'class'           => esc_attr( $classes ),
+			'style'           => esc_attr( $style ),
 		);
 
 		ob_start();
