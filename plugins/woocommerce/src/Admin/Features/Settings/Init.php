@@ -223,6 +223,10 @@ class Init {
 				continue;
 			}
 
+			if ( $script === 'wc-admin-settings-embed' ) {
+				continue;
+			}
+
 			// Skip scripts from WordPress core since they only need to be loaded once.
 			if ( strpos( $registered_script->src, '/' . WPINC . '/js' ) === 0 || strpos( $registered_script->src, '/wp-admin/js' ) === 0 ) {
 				continue;

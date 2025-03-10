@@ -7,18 +7,11 @@ import { SettingsEditor } from '@woocommerce/settings-editor';
 /**
  * Internal dependencies
  */
-import { possiblyRenderSettingsSlots } from './settings-slots';
-import { registerTaxSettingsConflictErrorFill } from './conflict-error-slotfill';
-import { registerPaymentsSettingsBannerFill } from '../payments/payments-settings-banner-slotfill';
-import { registerSiteVisibilitySlotFill } from '../launch-your-store';
+import { registerSlotFills } from '../wp-admin-scripts/settings-embed';
 import './settings.scss';
 
 const node = document.getElementById( 'wc-settings-page' );
 
-registerTaxSettingsConflictErrorFill();
-registerPaymentsSettingsBannerFill();
-registerSiteVisibilitySlotFill();
-
 createRoot( node ).render(
-	<SettingsEditor renderSlots={ possiblyRenderSettingsSlots } />
+	<SettingsEditor renderSlots={ registerSlotFills } />
 );

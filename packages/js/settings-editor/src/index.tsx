@@ -96,7 +96,7 @@ const SettingsApp = ( { renderSlots }: { renderSlots: () => void } ) => {
 	// Render the settings slots every time the page or section changes.
 	useEffect( () => {
 		renderSlots();
-	}, [ activePage, activeSection, route ] );
+	}, [ route ] );
 
 	return (
 		<Layout
