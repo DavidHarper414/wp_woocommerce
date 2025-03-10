@@ -1,4 +1,7 @@
-import React, { ReactNode } from "react";
+/**
+ * External dependencies
+ */
+import React, { ReactNode } from 'react';
 
 /**
  * Props for the Onboarding Sidebar component.
@@ -17,9 +20,9 @@ export interface OnboardingSidebarProps {
  * Props for the Onboarding Modal component.
  */
 export interface OnboardingModalProps {
-    isOpen: boolean;
-    setIsOpen: ( isOpen: boolean ) => void;
-    children: ReactNode;
+	isOpen: boolean;
+	setIsOpen: ( isOpen: boolean ) => void;
+	children: ReactNode;
 }
 
 /**
