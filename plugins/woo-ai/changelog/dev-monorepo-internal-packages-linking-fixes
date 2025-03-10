@@ -1,4 +1,4 @@
 Significance: patch
 Type: dev
 
-Monorepo: ensure packages monorepo packages are linked wia workspace-version of the dependecies.
+Monorepo: ensure monorepo packages are linked via workspace-version of the dependencies.
