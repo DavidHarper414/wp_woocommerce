@@ -309,6 +309,10 @@ export class CheckoutPage {
 		}
 	}
 
+	/**
+	 * This waits for the batch request to /cart/update-customer
+	 * when updating address fields.
+	 */
 	async waitForCustomerDataUpdate() {
 		// Wait for data to start updating.
 		await this.page.waitForFunction( () => {
@@ -325,8 +329,24 @@ export class CheckoutPage {
 		} );
 	}
 
+	/**
+	 * This waits for the PUT request to /checkout
+	 * when updating additional fields, payment methods or order notes.
+	 */
 	async waitForCheckoutDataUpdate() {
-		await this.page.waitForResponse( '**/wc/store/v1/checkout**' );
+		// Wait for data to start updating.
+		await this.page.waitForFunction( () => {
+			return !! window.wp.data
+				.select( 'wc/store/checkout' )
+				.isCalculating();
+		} );
+
+		// Wait for data to finish updating
+		await this.page.waitForFunction( () => {
+			return ! window.wp.data
+				.select( 'wc/store/checkout' )
+				.isCalculating();
+		} );
 	}
 
 	async editShippingDetails() {
