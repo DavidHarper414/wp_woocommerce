@@ -34,6 +34,21 @@ class AddToCartWithOptions extends AbstractBlock {
 	}
 
 	/**
+	 * Modifies the block context for product button blocks when inside the add-to-cart-with-options block.
+	 *
+	 * @param array $context The block context.
+	 * @param array $block   The parsed block.
+	 * @return array Modified block context.
+	 */
+	public function set_is_descendent_of_add_to_cart_form_context( $context, $block ) {
+		if ( 'woocommerce/product-button' === $block['blockName'] ) {
+			$context['isDescendentOfAddToCartForm'] = true;
+		}
+
+		return $context;
+	}
+
+	/**
 	 * Render the block.
 	 *
 	 * @param array    $attributes Block attributes.
@@ -77,11 +92,11 @@ class AddToCartWithOptions extends AbstractBlock {
 			$template_part = get_block_template( $template_slug_to_load . '//' . $slug, 'wp_template_part' );
 
 			if ( $template_part && ! empty( $template_part->content ) ) {
-				$template_part_contents = do_blocks( $template_part->content );
+				$template_part_contents = $template_part->content;
 			}
 
 			if ( '' === $template_part_contents ) {
-				$template_part_contents = do_blocks( file_get_contents( Package::get_path() . 'templates/' . BlockTemplateUtils::DIRECTORY_NAMES['TEMPLATE_PARTS'] . '/' . $slug . '.html' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+				$template_part_contents = file_get_contents( Package::get_path() . 'templates/' . BlockTemplateUtils::DIRECTORY_NAMES['TEMPLATE_PARTS'] . '/' . $slug . '.html' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 			}
 
 			$classes_and_styles = StyleAttributesUtils::get_classes_and_styles_by_attributes( $attributes, array(), array( 'extra_classes' ) );
@@ -194,11 +209,15 @@ class AddToCartWithOptions extends AbstractBlock {
 				$hooks_after = ob_get_clean();
 			}
 
+			add_filter( 'render_block_context', array( $this, 'set_is_descendent_of_add_to_cart_form_context' ), 10, 2 );
+			$template_part_blocks = do_blocks( $template_part_contents );
+			remove_filter( 'render_block_context', array( $this, 'set_is_descendent_of_add_to_cart_form_context' ) );
+
 			$form_html = sprintf(
 				'<form %1$s>%2$s%3$s%4$s</form>',
 				$wrapper_attributes,
 				$hooks_before,
-				$template_part_contents,
+				$template_part_blocks,
 				$hooks_after,
 			);
 		} else {
