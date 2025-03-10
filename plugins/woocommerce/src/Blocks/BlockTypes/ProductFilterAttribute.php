@@ -187,7 +187,10 @@ final class ProductFilterAttribute extends AbstractBlock {
 			$selected_terms = array_filter( explode( ',', $filter_params[ $filter_param_key ] ) );
 		}
 
-		$filter_context = array();
+		$filter_context = array(
+			'showCounts' => $block_attributes['showCounts'] ?? false,
+			'items'      => array(),
+		);
 
 		if ( ! empty( $attribute_counts ) ) {
 			$attribute_options = array_map(
@@ -207,23 +210,22 @@ final class ProductFilterAttribute extends AbstractBlock {
 				$attribute_terms
 			);
 
-			$filter_context = array(
-				'items'  => $attribute_options,
-				'showCounts' => $block_attributes['showCounts'] ?? false,
-			);
+			$filter_context['items'] = $attribute_options;
 		}
 
-		$context = array(
-			/* translators: {{label}} is the product attribute filter item label. */
-			'activeLabelTemplate' => "{$product_attribute->name}: {{label}}",
-		);
-
 		$wrapper_attributes = array(
-			'data-wp-key'          => 'product-filter-attribute-' . md5( wp_json_encode( $block_attributes ) ),
-			'data-wp-context'      => wp_json_encode( $context, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ),
+			'data-wp-key'     => wp_unique_prefixed_id( $this->get_full_block_name() ),
+			'data-wp-context' => wp_json_encode(
+				array(
+					/* translators: {{label}} is the product attribute filter item label. */
+					'activeLabelTemplate' => "{$product_attribute->name}: {{label}}",
+					'filterType' => 'attribute/' . str_replace( 'pa_', '', $product_attribute->slug ),
+				),
+				JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+			),
 		);
 
-		if ( empty( $filter_context ) ) {
+		if ( empty( $filter_context['items'] ) ) {
 			$wrapper_attributes['hidden'] = true;
 		}
 
