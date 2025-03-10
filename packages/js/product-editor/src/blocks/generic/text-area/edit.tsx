@@ -91,13 +91,15 @@ export function TextAreaBlockEdit( {
 		textAreaRef.current?.focus();
 	}
 
+	const blockControlsBlockProps = { group: 'block' };
+
 	const isRichTextMode = mode === 'rich-text';
 	const isPlainTextMode = mode === 'plain-text';
 
 	return (
 		<div { ...blockProps }>
 			{ isRichTextMode && (
-				<BlockControls group='block'>
+				<BlockControls { ...blockControlsBlockProps }>
 					<AlignmentToolbarButton
 						align={ align }
 						setAlignment={ setAlignment }

@@ -306,7 +306,7 @@ export const AttributeTableRow: React.FC< AttributeTableRowProps > = ( {
 
 				return newTerm;
 			} catch ( error ) {
-				useDispatch( 'core/notices' ).createErrorNotice(
+				dispatch( 'core/notices' ).createErrorNotice(
 					sprintf(
 						/* translators: %s: the attribute term */
 						__(

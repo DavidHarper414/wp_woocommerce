@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { useDispatch } from '@wordpress/data';
+import { dispatch } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
 import type { Product, ProductStatus } from '@woocommerce/data';
 import type { ReactElement } from 'react';
@@ -30,7 +30,7 @@ export function showSuccessNotice(
 	product: Product,
 	prevStatus?: ProductStatus
 ) {
-	const { createSuccessNotice } = useDispatch( 'core/notices' );
+	const { createSuccessNotice } = dispatch( 'core/notices' );
 
 	const noticeContent = getNoticeContent( product, prevStatus );
 	const noticeOptions = {

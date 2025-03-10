@@ -317,6 +317,18 @@
 			"pinVersion": "1.0.0"
 		},
 		{
+			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself - except certain dependencies (breaks build).",
+			"dependencies": [
+				"@woocommerce/api",
+				"@woocommerce/navigation",
+				"@woocommerce/tracks"
+			],
+			"packages": [
+				"**"
+			],
+			"isIgnored": true
+		},
+		{
 			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself.",
 			"dependencyTypes": [
 				"prod",
