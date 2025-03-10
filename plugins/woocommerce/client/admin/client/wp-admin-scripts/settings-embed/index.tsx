@@ -74,7 +74,7 @@ const renderPaymentsSettings = () => {
 	}
 };
 
-export const registerSlotFills = () => {
+const registerSlotFills = () => {
 	possiblyRenderSettingsSlots();
 	registerTaxSettingsConflictErrorFill();
 	registerPaymentsSettingsBannerFill();

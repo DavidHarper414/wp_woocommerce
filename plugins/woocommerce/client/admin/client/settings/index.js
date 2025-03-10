@@ -7,11 +7,8 @@ import { SettingsEditor } from '@woocommerce/settings-editor';
 /**
  * Internal dependencies
  */
-import { registerSlotFills } from '../wp-admin-scripts/settings-embed';
 import './settings.scss';
 
 const node = document.getElementById( 'wc-settings-page' );
 
-createRoot( node ).render(
-	<SettingsEditor renderSlots={ registerSlotFills } />
-);
+createRoot( node ).render( <SettingsEditor /> );

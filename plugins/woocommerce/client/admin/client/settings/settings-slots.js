@@ -48,6 +48,7 @@ export const possiblyRenderSettingsSlots = () => {
 		const slotDomElement = document.getElementById( slot.id );
 
 		if ( slotDomElement ) {
+			console.log( slotDomElement );
 			createRoot( slotDomElement ).render(
 				<>
 					<SlotFillProvider>

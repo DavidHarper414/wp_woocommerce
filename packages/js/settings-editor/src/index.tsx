@@ -69,12 +69,12 @@ const removeSettingsScripts = ( scripts: HTMLScriptElement[] ) => {
 	} );
 };
 
-const SettingsApp = ( { renderSlots }: { renderSlots: () => void } ) => {
+const SettingsApp = () => {
 	const { route, settingsPage, tabs, activeSection, activePage } =
 		useActiveRoute();
 	const { settingsScripts } = useContext( SettingsDataContext );
 
-	useLayoutEffect( () => {
+	useEffect( () => {
 		if ( ! activePage ) {
 			return;
 		}
@@ -93,11 +93,6 @@ const SettingsApp = ( { renderSlots }: { renderSlots: () => void } ) => {
 		};
 	}, [ activePage, activeSection ] );
 
-	// Render the settings slots every time the page or section changes.
-	useEffect( () => {
-		renderSlots();
-	}, [ route ] );
-
 	return (
 		<Layout
 			route={ route }
@@ -108,11 +103,7 @@ const SettingsApp = ( { renderSlots }: { renderSlots: () => void } ) => {
 	);
 };
 
-export const SettingsEditor = ( {
-	renderSlots,
-}: {
-	renderSlots: () => void;
-} ) => {
+export const SettingsEditor = () => {
 	const isRequiredGutenbergVersion = isGutenbergVersionAtLeast( 19.0 );
 
 	if ( ! isRequiredGutenbergVersion ) {
@@ -131,7 +122,7 @@ export const SettingsEditor = ( {
 		<RouterProvider routes={ [] } pathArg="page">
 			<OldGutenbergRouterProvider>
 				<SettingsDataProvider>
-					<SettingsApp renderSlots={ renderSlots } />
+					<SettingsApp />
 					<Notices />
 				</SettingsDataProvider>
 			</OldGutenbergRouterProvider>

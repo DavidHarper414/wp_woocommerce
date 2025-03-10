@@ -250,5 +250,5 @@ export const useActiveRoute = (): {
 			activeSection,
 			tabs,
 		};
-	}, [ settingsData, location.query, modernRoutes ] );
+	}, [ settingsData, location.query ] );
 };
