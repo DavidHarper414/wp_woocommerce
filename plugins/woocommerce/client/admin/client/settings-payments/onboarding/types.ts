@@ -22,7 +22,9 @@ export interface OnboardingSidebarProps {
 export interface OnboardingModalProps {
 	isOpen: boolean;
 	setIsOpen: ( isOpen: boolean ) => void;
-	children: ReactNode;
+	children?: ReactNode;
+	steps: StepContent[];
+	topLevelPath: string;
 }
 
 /**
@@ -57,4 +59,22 @@ export interface StepperProps {
 export interface StepProps {
 	id: string;
 	children: ReactNode;
+}
+
+/**
+ * Props for the Step content component.
+ */
+export interface StepContentProps {
+	onFinish?: () => void;
+}
+
+/**
+ * Props for the Step content passed to the modal.
+ */
+export interface StepContent {
+	key: string;
+	label: string;
+	path: string;
+	order: number;
+	content: ReactNode | ( ( props: StepContentProps ) => ReactNode );
 }
