@@ -107,6 +107,35 @@
 			"npm run lint:css:fix"
 		]
 	},
+  "config": {
+    "ci": {
+      "lint": {
+        "command": "lint",
+        "changes": [
+          "src/**/*.{js,ts,tsx,scss}",
+          "tests/**/*.{js,ts,tsx,scss}"
+        ]
+      },
+      "tests": [
+        {
+          "name": "JavaScript",
+          "command": "test:unit",
+          "changes": [
+            ".wp-env.json",
+            "webpack.config.js",
+            "babel.config.js",
+            "tsconfig.json",
+            "src/**/*.{js,ts,tsx,scss}",
+            "tests/**/*.{js,ts,tsx,scss}"
+          ],
+          "events": [
+            "pull_request",
+            "push"
+          ]
+        }
+      ]
+    }
+  },
 	"wireit": {
 		"build:project:wp-scripts": {
 			"command": "wp-scripts build",
