@@ -33,11 +33,9 @@ const wooBlockwithFullEditorToolbarButton = createHigherOrderComponent(
 				return <BlockEdit { ...props } />;
 			}
 
-			const blockControlProps = { group: 'other' };
-
 			return (
 				<>
-					<BlockControls { ...blockControlProps }>
+					<BlockControls group='other'>
 						<FullEditorToolbarButton />
 					</BlockControls>
 					<BlockEdit { ...props } />
