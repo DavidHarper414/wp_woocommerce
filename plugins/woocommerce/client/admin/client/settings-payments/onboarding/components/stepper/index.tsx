@@ -15,8 +15,11 @@ export default function Stepper( {
 	active,
 	children,
 }: StepperProps ): React.ReactNode {
-	// Filter and find the active step from children
-	const activeStep = Children.toArray( children ).find( ( child ) => {
+	// Convert children to array for easier manipulation
+	const childrenArray = Children.toArray( children );
+
+	// Find the active step component
+	const activeStep = childrenArray.find( ( child ) => {
 		if ( isValidElement( child ) ) {
 			const element = child as ReactElement< StepProps >;
 			return element.props.id === active;
@@ -24,6 +27,7 @@ export default function Stepper( {
 		return false;
 	} );
 
+	// Only render the active step
 	return (
 		<div className="settings-payments-onboarding-modal__stepper">
 			{ activeStep }
