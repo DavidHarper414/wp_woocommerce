@@ -1,0 +1,4 @@
+Significance: patch
+Type: dev
+
+Make analytics-data.spec.js more stable on external environments.
