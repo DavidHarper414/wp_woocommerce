@@ -71,7 +71,7 @@ type FilterItem = {
 	selected: boolean;
 	count: number;
 	type: string;
-	attributeQueryType?: 'and' | 'or';
+	attributeQueryType: 'and' | 'or' | undefined;
 };
 
 export type ActiveFilterItem = Pick<
@@ -91,7 +91,7 @@ export type ProductFiltersContext = {
 	filterType: string;
 };
 
-const productFiltersStore = {
+const { state, actions } = store( 'woocommerce/product-filters', {
 	state: {
 		get params() {
 			const { activeFilters } = getContext< ProductFiltersContext >();
@@ -260,11 +260,9 @@ const productFiltersStore = {
 			}
 		},
 	},
+} );
+
+export type ProductFiltersStore = {
+	state: typeof state;
+	actions: typeof actions;
 };
-
-export type ProductFiltersStore = typeof productFiltersStore;
-
-const { state, actions } = store< ProductFiltersStore >(
-	'woocommerce/product-filters',
-	productFiltersStore
-);

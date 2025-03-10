@@ -20,7 +20,30 @@ export type ProductFilterPriceContext = {
 	activeLabelTemplates: Record< string, string >;
 };
 
-const productFilterPriceStore = {
+export type ProductFilterPriceStore = {
+	state: {
+		minPrice: number;
+		maxPrice: number;
+		formattedMinPrice: string;
+		formattedMaxPrice: string;
+	};
+	actions: {
+		getActivePriceAndLabel: (
+			min: number,
+			max: number
+		) => {
+			activeValue: string;
+			activeLabel: string;
+		};
+		setPrice: ( type: 'min' | 'max', value: number ) => void;
+		setMinPrice: ( e: HTMLElementEvent< HTMLInputElement > ) => void;
+		setMaxPrice: ( e: HTMLElementEvent< HTMLInputElement > ) => void;
+	};
+};
+
+const { state, actions } = store<
+	ProductFiltersStore & ProductFilterPriceStore
+>( 'woocommerce/product-filters', {
 	state: {
 		get minPrice() {
 			const { activeFilters, minRange } = getContext<
@@ -165,10 +188,4 @@ const productFilterPriceStore = {
 			actions.setPrice( 'max', price );
 		},
 	},
-};
-
-export type ProductFilterPriceStore = typeof productFilterPriceStore;
-
-const { state, actions } = store<
-	ProductFiltersStore & ProductFilterPriceStore
->( 'woocommerce/product-filters', productFilterPriceStore );
+} );

@@ -48,50 +48,61 @@ const debounce = < T extends ( ...args: any[] ) => any >(
 	return debounced;
 };
 
-const productFilterPriceSliderStore = {
-	state: {
-		rangeStyle: () => {
-			const context = getContext< ProductFilterPriceContext >();
-			return `--low: ${
-				( 100 * ( state.minPrice - context.minRange ) ) /
-				( context.maxRange - context.minRange )
-			}%; --high: ${
-				( 100 * ( state.maxPrice - context.minRange ) ) /
-				( context.maxRange - context.minRange )
-			}%;`;
-		},
-	},
-	actions: {
-		selectInputContent: () => {
-			const element = getElement();
-			if ( element?.ref instanceof HTMLInputElement ) {
-				element.ref.select();
-			}
-		},
-		debounceSetPrice: debounce(
-			( e: HTMLElementEvent< HTMLInputElement > ) => {
-				e.target.dispatchEvent( new Event( 'change' ) );
-			},
-			1000
-		),
-		limitRange: ( e: HTMLElementEvent< HTMLInputElement > ) => {
-			if ( e.target.classList.contains( 'min' ) ) {
-				e.target.value = Math.min(
-					parseInt( e.target.value, 10 ),
-					state.maxPrice - 1
-				).toString();
-			} else {
-				e.target.value = Math.max(
-					parseInt( e.target.value, 10 ),
-					state.minPrice + 1
-				).toString();
-			}
-		},
-	},
-};
+type ProductFilterPriceSliderStore = ProductFiltersStore &
+	ProductFilterPriceStore & {
+		state: {
+			rangeStyle: () => string;
+		};
+		actions: {
+			selectInputContent: () => void;
+			debounceSetPrice: (
+				e: HTMLElementEvent< HTMLInputElement >
+			) => void;
+			limitRange: ( e: HTMLElementEvent< HTMLInputElement > ) => void;
+		};
+	};
 
-const { state } = store<
-	ProductFiltersStore &
-		ProductFilterPriceStore &
-		typeof productFilterPriceSliderStore
->( 'woocommerce/product-filters', productFilterPriceSliderStore );
+const { state } = store< ProductFilterPriceSliderStore >(
+	'woocommerce/product-filters',
+	{
+		state: {
+			rangeStyle: () => {
+				const context = getContext< ProductFilterPriceContext >();
+				return `--low: ${
+					( 100 * ( state.minPrice - context.minRange ) ) /
+					( context.maxRange - context.minRange )
+				}%; --high: ${
+					( 100 * ( state.maxPrice - context.minRange ) ) /
+					( context.maxRange - context.minRange )
+				}%;`;
+			},
+		},
+		actions: {
+			selectInputContent: () => {
+				const element = getElement();
+				if ( element?.ref instanceof HTMLInputElement ) {
+					element.ref.select();
+				}
+			},
+			debounceSetPrice: debounce(
+				( e: HTMLElementEvent< HTMLInputElement > ) => {
+					e.target.dispatchEvent( new Event( 'change' ) );
+				},
+				1000
+			),
+			limitRange: ( e: HTMLElementEvent< HTMLInputElement > ) => {
+				if ( e.target.classList.contains( 'min' ) ) {
+					e.target.value = Math.min(
+						parseInt( e.target.value, 10 ),
+						state.maxPrice - 1
+					).toString();
+				} else {
+					e.target.value = Math.max(
+						parseInt( e.target.value, 10 ),
+						state.minPrice + 1
+					).toString();
+				}
+			},
+		},
+	}
+);
