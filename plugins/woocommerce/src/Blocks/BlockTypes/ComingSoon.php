@@ -44,6 +44,42 @@ class ComingSoon extends AbstractBlock {
 				'wc-blocks-style',
 				':root{--woocommerce-coming-soon-color: ' . esc_html( $attributes['color'] ) . '}'
 			);
+			wp_enqueue_style(
+				'woocommerce-coming-soon',
+				WC()->plugin_url() . '/assets/css/coming-soon-entire-site-deprecated' . ( is_rtl() ? '-rtl' : '' ) . '.css',
+				array(),
+			);
+		}
+	}
+
+	/**
+	 * Enqueue assets used for rendering the block in editor context.
+	 *
+	 * This is needed if a block is not yet within the post content--`render` and `enqueue_assets` may not have ran.
+	 */
+	public function enqueue_editor_assets() {
+		if ( $this->enqueued_assets ) {
+			return;
+		}
+		parent::enqueue_editor_assets();
+
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		$current_screen = get_current_screen();
+		if ( $current_screen instanceof \WP_Screen && 'site-editor' === $current_screen->base ) {
+			$post_id = isset( $_REQUEST['postId'] ) ? wc_clean( wp_unslash( $_REQUEST['postId'] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( $post_id === 'woocommerce/woocommerce//coming-soon' ) {
+				$block_template = get_block_template( $post_id );
+				if ( $block_template && strpos( $block_template->content, '<!-- wp:woocommerce/coming-soon {"color"') !== false ) {
+					wp_enqueue_style(
+						'woocommerce-coming-soon',
+						WC()->plugin_url() . '/assets/css/coming-soon-entire-site-deprecated' . ( is_rtl() ? '-rtl' : '' ) . '.css',
+						array(),
+					);
+				}
+			}
 		}
 	}
 
