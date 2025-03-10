@@ -629,7 +629,7 @@ class WC_Product_CSV_Exporter extends WC_CSV_Batch_Exporter {
 					$row[ 'downloads:id' . $i ]                 = $download->get_id();
 					$row[ 'downloads:name' . $i ]               = $download->get_name();
 					$row[ 'downloads:url' . $i ]                = $download->get_file();
-					$i++;
+					++$i;
 				}
 			}
 		}
@@ -706,7 +706,7 @@ class WC_Product_CSV_Exporter extends WC_CSV_Batch_Exporter {
 							$row[ 'attributes:default' . $i ] = $default_value;
 						}
 					}
-					$i++;
+					++$i;
 				}
 			}
 		}
@@ -744,7 +744,7 @@ class WC_Product_CSV_Exporter extends WC_CSV_Batch_Exporter {
 					/* translators: %s: meta data name */
 					$this->column_names[ $column_key ] = sprintf( __( 'Meta: %s', 'woocommerce' ), $meta->key );
 					$row[ $column_key ]                = $meta_value;
-					$i ++;
+					++$i;
 				}
 			}
 		}

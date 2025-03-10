@@ -205,7 +205,7 @@ class WC_Product_CSV_Importer_Controller {
 		// phpcs:enable
 
 		// Import mappings for CSV data.
-		include_once dirname( __FILE__ ) . '/mappings/mappings.php';
+		include_once __DIR__ . '/mappings/mappings.php';
 
 		if ( $this->map_preferences ) {
 			add_filter( 'woocommerce_csv_product_import_mapped_columns', array( $this, 'auto_map_user_preferences' ), 9999 );
@@ -254,21 +254,21 @@ class WC_Product_CSV_Importer_Controller {
 	 * Output header view.
 	 */
 	protected function output_header() {
-		include dirname( __FILE__ ) . '/views/html-csv-import-header.php';
+		include __DIR__ . '/views/html-csv-import-header.php';
 	}
 
 	/**
 	 * Output steps view.
 	 */
 	protected function output_steps() {
-		include dirname( __FILE__ ) . '/views/html-csv-import-steps.php';
+		include __DIR__ . '/views/html-csv-import-steps.php';
 	}
 
 	/**
 	 * Output footer view.
 	 */
 	protected function output_footer() {
-		include dirname( __FILE__ ) . '/views/html-csv-import-footer.php';
+		include __DIR__ . '/views/html-csv-import-footer.php';
 	}
 
 	/**
@@ -464,7 +464,7 @@ class WC_Product_CSV_Importer_Controller {
 		$size       = size_format( $bytes );
 		$upload_dir = wp_upload_dir();
 
-		include dirname( __FILE__ ) . '/views/html-product-csv-import-form.php';
+		include __DIR__ . '/views/html-product-csv-import-form.php';
 	}
 
 	/**
@@ -546,7 +546,7 @@ class WC_Product_CSV_Importer_Controller {
 			return;
 		}
 
-		include_once dirname( __FILE__ ) . '/views/html-csv-import-mapping.php';
+		include_once __DIR__ . '/views/html-csv-import-mapping.php';
 	}
 
 	/**
@@ -586,7 +586,7 @@ class WC_Product_CSV_Importer_Controller {
 		);
 		wp_enqueue_script( 'wc-product-import' );
 
-		include_once dirname( __FILE__ ) . '/views/html-csv-import-progress.php';
+		include_once __DIR__ . '/views/html-csv-import-progress.php';
 	}
 
 	/**
@@ -602,7 +602,7 @@ class WC_Product_CSV_Importer_Controller {
 		$file_name           = isset( $_GET['file-name'] ) ? sanitize_text_field( wp_unslash( $_GET['file-name'] ) ) : '';
 		$errors              = array_filter( (array) get_user_option( 'product_import_error_log' ) );
 
-		include_once dirname( __FILE__ ) . '/views/html-csv-import-done.php';
+		include_once __DIR__ . '/views/html-csv-import-done.php';
 	}
 
 	/**

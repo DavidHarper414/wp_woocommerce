@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Include dependencies.
  */
 if ( ! class_exists( 'WC_Product_Importer', false ) ) {
-	include_once dirname( __FILE__ ) . '/abstract-wc-product-importer.php';
+	include_once __DIR__ . '/abstract-wc-product-importer.php';
 }
 
 if ( ! class_exists( 'WC_Product_CSV_Importer_Controller', false ) ) {
@@ -67,7 +67,7 @@ class WC_Product_CSV_Importer extends WC_Product_Importer {
 		}
 
 		// Import mappings for CSV data.
-		include_once dirname( dirname( __FILE__ ) ) . '/admin/importers/mappings/mappings.php';
+		include_once dirname( __DIR__ ) . '/admin/importers/mappings/mappings.php';
 
 		$this->read_file();
 	}
@@ -1183,15 +1183,13 @@ class WC_Product_CSV_Importer extends WC_Product_Importer {
 				$data['failed'][] = $result;
 			} elseif ( $result['updated'] ) {
 				$data['updated'][] = $result['id'];
-			} else {
-				if ( $result['is_variation'] ) {
+			} elseif ( $result['is_variation'] ) {
 					$data['imported_variations'][] = $result['id'];
-				} else {
-					$data['imported'][] = $result['id'];
-				}
+			} else {
+				$data['imported'][] = $result['id'];
 			}
 
-			$index ++;
+			++$index;
 
 			if ( $this->params['prevent_timeouts'] && ( $this->time_exceeded() || $this->memory_exceeded() ) ) {
 				$this->file_position = $this->file_positions[ $index ];
