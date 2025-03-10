@@ -159,8 +159,6 @@ final class ProductFilterAttribute extends AbstractBlock {
 			return '';
 		}
 
-		// wp_enqueue_script_module( $this->get_full_block_name() );
-
 		$product_attribute = wc_get_attribute( $block_attributes['attributeId'] );
 		$attribute_counts  = $this->get_attribute_counts( $block, $product_attribute->slug, $block_attributes['queryType'] );
 		$hide_empty        = $block_attributes['hideEmpty'] ?? true;
