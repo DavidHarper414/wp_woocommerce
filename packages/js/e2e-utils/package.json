@@ -30,7 +30,6 @@
 		"@automattic/puppeteer-utils": "github:Automattic/puppeteer-utils#0f3ec50",
 		"@wordpress/deprecated": "wp-6.6",
 		"@wordpress/e2e-test-utils": "wp-6.6",
-		"@woocommerce/api": "workspace:*",
 		"config": "3.3.7",
 		"fishery": "^1.4.0"
 	},
@@ -52,6 +51,9 @@
 		"eslint": "^8.55.0",
 		"eslint-plugin-jest": "23.20.0",
 		"wireit": "0.14.10"
+	},
+	"peerDependencies": {
+		"@woocommerce/api": "workspace:*"
 	},
 	"publishConfig": {
 		"access": "public"
