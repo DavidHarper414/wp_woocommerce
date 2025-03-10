@@ -436,7 +436,8 @@ class WC_Settings_Emails extends WC_Settings_Page {
 	 */
 	public function get_custom_fonts() {
 		$custom_fonts = array();
-		if ( wc_current_theme_is_fse_theme() && class_exists( 'WP_Font_Face_Resolver' ) ) {
+		if ( wp_is_block_theme()
+ && class_exists( 'WP_Font_Face_Resolver' ) ) {
 			$theme_fonts = WP_Font_Face_Resolver::get_fonts_from_theme_json();
 			if ( count( $theme_fonts ) > 0 ) {
 				foreach ( $theme_fonts as $font ) {

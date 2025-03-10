@@ -46,7 +46,8 @@ class WC_Template_Loader {
 			add_filter( 'comments_template', array( __CLASS__, 'comments_template_loader' ) );
 
 			// Loads gallery scripts on Product page for FSE themes.
-			if ( wc_current_theme_is_fse_theme() ) {
+			if ( wp_is_block_theme()
+ ) {
 				self::add_support_for_product_page_gallery();
 			}
 		} else {
