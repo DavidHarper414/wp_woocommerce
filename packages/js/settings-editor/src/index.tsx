@@ -1,12 +1,7 @@
 /**
  * External dependencies
  */
-import {
-	createElement,
-	useLayoutEffect,
-	useContext,
-	useEffect,
-} from '@wordpress/element';
+import { createElement, useContext, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { getAdminLink } from '@woocommerce/settings';
 import { dispatch, useSelect } from '@wordpress/data';
