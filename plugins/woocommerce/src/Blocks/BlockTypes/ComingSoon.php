@@ -20,6 +20,11 @@ class ComingSoon extends AbstractBlock {
 			$this->register_chunk_translations( [ $this->block_name ] );
 	}
 
+	public function initialize() {
+		parent::initialize();
+		add_filter( 'enqueue_block_assets', array( $this, 'enqueue_block_assets' ), 10, 2 );
+	}
+
 	/**
 	 * Enqueue frontend assets for this block, just in time for rendering.
 	 *
@@ -53,31 +58,38 @@ class ComingSoon extends AbstractBlock {
 	}
 
 	/**
-	 * Enqueue assets used for rendering the block in editor context.
-	 *
-	 * This is needed if a block is not yet within the post content--`render` and `enqueue_assets` may not have ran.
+	 * Enqueue coming soon deprecated styles in site editor to support
+	 * coming soon templates created before WooCommerce 9.8.0
 	 */
-	public function enqueue_editor_assets() {
-		if ( $this->enqueued_assets ) {
-			return;
-		}
-		parent::enqueue_editor_assets();
-
+	public function enqueue_block_assets() {
 		if ( ! is_admin() ) {
 			return;
 		}
 
 		$current_screen = get_current_screen();
-		if ( $current_screen instanceof \WP_Screen && 'site-editor' === $current_screen->base ) {
-			$post_id = isset( $_REQUEST['postId'] ) ? wc_clean( wp_unslash( $_REQUEST['postId'] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			if ( $post_id === 'woocommerce/woocommerce//coming-soon' ) {
-				$block_template = get_block_template( $post_id );
-				if ( $block_template && strpos( $block_template->content, '<!-- wp:woocommerce/coming-soon {"color"') !== false ) {
-					wp_enqueue_style(
-						'woocommerce-coming-soon',
-						WC()->plugin_url() . '/assets/css/coming-soon-entire-site-deprecated' . ( is_rtl() ? '-rtl' : '' ) . '.css',
-						array(),
-					);
+		if ( $current_screen instanceof \WP_Screen && 'site-editor' !== $current_screen->base ) {
+			return;
+		}
+
+		$post_id = isset( $_REQUEST['postId'] ) ? wc_clean( wp_unslash( $_REQUEST['postId'] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( $post_id !== 'woocommerce/woocommerce//coming-soon' ) {
+			return;
+		}
+
+		$block_template = get_block_template( $post_id );
+		if ( $block_template ) {
+			$parsed_blocks = parse_blocks( $block_template->content );
+			foreach ( $parsed_blocks as $block ) {
+				if ( isset( $block['blockName'] ) && 'woocommerce/coming-soon' === $block['blockName'] ) {
+					// Color attribute is deprecated in WooCommerce 9.8.0
+					if ( isset( $block['attrs']['color'] ) && ! empty( $block['attrs']['color'] ) ) {
+						wp_enqueue_style(
+							'woocommerce-coming-soon',
+							WC()->plugin_url() . '/assets/css/coming-soon-entire-site-deprecated' . ( is_rtl() ? '-rtl' : '' ) . '.css',
+							array(),
+						);
+						break;
+					}
 				}
 			}
 		}
