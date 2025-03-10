@@ -317,22 +317,10 @@
 			"pinVersion": "1.0.0"
 		},
 		{
-			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself - except certain packages (migration pending).",
-			"dependencies": [
-				"@woocommerce/*"
-			],
-			"packages": [
-				"@woocommerce/product-editor",
-				"@woocommerce/settings-editor"
-			],
-			"isIgnored": true
-		},
-		{
 			"label": "Ensure @woocommerce/* dependencies are locked to the monorepo itself.",
 			"dependencyTypes": [
 				"prod",
-				"dev",
-				"peer"
+				"dev"
 			],
 			"dependencies": [
 				"@woocommerce/*"
