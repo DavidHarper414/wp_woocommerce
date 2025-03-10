@@ -217,6 +217,10 @@ const blocks = {
 		customDir: 'order-confirmation/create-account',
 		isExperimental: true,
 	},
+	'blockified-product-reviews': {
+		isExperimental: true,
+		customDir: 'product-reviews',
+	},
 };
 
 /**
