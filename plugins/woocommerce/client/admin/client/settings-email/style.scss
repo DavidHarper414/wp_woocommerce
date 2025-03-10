@@ -3,6 +3,10 @@ $wc-setting-email-width: 634px;
 
 #wc_settings_email_preview_slotfill {
 	position: relative;
+
+	&.wc-settings-email-improvements-disabled {
+		padding-bottom: 120px;
+	}
 }
 
 .wc-settings-email-preview-container {
@@ -14,7 +18,9 @@ $wc-setting-email-width: 634px;
 	grid-gap: $wc-setting-email-preview-gap;
 	grid-template-rows: 36px 1fr;
 	height: 960px;
+	margin-bottom: 60px;
 	padding: $wc-setting-email-preview-gap;
+	position: relative;
 	width: 684px;
 
 	@include breakpoint( "<782px" ) {
@@ -31,6 +37,7 @@ $wc-setting-email-width: 634px;
 
 .wc-settings-email-preview-container-floating {
 	bottom: 0;
+	margin-bottom: 0;
 	position: absolute;
 	left: $wc-setting-email-width + $wc-setting-email-preview-gap * 2;
 }
@@ -241,6 +248,12 @@ $wc-setting-email-width: 634px;
 	}
 }
 
+.wc-settings-email-preview-ces-feedback {
+	bottom: -40px;
+	position: absolute;
+	right: 0;
+}
+
 .wc-settings-email-select-image {
 	border: 1px #ccc solid;
 	border-radius: 4px;
@@ -274,6 +287,10 @@ $wc-setting-email-width: 634px;
 	max-width: $wc-setting-email-width;
 }
 
+.wc-settings-email-color-palette-header {
+	max-width: $wc-setting-email-width;
+}
+
 .wc-settings-email-color-palette-title {
 	display: inline-block;
 	margin-right: 15px;
@@ -283,4 +300,8 @@ $wc-setting-email-width: 634px;
 	align-items: center;
 	display: inline-flex;
 	gap: 12px;
+
+	.components-toggle-control {
+		margin-bottom: 0;
+	}
 }

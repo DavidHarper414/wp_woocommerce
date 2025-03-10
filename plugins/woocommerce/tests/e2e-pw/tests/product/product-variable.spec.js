@@ -1,9 +1,8 @@
 /**
  * Internal dependencies
  */
-import { tags } from '../../fixtures/fixtures';
-const { test, expect } = require( '@playwright/test' );
-const wcApi = require( '@woocommerce/woocommerce-rest-api' ).default;
+import { tags, test, expect } from '../../fixtures/fixtures';
+import { WC_API_PATH } from '../../utils/api-client';
 
 const productPrice = '18.16';
 const cartDialogMessage =
@@ -141,16 +140,10 @@ test.describe(
 		const slug = variableProductName.replace( / /gi, '-' ).toLowerCase();
 		let variableProductId, totalPrice;
 
-		test.beforeAll( async ( { baseURL } ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
+		test.beforeAll( async ( { restApi } ) => {
 			// add product
-			await api
-				.post( 'products', {
+			await restApi
+				.post( `${ WC_API_PATH }/products`, {
 					name: variableProductName,
 					type: 'variable',
 					attributes: [
@@ -165,8 +158,8 @@ test.describe(
 				.then( async ( response ) => {
 					variableProductId = response.data.id;
 					for ( const key in variations1 ) {
-						await api.post(
-							`products/${ variableProductId }/variations`,
+						await restApi.post(
+							`${ WC_API_PATH }/products/${ variableProductId }/variations`,
 							variations1[ key ]
 						);
 					}
@@ -178,16 +171,13 @@ test.describe(
 			await context.clearCookies();
 		} );
 
-		test.afterAll( async ( { baseURL } ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
-			await api.delete( `products/${ variableProductId }`, {
-				force: true,
-			} );
+		test.afterAll( async ( { restApi } ) => {
+			await restApi.delete(
+				`${ WC_API_PATH }/products/${ variableProductId }`,
+				{
+					force: true,
+				}
+			);
 		} );
 
 		test( 'should be able to add variation products to the cart', async ( {
@@ -199,6 +189,7 @@ test.describe(
 				await page
 					.locator( '#size' )
 					.selectOption( attr.attributes[ 0 ].option );
+				await page.waitForTimeout( 300 );
 				await page
 					.getByRole( 'button', { name: 'Add to cart', exact: true } )
 					.click();
@@ -231,6 +222,7 @@ test.describe(
 		} ) => {
 			await page.goto( `product/${ slug }` );
 			await page.locator( '#size' ).selectOption( 'Large' );
+			await page.waitForTimeout( 300 );
 			await page
 				.getByRole( 'button', { name: 'Add to cart', exact: true } )
 				.click();
@@ -253,16 +245,10 @@ test.describe(
 		const slug = variableProductName.replace( / /gi, '-' ).toLowerCase();
 		let variableProductId;
 
-		test.beforeAll( async ( { baseURL } ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
+		test.beforeAll( async ( { restApi } ) => {
 			// add product
-			await api
-				.post( 'products', {
+			await restApi
+				.post( `${ WC_API_PATH }/products`, {
 					name: variableProductName,
 					type: 'variable',
 					attributes: [
@@ -283,8 +269,8 @@ test.describe(
 				.then( async ( response ) => {
 					variableProductId = response.data.id;
 					for ( const key in variations2 ) {
-						await api.post(
-							`products/${ variableProductId }/variations`,
+						await restApi.post(
+							`${ WC_API_PATH }/products/${ variableProductId }/variations`,
 							variations2[ key ]
 						);
 					}
@@ -296,16 +282,13 @@ test.describe(
 			await context.clearCookies();
 		} );
 
-		test.afterAll( async ( { baseURL } ) => {
-			const api = new wcApi( {
-				url: baseURL,
-				consumerKey: process.env.CONSUMER_KEY,
-				consumerSecret: process.env.CONSUMER_SECRET,
-				version: 'wc/v3',
-			} );
-			await api.delete( `products/${ variableProductId }`, {
-				force: true,
-			} );
+		test.afterAll( async ( { restApi } ) => {
+			await restApi.delete(
+				`${ WC_API_PATH }/products/${ variableProductId }`,
+				{
+					force: true,
+				}
+			);
 		} );
 
 		test( 'Shopper can change variable attributes to the same value', async ( {
@@ -316,6 +299,8 @@ test.describe(
 			await page.locator( '#size' ).selectOption( 'Small' );
 
 			await page.locator( '#colour' ).selectOption( 'Red' );
+
+			await page.waitForTimeout( 300 );
 
 			// handling assertion this way because taxes may or may not be enabled
 			let totalPrice = await page
@@ -373,6 +358,8 @@ test.describe(
 
 			await page.locator( '#size' ).selectOption( 'Small' );
 
+			await page.waitForTimeout( 300 );
+
 			let totalPrice = await page
 				.locator( '.woocommerce-variation-price' )
 				.last()
@@ -396,6 +383,8 @@ test.describe(
 			).toContainText( '5 × 10 × 10 in' );
 
 			await page.locator( '#size' ).selectOption( 'XLarge' );
+
+			await page.waitForTimeout( 300 );
 
 			totalPrice = await page
 				.locator( '.woocommerce-variation-price' )
@@ -429,6 +418,8 @@ test.describe(
 
 			await page.locator( '#size' ).selectOption( 'Small' );
 
+			await page.waitForTimeout( 300 );
+
 			let totalPrice = await page
 				.locator( '.woocommerce-variation-price' )
 				.last()
@@ -443,6 +434,8 @@ test.describe(
 			);
 
 			await page.locator( '#size' ).selectOption( 'Medium' );
+
+			await page.waitForTimeout( 300 );
 
 			totalPrice = await page
 				.locator( '.woocommerce-variation-price' )
@@ -459,6 +452,8 @@ test.describe(
 
 			await page.locator( '#size' ).selectOption( 'Large' );
 
+			await page.waitForTimeout( 300 );
+
 			totalPrice = await page
 				.locator( '.woocommerce-variation-price' )
 				.last()
@@ -473,6 +468,8 @@ test.describe(
 			);
 
 			await page.locator( '#size' ).selectOption( 'XLarge' );
+
+			await page.waitForTimeout( 300 );
 
 			totalPrice = await page
 				.locator( '.woocommerce-variation-price' )
@@ -494,6 +491,8 @@ test.describe(
 			await page.locator( '#colour' ).selectOption( 'Red' );
 
 			await page.locator( '#size' ).selectOption( 'Small' );
+
+			await page.waitForTimeout( 300 );
 
 			let totalPrice = await page
 				.locator( '.woocommerce-variation-price' )

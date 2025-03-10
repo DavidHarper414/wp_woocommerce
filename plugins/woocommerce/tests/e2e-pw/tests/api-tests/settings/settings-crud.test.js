@@ -34,6 +34,7 @@ const disableEmailImprovementsFeature = async () => {
 
 test.describe( 'Settings API tests: CRUD', () => {
 	test.describe( 'List all settings groups', () => {
+		test.beforeAll( disableEmailImprovementsFeature );
 		test( 'can retrieve all settings groups', async ( { request } ) => {
 			// call API to retrieve all settings groups
 			const response = await request.get( './wp-json/wc/v3/settings' );
@@ -1477,6 +1478,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 	} );
 
 	test.describe( 'List all Email settings options', () => {
+		test.beforeAll( disableEmailImprovementsFeature );
 		test( 'can retrieve all email settings', async ( { request } ) => {
 			// call API to retrieve all settings options
 			const response = await request.get(
@@ -1550,7 +1552,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						type: 'color',
 						default: '#720eec',
 						tip: 'The base color for WooCommerce email templates. Default <code>#720eec</code>.',
-						value: '#720eec',
+						value: '#9DFF20',
 					} ),
 				] )
 			);
@@ -1564,7 +1566,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						type: 'color',
 						default: '#f7f7f7',
 						tip: 'The background color for WooCommerce email templates. Default <code>#f7f7f7</code>.',
-						value: '#f7f7f7',
+						value: '#ffffff',
 					} ),
 				] )
 			);
@@ -1592,7 +1594,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						type: 'color',
 						default: '#3c3c3c',
 						tip: 'The main body text color. Default <code>#3c3c3c</code>.',
-						value: '#3c3c3c',
+						value: '#000000',
 					} ),
 				] )
 			);
@@ -1696,11 +1698,11 @@ test.describe( 'Settings API tests: CRUD', () => {
 						id: 'woocommerce_email_base_color',
 						label: 'Accent',
 						description:
-							'Customize the color of your buttons and links. Default <code>#000000</code>.',
+							'Customize the color of your buttons and links. Default <code>#9DFF20</code>.',
 						type: 'color',
-						default: '#000000',
-						tip: 'Customize the color of your buttons and links. Default <code>#000000</code>.',
-						value: '#720eec',
+						default: '#9DFF20',
+						tip: 'Customize the color of your buttons and links. Default <code>#9DFF20</code>.',
+						value: '#9DFF20',
 					} ),
 				] )
 			);
@@ -1714,7 +1716,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						type: 'color',
 						default: '#ffffff',
 						tip: 'Select a color for the background of your emails. Default <code>#ffffff</code>.',
-						value: '#f7f7f7',
+						value: '#ffffff',
 					} ),
 				] )
 			);
@@ -1742,7 +1744,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						type: 'color',
 						default: '#000000',
 						tip: 'Set the color of your headings and text. Default <code>#000000</code>.',
-						value: '#3c3c3c',
+						value: '#000000',
 					} ),
 				] )
 			);
@@ -1756,7 +1758,7 @@ test.describe( 'Settings API tests: CRUD', () => {
 						type: 'color',
 						default: '#787c82',
 						tip: 'Choose a color for your secondary text, such as your footer content. Default <code>#787c82</code>.',
-						value: '#3c3c3c',
+						value: '#787c82',
 					} ),
 				] )
 			);
