@@ -169,10 +169,7 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 				.getByLabel( 'Can a truck fit down your road?' )
 				.check();
 
-			await Promise.all( [
-				checkoutPageObject.waitForCustomerDataUpdate(),
-				checkoutPageObject.waitForCheckoutDataUpdate(),
-			] );
+			await checkoutPageObject.waitForCustomerDataUpdate();
 
 			await checkoutPageObject.page
 				.getByRole( 'group', {
