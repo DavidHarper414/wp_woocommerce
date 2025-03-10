@@ -42,3 +42,19 @@ export interface SidebarItemProps {
 	isCompleted?: boolean;
 	isActive?: boolean;
 }
+
+/**
+ * Props for the Stepper component.
+ */
+export interface StepperProps {
+	active: string;
+	children: ReactNode;
+}
+
+/**
+ * Props for the Step component.
+ */
+export interface StepProps {
+	id: string;
+	children: ReactNode;
+}
