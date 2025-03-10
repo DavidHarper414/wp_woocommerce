@@ -164,13 +164,8 @@ export const __internalEmitAfterProcessingEvents: emitAfterProcessingEventsType 
 
 export const updateDraftOrder = ( data: CheckoutPutData ) => {
 	return async ( { registry } ) => {
-		const {
-			receiveCart,
-			__internalIncrementCalculating,
-			__internalDecrementCalculating,
-		} = registry.dispatch( CART_STORE_KEY );
+		const { receiveCartContents } = registry.dispatch( CART_STORE_KEY );
 		try {
-			__internalIncrementCalculating();
 			const response = await apiFetchWithHeaders( {
 				path: '/wc/store/v1/checkout?__experimental_calc_totals=true',
 				method: 'PUT',
@@ -178,13 +173,11 @@ export const updateDraftOrder = ( data: CheckoutPutData ) => {
 				signal: CheckoutPutAbortController.signal,
 			} );
 			if ( response?.response?.__experimentalCart ) {
-				receiveCart( response.response.__experimentalCart );
+				receiveCartContents( response.response.__experimentalCart );
 			}
 			return response;
 		} catch ( error ) {
 			return Promise.reject( error );
-		} finally {
-			__internalDecrementCalculating();
 		}
 	};
 };
