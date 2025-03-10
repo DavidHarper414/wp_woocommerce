@@ -52,7 +52,6 @@ final class ProductFilterPrice extends AbstractBlock {
 
 		$item = array(
 			'type'  => 'price',
-			'value' => "{$min_price}|{$max_price}",
 		);
 
 		if ( $formatted_min_price && $formatted_max_price ) {
@@ -62,16 +61,19 @@ final class ProductFilterPrice extends AbstractBlock {
 				$formatted_min_price,
 				$formatted_max_price
 			);
+			$item['value'] = "{$min_price}|{$max_price}";
 		}
 
 		if ( ! $formatted_min_price ) {
 			/* translators: %s is the formatted maximum price. */
 			$item['activeLabel'] = sprintf( __( 'Price: Up to %s', 'woocommerce' ), $formatted_max_price );
+			$item['value'] = "|{$max_price}";
 		}
 
 		if ( ! $formatted_max_price ) {
 			/* translators: %s is the formatted minimum price. */
 			$item['activeLabel'] = sprintf( __( 'Price: From %s', 'woocommerce' ), $formatted_min_price );
+			$item['value'] = "{$min_price}|";
 		}
 
 		$items[] = $item;

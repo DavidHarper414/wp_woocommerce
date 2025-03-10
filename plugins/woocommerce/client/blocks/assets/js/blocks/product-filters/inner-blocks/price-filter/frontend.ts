@@ -132,13 +132,15 @@ const productFilterPriceStore = {
 			context.activeFilters = context.activeFilters.filter( ( item ) => item.type !== 'price' );
 			const { activeValue, activeLabel } = actions.getActivePriceAndLabel( price.min, price.max );
 
-			const newActivePriceFilter = {
-				type: 'price',
-				value: activeValue,
-				activeLabel,
-			};
+			if( activeValue ) {
+				const newActivePriceFilter = {
+					type: 'price',
+					value: activeValue,
+					activeLabel,
+				};
 
-			context.activeFilters.push(newActivePriceFilter);
+				context.activeFilters.push(newActivePriceFilter);
+			}
 		},
 		setMinPrice: ( e: HTMLElementEvent< HTMLInputElement > ) => {
 			const price = parseInt( e.target.value, 10 );

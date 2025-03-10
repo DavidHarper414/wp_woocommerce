@@ -21,6 +21,7 @@ const activeFiltersStore = {
 		},
 		get hasActiveFilters() {
 			const { activeFilters } = getContext< ProductFiltersContext >();
+			console.log(activeFilters);
 			return activeFilters.length > 0;
 		},
 	},
