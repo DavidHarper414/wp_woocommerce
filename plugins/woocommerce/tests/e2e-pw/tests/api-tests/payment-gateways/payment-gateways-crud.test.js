@@ -16,10 +16,12 @@ const disableNewPaymentsSettingsFeature = async () => {
 	);
 };
 
-test.beforeAll( disableNewPaymentsSettingsFeature );
+test.beforeAll( async () => {
+	await disableNewPaymentsSettingsFeature();
+	await setOption( apiRequest, BASE_URL, 'woocommerce_gateway_order', '' );
+} );
 
 test.describe( 'Payment Gateways API tests', () => {
-
 	test( 'can view all payment gateways', async ( { request } ) => {
 		// call API to retrieve the payment gateways
 		const response = await request.get(
