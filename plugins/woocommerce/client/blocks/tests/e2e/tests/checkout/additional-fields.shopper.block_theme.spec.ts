@@ -241,7 +241,10 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 				}
 			);
 
-			await checkoutPageObject.waitForCustomerDataUpdate();
+			await Promise.all( [
+				checkoutPageObject.waitForCustomerDataUpdate(),
+				checkoutPageObject.waitForCheckoutDataUpdate(),
+			] );
 
 			// Change the shipping and billing select fields again.
 			await checkoutPageObject.fillInCheckoutWithTestData(
@@ -325,7 +328,10 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 				.getByLabel( 'Test required checkbox' )
 				.check();
 
-			await checkoutPageObject.waitForCustomerDataUpdate();
+			await Promise.all( [
+				checkoutPageObject.waitForCustomerDataUpdate(),
+				checkoutPageObject.waitForCheckoutDataUpdate(),
+			] );
 
 			await checkoutPageObject.placeOrder();
 

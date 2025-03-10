@@ -325,6 +325,10 @@ export class CheckoutPage {
 		} );
 	}
 
+	async waitForCheckoutDataUpdate() {
+		await this.page.waitForResponse( '**/wc/store/v1/checkout**' );
+	}
+
 	async editShippingDetails() {
 		const editButton = this.page.locator(
 			'.wc-block-checkout__shipping-fields .wc-block-components-address-address-wrapper:not(.is-editing) .wc-block-components-address-card__edit'
