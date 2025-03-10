@@ -40,9 +40,9 @@ class AddToCartWithOptions extends AbstractBlock {
 	 * @param array $block   The parsed block.
 	 * @return array Modified block context.
 	 */
-	public function set_is_descendent_of_add_to_cart_with_options_context( $context, $block ) {
+	public function set_is_descendant_of_add_to_cart_with_options_context( $context, $block ) {
 		if ( 'woocommerce/product-button' === $block['blockName'] ) {
-			$context['woocommerce/isDescendentOfAddToCartWithOptions'] = true;
+			$context['woocommerce/isDescendantOfAddToCartWithOptions'] = true;
 		}
 
 		return $context;
@@ -210,10 +210,10 @@ class AddToCartWithOptions extends AbstractBlock {
 			}
 
 			// Because we are printing the template part using do_blocks, context from the outside is lost.
-			// This filter is used to add the isDescendentOfAddToCartWithOptions context back.
-			add_filter( 'render_block_context', array( $this, 'set_is_descendent_of_add_to_cart_with_options_context' ), 10, 2 );
+			// This filter is used to add the isDescendantOfAddToCartWithOptions context back.
+			add_filter( 'render_block_context', array( $this, 'set_is_descendant_of_add_to_cart_with_options_context' ), 10, 2 );
 			$template_part_blocks = do_blocks( $template_part_contents );
-			remove_filter( 'render_block_context', array( $this, 'set_is_descendent_of_add_to_cart_with_options_context' ) );
+			remove_filter( 'render_block_context', array( $this, 'set_is_descendant_of_add_to_cart_with_options_context' ) );
 
 			$form_html = sprintf(
 				'<form %1$s>%2$s%3$s%4$s</form>',

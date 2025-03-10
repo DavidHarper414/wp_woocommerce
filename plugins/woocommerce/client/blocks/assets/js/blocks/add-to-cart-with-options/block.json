@@ -5,14 +5,14 @@
 	"description": "Create an \"Add To Cart\" composition by using blocks",
 	"category": "woocommerce-product-elements",
 	"attributes": {
-		"isDescendentOfAddToCartWithOptions": {
+		"isDescendantOfAddToCartWithOptions": {
 			"type": "boolean",
 			"default": true
 		}
 	},
 	"usesContext": [ "postId" ],
 	"providesContext": {
-		"woocommerce/isDescendentOfAddToCartWithOptions": "isDescendentOfAddToCartWithOptions"
+		"woocommerce/isDescendantOfAddToCartWithOptions": "isDescendantOfAddToCartWithOptions"
 	},
 	"textdomain": "woocommerce",
 	"supports": {

@@ -34,11 +34,11 @@ import useProductTypeSelector from '../../../../blocks/add-to-cart-with-options/
 const getButtonText = ( {
 	cartQuantity,
 	productCartDetails,
-	isDescendentOfAddToCartWithOptions,
+	isDescendantOfAddToCartWithOptions,
 }: {
 	cartQuantity: number;
 	productCartDetails: AddToCartProductDetails;
-	isDescendentOfAddToCartWithOptions: boolean | undefined;
+	isDescendantOfAddToCartWithOptions: boolean | undefined;
 } ) => {
 	const addedToCart = Number.isFinite( cartQuantity ) && cartQuantity > 0;
 
@@ -51,7 +51,7 @@ const getButtonText = ( {
 	}
 
 	if (
-		isDescendentOfAddToCartWithOptions &&
+		isDescendantOfAddToCartWithOptions &&
 		productCartDetails?.single_text
 	) {
 		return productCartDetails?.single_text;
@@ -62,7 +62,7 @@ const getButtonText = ( {
 
 const AddToCartButton = ( {
 	product,
-	isDescendentOfAddToCartWithOptions,
+	isDescendantOfAddToCartWithOptions,
 	className,
 	style,
 }: AddToCartButtonAttributes ): JSX.Element => {
@@ -84,7 +84,7 @@ const AddToCartButton = ( {
 	const buttonText = getButtonText( {
 		cartQuantity,
 		productCartDetails,
-		isDescendentOfAddToCartWithOptions,
+		isDescendantOfAddToCartWithOptions,
 	} );
 
 	const ButtonTag = allowAddToCart ? 'button' : 'a';
@@ -235,9 +235,9 @@ export const Block = ( props: BlockAttributes ): JSX.Element => {
 							product={ product }
 							style={ styleProps.style }
 							className={ styleProps.className }
-							isDescendentOfAddToCartWithOptions={
+							isDescendantOfAddToCartWithOptions={
 								props[
-									'woocommerce/isDescendentOfAddToCartWithOptions'
+									'woocommerce/isDescendantOfAddToCartWithOptions'
 								]
 							}
 						/>

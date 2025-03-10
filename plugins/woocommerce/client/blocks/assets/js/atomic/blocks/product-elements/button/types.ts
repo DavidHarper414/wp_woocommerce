@@ -13,7 +13,7 @@ export interface BlockAttributes {
 	isDescendentOfSingleProductBlock?: boolean | undefined;
 	width?: number | undefined;
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	'woocommerce/isDescendentOfAddToCartWithOptions'?: boolean | undefined;
+	'woocommerce/isDescendantOfAddToCartWithOptions'?: boolean | undefined;
 }
 
 export interface AddToCartProductDetails {
@@ -32,7 +32,7 @@ export interface AddToCartButtonPlaceholderAttributes {
 export interface AddToCartButtonAttributes {
 	className: string;
 	style: React.CSSProperties;
-	isDescendentOfAddToCartWithOptions: boolean | undefined;
+	isDescendantOfAddToCartWithOptions: boolean | undefined;
 	product: {
 		id: number;
 		type: string;

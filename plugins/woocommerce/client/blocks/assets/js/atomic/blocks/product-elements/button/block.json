@@ -9,7 +9,7 @@
 		"query",
 		"queryId",
 		"postId",
-		"woocommerce/isDescendentOfAddToCartWithOptions"
+		"woocommerce/isDescendantOfAddToCartWithOptions"
 	],
 	"textdomain": "woocommerce",
 	"attributes": {
