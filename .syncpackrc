@@ -322,9 +322,8 @@
 				"@woocommerce/*"
 			],
 			"packages": [
-				"@woocommerce/settings-editor",
 				"@woocommerce/product-editor",
-				"@woocommerce/block-templates"
+				"@woocommerce/settings-editor"
 			],
 			"isIgnored": true
 		},
