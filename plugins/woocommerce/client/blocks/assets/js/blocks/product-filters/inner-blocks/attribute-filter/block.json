@@ -62,9 +62,6 @@
 		"query",
 		"filterParams"
 	],
-	"providesContext": {
-		"showCounts": "showCounts"
-	},
 	"attributes": {
 		"attributeId": {
 			"type": "number",

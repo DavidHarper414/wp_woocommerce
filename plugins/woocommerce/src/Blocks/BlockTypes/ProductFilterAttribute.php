@@ -211,6 +211,7 @@ final class ProductFilterAttribute extends AbstractBlock {
 
 			$filter_context = array(
 				'items'  => $attribute_options,
+				'showCounts' => $block_attributes['showCounts'] ?? false,
 			);
 		}
 
