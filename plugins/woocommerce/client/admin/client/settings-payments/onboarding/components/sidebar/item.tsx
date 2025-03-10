@@ -20,15 +20,13 @@ export default function SidebarItem( {
 }: SidebarItemProps ): React.ReactNode {
 	return (
 		<div
-			className={
-				clsx(
-					'settings-payments-onboarding-modal__sidebar--list-item', 
-					{
-						'is-active': isActive,
-						'is-completed': isCompleted,
-					} 
-				) 
-			}
+			className={ clsx(
+				'settings-payments-onboarding-modal__sidebar--list-item',
+				{
+					'is-active': isActive,
+					'is-completed': isCompleted,
+				}
+			) }
 		>
 			<span className="settings-payments-onboarding-modal__sidebar--list-item-icon">
 				{ isCompleted ? (
