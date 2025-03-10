@@ -71,7 +71,7 @@ type FilterItem = {
 	selected: boolean;
 	count: number;
 	type: string;
-	attributeQueryType: 'and' | 'or';
+	attributeQueryType?: 'and' | 'or';
 };
 
 export type ActiveFilterItem = Pick< FilterItem, 'type' | 'value' | 'attributeQueryType' > & {

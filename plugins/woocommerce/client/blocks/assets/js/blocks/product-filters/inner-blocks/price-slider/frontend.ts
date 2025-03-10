@@ -7,10 +7,8 @@ import type { HTMLElementEvent } from '@woocommerce/types';
 /**
  * Internal dependencies
  */
-import {
-	ProductFilterPriceContext,
-	ProductFilterPriceStore,
-} from '../price-filter/frontend';
+import type { ProductFiltersStore } from '../../frontend';
+import type { ProductFilterPriceContext, ProductFilterPriceStore } from '../price-filter/frontend';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DebouncedFunction< T extends ( ...args: any[] ) => any > = ( (
@@ -47,29 +45,21 @@ const debounce = < T extends ( ...args: any[] ) => any >(
 	return debounced;
 };
 
-store( 'woocommerce/product-filter-price-slider', {
+	const productFilterPriceSliderStore = {
 	state: {
 		rangeStyle: () => {
-			const { minRange, maxRange } =
-				getContext< ProductFilterPriceContext >(
-					'woocommerce/product-filter-price'
-				);
-			const productFilterPriceStore = store< ProductFilterPriceStore >(
-				'woocommerce/product-filter-price'
-			);
-			const { minPrice, maxPrice } = productFilterPriceStore.state;
-
+			const context = getContext< ProductFilterPriceContext >();
 			return `--low: ${
-				( 100 * ( minPrice - minRange ) ) / ( maxRange - minRange )
+				( 100 * ( state.minPrice - context.minRange ) ) / ( context.maxRange - context.minRange )
 			}%; --high: ${
-				( 100 * ( maxPrice - minRange ) ) / ( maxRange - minRange )
+				( 100 * ( state.maxPrice - context.minRange ) ) / ( context.maxRange - context.minRange )
 			}%;`;
 		},
 	},
 	actions: {
 		selectInputContent: () => {
 			const element = getElement();
-			if ( element && element.ref ) {
+			if (element?.ref instanceof HTMLInputElement) {
 				element.ref.select();
 			}
 		},
@@ -80,21 +70,22 @@ store( 'woocommerce/product-filter-price-slider', {
 			1000
 		),
 		limitRange: ( e: HTMLElementEvent< HTMLInputElement > ) => {
-			const productFilterPriceStore = store< ProductFilterPriceStore >(
-				'woocommerce/product-filter-price'
-			);
-			const { minPrice, maxPrice } = productFilterPriceStore.state;
 			if ( e.target.classList.contains( 'min' ) ) {
 				e.target.value = Math.min(
 					parseInt( e.target.value, 10 ),
-					maxPrice - 1
+					state.maxPrice - 1
 				).toString();
 			} else {
 				e.target.value = Math.max(
 					parseInt( e.target.value, 10 ),
-					minPrice + 1
+					state.minPrice + 1
 				).toString();
 			}
 		},
 	},
-} );
+};
+
+const { state} = store<ProductFiltersStore & ProductFilterPriceStore & typeof productFilterPriceSliderStore>(
+	'woocommerce/product-filters',
+	productFilterPriceSliderStore
+);
