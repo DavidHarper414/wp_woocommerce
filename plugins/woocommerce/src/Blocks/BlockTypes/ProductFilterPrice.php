@@ -213,8 +213,8 @@ final class ProductFilterPrice extends AbstractBlock {
 		$price_results = $filters->get_filtered_price( $query_vars );
 
 		return array(
-			'min_price' => intval( floor( $price_results->min_price ?? 0 ) ),
-			'max_price' => intval( ceil( $price_results->max_price ?? 0 ) ),
+			'min_price' => intval( floor( floatval( $price_results->min_price ?? 0 ) ) ),
+			'max_price' => intval( ceil( floatval( $price_results->max_price ?? 0 ) ) ),
 		);
 	}
 

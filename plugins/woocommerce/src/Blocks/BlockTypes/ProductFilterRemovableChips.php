@@ -73,7 +73,7 @@ final class ProductFilterRemovableChips extends AbstractBlock {
 					<?php $remove_label = sprintf( __( 'Remove filter: %s', 'woocommerce' ), $item['activeLabel'] ); ?>
 					<li class="wc-block-product-filter-removable-chips__item" data-wp-each-child>
 						<span class="wc-block-product-filter-removable-chips__label">
-							<?php echo esc_html( $item['label'] ); ?>
+							<?php echo esc_html( $item['activeLabel'] ); ?>
 						</span>
 						<button
 							type="button"
