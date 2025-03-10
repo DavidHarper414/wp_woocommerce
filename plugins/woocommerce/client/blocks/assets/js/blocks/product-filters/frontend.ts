@@ -186,7 +186,7 @@ const productFiltersStore = {
 				value: context.item.value,
 				type: context.item.type,
 				attributeQueryType: context.item.attributeQueryType,
-				activeLabel: context.activeLabelTemplate.replace( '{{label}}', context.item.label )
+				activeLabel: context.activeLabelTemplate.replace( '{{label}}', context.item.ariaLabel )
 			};
 			const newActiveFilters = context.activeFilters.filter(
 				( activeFilter ) => ! ( activeFilter.value === newActiveFilter.value && activeFilter.type === newActiveFilter.type )

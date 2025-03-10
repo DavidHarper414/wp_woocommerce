@@ -100,8 +100,10 @@ final class ProductFilterCheckboxList extends AbstractBlock {
 									<path d="M9.25 1.19922L3.75 6.69922L1 3.94922" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 								</svg>
 							</span>
-							<span class="wc-block-product-filter-checkbox-list__text">
-								<?php echo wp_kses_post( $item['label'] ); ?>
+							<span class="wc-block-product-filter-checkbox-list__text-wrapper">
+								<span class="wc-block-product-filter-checkbox-list__text">
+									<?php echo wp_kses_post( $item['label'] ); ?>
+								</span>
 								<?php if ( $show_counts ) : ?>
 									<span class="wc-block-product-filter-checkbox-list__count">
 										(<?php echo esc_html( $item['count'] ); ?>)

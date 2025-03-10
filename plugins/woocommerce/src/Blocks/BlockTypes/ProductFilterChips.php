@@ -91,7 +91,9 @@ final class ProductFilterChips extends AbstractBlock {
 						<?php endif; ?>
 					>
 						<span class="wc-block-product-filter-chips__label">
-							<?php echo wp_kses_post( $item['label'] ); ?>
+							<span class="wc-block-product-filter-chips__text">
+								<?php echo wp_kses_post( $item['label'] ); ?>
+							</span>
 							<?php if ( $show_counts ) : ?>
 								<span class="wc-block-product-filter-chips__count">
 									(<?php echo esc_html( $item['count'] ); ?>)
