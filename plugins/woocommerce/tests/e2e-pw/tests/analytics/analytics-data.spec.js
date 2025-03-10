@@ -164,6 +164,24 @@ test.beforeAll( async ( { browser, restApi } ) => {
 			orderIds = response.data.create.map( ( order ) => order.id );
 		} );
 
+	// reset analytics settings to default
+	await restApi.post( 'wc-analytics/settings/wc_admin/batch', {
+		update: [
+			{
+				id: 'woocommerce_excluded_report_order_statuses',
+				value: [ 'pending', 'cancelled', 'failed' ],
+			},
+			{
+				id: 'woocommerce_actionable_order_statuses',
+				value: [ 'processing', 'on-hold' ],
+			},
+			{
+				id: 'woocommerce_default_date_range',
+				value: 'period=month&compare=previous_year',
+			},
+		],
+	} );
+
 	// process the Action Scheduler tasks
 	setupPage = await browser.newPage();
 	// eslint-disable-next-line playwright/no-wait-for-timeout
