@@ -124,12 +124,6 @@ class ProductGalleryThumbnails extends AbstractBlock {
 			return '';
 		}
 
-		if ( ! empty( $content ) ) {
-			parent::register_block_type_assets();
-			$this->register_chunk_translations( [ $this->block_name ] );
-			return $content;
-		}
-
 		$classes_and_styles = StyleAttributesUtils::get_classes_and_styles_by_attributes( $attributes );
 		$post_id            = $block->context['postId'];
 
