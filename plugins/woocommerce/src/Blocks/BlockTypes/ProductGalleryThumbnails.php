@@ -126,21 +126,15 @@ class ProductGalleryThumbnails extends AbstractBlock {
 
 		$classes_and_styles = StyleAttributesUtils::get_classes_and_styles_by_attributes( $attributes );
 		$post_id            = $block->context['postId'];
+		$crop_images        = $block->context['cropImages'] ?? false;
 
 		if ( ! $post_id ) {
 			return '';
 		}
 
-		$product = wc_get_product( $post_id );
-
-		if ( ! $product ) {
-			return '';
-		}
-
-		$crop_images            = $block->context['cropImages'] ?? false;
 		$product_gallery_images = ProductGalleryUtils::get_product_gallery_images( $post_id, 'full', array(), 'wc-block-product-gallery-thumbnails__thumbnail', $crop_images );
 
-		if ( ! $product_gallery_images || count( $product_gallery_images ) <= 1 ) {
+		if ( empty( $product_gallery_images ) ) {
 			return '';
 		}
 
