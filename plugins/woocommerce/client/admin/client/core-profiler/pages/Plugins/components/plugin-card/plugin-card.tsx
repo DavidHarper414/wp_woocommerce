@@ -69,6 +69,7 @@ export const PluginCard = ( {
 				<div className="woocommerce-profiler-plugin-card-top">
 					{ ! installed && (
 						<CheckboxControl
+							__nextHasNoMarginBottom
 							id={ `${ pluginKey }-checkbox` }
 							className="core-profiler__checkbox"
 							disabled={ disabled }
