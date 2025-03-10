@@ -67,9 +67,9 @@ const test = baseTest.extend( {
 	},
 } );
 
-test.describe( 'Payment setup task', () => {
-	test.beforeAll( disableNewPaymentsSettingsFeature );
+test.beforeAll( disableNewPaymentsSettingsFeature );
 
+test.describe( 'Payment setup task', () => {
 	test(
 		'Saving valid bank account transfer details enables the payment method',
 		{ tag: [ tags.COULD_BE_LOWER_LEVEL_TEST ] },

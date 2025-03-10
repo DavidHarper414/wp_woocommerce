@@ -15,8 +15,10 @@ const disableNewPaymentsSettingsFeature = async () => {
 		'no'
 	);
 };
+
+test.beforeAll( disableNewPaymentsSettingsFeature );
+
 test.describe( 'Payment Gateways API tests', () => {
-	test.beforeAll( disableNewPaymentsSettingsFeature );
 
 	test( 'can view all payment gateways', async ( { request } ) => {
 		// call API to retrieve the payment gateways
