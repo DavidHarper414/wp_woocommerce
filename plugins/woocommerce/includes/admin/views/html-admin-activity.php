@@ -17,13 +17,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<hr class="wp-header-end">
 
-	<form id="activity-table" method="GET">
+	<form id="activity-table" class="bis-select2" method="GET">
 		<p class="search-box">
 			<label for="post-search-input" class="screen-reader-text"><?php esc_html_e( 'Search customer stock notifications', 'woocommerce' ); ?>:</label>
 			<input type="search" value="<?php echo esc_attr( $search ); ?>" name="s" id="bis-search-input">
 			<input type="submit" value="<?php echo esc_attr( 'Search', 'woocommerce' ); ?>" class="button" id="search-submit" name="">
 		</p>
-		<input type="hidden" name="page" value="<?php echo isset( $_REQUEST['page'] ) ? esc_attr( wc_clean( $_REQUEST['page'] ) ) : ''; ?>"/>
+		<input type="hidden" name="page" value="wc-status"/>
+		<input type="hidden" name="tab" value="bis_activity"/>
 		<?php $table->display(); ?>
 	</form>
 </div>

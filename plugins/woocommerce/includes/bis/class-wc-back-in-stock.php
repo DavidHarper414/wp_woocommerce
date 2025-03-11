@@ -292,7 +292,6 @@ class WC_Back_In_Stock {
 
 		$screens[] = 'woocommerce_page_bis_dashboard';
 		$screens[] = 'woocommerce_page_bis_notifications';
-		$screens[] = 'woocommerce_page_bis_activity';
 
 		return $screens;
 	}

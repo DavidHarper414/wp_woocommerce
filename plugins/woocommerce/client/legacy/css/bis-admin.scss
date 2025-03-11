@@ -114,8 +114,8 @@
 }
 
 
-#activity-table .sw-select2-container.select2-container,
-#bis-notifications-table .sw-select2-container.select2-container {
+#activity-table .select2-container,
+#bis-notifications-table .select2-container {
   display: inline-block;
   width: 220px !important;
   margin-right: 4px;
@@ -139,7 +139,7 @@
 }
 
 #bis-notifications-table .wp-list-table.wc_bis_notifications tfoot th,
-#bis-notifications-table .wp-list-table.wc_bis_notifications thead th, {
+#bis-notifications-table .wp-list-table.wc_bis_notifications thead th {
   padding: .75em 1em;
 
   a {

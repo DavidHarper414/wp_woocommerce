@@ -712,7 +712,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 	public function extra_tablenav( $which ) {
 		if ( 'top' === $which && ! is_singular() ) {
 			?>
-			<div class="alignleft actions sw-select2-autoinit">
+			<div class="alignleft actions">
 				<?php
 				$this->render_filters();
 				submit_button( __( 'Filter', 'woocommerce' ), '', 'filter_action', false, array( 'id' => 'post-query-submit' ) );
@@ -763,7 +763,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 			}
 		}
 		?>
-		<select class="sw-select2-search--products" name="bis_product_filter" data-placeholder="<?php esc_attr_e( 'Select product&hellip;', 'woocommerce' ); ?>" data-allow_clear="true" id="bis_product_filter">
+		<select class="wc-product-search" name="bis_product_filter" data-placeholder="<?php esc_attr_e( 'Select product&hellip;', 'woocommerce' ); ?>" data-allow_clear="true" id="bis_product_filter">
 			<?php if ( $product_string && $product_id ) { ?>
 				<option value="<?php echo esc_attr( $product_id ); ?>" selected="selected"><?php echo wp_kses_post( htmlspecialchars( $product_string, ENT_COMPAT ) ); ?><option>
 			<?php } ?>
@@ -797,7 +797,7 @@ class WC_BIS_Notifications_List_Table extends WP_List_Table {
 			}
 		}
 		?>
-		<select class="sw-select2-search--customers" name="bis_customer_filter" data-placeholder="<?php esc_attr_e( 'Select customer&hellip;', 'woocommerce' ); ?>" data-allow_clear="true" id="bis_customer_filter">
+		<select class="wc-customer-search" name="bis_customer_filter" data-placeholder="<?php esc_attr_e( 'Select customer&hellip;', 'woocommerce' ); ?>" data-allow_clear="true" id="bis_customer_filter">
 			<?php if ( $user_string && $user_id ) { ?>
 				<option value="<?php echo esc_attr( $user_id ); ?>" selected="selected"><?php echo wp_kses_post( htmlspecialchars( $user_string, ENT_COMPAT ) ); ?><option>
 			<?php } ?>

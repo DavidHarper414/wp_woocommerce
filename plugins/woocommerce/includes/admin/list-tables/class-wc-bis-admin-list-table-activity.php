@@ -28,7 +28,7 @@ class WC_BIS_Activity_List_Table extends WP_List_Table {
 	 *
 	 * @const PAGE_URL
 	 */
-	const PAGE_URL = 'admin.php?page=bis_activity';
+	const PAGE_URL = 'admin.php?page=wc-status&tab=bis_activity';
 
 	/**
 	 * Total view records.
@@ -382,7 +382,7 @@ class WC_BIS_Activity_List_Table extends WP_List_Table {
 	public function extra_tablenav( $which ) {
 		if ( 'top' === $which && ! is_singular() && ! $this->notification ) {
 			?>
-			<div class="alignleft actions sw-select2-autoinit">
+			<div class="alignleft actions">
 			<?php
 				$this->render_filters();
 				submit_button( __( 'Filter', 'woocommerce' ), '', 'filter_action', false, array( 'id' => 'post-query-submit' ) );
@@ -421,9 +421,9 @@ class WC_BIS_Activity_List_Table extends WP_List_Table {
 			}
 		}
 		?>
-		<select class="sw-select2-search--customers" name="_customer_filter" data-placeholder="<?php esc_attr_e( 'All customers', 'woocommerce' ); ?>" data-allow_clear="true">
+		<select class="wc-customer-search bis-customer-search" name="_customer_filter" data-placeholder="<?php esc_attr_e( 'All customers', 'woocommerce' ); ?>" data-allow_clear="true">
 			<?php if ( $user_string && $user_id ) { ?>
-				<option value="<?php echo esc_attr( $user_id ); ?>" selected="selected"><?php echo wp_kses_post( htmlspecialchars( $user_string, ENT_COMPAT ) ); ?><option>
+				<option value="<?php echo esc_attr( $user_id ); ?>" selected="selected"><?php echo wp_kses_post( htmlspecialchars( $user_string, ENT_COMPAT ) ); ?></option>
 			<?php } ?>
 		</select>
 		<?php

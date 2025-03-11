@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		$table->views();
 		?>
 
-		<form id="bis-notifications-table" method="GET">
+		<form id="bis-notifications-table" class="bis-select2" method="GET">
 			<p class="search-box">
 				<label for="post-search-input" class="screen-reader-text"><?php esc_html_e( 'Search Notifications', 'woocommerce' ); ?>:</label>
 				<input type="search" value="<?php echo esc_attr( $search ); ?>" name="s" id="bis-search-input">

@@ -71,7 +71,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 					<div class="notification-data__row notification-data__row--columns">
 
-						<div class="notification-data__form-field sw-select2-autoinit">
+						<div class="notification-data__form-field">
 							<label><?php esc_html_e( 'Customer', 'woocommerce' ); ?></label>
 							<?php
 							$user_string = '';
@@ -93,7 +93,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								}
 							}
 							?>
-							<select class="sw-select2-search--customers" name="user_id" data-placeholder="<?php esc_attr_e( 'Search for a customer&hellip;', 'woocommerce' ); ?>" data-allow_clear="true">
+							<select class="wc-customer-search" name="user_id" data-placeholder="<?php esc_attr_e( 'Search for a customer&hellip;', 'woocommerce' ); ?>" data-allow_clear="true">
 								<?php if ( $user_string && $user_id ) { ?>
 									<option value="<?php echo esc_attr( $user_id ); ?>" selected="selected"><?php echo wp_kses_post( htmlspecialchars( $user_string, ENT_COMPAT ) ); ?><option>
 								<?php } ?>
@@ -114,7 +114,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							</div>
 						</div>
 
-						<div class="notification-data__form-field sw-select2-autoinit">
+						<div class="notification-data__form-field">
 
 							<label><?php esc_html_e( 'Product', 'woocommerce' ); ?></label>
 							<?php
@@ -136,7 +136,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								}
 							}
 							?>
-							<select class="sw-select2-search--products" name="product_id" data-action="wc_bis_json_search_products_for_notification" data-placeholder="<?php esc_attr_e( 'Select product&hellip;', 'woocommerce' ); ?>" data-allow_clear="true">
+							<select class="wc-product-search" name="product_id" data-action="wc_bis_json_search_products_for_notification" data-placeholder="<?php esc_attr_e( 'Select product&hellip;', 'woocommerce' ); ?>" data-allow_clear="true">
 								<?php if ( $product_string && $product_id ) { ?>
 									<option value="<?php echo esc_attr( $product_id ); ?>" selected="selected"><?php echo wp_kses_post( htmlspecialchars( $product_string, ENT_COMPAT ) ); ?><option>
 								<?php } ?>

@@ -1,11 +1,11 @@
-.sw-select2-container {
+.bis-select2 {
 
-  &.select2-container {
+  .select2-container {
     display: block;
   }
 }
 
-.sw-select2-container {
+.bis-select2 {
 
   .select2-selection--single .select2-selection__arrow {
     width: 24px;
@@ -26,7 +26,6 @@
   }
 
   &.select2-container--open {
-
     &.select2-container--above .select2-selection--multiple {
       border-top-left-radius: 0;
       border-top-right-radius: 0;
@@ -70,7 +69,6 @@
     padding: 2px 8px 7px 6px;
 
     .select2-search__field {
-
       width: 100%;
       border-color: #f1f1f1;
 
@@ -82,9 +80,8 @@
   }
 }
 
-.woocommerce_options_panel .sw-select2-container {
-
-  &.select2-container {
+.woocommerce_options_panel .bis-select2 {
+  .select2-container {
     float: none;
   }
 }
