@@ -3,7 +3,6 @@
  */
 import { createElement } from '@wordpress/element';
 import { addQueryArgs } from '@wordpress/url';
-/* eslint-disable @woocommerce/dependency-group */
 // eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 import { __experimentalItemGroup as ItemGroup } from '@wordpress/components';
 import * as IconPackage from '@wordpress/icons';
@@ -11,7 +10,6 @@ import {
 	SidebarNavigationScreen,
 	SidebarNavigationItem,
 } from '@automattic/site-admin';
-/* eslint-enable @woocommerce/dependency-group */
 
 const { Icon, ...icons } = IconPackage;
 
@@ -26,16 +24,20 @@ const SidebarNavigationScreenContent = ( {
 		<ItemGroup>
 			{ Object.keys( pages ).map( ( slug ) => {
 				const { label, icon } = pages[ slug ];
+				const isCurrentPage = activePage === slug;
+				const to = isCurrentPage
+					? undefined
+					: addQueryArgs( 'wc-settings', { tab: slug } );
 				return (
 					<SidebarNavigationItem
 						icon={
 							icons[ icon as keyof typeof icons ] ||
 							icons.settings
 						}
-						aria-current={ activePage === slug }
+						aria-current={ isCurrentPage }
 						uid={ slug }
 						key={ slug }
-						to={ addQueryArgs( 'wc-settings', { tab: slug } ) }
+						to={ to }
 					>
 						{ label }
 					</SidebarNavigationItem>
