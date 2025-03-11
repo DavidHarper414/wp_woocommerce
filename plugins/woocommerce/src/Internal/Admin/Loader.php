@@ -461,7 +461,7 @@ class Loader {
 	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function get_unregistered_order_statuses() {
-		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0', 'Direct `\Automattic\WooCommerce\Internal\Admin\Settings` use' );
+		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0' );
 
 		$registered_statuses   = wc_get_order_statuses();
 		$all_synced_statuses   = OrdersDataStore::get_all_statuses();
@@ -509,7 +509,7 @@ class Loader {
 	 * @deprecated migrate to \Automattic\WooCommerce\Internal\Admin\Settings instead.
 	 */
 	public static function get_custom_settings( $settings ) {
-		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0', 'Direct `\Automattic\WooCommerce\Internal\Admin\Settings` use' );
+		wc_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '9.9.0' );
 
 		$wc_rest_settings_options_controller = new \WC_REST_Setting_Options_Controller();
 		$wc_admin_group_settings             = $wc_rest_settings_options_controller->get_group_settings( 'wc_admin' );
