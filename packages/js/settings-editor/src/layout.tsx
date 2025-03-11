@@ -72,7 +72,7 @@ export function Layout( {
 											: ANIMATION_DURATION,
 									ease: 'easeOut',
 								} }
-								className="edit-site-layout__sidebar"
+								className="edit-site-layout__sidebar a8c-site-admin-sidebar"
 							>
 								<SidebarContent
 									shouldAnimate={ false }

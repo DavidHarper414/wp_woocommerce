@@ -14,6 +14,7 @@ import { RouterProvider } from '@automattic/site-admin';
 import { Layout } from './layout';
 import { useActiveRoute } from './route';
 import { SettingsDataProvider, SettingsDataContext } from './data';
+import { isGutenbergVersionAtLeast } from './utils';
 
 const Notices = () => {
 	const notices: { id: string; content: string }[] = useSelect(
@@ -81,6 +82,20 @@ const SettingsApp = () => {
 };
 
 export const SettingsEditor = () => {
+	const isRequiredGutenbergVersion = isGutenbergVersionAtLeast( 19.0 );
+
+	if ( ! isRequiredGutenbergVersion ) {
+		return (
+			//  Temporary during development.
+			<div style={ { margin: 'auto' } }>
+				{ __(
+					'Please enable Gutenberg version 19.0 or higher for this feature',
+					'woocommerce'
+				) }
+			</div>
+		);
+	}
+
 	return (
 		<RouterProvider routes={ [] } pathArg="page">
 			<SettingsDataProvider>
