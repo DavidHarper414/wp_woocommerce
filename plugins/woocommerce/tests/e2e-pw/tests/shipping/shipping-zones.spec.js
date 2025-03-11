@@ -122,6 +122,21 @@ async function checkShippingRateInCart( page, product, checks ) {
 			} );
 		},
 		page: async ( { restApi, page }, use ) => {
+			const enableShippingCalcState = await updateIfNeeded(
+				'shipping/woocommerce_enable_shipping_calc',
+				'yes'
+			);
+
+			const shippingCostRequiresAddressState = await updateIfNeeded(
+				'shipping/woocommerce_shipping_cost_requires_address',
+				'yes'
+			);
+
+			const taxCalcState = await updateIfNeeded(
+				'general/woocommerce_calc_taxes',
+				'no'
+			);
+
 			await use( page );
 
 			// Cleanup
@@ -142,6 +157,16 @@ async function checkShippingRateInCart( page, product, checks ) {
 						} );
 				}
 			}
+
+			await resetValue(
+				`shipping/woocommerce_enable_shipping_calc`,
+				enableShippingCalcState
+			);
+			await resetValue(
+				`shipping/woocommerce_shipping_cost_requires_address`,
+				shippingCostRequiresAddressState
+			);
+			await resetValue( `general/woocommerce_calc_taxes`, taxCalcState );
 		},
 	} );
 
