@@ -53,6 +53,11 @@ const blocks = {
 			'add-to-cart-with-options/grouped-product-selector/product-item-template',
 		isExperimental: true,
 	},
+	'add-to-cart-with-options-grouped-product-selector-item-cta': {
+		customDir:
+			'add-to-cart-with-options/grouped-product-selector/product-item-cta',
+		isExperimental: true,
+	},
 	'all-products': {
 		customDir: 'products/all-products',
 	},
@@ -263,7 +268,7 @@ const getBlockEntries = ( relativePath, blockEntries = blocks ) => {
 	);
 };
 
-// The entries are used to build styles **and** JS, but for
+// `blocks` entries are used to build styles **and** JS, but for
 // frontend JS of these blocks we use a script modules build so
 // we skip building their JS files in the old build.
 // The script modules build handles them in
@@ -280,15 +285,23 @@ const frontendScriptModuleBlocksToSkip = [
 	'product-filter-rating',
 	'product-filter-active',
 	'product-filter-removable-chips',
+	'add-to-cart-form',
+	'add-to-cart-with-options',
+	'add-to-cart-with-options-quantity-selector',
+	'add-to-cart-with-options-variation-selector',
+	'add-to-cart-with-options-grouped-product-selector',
+	'add-to-cart-with-options-grouped-product-selector-item',
+	'accordion-group',
 ];
 
 const frontendEntries = getBlockEntries( 'frontend.{t,j}s{,x}', {
 	...Object.fromEntries(
-		Object.entries( blocks ).filter( ( [ blockName ] ) => {
-			return ! frontendScriptModuleBlocksToSkip.includes( blockName );
-		} )
+		Object.entries( { ...blocks, ...genericBlocks } ).filter(
+			( [ blockName ] ) => {
+				return ! frontendScriptModuleBlocksToSkip.includes( blockName );
+			}
+		)
 	),
-	...genericBlocks,
 } );
 
 const entries = {

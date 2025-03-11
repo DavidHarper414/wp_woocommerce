@@ -49,6 +49,14 @@ class Integration {
 			// If dependencies are not met, do not initialize the email editor integration.
 			return;
 		}
+
+		add_action( 'woocommerce_init', array( $this, 'initialize' ) );
+	}
+
+	/**
+	 * Initialize the integration.
+	 */
+	public function initialize() {
 		$this->init_hooks();
 		$this->register_hooks();
 	}
@@ -95,7 +103,7 @@ class Integration {
 				),
 				'rewrite'      => array( 'slug' => self::EMAIL_POST_TYPE ),
 				'supports'     => array( 'title', 'editor' ),
-				'public'       => true,
+				'public'       => false,
 				'show_ui'      => true,  // Showing in the admin UI is temporary, it will be removed in the future.
 				'show_in_menu' => true,
 				'show_in_rest' => true,
