@@ -140,6 +140,11 @@ const productGallery = {
 		},
 		// TODO: This is a temporary solution to display the view all thumbnail.
 		// Will eventually be replaced by a slider where processedImageData can be used directly.
+		/**
+		 * The subset of processedImageData that is displayed in the thumbnails block.
+		 *
+		 * @return Array The subset of processed image data.
+		 */
 		get thumbnails() {
 			const { numberOfThumbnails } = getConfig();
 			return this.processedImageData.slice( 0, numberOfThumbnails );

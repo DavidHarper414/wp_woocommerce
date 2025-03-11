@@ -68,14 +68,14 @@ class ProductGalleryThumbnails extends AbstractBlock {
 			return '';
 		}
 
-		// TODO: This is a temporary solution to display the view all thumbnail.
-		// Will eventually be replaced by a slider.
 		$product_gallery_thumbnails_data = ProductGalleryUtils::get_product_gallery_image_data( $product );
 		$product_gallery_images          = $product_gallery_thumbnails_data['images'];
 		if ( count( $product_gallery_images ) <= 1 ) {
 			return '';
 		}
 
+		// TODO: This is a temporary solution to display the view all thumbnail.
+		// Will eventually be replaced by a slider.
 		$default_number_of_thumbnails = 3;
 		$number_of_thumbnails         = isset( $attributes['numberOfThumbnails'] ) && is_numeric( $attributes['numberOfThumbnails'] ) ? $attributes['numberOfThumbnails'] : $default_number_of_thumbnails;
 		$number_of_images             = count( $product_gallery_images );
