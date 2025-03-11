@@ -492,6 +492,8 @@ test.describe( 'General tab', { tag: [ tags.GUTENBERG ] }, () => {
 		test( 'can a shopper add the simple product to the cart', async ( {
 			page,
 		} ) => {
+			await page.context().clearCookies();
+
 			await page.goto( `?post_type=product&p=${ productId }` );
 
 			await page.locator( 'button[name="add-to-cart"]' ).click();
