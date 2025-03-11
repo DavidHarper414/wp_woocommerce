@@ -201,7 +201,7 @@ export const getBlockPatternsForEmailTemplate = createRegistrySelector(
 export const canUserEditTemplates = createRegistrySelector(
 	( select ) => () => {
 		// @ts-expect-error Selector is not typed
-		return select( coreDataStore ).canUser( 'update', {
+		return select( coreDataStore ).canUser( 'create', {
 			kind: 'postType',
 			name: 'wp_template',
 		} );
