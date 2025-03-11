@@ -13,28 +13,25 @@ use WC_Unit_Test_Case;
  */
 class LoaderTest extends WC_Unit_Test_Case {
 	/**
-	 * Set up test.
-	 */
-	public function setUp(): void {
-		parent::setUp();
-		add_filter( 'deprecated_hook_trigger_error', '__return_false' );
-	}
-
-	/**
-	 * Runs after each test.
-	 */
-	public function tearDown(): void {
-		parent::tearDown();
-		remove_filter( 'deprecated_hook_trigger_error', '__return_false' );
-	}
-
-	/**
 	 * Test the status fetching methods
 	 */
 	public function test_deprecated_statuses_fetch_methods() {
 		$this->assertSame( array(), Loader::get_order_statuses( array() ) );
 		$this->assertSame( array(), Loader::get_unregistered_order_statuses() );
+	}
 
-		remove_filter( 'deprecated_hook_trigger_error', '__return_false' );
+	/**
+	 * Adds a deprecated function to the list of caught deprecated calls.
+	 *
+	 * @since 3.7.0
+	 * @since 6.1.0 Added the `$replacement`, `$version`, and `$message` parameters.
+	 *
+	 * @param string $function_name The deprecated function.
+	 * @param string $replacement   The function that should have been called.
+	 * @param string $version       The version of WordPress that deprecated the function.
+	 * @param string $message       Optional. A message regarding the change.
+	 */
+	public function deprecated_function_run( $function_name, $replacement, $version, $message = '' ) {
+		// We are expecting deprecations, so let's ignore them to let tests run.
 	}
 }
