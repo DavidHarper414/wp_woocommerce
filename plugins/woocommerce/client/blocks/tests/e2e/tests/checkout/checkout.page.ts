@@ -68,6 +68,15 @@ export class CheckoutPage {
 			contact: {},
 		}
 	) {
+		await Promise.race( [
+			this.page
+				.getByRole( 'group', { name: 'Shipping address' } )
+				.waitFor( { state: 'visible' } ),
+			this.page
+				.getByRole( 'group', { name: 'Billing address' } )
+				.waitFor( { state: 'visible' } ),
+		] );
+
 		const isShippingOpen = await this.page
 			.getByRole( 'group', {
 				name: 'Shipping address',
