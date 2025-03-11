@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { createElement } from '@wordpress/element';
+import { createElement, useContext, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { getAdminLink } from '@woocommerce/settings';
 import { dispatch, useSelect } from '@wordpress/data';
@@ -15,6 +15,7 @@ import { unlock } from '@wordpress/edit-site/build-module/lock-unlock';
 // @ts-ignore No types for this exist yet.
 import { store as editSiteStore } from '@wordpress/edit-site/build-module/store';
 /* eslint-enable @woocommerce/dependency-group */
+import { RouterProvider } from '@automattic/site-admin';
 
 /**
  * Internal dependencies
@@ -22,9 +23,10 @@ import { store as editSiteStore } from '@wordpress/edit-site/build-module/store'
 import { isGutenbergVersionAtLeast } from './utils';
 import { Layout } from './layout';
 import { useActiveRoute } from './route';
-import { SettingsDataProvider } from './data';
+import { SettingsDataProvider, SettingsDataContext } from './data';
 
-const { RouterProvider } = unlock( routerPrivateApis );
+const { RouterProvider: OldGutenbergRouterProvider } =
+	unlock( routerPrivateApis );
 
 // Set the back button to go to the WooCommerce home page.
 dispatch( editSiteStore ).updateSettings( {
@@ -43,8 +45,48 @@ const Notices = () => {
 	return <SnackbarList notices={ notices } onRemove={ () => {} } />;
 };
 
+const appendSettingsScripts = ( scripts: string[] ) => {
+	return scripts.map( ( script ) => {
+		const scriptElement = document.createElement( 'script' );
+		scriptElement.src = script;
+		scriptElement.onerror = () => {
+			// eslint-disable-next-line no-console
+			console.error( `Failed to load script: ${ script }` );
+		};
+		document.body.appendChild( scriptElement );
+		return scriptElement;
+	} );
+};
+
+const removeSettingsScripts = ( scripts: HTMLScriptElement[] ) => {
+	scripts.forEach( ( script ) => {
+		document.body.removeChild( script );
+	} );
+};
+
 const SettingsApp = () => {
-	const { route, settingsPage, tabs, activeSection } = useActiveRoute();
+	const { route, settingsPage, tabs, activeSection, activePage } =
+		useActiveRoute();
+	const { settingsScripts } = useContext( SettingsDataContext );
+
+	useEffect( () => {
+		if ( ! activePage ) {
+			return;
+		}
+
+		const scripts = Array.from(
+			new Set( [
+				...( settingsScripts._default || [] ),
+				...( settingsScripts[ activePage ] || [] ),
+			] )
+		);
+
+		const scriptsElements = appendSettingsScripts( scripts );
+
+		return () => {
+			removeSettingsScripts( scriptsElements );
+		};
+	}, [ activePage, activeSection ] );
 
 	return (
 		<Layout
@@ -72,14 +114,17 @@ export const SettingsEditor = () => {
 	}
 
 	return (
-		<SettingsDataProvider>
-			<SettingsApp />
-			<Notices />
-		</SettingsDataProvider>
+		<RouterProvider routes={ [] } pathArg="page">
+			<OldGutenbergRouterProvider>
+				<SettingsDataProvider>
+					<SettingsApp />
+					<Notices />
+				</SettingsDataProvider>
+			</OldGutenbergRouterProvider>
+		</RouterProvider>
 	);
 };
 
 export * from './components';
 export * from './legacy';
 export * from './route';
-export { RouterProvider };

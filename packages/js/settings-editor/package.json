@@ -34,6 +34,7 @@
 		"access": "public"
 	},
 	"dependencies": {
+		"@automattic/site-admin": "/Users/psealock/Workspace/calypso/packages/site-admin/package.tgz",
 		"@types/lodash": "^4.14.202",
 		"@types/prop-types": "^15.7.11",
 		"@types/wordpress__blocks": "11.0.7",
