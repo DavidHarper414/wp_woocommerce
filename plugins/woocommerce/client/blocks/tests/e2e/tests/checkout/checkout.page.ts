@@ -211,19 +211,10 @@ export class CheckoutPage {
 	 *                        when testing for errors on the checkout page.
 	 */
 	async placeOrder( waitForRedirect = true ) {
-		await this.page
-			.waitForRequest(
-				( request ) => {
-					return request.url().includes( 'batch' );
-				},
-				{ timeout: 3000 }
-			)
-			.catch( () => {
-				// Do nothing. This is just in case there's a debounced request
-				// still to be made, e.g. from checking "Can a truck fit down
-				// your road?" field.
-			} );
 		await this.waitForCheckoutToFinishUpdating();
+		await expect(
+			this.page.getByText( 'Place Order', { exact: true } )
+		).toBeEnabled();
 		await this.page.getByText( 'Place Order', { exact: true } ).click();
 		if ( waitForRedirect ) {
 			await this.page.waitForURL( /order-received/ );
@@ -307,46 +298,6 @@ export class CheckoutPage {
 		if ( await editButton.isVisible() ) {
 			await editButton.click();
 		}
-	}
-
-	/**
-	 * This waits for the batch request to /cart/update-customer
-	 * when updating address fields.
-	 */
-	async waitForCustomerDataUpdate() {
-		// Wait for data to start updating.
-		await this.page.waitForFunction( () => {
-			return !! window.wp.data
-				.select( 'wc/store/cart' )
-				.isCustomerDataUpdating();
-		} );
-
-		// Wait for data to finish updating
-		await this.page.waitForFunction( () => {
-			return ! window.wp.data
-				.select( 'wc/store/cart' )
-				.isCustomerDataUpdating();
-		} );
-	}
-
-	/**
-	 * This waits for the PUT request to /checkout
-	 * when updating additional fields, payment methods or order notes.
-	 */
-	async waitForCheckoutDataUpdate() {
-		// Wait for data to start updating.
-		await this.page.waitForFunction( () => {
-			return !! window.wp.data
-				.select( 'wc/store/checkout' )
-				.isCalculating();
-		} );
-
-		// Wait for data to finish updating
-		await this.page.waitForFunction( () => {
-			return ! window.wp.data
-				.select( 'wc/store/checkout' )
-				.isCalculating();
-		} );
 	}
 
 	async editShippingDetails() {

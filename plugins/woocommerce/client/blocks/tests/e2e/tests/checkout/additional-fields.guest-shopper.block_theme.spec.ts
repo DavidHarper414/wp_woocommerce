@@ -148,9 +148,6 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 					},
 				}
 			);
-
-			await checkoutPageObject.waitForCustomerDataUpdate();
-
 			await checkoutPageObject.page
 				.getByLabel( 'Would you like a free gift with your order?' )
 				.check();
@@ -163,30 +160,18 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 				} )
 				.getByLabel( 'Can a truck fit down your road?' )
 				.check();
-
 			await checkoutPageObject.page
 				.getByRole( 'group', {
 					name: 'Billing address',
 				} )
 				.getByLabel( 'Can a truck fit down your road?' )
 				.check();
-
-			await Promise.all( [
-				checkoutPageObject.waitForCustomerDataUpdate(),
-				checkoutPageObject.waitForCheckoutDataUpdate(),
-			] );
-
 			await checkoutPageObject.page
 				.getByRole( 'group', {
 					name: 'Billing address',
 				} )
 				.getByLabel( 'Can a truck fit down your road?' )
 				.uncheck();
-
-			await checkoutPageObject.waitForCustomerDataUpdate();
-
-			await checkoutPageObject.waitForCheckoutToFinishUpdating();
-
 			await checkoutPageObject.page
 				.getByLabel( 'Test required checkbox' )
 				.check();
