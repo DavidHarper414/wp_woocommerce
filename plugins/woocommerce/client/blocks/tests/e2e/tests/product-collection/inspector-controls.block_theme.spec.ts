@@ -554,7 +554,6 @@ test.describe( 'Product Collection: Inspector Controls', () => {
 			await expect( pageObject.products ).toHaveCount( 18 );
 
 			await page.getByLabel( 'Toggle block inserter' ).click();
-			await page.getByRole( 'tab', { name: 'Patterns' } ).click();
 			await page.getByPlaceholder( 'Search' ).fill( 'product filters' );
 			await page.getByLabel( 'Product Filters' ).click();
 
@@ -603,7 +602,6 @@ test.describe( 'Product Collection: Inspector Controls', () => {
 			] );
 
 			await page.getByLabel( 'Toggle block inserter' ).click();
-			await page.getByRole( 'tab', { name: 'Patterns' } ).click();
 			await page.getByPlaceholder( 'Search' ).fill( 'product filters' );
 			await page.getByLabel( 'Product Filters' ).click();
 
