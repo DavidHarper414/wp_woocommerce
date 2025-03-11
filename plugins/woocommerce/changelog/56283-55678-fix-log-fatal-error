@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Prevent fatal error when unsetting source from context in "LogHandlerFileV2".
