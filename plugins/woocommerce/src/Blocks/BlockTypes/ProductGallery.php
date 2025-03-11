@@ -62,12 +62,12 @@ class ProductGallery extends AbstractBlock {
 					</button>
 					<div class="wc-block-product-gallery-dialog__images-container">
 						<div class="wc-block-product-gallery-dialog__images">
-							<?php echo $images_html; ?>
+							<?php echo esc_html( $images_html ); ?>
 						</div>
 				</div>
 			</div>
 		</dialog>
-		<?php 
+		<?php
 		return ob_get_clean();
 	}
 
