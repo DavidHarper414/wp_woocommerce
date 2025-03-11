@@ -92,22 +92,6 @@
 }
 
 /*
- * Notices.
- */
-.wc_bis_notice .bis-notice-list {
-  list-style: disc;
-  margin-left: 20px;
-}
-
-.wc_bis_notice a.wc-bis-update-now {
-  margin: 0.5em 0;
-}
-
-.wc_bis_notice.notice-native {
-  border-left-color: var( --wp-admin-theme-color, #2271b1 ) !important;
-}
-
-/*
  * List tables.
  */
 #activity-table .column-user,
