@@ -249,6 +249,7 @@ class WC_Emails {
 		$this->emails['WC_Email_Customer_Note']             = include __DIR__ . '/emails/class-wc-email-customer-note.php';
 		$this->emails['WC_Email_Customer_Reset_Password']   = include __DIR__ . '/emails/class-wc-email-customer-reset-password.php';
 		$this->emails['WC_Email_Customer_New_Account']      = include __DIR__ . '/emails/class-wc-email-customer-new-account.php';
+		$this->emails['WC_Email_Customer_POS_Completed_Order']  = include __DIR__ . '/emails/class-wc-email-customer-pos-completed-order.php';
 
 		$this->emails = apply_filters( 'woocommerce_email_classes', $this->emails );
 	}
