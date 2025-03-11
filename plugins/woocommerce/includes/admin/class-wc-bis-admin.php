@@ -193,7 +193,7 @@ class WC_BIS_Admin {
 		/*
 		 * Enqueue specific styles & scripts.
 		 */
-		if ( WC_BIS()->is_current_screen( array( 'woocommerce_page_wc-settings' ) ) ) {
+		if ( WC_BIS()->is_current_screen( array( 'woocommerce_page_wc-status' ) ) ) {
 			wp_enqueue_script( 'wc-bis-writepanel' );
 
 			if ( WC_BIS()->is_dashboard() ) {
@@ -204,9 +204,9 @@ class WC_BIS_Admin {
 			}
 
 			wp_localize_script( 'wc-bis-writepanel', 'wc_bis_admin_params', $params );
-		}
 
-		wp_enqueue_style( 'wc-bis-admin' );
+			wp_enqueue_style( 'wc-bis-admin' );
+		}
 	}
 
 	/**
