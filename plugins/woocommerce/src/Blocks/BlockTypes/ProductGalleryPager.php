@@ -61,8 +61,9 @@ class ProductGalleryPager extends AbstractBlock {
 			return '';
 		}
 
-		$product_gallery_images_ids = ProductGalleryUtils::get_product_gallery_image_ids( $product );
-		$total_images               = count( $product_gallery_images_ids );
+		$product_image_data = ProductGalleryUtils::get_product_gallery_image_data( $product );
+		$all_image_ids      = $product_image_data['image_ids'] ?? [];
+		$total_images       = count( $all_image_ids );
 
 		if ( 0 === $total_images ) {
 			return '';
@@ -74,7 +75,7 @@ class ProductGalleryPager extends AbstractBlock {
 
 		return sprintf(
 			'<div class="wc-block-product-gallery-pager %1$s" style="%2$s">
-				<span class="wc-block-product-gallery-pager__current-index" data-wp-text="context.selectedImageNumber"></span>/<span class="wc-block-product-gallery-pager__total-images">%3$s</span>
+				<span class="wc-block-product-gallery-pager__current-index" data-wp-text="state.selectedImageNumber"></span>/<span class="wc-block-product-gallery-pager__total-images">%3$s</span>
 			</div>',
 			$classes,
 			$styles,
