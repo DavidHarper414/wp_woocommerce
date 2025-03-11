@@ -24,9 +24,8 @@ import { createElement, Fragment, useRef } from '@wordpress/element';
 import { unlock } from '@wordpress/edit-site/build-module/lock-unlock';
 // @ts-ignore No types for this exist yet.
 import SiteHub from '@wordpress/edit-site/build-module/components/site-hub';
-// @ts-ignore No types for this exist yet.
-import SidebarContent from '@wordpress/edit-site/build-module/components/sidebar';
 /* eslint-enable @woocommerce/dependency-group */
+import { SidebarContent } from '@automattic/site-admin';
 
 /**
  * Internal dependencies
@@ -92,7 +91,10 @@ export function Layout( {
 										ref={ toggleRef }
 										isTransparent={ false }
 									/>
-									<SidebarContent routeKey={ routeKey }>
+									<SidebarContent
+										shouldAnimate={ false }
+										routeKey={ routeKey }
+									>
 										{ areas.sidebar }
 									</SidebarContent>
 								</motion.div>
