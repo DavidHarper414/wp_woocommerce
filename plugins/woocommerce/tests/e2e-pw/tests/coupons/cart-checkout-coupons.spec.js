@@ -14,6 +14,7 @@ import {
 	CLASSIC_CART_PAGE,
 	CLASSIC_CHECKOUT_PAGE,
 } from '../../utils/pages';
+import { updateIfNeeded } from '../../utils/settings';
 
 const firstProductName = 'Coupon test product';
 const coupons = [
@@ -48,6 +49,8 @@ test.describe(
 			// Make sure the classic cart and checkout pages exist
 			await createClassicCartPage();
 			await createClassicCheckoutPage();
+
+			await updateIfNeeded( 'general/woocommerce_calc_taxes', 'no' );
 
 			// make sure the currency is USD
 			await restApi.put(
@@ -129,12 +132,16 @@ test.describe(
 						).toBeVisible();
 						// Checks the coupon amount is credited properly
 						await expect(
-							page.locator( '.cart-discount .amount' )
-						).toContainText( discounts[ i ] );
+							page
+								.locator( '.cart-discount .amount' )
+								.filter( { hasText: discounts[ i ] } )
+						).toBeVisible();
 						// Checks that the cart total is updated
 						await expect(
-							page.locator( '.order-total .amount' )
-						).toContainText( totals[ i ] );
+							page
+								.locator( '.order-total .amount' )
+								.filter( { hasText: totals[ i ] } )
+						).toBeVisible();
 					} );
 
 					await context.clearCookies();
@@ -161,11 +168,15 @@ test.describe(
 							)
 						).toBeVisible();
 						await expect(
-							page.locator( '.cart-discount .amount' )
-						).toContainText( discounts[ i ] );
+							page
+								.locator( '.cart-discount .amount' )
+								.filter( { hasText: discounts[ i ] } )
+						).toBeVisible();
 						await expect(
-							page.locator( '.order-total .amount' )
-						).toContainText( totals[ i ] );
+							page
+								.locator( '.order-total .amount' )
+								.filter( { hasText: totals[ i ] } )
+						).toBeVisible();
 					} );
 				}
 			);
@@ -205,11 +216,15 @@ test.describe(
 					).toBeVisible();
 					// check cart total
 					await expect(
-						page.locator( '.cart-discount .amount' )
-					).toContainText( discounts[ 0 ] );
+						page
+							.locator( '.cart-discount .amount' )
+							.filter( { hasText: discounts[ 0 ] } )
+					).toBeVisible();
 					await expect(
-						page.locator( '.order-total .amount' )
-					).toContainText( totals[ 0 ] );
+						page
+							.locator( '.order-total .amount' )
+							.filter( { hasText: totals[ 0 ] } )
+					).toBeVisible();
 				} );
 
 				await context.clearCookies();
@@ -243,11 +258,15 @@ test.describe(
 					).toBeVisible();
 					// check cart total
 					await expect(
-						page.locator( '.cart-discount .amount' )
-					).toContainText( discounts[ 0 ] );
+						page
+							.locator( '.cart-discount .amount' )
+							.filter( { hasText: discounts[ 0 ] } )
+					).toBeVisible();
 					await expect(
-						page.locator( '.order-total .amount' )
-					).toContainText( totals[ 0 ] );
+						page
+							.locator( '.order-total .amount' )
+							.filter( { hasText: totals[ 0 ] } )
+					).toBeVisible();
 				} );
 			}
 		);
@@ -289,14 +308,20 @@ test.describe(
 					).toBeVisible();
 					// check cart total
 					await expect(
-						page.locator( '.cart-discount .amount >> nth=0' )
-					).toContainText( discounts[ 0 ] );
+						page
+							.locator( '.cart-discount .amount >> nth=0' )
+							.filter( { hasText: discounts[ 0 ] } )
+					).toBeVisible();
 					await expect(
-						page.locator( '.cart-discount .amount >> nth=1' )
-					).toContainText( discounts[ 2 ] );
+						page
+							.locator( '.cart-discount .amount >> nth=1' )
+							.filter( { hasText: discounts[ 2 ] } )
+					).toBeVisible();
 					await expect(
-						page.locator( '.order-total .amount' )
-					).toContainText( '$8.00' );
+						page
+							.locator( '.order-total .amount' )
+							.filter( { hasText: '$8.00' } )
+					).toBeVisible();
 				} );
 
 				await context.clearCookies();
@@ -330,14 +355,20 @@ test.describe(
 					).toBeVisible();
 					// check cart total
 					await expect(
-						page.locator( '.cart-discount .amount >> nth=0' )
-					).toContainText( discounts[ 0 ] );
+						page
+							.locator( '.cart-discount .amount >> nth=0' )
+							.filter( { hasText: discounts[ 0 ] } )
+					).toBeVisible();
 					await expect(
-						page.locator( '.cart-discount .amount >> nth=1' )
-					).toContainText( discounts[ 2 ] );
+						page
+							.locator( '.cart-discount .amount >> nth=1' )
+							.filter( { hasText: discounts[ 2 ] } )
+					).toBeVisible();
 					await expect(
-						page.locator( '.order-total .amount' )
-					).toContainText( '$8.00' );
+						page
+							.locator( '.order-total .amount' )
+							.filter( { hasText: '$8.00' } )
+					).toBeVisible();
 				} );
 			}
 		);
@@ -356,20 +387,29 @@ test.describe(
 					await page
 						.getByRole( 'button', { name: 'Apply coupon' } )
 						.click();
+					await expect(
+						page.getByText( 'Coupon code applied successfully.' )
+					).toBeVisible();
 
 					// confirm numbers
 					await expect(
-						page.locator( '.cart-discount .amount' )
-					).toContainText( discounts[ 0 ] );
+						page
+							.locator( '.cart-discount .amount' )
+							.filter( { hasText: discounts[ 0 ] } )
+					).toBeVisible();
 					await expect(
-						page.locator( '.order-total .amount' )
-					).toContainText( totals[ 0 ] );
+						page
+							.locator( '.order-total .amount' )
+							.filter( { hasText: totals[ 0 ] } )
+					).toBeVisible();
 
 					await page.locator( 'a.woocommerce-remove-coupon' ).click();
 
 					await expect(
-						page.locator( '.order-total .amount' )
-					).toContainText( '$20.00' );
+						page
+							.locator( '.order-total .amount' )
+							.filter( { hasText: '$20.00' } )
+					).toBeVisible();
 				} );
 
 				await context.clearCookies();
@@ -388,17 +428,23 @@ test.describe(
 
 					// confirm numbers
 					await expect(
-						page.locator( '.cart-discount .amount' )
-					).toContainText( discounts[ 0 ] );
+						page
+							.locator( '.cart-discount .amount' )
+							.filter( { hasText: discounts[ 0 ] } )
+					).toBeVisible();
 					await expect(
-						page.locator( '.order-total .amount' )
-					).toContainText( totals[ 0 ] );
+						page
+							.locator( '.order-total .amount' )
+							.filter( { hasText: totals[ 0 ] } )
+					).toBeVisible();
 
 					await page.locator( 'a.woocommerce-remove-coupon' ).click();
 
 					await expect(
-						page.locator( '.order-total .amount' )
-					).toContainText( '$20.00' );
+						page
+							.locator( '.order-total .amount' )
+							.filter( { hasText: '$20.00' } )
+					).toBeVisible();
 				} );
 			}
 		);
