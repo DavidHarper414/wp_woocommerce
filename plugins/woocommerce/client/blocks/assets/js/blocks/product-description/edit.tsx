@@ -147,10 +147,7 @@ function Content( props ) {
 		);
 	}
 
-	const isDescendentOfProductCollection = Number.isFinite( queryId );
-	const isEditable = userCanEdit && ! isDescendentOfProductCollection;
-
-	return isEditable ? (
+	return userCanEdit ? (
 		<EditableContent { ...props } />
 	) : (
 		<ReadOnlyContent
