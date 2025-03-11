@@ -7,9 +7,9 @@ use Automattic\WooCommerce\Internal\Admin\Loader;
 use WC_Unit_Test_Case;
 
 /**
- * Loader Loader.
+ * Loader Test.
  *
- * @class PaymentExtensionSuggestionIncentives
+ * @class Loader
  */
 class LoaderTest extends WC_Unit_Test_Case {
 	/**

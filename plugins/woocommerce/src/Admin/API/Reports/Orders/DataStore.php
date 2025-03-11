@@ -22,6 +22,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	use OrderAttributionMeta;
 
 	/**
+	 * The transient name.
+	 */
+	const ORDERS_STATUSES_ALL_TRANSIENT = 'woocommerce_analytics_orders_statuses_all';
+
+	/**
 	 * Dynamically sets the date column name based on configuration
 	 *
 	 * @override ReportsDataStore::__construct()
@@ -618,7 +623,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function get_all_statuses() {
 		global $wpdb;
 
-		$statuses = get_transient( 'woocommerce_analytics_orders_statuses_all' );
+		$statuses = get_transient( self::ORDERS_STATUSES_ALL_TRANSIENT );
 		if ( false === $statuses ) {
 			/* phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
 			$table_name = self::get_db_table_name();
@@ -627,7 +632,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			);
 			/* phpcs:enable */
 
-			set_transient( 'woocommerce_analytics_orders_statuses_all', $statuses, YEAR_IN_SECONDS );
+			set_transient( self::ORDERS_STATUSES_ALL_TRANSIENT, $statuses, YEAR_IN_SECONDS );
 		}
 
 		return $statuses;
@@ -644,8 +649,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$status   = self::normalize_order_status( $order->get_status() );
 			$statuses = self::get_all_statuses();
 			if ( ! in_array( $status, $statuses, true ) ) {
-				$statuses []= $status;
-				set_transient( 'woocommerce_analytics_orders_statuses_all', $statuses, YEAR_IN_SECONDS );
+				$statuses[] = $status;
+				set_transient( self::ORDERS_STATUSES_ALL_TRANSIENT, $statuses, YEAR_IN_SECONDS );
 			}
 		}
 	}
