@@ -34,12 +34,12 @@ class ProductGallery extends AbstractBlock {
 	 */
 	protected function render_dialog( $images ) {
 		$images_html = '';
-		foreach ( $images as $index => $image ) {
-			$image_number  = $index + 1;
-			$src           = $image['src'];
-			$srcset        = $image['src_set'];
-			$sizes         = $image['sizes'];
-			$images_html  .= "<img tabindex='0' data-image-index='{$image_number}' src='{$src}' srcset='{$srcset}' sizes='{$sizes}'/>";
+		foreach ( $images as $image ) {
+			$id           = $image['id'];
+			$src          = $image['src'];
+			$srcset       = $image['src_set'];
+			$sizes        = $image['sizes'];
+			$images_html .= "<img tabindex='0' data-image-id='{$id}' src='{$src}' srcset='{$srcset}' sizes='{$sizes}'/>";
 		}
 		ob_start();
 		?>

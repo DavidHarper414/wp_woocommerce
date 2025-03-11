@@ -426,20 +426,13 @@ const productGallery = {
 			};
 		},
 		dialogStateChange: () => {
-			const { imageData, selectedImageId, isDialogOpen } = getContext();
-
-			const allImageIds = imageData?.image_ids || [];
+			const { selectedImageId, isDialogOpen } = getContext();
 			const { ref: dialogRef } = getElement() || {};
-
-			const selectedImageNumber = getSelectedImageNumber(
-				allImageIds,
-				selectedImageId
-			);
 
 			if ( isDialogOpen && dialogRef instanceof HTMLElement ) {
 				dialogRef.focus();
 				const selectedImage = dialogRef.querySelector(
-					`[data-image-index="${ selectedImageNumber }"]`
+					`[data-image-id="${ selectedImageId }"]`
 				);
 
 				if ( selectedImage instanceof HTMLElement ) {
