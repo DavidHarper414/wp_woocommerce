@@ -228,9 +228,12 @@ test.describe(
 			await page.goto( `product/${ slug }` );
 
 			for ( let i = 0; i < variations1.length; i++ ) {
-				await page
-					.getByRole( 'link', { name: 'Clear options' } )
-					.click();
+				// eslint-disable-next-line playwright/no-conditional-in-test
+				if ( i > 0 ) {
+					await page
+						.getByRole( 'link', { name: 'Clear options' } )
+						.click();
+				}
 				await selectVariation(
 					page,
 					[
