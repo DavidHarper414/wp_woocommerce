@@ -175,7 +175,7 @@ test.describe(
 		test.beforeAll( async ( { restApi } ) => {
 			calcTaxesState = await updateIfNeeded(
 				`general/woocommerce_calc_taxes`,
-				'yes'
+				'no'
 			);
 
 			// add product
@@ -307,7 +307,7 @@ test.describe(
 		test.beforeAll( async ( { restApi } ) => {
 			calcTaxesState = await updateIfNeeded(
 				`general/woocommerce_calc_taxes`,
-				'yes'
+				'no'
 			);
 
 			// add product
