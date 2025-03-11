@@ -98,11 +98,12 @@ export async function checkCartContent( isClassicCart, page, products, tax ) {
 	}
 
 	const expectedTotal = products.reduce( ( total, product ) => {
+		const taxRate = parseFloat( tax.rate ) || 0;
 		return (
 			total +
 			parseFloat( product.data.price ) *
 				product.qty *
-				( 1 + parseFloat( tax.rate ) / 100 )
+				( 1 + taxRate / 100 )
 		);
 	}, 0 );
 
