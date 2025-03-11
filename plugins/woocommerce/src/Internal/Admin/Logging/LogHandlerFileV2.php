@@ -85,7 +85,9 @@ class LogHandlerFileV2 extends WC_Log_Handler {
 		}
 
 		$context_for_entry = $context;
-		unset( $context_for_entry['source'] );
+		if ( is_array( $context_for_entry ) ) {
+			unset( $context_for_entry['source'] );
+		}
 
 		if ( ! empty( $context_for_entry ) ) {
 			$formatted_context = wp_json_encode( $context_for_entry, JSON_UNESCAPED_UNICODE );
