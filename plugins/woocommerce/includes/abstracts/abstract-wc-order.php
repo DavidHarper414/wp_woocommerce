@@ -2179,6 +2179,36 @@ abstract class WC_Abstract_Order extends WC_Abstract_Legacy_Order {
 	}
 
 	/**
+	 * Gets item subtotal - formatted for display.
+	 *
+	 * @param object $item Item to get total from.
+	 * @param string $tax_display Excl or incl tax display mode.
+	 * @return string
+	 */
+	public function get_formatted_item_subtotal( $item, $tax_display = '' ) {
+		$tax_display = $tax_display ? $tax_display : get_option( 'woocommerce_tax_display_cart' );
+
+		if ( 'excl' === $tax_display ) {
+			$ex_tax_label = $this->get_prices_include_tax() ? 1 : 0;
+
+			$subtotal = wc_price(
+				$this->get_item_subtotal( $item ),
+				array(
+					'ex_tax_label' => $ex_tax_label,
+					'currency'     => $this->get_currency(),
+				)
+			);
+		} else {
+			$subtotal = wc_price( 
+				$this->get_item_subtotal( $item, true ), 
+				array( 'currency' => $this->get_currency() ) 
+			);
+		}
+
+		return apply_filters( 'woocommerce_order_formatted_item_subtotal', $subtotal, $item, $this );
+	}
+
+	/**
 	 * Gets subtotal - subtotal is shown before discounts, but with localised taxes.
 	 *
 	 * @param bool   $compound (default: false).

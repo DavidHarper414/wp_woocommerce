@@ -183,6 +183,9 @@ foreach ( $items as $item_id => $item ) :
 			?>
 		</td>
 		<td class="td font-family text-align-<?php echo esc_attr( $price_text_align ); ?>" style="vertical-align:middle;">
+			<?php echo wp_kses_post( $order->get_formatted_item_subtotal( $item ) ); ?>
+		</td>
+		<td class="td font-family text-align-<?php echo esc_attr( $price_text_align ); ?>" style="vertical-align:middle;">
 			<?php
 			echo $email_improvements_enabled ? '&times;' : '';
 			$qty          = $item->get_quantity();
