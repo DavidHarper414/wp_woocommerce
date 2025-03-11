@@ -455,7 +455,6 @@ final class BlockTypesController {
 			'ProductGallery',
 			'ProductGalleryLargeImage',
 			'ProductGalleryLargeImageNextPrevious',
-			'ProductGalleryPager',
 			'ProductGalleryThumbnails',
 			'ProductImage',
 			'ProductImageGallery',
@@ -524,6 +523,7 @@ final class BlockTypesController {
 				$block_types[] = 'AddToCartWithOptionsVariationSelectorAttributeOptions';
 				$block_types[] = 'AddToCartWithOptionsGroupedProductSelector';
 				$block_types[] = 'AddToCartWithOptionsGroupedProductSelectorItemTemplate';
+				$block_types[] = 'AddToCartWithOptionsGroupedProductSelectorItemCTA';
 			}
 			// Generic blocks that will be pushed upstream.
 			$block_types[] = 'Accordion\AccordionGroup';
