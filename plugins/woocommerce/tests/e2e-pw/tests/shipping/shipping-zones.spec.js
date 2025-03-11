@@ -38,8 +38,8 @@ async function checkShippingRateInCart( page, product, checks ) {
 	await page.getByLabel( 'Province' ).selectOption( checks.state );
 	await page.getByRole( 'textbox', { name: 'City' } ).fill( checks.city );
 	await page
-		.getByRole( 'textbox', { name: 'ZIP Code' } )
-		.fill( checks.zipCode );
+		.getByRole( 'textbox', { name: 'Postal code' } )
+		.fill( checks.postCode );
 
 	await page
 		.getByRole( 'button', {
@@ -54,7 +54,9 @@ async function checkShippingRateInCart( page, product, checks ) {
 
 	if ( checks.cost ) {
 		await expect(
-			page.locator( '.shipping ul#shipping_method > li > label' )
+			page.locator(
+				'.wc-block-components-shipping-rates-control__package .wc-block-components-formatted-money-amount'
+			)
 		).toContainText( checks.cost );
 	}
 
@@ -79,8 +81,8 @@ async function checkShippingRateInCart( page, product, checks ) {
 		postCode: '',
 		method: 'Free shipping',
 		checks: {
-			country: 'CA',
-			state: 'BC',
+			country: 'Canada',
+			state: 'British Columbia',
 			method: 'Free shipping',
 			postCode: 'V5K 0A1',
 			city: 'Vancouver',
@@ -93,8 +95,9 @@ async function checkShippingRateInCart( page, product, checks ) {
 		method: 'Flat rate',
 		cost: '15.00',
 		checks: {
-			country: 'CA',
-			state: 'AB',
+			country: 'Canada',
+			state: 'Alberta',
+			city: 'Calgary',
 			postCode: 'T2T 1B3',
 			method: 'Flat rate',
 			cost: '15.00',
@@ -119,11 +122,6 @@ async function checkShippingRateInCart( page, product, checks ) {
 			} );
 		},
 		page: async ( { restApi, page }, use ) => {
-			const calcTaxesState = await updateIfNeeded(
-				`general/woocommerce_calc_taxes`,
-				'yes'
-			);
-
 			await use( page );
 
 			// Cleanup
@@ -144,11 +142,6 @@ async function checkShippingRateInCart( page, product, checks ) {
 						} );
 				}
 			}
-
-			await resetValue(
-				`general/woocommerce_calc_taxes`,
-				calcTaxesState
-			);
 		},
 	} );
 
