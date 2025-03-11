@@ -91,9 +91,7 @@ class ProductFilterPriceSlider extends AbstractBlock {
 							type="text"
 							data-wp-bind--value="state.formattedMinPrice"
 							data-wp-on--focus="actions.selectInputContent"
-							data-wp-on--input="actions.debounceSetPrice"
-							data-wp-on--change--set-price="actions.setMinPrice"
-							data-wp-on--change--navigate="actions.navigate"
+							data-wp-on--input="actions.debounceSetMinPrice"
 						/>
 					<?php else : ?>
 						<span data-wp-text="state.formattedMinPrice"><?php echo wp_kses_post( $formatted_min_price ); ?></span>
@@ -139,9 +137,7 @@ class ProductFilterPriceSlider extends AbstractBlock {
 							type="text"
 							data-wp-bind--value="state.formattedMaxPrice"
 							data-wp-on--focus="actions.selectInputContent"
-							data-wp-on--input="actions.debounceSetPrice"
-							data-wp-on--change--set-price="actions.setMaxPrice"
-							data-wp-on--change--navigate="actions.navigate"
+							data-wp-on--input="actions.debounceSetMaxPrice"
 						/>
 					<?php else : ?>
 					<span data-wp-text="state.formattedMaxPrice"><?php echo wp_kses_post( $formatted_max_price ); ?></span>
