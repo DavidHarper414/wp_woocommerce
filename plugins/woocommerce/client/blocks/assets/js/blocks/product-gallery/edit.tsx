@@ -27,6 +27,7 @@ const TEMPLATE: InnerBlockTemplate[] = [
 			metadata: {
 				name: 'Gallery Area',
 			},
+			className: 'wc-block-product-gallery__gallery-area',
 		},
 		[
 			[ 'woocommerce/product-gallery-thumbnails' ],
@@ -45,6 +46,8 @@ const TEMPLATE: InnerBlockTemplate[] = [
 					metadata: {
 						name: 'Large Image and Navigation',
 					},
+					className:
+						'wc-block-product-gallery__large-image-and-navigation',
 				},
 				[
 					[
