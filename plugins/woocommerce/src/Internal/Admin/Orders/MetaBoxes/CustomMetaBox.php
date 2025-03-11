@@ -223,7 +223,7 @@ class CustomMetaBox {
 		$order_id = intval( $_GET['order_id'] );
 		$order    = wc_get_order( $order_id );
 		if ( ! is_a( $order, \WC_Order::class ) ) {
-			wp_die( - 1 );
+			wp_die( -1 );
 		}
 
 		$found_order_meta_keys = $this->order_meta_keys_autofill( null, $order );
