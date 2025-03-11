@@ -533,6 +533,7 @@ final class BlockTypesController {
 			$block_types[] = 'BlockifiedProductDetails';
 
 			$block_types[] = 'Reviews\ProductReviews';
+			$block_types[] = 'Reviews\ProductReviewRating';
 		}
 
 		/**
