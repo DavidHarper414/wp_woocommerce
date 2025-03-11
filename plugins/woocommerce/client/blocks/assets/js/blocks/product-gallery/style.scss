@@ -146,13 +146,6 @@ $dialog-padding: 20px;
 	display: flex;
 	gap: $thumbnails-gap;
 
-	&__image {
-		cursor: pointer;
-		max-width: 100%;
-		aspect-ratio: 1 / 1;
-		object-fit: contain;
-	}
-
 	&__thumbnail {
 		border: $thumbnails-border-width solid rgba($color: #000, $alpha: 0.1);
 		display: flex;
@@ -162,6 +155,13 @@ $dialog-padding: 20px;
 		align-items: center;
 		position: relative;
 		aspect-ratio: 1 / 1;
+	}
+
+	&__thumbnail__image {
+		cursor: pointer;
+		max-width: 100%;
+		aspect-ratio: 1 / 1;
+		object-fit: contain;
 	}
 
 	&__thumbnail__overlay {

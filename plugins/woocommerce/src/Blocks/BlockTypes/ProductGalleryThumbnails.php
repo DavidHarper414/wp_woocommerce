@@ -100,6 +100,7 @@ class ProductGalleryThumbnails extends AbstractBlock {
 				data-wp-each-key="context.image.id" >
 				<div class="wc-block-product-gallery-thumbnails__thumbnail">
 					<img
+						class="wc-block-product-gallery-thumbnails__thumbnail__image"
 						data-wp-bind--numberOfThumbnails="context.numberOfThumbnails"
 						data-wp-bind--data-image-id="context.image.id" 
 						data-wp-bind--width="context.image.width" 
