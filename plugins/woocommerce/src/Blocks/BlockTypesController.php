@@ -474,7 +474,6 @@ final class BlockTypesController {
 			'ReviewsByProduct',
 			'RelatedProducts',
 			'ProductDetails',
-			'ProductDescription',
 			'SingleProduct',
 			'StockFilter',
 			'PageContentWrapper',
@@ -531,6 +530,7 @@ final class BlockTypesController {
 			$block_types[] = 'Accordion\AccordionPanel';
 			$block_types[] = 'Accordion\AccordionHeader';
 			$block_types[] = 'BlockifiedProductDetails';
+			$block_types[] = 'ProductDescription';
 		}
 
 		/**
