@@ -64,13 +64,9 @@ final class ProductFilterCheckboxList extends AbstractBlock {
 		<div <?php echo get_block_wrapper_attributes( $wrapper_attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 			<ul class="wc-block-product-filter-checkbox-list__list" aria-label="<?php echo esc_attr__( 'Filter Options', 'woocommerce' ); ?>">
 				<?php foreach ( $items as $item ) { ?>
-					<?php
-					$item['id'] = $item['id'] ?? uniqid( 'checkbox-' );
-					// translators: %s: item label.
-					$aria_label = sprintf( __( 'Filter item: %s', 'woocommerce' ), $item['ariaLabel'] ?? $item['label'] );
-					?>
+					<?php $item_id = $item['type'] . '-' . $item['value']; ?>
 					<li
-						data-wp-key="<?php echo esc_attr( $item['id'] ); ?>"
+						data-wp-key="<?php echo esc_attr( $item_id ); ?>"
 						class="wc-block-product-filter-checkbox-list__item"
 						<?php if ( ! $item['selected'] ) : ?>
 							<?php if ( $count >= $remaining_initial_unchecked ) : ?>
@@ -83,14 +79,14 @@ final class ProductFilterCheckboxList extends AbstractBlock {
 					>
 						<label
 							class="wc-block-product-filter-checkbox-list__label"
-							for="<?php echo esc_attr( $item['id'] ); ?>"
+							for="<?php echo esc_attr( $item_id ); ?>"
 						>
 							<span class="wc-block-product-filter-checkbox-list__input-wrapper">
 								<input
-									id="<?php echo esc_attr( $item['id'] ); ?>"
+									id="<?php echo esc_attr( $item_id ); ?>"
 									class="wc-block-product-filter-checkbox-list__input"
 									type="checkbox"
-									aria-label="<?php echo esc_attr( $aria_label ); ?>"
+									aria-label="<?php echo esc_attr( $item['ariaLabel'] ); ?>"
 									data-wp-on--change="actions.toggleFilter"
 									value="<?php echo esc_attr( $item['value'] ); ?>"
 									data-wp-bind--checked="state.isFilterSelected"

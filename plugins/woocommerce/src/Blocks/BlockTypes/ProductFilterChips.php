@@ -65,18 +65,13 @@ final class ProductFilterChips extends AbstractBlock {
 		<div <?php echo get_block_wrapper_attributes( $wrapper_attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 			<div class="wc-block-product-filter-chips__items" aria-label="<?php echo esc_attr__( 'Filter Options', 'woocommerce' ); ?>">
 				<?php foreach ( $items as $item ) { ?>
-					<?php
-					$item['id'] = $item['id'] ?? uniqid( 'chips-' );
-					unset( $item['data'] );
-					// translators: %s: item label.
-					$aria_label = sprintf( __( 'Filter item: %s', 'woocommerce' ), $item['ariaLabel'] ?? $item['label'] );
-					?>
+					<?php $item_id = $item['type'] . '-' . $item['value']; ?>
 					<button
-						data-wp-key="<?php echo esc_attr( $item['id'] ); ?>"
-						id="<?php echo esc_attr( $item['id'] ); ?>"
+						data-wp-key="<?php echo esc_attr( $item_id ); ?>"
+						id="<?php echo esc_attr( $item_id ); ?>"
 						class="wc-block-product-filter-chips__item"
 						type="button"
-						aria-label="<?php echo esc_attr( $aria_label ); ?>"
+						aria-label="<?php echo esc_attr( $item['ariaLabel'] ); ?>"
 						data-wp-on--click="actions.toggleFilter"
 						value="<?php echo esc_attr( $item['value'] ); ?>"
 						data-wp-bind--aria-checked="state.isFilterSelected"
