@@ -104,7 +104,7 @@ class BackInStockNotifications {
 	
 		$definition = array(
 			'name'               => __( 'Back in stock notifications', 'woocommerce' ),
-			'description'        => self::is_really_enabled() ? 
+			'description'        => self::is_enabled() ? 
 				sprintf(
 					__( 'Enable back in stock notifications for customers. Configure the options in <a href="%s">WooCommerce > Settings > Products > Customer stock notifications</a>.', 'woocommerce' ),
 					esc_url( admin_url( 'admin.php?page=wc-settings&tab=products&section=bis_settings' ) )
@@ -113,7 +113,7 @@ class BackInStockNotifications {
 					'Enable back in stock notifications for customers.',
 					'woocommerce'
 				),
-			'enabled_by_default' => self::is_enabled(),
+			'enabled_by_default' => self::is_enabled_for_rollout(),
 			'is_experimental'    => false,
 			'is_legacy'          => true,
 			'disable_ui'         => false,
@@ -163,7 +163,7 @@ class BackInStockNotifications {
 	 */
 	public static function maybe_deactivate_signups() {
 		// Only run if BIS is enabled during the rollout period.
-		if ( ! self::is_really_enabled() ) {
+		if ( ! self::is_enabled() ) {
 			return;
 		}
 
@@ -206,7 +206,7 @@ class BackInStockNotifications {
 	 *
 	 * @return bool
 	 */
-	public static function is_enabled() {
+	public static function is_enabled_for_rollout() {
 		return false;
 	}
 
@@ -219,7 +219,7 @@ class BackInStockNotifications {
 	 * 
 	 * @return bool
 	 */
-	public static function is_really_enabled() {
+	public static function is_enabled() {
 		return Packages::is_package_enabled( self::$PACKAGE_NAME );
 	}
 
@@ -367,7 +367,7 @@ class BackInStockNotifications {
 	 * This should be called from the feature flag change hook.
 	 */
 	public static function maybe_create_database_tables() {
-		if ( ! self::is_really_enabled() ) {
+		if ( ! self::is_enabled() ) {
 			return;
 		}
 
@@ -415,7 +415,7 @@ class BackInStockNotifications {
 	 * This should be called from the feature flag change hook.
 	 */
 	public static function maybe_setup_events() {
-		if ( ! self::is_really_enabled() ) {
+		if ( ! self::is_enabled() ) {
 			return;
 		}
 

@@ -142,8 +142,8 @@ class Packages {
 			}
 
 			// If an option is not set, ensure that a package is enabled for user's remote variant number. Mainly for gradual releases.
-			$experimental_package_enabled = method_exists( $package_class, 'is_enabled' ) ?
-				call_user_func( array( $package_class, 'is_enabled' ) ) :
+			$experimental_package_enabled = method_exists( $package_class, 'is_enabled_for_rollout' ) ?
+				call_user_func( array( $package_class, 'is_enabled_for_rollout' ) ) :
 				false;
 
 			if ( ! $experimental_package_enabled ) {
