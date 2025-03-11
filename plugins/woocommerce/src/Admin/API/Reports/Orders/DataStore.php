@@ -41,7 +41,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @internal
 	 */
-	public static function init() {
+	final public static function init() {
 		add_action( 'woocommerce_analytics_update_order_stats', array( __CLASS__, 'maybe_update_order_statuses_transient' ) );
 	}
 
