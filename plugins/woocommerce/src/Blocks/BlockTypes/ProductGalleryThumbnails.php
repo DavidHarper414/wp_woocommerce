@@ -70,6 +70,7 @@ class ProductGalleryThumbnails extends AbstractBlock {
 
 		$product_gallery_thumbnails_data = ProductGalleryUtils::get_product_gallery_image_data( $product );
 		$product_gallery_images          = $product_gallery_thumbnails_data['images'];
+		// Don't show the thumbnails block if there is only one image.
 		if ( count( $product_gallery_images ) <= 1 ) {
 			return '';
 		}
@@ -95,27 +96,23 @@ class ProductGalleryThumbnails extends AbstractBlock {
 						<?php echo esc_attr( $classes_and_styles['classes'] . ' ' . $number_of_thumbnails_class ); ?>" 
 			style="<?php echo esc_attr( $classes_and_styles['styles'] ); ?>"
 			data-wp-interactive="woocommerce/product-gallery">
-			<template 
-				data-wp-each--image="state.thumbnails" 
-				data-wp-each-key="context.image.id" >
+			<template
+				data-wp-each--image="state.thumbnails"
+				data-wp-each-key="context.image.id">
 				<div class="wc-block-product-gallery-thumbnails__thumbnail">
 					<img
 						class="wc-block-product-gallery-thumbnails__thumbnail__image"
-						data-wp-bind--numberOfThumbnails="context.numberOfThumbnails"
-						data-wp-bind--data-image-id="context.image.id" 
-						data-wp-bind--width="context.image.width" 
-						data-wp-bind--height="context.image.height" 
-						data-wp-bind--src="context.image.src" 
+						data-wp-bind--data-image-id="context.image.id"
+						data-wp-bind--src="context.image.src"
 						data-wp-bind--srcset="context.image.src_set" 
-						data-wp-bind--sizes="context.image.sizes"
 						data-wp-on--click="actions.selectCurrentImage"
 						data-wp-on--keydown="actions.onThumbnailKeyDown"
-						decoding="async" 
+						decoding="async"
 						loading="lazy" />
 					<div class="wc-block-product-gallery-thumbnails__thumbnail__overlay" 
 						data-wp-bind--visible="actions.displayViewAll"
-						data-wp-on--click="actions.openDialog" 
-						data-wp-on--keydown="actions.onViewAllImagesKeyDown" 
+						data-wp-on--click="actions.openDialog"
+						data-wp-on--keydown="actions.onViewAllImagesKeyDown"
 						tabindex="0">
 						<span class="wc-block-product-gallery-thumbnails__thumbnail__remaining-thumbnails-count">+<?php echo esc_html( $remaining_thumbnails_count ); ?></span>
 						<span class="wc-block-product-gallery-thumbnails__thumbnail__view-all"><?php echo esc_html__( 'View all', 'woocommerce' ); ?></span>
