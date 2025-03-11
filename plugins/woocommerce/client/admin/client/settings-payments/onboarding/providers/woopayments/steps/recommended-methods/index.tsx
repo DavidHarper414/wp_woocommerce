@@ -10,11 +10,13 @@ import { close } from '@wordpress/icons';
  */
 import { WC_ASSET_URL } from '~/utils/admin-settings';
 import './style.scss';
+import { useOnboardingContext } from '~/settings-payments/onboarding/data';
 
 /**
  * RecommendedMethods component for WooPayments onboarding
  */
 export default function RecommendedMethods(): React.ReactNode {
+	const { nextStep } = useOnboardingContext();
 	return (
 		<div>
 			<div className="woopayments_modal_step__header">
@@ -65,6 +67,12 @@ export default function RecommendedMethods(): React.ReactNode {
 							) }
 						</span>
 					</div>
+
+					<Button
+						onClick={ () => { nextStep() } }
+					>
+						Next
+					</Button>
 				</div>
 			</div>
 		</div>

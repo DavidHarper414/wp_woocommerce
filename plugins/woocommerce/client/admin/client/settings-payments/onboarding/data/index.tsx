@@ -2,6 +2,8 @@
  * External dependencies
  */
 import React, { createContext, useContext, useState } from 'react';
+import { useLocation, Navigate } from 'react-router-dom';
+import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -15,19 +17,34 @@ interface UseContextValueParams {
 }
 const useContextValue = ( {
 	steps,
-	initialStep,
 }: UseContextValueParams ) => {
 	const keys = Object.keys( steps );
-	const [ currentStep, setCurrentStep ] = useState(
-		initialStep ?? keys[ 0 ]
-	);
+	const location = useLocation();
+	const history = getHistory();
 
-	const progress = ( keys.indexOf( currentStep ) + 1 ) / keys.length;
+	// Get current step from pathname
+	const getCurrentStep = (): number => {
+		const path = location.pathname;
+		// Find the step that matches the current path
+
+		return Object.entries(steps).find(([key, step]) => step.path === path)?.[0];
+	};
+
+	const nextStep = () => {
+		const index = getCurrentStep();
+		const nextPath = steps[ Number( index ) + 1 ].path;
+
+		const newPath = getNewPath( { path: nextPath }, nextPath, {
+			page: 'wc-settings',
+			tab: 'checkout',
+		} );
+		history.push( newPath );
+	};
 
 	return {
 		steps,
-		currentStep,
-		progress,
+		currentStep: getCurrentStep,
+		nextStep,
 	};
 };
 
@@ -57,9 +74,11 @@ const childrenToSteps = ( children: StepperProps[ 'children' ] ) => {
 	return stepperChildren.reduce(
 		( acc: Record< string, Object >, child, index ) => {
 			if ( React.isValidElement( child ) ) {
-				acc[ child.props.name ?? index ] = {
+				acc[ index ] = {
 					id: child.props.id,
 					label: child.props.label,
+					path: child.props.path,
+					isCompleted: false,
 					content: child,
 				}
 			}

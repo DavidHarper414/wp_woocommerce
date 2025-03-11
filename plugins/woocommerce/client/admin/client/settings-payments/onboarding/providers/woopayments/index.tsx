@@ -13,6 +13,7 @@ import Stepper from '../../components/stepper';
 import Step from '../../components/step';
 import { WooPaymentsModalProps } from '~/settings-payments/onboarding/types';
 import OnboardingContext from '~/settings-payments/onboarding/data';
+import RecommendedMethods from './steps/recommended-methods';
 
 /**
  * Modal component for WooPayments onboarding
@@ -36,7 +37,7 @@ export default function WooPaymentsModal( {
 						label="Choose your payment methods"
 						path="/onboarding/welcome"
 					>
-						Test
+						<RecommendedMethods />
 					</Step>
 					<Step
 						id="jetpack"
