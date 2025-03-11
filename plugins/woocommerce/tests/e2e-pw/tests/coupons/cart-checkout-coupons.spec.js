@@ -274,9 +274,6 @@ test.describe(
 						page.getByText( 'Coupon code applied successfully.' )
 					).toBeVisible();
 
-					// If not waiting the next coupon is not applied correctly. This should be temporary, we need a better way to handle this.
-					await page.waitForTimeout( 2000 );
-
 					await page
 						.locator( 'text=Click here to enter your code' )
 						.click();
@@ -319,9 +316,6 @@ test.describe(
 					await expect(
 						page.getByText( 'Coupon code applied successfully.' )
 					).toBeVisible();
-
-					// If not waiting the next coupon is not applied correctly. This should be temporary, we need a better way to handle this.
-					await page.waitForTimeout( 2000 );
 
 					await page
 						.locator( 'text=Click here to enter your code' )
