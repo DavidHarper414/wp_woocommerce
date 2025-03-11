@@ -138,11 +138,11 @@ class Tax extends Task {
 	private function has_existing_tax_rates() {
 		global $wpdb;
 
-		$has_existing_tax_rates = wp_cache_get( 'onboarding_task_tax_rates_exist' );
+		$has_existing_tax_rates = wp_cache_get( 'woocommerce_onboarding_task_tax_rates_exist' );
 		if ( $has_existing_tax_rates === false ) {
 			$rate_exists            = (bool) $wpdb->get_var( "SELECT 1 {$wpdb->prefix}woocommerce_tax_rates limit 1" );
 			$has_existing_tax_rates = $rate_exists ? 'yes' : 'no';
-			wp_cache_set( 'onboarding_task_tax_rates_exist', $has_existing_tax_rates );
+			wp_cache_set( 'woocommerce_onboarding_task_tax_rates_exist', $has_existing_tax_rates );
 		}
 
 		return $has_existing_tax_rates === 'yes';
