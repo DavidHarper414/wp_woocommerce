@@ -207,7 +207,7 @@ class BackInStockNotifications {
 	 * @return bool
 	 */
 	public static function is_enabled() {
-		return true;
+		return false;
 	}
 
 	/**
