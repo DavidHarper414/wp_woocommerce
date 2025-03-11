@@ -641,14 +641,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function maybe_update_order_statuses_transient( $order_id ) {
 		$order = wc_get_order( $order_id );
 		if ( $order ) {
-			$status = self::normalize_order_status( $order->get_status() );
-			if ( 'shop_order_refund' === $order->get_type() ) {
-				$parent_order = wc_get_order( $order->get_parent_id() );
-				if ( $parent_order ) {
-					$status = self::normalize_order_status( $parent_order->get_status() );
-				}
-			}
-
+			$status   = self::normalize_order_status( $order->get_status() );
 			$statuses = self::get_all_statuses();
 			if ( ! in_array( $status, $statuses, true ) ) {
 				$statuses []= $status;
