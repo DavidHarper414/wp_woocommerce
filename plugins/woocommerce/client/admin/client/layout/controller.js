@@ -501,15 +501,11 @@ window.wpNavMenuUrlUpdate = function ( query ) {
 	);
 };
 
+// Cache custom SVG menu items to prevent repeated DOM queries. This is necessary to remove event handlers when the route changes in window.wpNavMenuClassChange.
 const customSVGMenuItems = [];
-// Get all menu items with SVG backgrounds
-// See: https://github.com/WordPress/wordpress-develop/blob/22bebd7de6681c673933953aab8c08802e7e3d4a/src/js/_enqueues/wp/svg-painter.js#L140-L148
-const initCustomSVGMenuItems = () => {
-	// Return the menu items if they have already been initialized, as the top menu item remains unchanged when the route changes
-	if ( customSVGMenuItems.length > 0 ) {
-		return customSVGMenuItems;
-	}
-
+const getCustomSVGMenuItems = () => {
+	// Get all menu items with SVG backgrounds
+	// See: https://github.com/WordPress/wordpress-develop/blob/22bebd7de6681c673933953aab8c08802e7e3d4a/src/js/_enqueues/wp/svg-painter.js#L140-L148
 	const menuItems = window.jQuery(
 		'#adminmenu .wp-menu-image, #wpadminbar .ab-item'
 	);
@@ -528,7 +524,9 @@ const initCustomSVGMenuItems = () => {
 
 // When the route changes, we need to update wp-admin's menu with the correct section & current link
 window.wpNavMenuClassChange = function ( page, url ) {
-	initCustomSVGMenuItems();
+	if ( customSVGMenuItems.length === 0 ) {
+		getCustomSVGMenuItems();
+	}
 
 	const wpNavMenu = document.querySelector( '#adminmenu' );
 
@@ -603,7 +601,7 @@ window.wpNavMenuClassChange = function ( page, url ) {
 
 	// 6. Attempt to re-color SVG icons used in the admin menu or the toolbar
 	if ( window.wp && window.wp.svgPainter ) {
-		// Remove the specific SVG painting event handlers to prevent incorrect painting. For more details, refer to: https://github.com/WordPress/wordpress-develop/blob/22bebd7de6681c673933953aab8c08802e7e3d4a/src/js/_enqueues/wp/svg-painter.js#L162C4-L170C10
+		// Detach SVG painting event handlers from menu items to prevent the active state from being reset on hover. For more information, see: https://github.com/WordPress/wordpress-develop/blob/22bebd7de6681c673933953aab8c08802e7e3d4a/src/js/_enqueues/wp/svg-painter.js#L162C4-L170C10
 		customSVGMenuItems.forEach( ( $menuItem ) => {
 			const events =
 				window.jQuery._data( $menuItem[ 0 ], 'events' ) || {};
