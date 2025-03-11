@@ -176,7 +176,7 @@ class BackInStockNotifications {
 
 		// BIS wasn't active at the time of the core update, => disable signups.
 		if ( ! self::$bis_plugin_is_active ) {
-			$option_value = 'no';	
+			$option_value = 'no';
 		}
 
 		// New installation, enable signups.
@@ -207,7 +207,7 @@ class BackInStockNotifications {
 	 * @return bool
 	 */
 	public static function is_enabled() {
-		return false;
+		return true;
 	}
 
 	/**
