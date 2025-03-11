@@ -23,9 +23,6 @@ class LoaderTest extends WC_Unit_Test_Case {
 	/**
 	 * Adds a deprecated function to the list of caught deprecated calls.
 	 *
-	 * @since 3.7.0
-	 * @since 6.1.0 Added the `$replacement`, `$version`, and `$message` parameters.
-	 *
 	 * @param string $function_name The deprecated function.
 	 * @param string $replacement   The function that should have been called.
 	 * @param string $version       The version of WordPress that deprecated the function.
