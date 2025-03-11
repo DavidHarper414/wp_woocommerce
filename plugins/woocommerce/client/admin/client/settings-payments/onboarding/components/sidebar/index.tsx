@@ -6,21 +6,14 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { OnboardingSidebarProps } from '~/settings-payments/onboarding/types';
+import { useOnboardingContext } from '~/settings-payments/onboarding/data';
 import SidebarItem from './item';
 
 /**
  * Sidebar component for the onboarding modal
  */
-export default function OnboardingSidebar( {
-	steps,
-}: OnboardingSidebarProps ): React.ReactNode {
-	const sidebarItems = steps.map( ( step ) => ( {
-		key: step.key,
-		label: step.label,
-		isCompleted: step.isCompleted,
-		isActive: step.isActive,
-	} ) );
+export default function OnboardingSidebar(): React.ReactNode {
+	const { steps } = useOnboardingContext();
 
 	return (
 		<div className="settings-payments-onboarding-modal__sidebar">
@@ -33,12 +26,12 @@ export default function OnboardingSidebar( {
 				</div>
 			</div>
 			<div className="settings-payments-onboarding-modal__sidebar--list">
-				{ sidebarItems.map( ( item ) => (
+				{ Object.entries( steps ).map( ( [ key, step ] ) => (
 					<SidebarItem
-						key={ item.key }
-						label={ item.label }
-						isCompleted={ item.isCompleted }
-						isActive={ item.isActive }
+						key={ step.id }
+						label={ step.label }
+						isCompleted={ false }
+						isActive={ false }
 					/>
 				) ) }
 			</div>

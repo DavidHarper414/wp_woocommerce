@@ -1,32 +1,24 @@
 /**
  * External dependencies
  */
-import { Children, isValidElement, ReactElement } from 'react';
 
 /**
  * Internal dependencies
  */
-import { StepperProps, StepProps } from '~/settings-payments/onboarding/types';
+import { useOnboardingContext } from '~/settings-payments/onboarding/data';
 
 /**
  * Stepper component that renders only the active step from its children
  */
-export default function Stepper( {
-	active,
-	children,
-}: StepperProps ): React.ReactNode {
-	// Filter and find the active step from children
-	const activeStep = Children.toArray( children ).find( ( child ) => {
-		if ( isValidElement( child ) ) {
-			const element = child as ReactElement< StepProps >;
-			return element.props.id === active;
-		}
-		return false;
-	} );
+export default function Stepper( { children } ): React.ReactNode {
+	const { steps, currentStep } = useOnboardingContext();
 
+	const CurrentStep = steps[ currentStep ].content;
+
+	// Only render the active step
 	return (
 		<div className="settings-payments-onboarding-modal__stepper">
-			{ activeStep }
+			{ CurrentStep }
 		</div>
 	);
 }

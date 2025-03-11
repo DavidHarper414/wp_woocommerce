@@ -49,7 +49,6 @@ export interface SidebarItemProps {
  * Props for the Stepper component.
  */
 export interface StepperProps {
-	active: string;
 	children: ReactNode;
 }
 
@@ -59,6 +58,8 @@ export interface StepperProps {
 export interface StepProps {
 	id: string;
 	children: ReactNode;
+	path: string;
+    label: string;
 }
 
 /**

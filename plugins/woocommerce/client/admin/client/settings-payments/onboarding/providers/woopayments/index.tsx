@@ -9,8 +9,10 @@ import React from 'react';
 import '../../style.scss';
 import Sidebar from '../../components/sidebar';
 import Modal from '../../components/modal';
-import RecommendedMethods from './steps/recommended-methods';
+import Stepper from '../../components/stepper';
+import Step from '../../components/step';
 import { WooPaymentsModalProps } from '~/settings-payments/onboarding/types';
+import OnboardingContext from '~/settings-payments/onboarding/data';
 
 /**
  * Modal component for WooPayments onboarding
@@ -26,10 +28,25 @@ export default function WooPaymentsModal( {
 			isOpen={ isOpen }
 			setIsOpen={ setIsOpen }
 		>
-			<Sidebar steps={ [] } />
-			<div className="settings-payments-onboarding-modal__content">
-				<RecommendedMethods />
-			</div>
+			<OnboardingContext>
+				<Sidebar />
+				<Stepper>
+					<Step
+						id="recommended"
+						label="Choose your payment methods"
+						path="/onboarding/welcome"
+					>
+						Test
+					</Step>
+					<Step
+						id="jetpack"
+						label="Connect to WordPress.com"
+						path="/onboarding/jetpack"
+					>
+						Test 2
+					</Step>
+				</Stepper>
+			</OnboardingContext>
 		</Modal>
 	);
 }
