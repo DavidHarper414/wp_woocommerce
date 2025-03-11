@@ -6,13 +6,14 @@ import {
 	getContext as getContextFn,
 	getElement,
 	withScope,
+	getConfig,
 } from '@wordpress/interactivity';
 import type { StorePart } from '@woocommerce/utils';
 
 /**
  * Internal dependencies
  */
-import type { ImageDataObject } from './types';
+import type { ImageDataObject, ImageDataItem } from './types';
 
 export interface ProductGalleryContext {
 	selectedImageId: number;
@@ -25,6 +26,7 @@ export interface ProductGalleryContext {
 	isDragging: boolean;
 	userHasInteracted: boolean;
 	imageData: ImageDataObject;
+	image: ImageDataItem;
 }
 
 const getContext = ( ns?: string ) =>
@@ -136,13 +138,11 @@ const productGallery = {
 
 			return processedImageData;
 		},
-		get viewAllVisible() {
-			const { imageData } = getContext();
-			return Object.keys( imageData.images || {} ).length > 3;
-		},
-		get remainingThumbnailsCount() {
-			const { imageData } = getContext();
-			return Object.keys( imageData.images || {} ).length - 3;
+		// TODO: This is a temporary solution to display the view all thumbnail.
+		// Will eventually be replaced by a slider where processedImageData can be used directly.
+		get thumbnails() {
+			const { numberOfThumbnails } = getConfig();
+			return this.processedImageData.slice( 0, numberOfThumbnails );
 		},
 	},
 	actions: {
@@ -327,6 +327,18 @@ const productGallery = {
 			context.isDragging = false;
 			context.touchStartX = 0;
 			context.touchCurrentX = 0;
+		},
+		// TODO: This is a temporary solution to display the view all thumbnail.
+		// Will eventually be replaced by a slider.
+		displayViewAll: () => {
+			const context = getContext();
+			const state = store(
+				'woocommerce/product-gallery',
+				productGallery
+			).state;
+			const thumbnails = state.thumbnails;
+			const lastThumbnail = thumbnails[ thumbnails.length - 1 ];
+			return context.image.id === lastThumbnail.id;
 		},
 	},
 	callbacks: {

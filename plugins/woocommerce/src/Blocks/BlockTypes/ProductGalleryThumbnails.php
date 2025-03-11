@@ -68,6 +68,8 @@ class ProductGalleryThumbnails extends AbstractBlock {
 			return '';
 		}
 
+		// TODO: This is a temporary solution to display the view all thumbnail.
+		// Will eventually be replaced by a slider.
 		$product_gallery_thumbnails_data = ProductGalleryUtils::get_product_gallery_image_data( $product );
 		$product_gallery_images          = $product_gallery_thumbnails_data['images'];
 		if ( empty( $product_gallery_images ) ) {
@@ -81,9 +83,10 @@ class ProductGalleryThumbnails extends AbstractBlock {
 		// But not less than than 3 (default number of thumbnails).
 		$thumbnails_layout          = max( min( $number_of_images, $number_of_thumbnails ), $default_number_of_thumbnails );
 		$number_of_thumbnails_class = 'wc-block-product-gallery-thumbnails--number-of-thumbnails-' . $thumbnails_layout;
-		$thumbnails_count           = 1;
-		
 		$remaining_thumbnails_count = $number_of_images - $number_of_thumbnails;
+		wp_interactivity_config( 'woocommerce/product-gallery', array( 'numberOfThumbnails' => $number_of_thumbnails ) );
+
+		// End of temporary solution.
 
 		ob_start();
 		?>
@@ -93,10 +96,11 @@ class ProductGalleryThumbnails extends AbstractBlock {
 			style="<?php echo esc_attr( $classes_and_styles['styles'] ); ?>"
 			data-wp-interactive="woocommerce/product-gallery">
 			<template 
-				data-wp-each--image="state.processedImageData" 
+				data-wp-each--image="state.thumbnails" 
 				data-wp-each-key="context.image.id" >
 				<div class="wc-block-product-gallery-thumbnails__thumbnail">
 					<img
+						data-wp-bind--numberOfThumbnails="context.numberOfThumbnails"
 						data-wp-bind--data-image-id="context.image.id" 
 						data-wp-bind--width="context.image.width" 
 						data-wp-bind--height="context.image.height" 
@@ -107,17 +111,16 @@ class ProductGalleryThumbnails extends AbstractBlock {
 						data-wp-on--keydown="actions.onThumbnailKeyDown"
 						decoding="async" 
 						loading="lazy" />
+					<div class="wc-block-product-gallery-thumbnails__thumbnail__overlay" 
+						data-wp-bind--visible="actions.displayViewAll"
+						data-wp-on--click="actions.openDialog" 
+						data-wp-on--keydown="actions.onViewAllImagesKeyDown" 
+						tabindex="0">
+						<span class="wc-block-product-gallery-thumbnails__thumbnail__remaining-thumbnails-count">+<?php echo esc_html( $remaining_thumbnails_count ); ?></span>
+						<span class="wc-block-product-gallery-thumbnails__thumbnail__view-all"><?php echo esc_html__( 'View all', 'woocommerce' ); ?></span>
+					</div>
 				</div>
 			</template>
-			<div class="wc-block-product-gallery-thumbnails__thumbnail__overlay" 
-				data-wp--hidden="!state.viewAllVisible"	
-				data-wp-on--click="actions.openDialog" 
-				data-wp-on--keydown="actions.onViewAllImagesKeyDown" 
-				tabindex="0"
-			>
-				<span class="wc-block-product-gallery-thumbnails__thumbnail__remaining-thumbnails-count"><?php echo esc_html( $remaining_thumbnails_count ); ?>	</span>
-				<span class="wc-block-product-gallery-thumbnails__thumbnail__view-all"><?php echo esc_html__( 'View all', 'woocommerce' ); ?></span>
-			</div>
 		</div>
 		<?php
 		$template = ob_get_clean();
