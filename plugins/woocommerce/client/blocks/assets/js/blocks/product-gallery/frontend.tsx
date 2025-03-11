@@ -331,11 +331,16 @@ const productGallery = {
 		// TODO: This is a temporary solution to display the view all thumbnail.
 		// Will eventually be replaced by a slider.
 		displayViewAll: () => {
-			const context = getContext();
+			const { numberOfThumbnails } = getConfig();
 			const state = store(
 				'woocommerce/product-gallery',
 				productGallery
 			).state;
+			const allImages = state.processedImageData;
+			if ( allImages.length <= numberOfThumbnails ) {
+				return false;
+			}
+			const context = getContext();
 			const thumbnails = state.thumbnails;
 			const lastThumbnail = thumbnails[ thumbnails.length - 1 ];
 			return context.image.id === lastThumbnail.id;

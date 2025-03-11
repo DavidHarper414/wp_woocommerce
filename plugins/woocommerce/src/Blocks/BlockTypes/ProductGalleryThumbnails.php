@@ -72,7 +72,7 @@ class ProductGalleryThumbnails extends AbstractBlock {
 		// Will eventually be replaced by a slider.
 		$product_gallery_thumbnails_data = ProductGalleryUtils::get_product_gallery_image_data( $product );
 		$product_gallery_images          = $product_gallery_thumbnails_data['images'];
-		if ( empty( $product_gallery_images ) ) {
+		if ( count( $product_gallery_images ) <= 1 ) {
 			return '';
 		}
 
