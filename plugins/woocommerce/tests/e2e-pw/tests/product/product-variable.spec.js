@@ -3,6 +3,8 @@
  */
 import { tags, test, expect } from '../../fixtures/fixtures';
 import { WC_API_PATH } from '../../utils/api-client';
+import { checkCartContent } from '../../utils/cart';
+import { addProductsToCart } from '../../utils/pdp';
 
 const productPrice = '18.16';
 const cartDialogMessage =
@@ -199,6 +201,22 @@ test.describe(
 			}
 
 			await page.goto( 'cart/' );
+
+			await checkCartContent(
+				false,
+				page,
+				[
+					{
+						data: {
+							name: variableProductName,
+							price: productPrice,
+						},
+						qty: 1,
+					},
+				],
+				0
+			);
+
 			await expect(
 				page.locator( 'td.product-name >> nth=0' )
 			).toContainText( variableProductName );
@@ -220,6 +238,7 @@ test.describe(
 		test( 'should be able to remove variation products from the cart', async ( {
 			page,
 		} ) => {
+			await addProductsToCart( page, variableProductName, 1 );
 			await page.goto( `product/${ slug }` );
 			await page.locator( '#size' ).selectOption( 'Large' );
 			await page.waitForTimeout( 300 );
@@ -227,12 +246,19 @@ test.describe(
 				.getByRole( 'button', { name: 'Add to cart', exact: true } )
 				.click();
 
-			await page.goto( 'cart/' );
-			await page.locator( 'a.remove' ).click();
-
 			await expect(
-				page.getByText( 'Your cart is currently empty' )
+				page.getByText(
+					`${ 1 } × “${ variableProductName }” have been added to your cart.`
+				)
 			).toBeVisible();
+
+			await page.goto( 'cart/' );
+			await page
+				.getByRole( 'button', { name: 'Remove' } )
+				.first()
+				.click();
+
+			await checkCartContent( false, page, [], 0 );
 		} );
 	}
 );

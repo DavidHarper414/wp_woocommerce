@@ -84,7 +84,7 @@ export async function checkCartContentInBlocksCart(
  *
  * @param {boolean} isClassicCart - Indicates whether the cart is a classic cart.
  * @param {Object}  page          - The Playwright page object.
- * @param {Array}   products      - An array of objects in the format { data: { name: '', price: '', }, qty: quantity } expected to be in the cart.
+ * @param {Array}   products      - An array of objects in the format { data: { name: 'Product name', price: '12', }, qty: quantity } expected to be in the cart.
  * @param {Object}  tax           - The tax object containing the tax rate. Expected format: { rate: '0.00' }
  */
 export async function checkCartContent( isClassicCart, page, products, tax ) {
