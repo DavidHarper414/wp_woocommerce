@@ -22,7 +22,7 @@ import { useLocation } from '@automattic/site-admin';
  * Internal dependencies
  */
 import { Sidebar } from './components';
-import { Route, Location } from './types';
+import { Route } from './types';
 import { LegacyContent } from './legacy';
 import { SettingsDataContext } from './data';
 
