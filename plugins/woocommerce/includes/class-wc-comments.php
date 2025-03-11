@@ -100,7 +100,7 @@ class WC_Comments {
 	 * @return array
 	 */
 	public static function exclude_order_comments( $clauses ) {
-		$clauses['where'] .= ( $clauses['where'] ? ' AND ' : '' ) . " comment_type != 'order_note' ";
+		$clauses['where'] .= ( trim( $clauses['where'] ) ? ' AND ' : '' ) . " comment_type != 'order_note' ";
 		return $clauses;
 	}
 
@@ -132,7 +132,7 @@ class WC_Comments {
 	 * @return array
 	 */
 	public static function exclude_webhook_comments( $clauses ) {
-		$clauses['where'] .= ( $clauses['where'] ? ' AND ' : '' ) . " comment_type != 'webhook_delivery' ";
+		$clauses['where'] .= ( trim( $clauses['where'] ) ? ' AND ' : '' ) . " comment_type != 'webhook_delivery' ";
 		return $clauses;
 	}
 
@@ -168,7 +168,7 @@ class WC_Comments {
 	 */
 	public static function exclude_action_log_comments( $clauses, $comment_query ) {
 		if ( 'action_log' !== $comment_query->query_vars['type'] ) {
-			$clauses['where'] .= ( $clauses['where'] ? ' AND ' : '' ) . " comment_type != 'action_log' ";
+			$clauses['where'] .= ( trim( $clauses['where'] ) ? ' AND ' : '' ) . " comment_type != 'action_log' ";
 		}
 
 		return $clauses;
@@ -354,7 +354,7 @@ class WC_Comments {
 			$cache_key = 'wc_count_comments_' . $comment_query_status_to_comment_status_mapping[ $query_status ];
 			$count     = wp_cache_get( $cache_key, self::COMMENT_COUNT_CACHE_GROUP );
 			if ( false === $count ) {
-				$count = get_comments( array_merge( $args, array( 'status' => $query_status ) ) );
+				$count = (int) get_comments( array_merge( $args, array( 'status' => $query_status ) ) );
 				wp_cache_set( $cache_key, $count, self::COMMENT_COUNT_CACHE_GROUP, 3 * DAY_IN_SECONDS );
 			}
 			$comment_counts[ $stat_key ] = (int) $count;

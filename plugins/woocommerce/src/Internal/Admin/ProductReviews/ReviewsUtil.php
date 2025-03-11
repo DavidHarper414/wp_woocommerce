@@ -32,7 +32,7 @@ class ReviewsUtil {
 		 * Any comment queries with these values are likely to be custom handling where we don't want to change default behavior.
 		 * This may change for the `type` query vars in the future if we break out review replies as their own type.
 		 */
-		foreach ( [ 'ID', 'parent', 'parent__in', 'post_author__in', 'post_author', 'post_name', 'type', 'type__in', 'type__not_in', 'post_type__in' ] as $arg ) {
+		foreach ( [ 'ID', 'parent', 'parent__in', 'post_author__in', 'post_author', 'post_name', 'type', 'type__in', 'type__not_in', 'post_type__in', 'comment__in', 'comment__not_in' ] as $arg ) {
 			if ( ! empty( $comment_query->query_vars[ $arg ] ) ) {
 				return $clauses;
 			}
@@ -55,7 +55,7 @@ class ReviewsUtil {
 		}
 
 		$clauses['join']  .= " LEFT JOIN {$wpdb->posts} AS wp_posts_to_exclude_reviews ON comment_post_ID = wp_posts_to_exclude_reviews.ID ";
-		$clauses['where'] .= ( $clauses['where'] ? ' AND ' : '' ) . " wp_posts_to_exclude_reviews.post_type NOT IN ('product') ";
+		$clauses['where'] .= ( trim( $clauses['where'] ) ? ' AND ' : '' ) . " wp_posts_to_exclude_reviews.post_type NOT IN ('product') ";
 
 		return $clauses;
 	}
