@@ -114,8 +114,20 @@ class BlockPatterns {
 
 		$patterns = $this->get_block_patterns();
 		foreach ( $patterns as $pattern ) {
-			$this->pattern_registry->register_block_pattern( $pattern['source'], $pattern, $this->get_patterns_dictionary() );
+			if ( $this->check_pattern_file_exists( $pattern['source'] ) ) {
+				$this->pattern_registry->register_block_pattern( $pattern['source'], $pattern, $this->get_patterns_dictionary() );
+			}
 		}
+	}
+
+	/**
+	 * Checks if the pattern file exists.
+	 *
+	 * @param string $source The source of the pattern.
+	 * @return boolean
+	 */
+	public function check_pattern_file_exists( $source ) {
+		return file_exists( $source );
 	}
 
 	/**
