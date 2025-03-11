@@ -19,10 +19,18 @@ class BlockTemplatesController {
 	const TEMPLATES_ROOT_DIR = 'templates';
 
 	/**
+	 * Array of critical template parts to always resolve.
+	 *
+	 * @var array
+	 */
+	private $critical_template_parts = [ 'header', 'footer' ];
+
+	/**
 	 * Initialization method.
 	 */
 	public function init() {
 		add_filter( 'pre_get_block_template', array( $this, 'get_block_template_fallback' ), 10, 3 );
+		add_filter( 'render_block', array( $this, 'ensure_template_part_rendering' ), 10, 2 );
 		add_filter( 'pre_get_block_file_template', array( $this, 'get_block_file_template' ), 10, 3 );
 		add_filter( 'get_block_template', array( $this, 'add_block_template_details' ), 10, 3 );
 		add_filter( 'get_block_templates', array( $this, 'add_block_templates' ), 10, 3 );
@@ -134,6 +142,38 @@ class BlockTemplatesController {
 		}
 
 		return $template;
+	}
+
+	/**
+	 * Ensure template parts render correctly on the frontend.
+	 *
+	 * @param string $block_content The rendered block content.
+	 * @param array  $block         The block data.
+	 * @return string
+	 */
+	public function ensure_template_part_rendering( $block_content, $block ) {
+		if ( 'core/template-part' !== $block['blockName'] ) {
+			return $block_content;
+		}
+
+		$slug = ! empty( $block['attrs']['slug'] ) ? $block['attrs']['slug'] : '';
+
+		if ( ! $slug || ! in_array( $slug, $this->critical_template_parts, true ) ) {
+			return $block_content;
+		}
+
+		// If the content is empty, force re-rendering with the resolved template.
+		if ( empty( $block_content ) ) {
+			$theme       = wp_get_theme()->get_stylesheet();
+			$template_id = "{$theme}//{$slug}";
+			$template    = get_block_template( $template_id, 'wp_template_part' );
+
+			if ( $template && ! empty( $template->content ) ) {
+				$block_content = do_blocks( $template->content );
+			}
+		}
+
+		return $block_content;
 	}
 
 	/**
