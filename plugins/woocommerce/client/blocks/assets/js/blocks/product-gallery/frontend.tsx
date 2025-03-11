@@ -136,6 +136,14 @@ const productGallery = {
 
 			return processedImageData;
 		},
+		get viewAllVisible() {
+			const { imageData } = getContext();
+			return Object.keys( imageData.images || {} ).length > 3;
+		},
+		get remainingThumbnailsCount() {
+			const { imageData } = getContext();
+			return Object.keys( imageData.images || {} ).length - 3;
+		},
 	},
 	actions: {
 		userHasInteracted: () => {
