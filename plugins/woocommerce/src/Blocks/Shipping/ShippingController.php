@@ -66,7 +66,7 @@ class ShippingController {
 		$this->asset_data_registry->add( 'shippingCostRequiresAddress', get_option( 'woocommerce_shipping_cost_requires_address', false ) === 'yes' );
 		add_action( 'rest_api_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'hydrate_client_settings' ) );
+		add_action( 'admin_footer', array( $this, 'hydrate_client_settings' ), 0 );
 		add_action( 'woocommerce_load_shipping_methods', array( $this, 'register_local_pickup' ) );
 		add_filter( 'woocommerce_local_pickup_methods', array( $this, 'register_local_pickup_method' ) );
 		add_filter( 'woocommerce_order_hide_shipping_address', array( $this, 'hide_shipping_address_for_local_pickup' ), 10 );
@@ -232,6 +232,11 @@ class ShippingController {
 	 * Hydrate client settings
 	 */
 	public function hydrate_client_settings() {
+		if ( ! wp_script_is( 'wc-shipping-method-pickup-location', 'enqueued' ) ) {
+			// Only hydrate the settings if the script dependent on them is enqueued.
+			return;
+		}
+
 		$locations = get_option( 'pickup_location_pickup_locations', array() );
 
 		$formatted_pickup_locations = array();
