@@ -23,8 +23,6 @@ export async function checkCartContentInClassicCart(
 	expectedTotal
 ) {
 	for ( const product of products ) {
-		console.log( product );
-
 		const row = await page
 			.locator( 'tr.cart_item' )
 			.filter( { hasText: product.data.name } );
