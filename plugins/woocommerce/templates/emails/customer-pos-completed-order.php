@@ -63,7 +63,7 @@ if ( ! empty( $order->get_billing_first_name() ) ) {
 		printf(
 			wp_kses(
 			/* translators: %1$s Site title, %2$s Order pay link */
-				__( 'An order has been created for you on %1$s. Your order details are below, with a link to make payment when you're ready: %2$s', 'woocommerce' ),
+				__( 'An order has been created for you on %1$s. Your order details are below, with a link to make payment when you’re ready: %2$s', 'woocommerce' ),
 				array(
 					'a' => array(
 						'href' => array(),
@@ -130,4 +130,4 @@ if ( $additional_content ) {
  *
  * @hooked WC_Emails::email_footer() Output the email footer
  */
-do_action( 'woocommerce_email_footer', $email ); 
+do_action( 'woocommerce_email_footer', $email );

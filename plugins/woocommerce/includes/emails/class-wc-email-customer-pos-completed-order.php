@@ -34,8 +34,7 @@ if ( ! class_exists( 'WC_Email_Customer_POS_Completed_Order', false ) ) :
 			$this->customer_email = true;
 			$this->title          = __( 'POS Order completed', 'woocommerce' );
 			$this->template_html  = 'emails/customer-pos-completed-order.php';
-            // TODO-JC: Add plain template
-			$this->template_plain = 'emails/plain/customer-invoice.php';
+            $this->template_plain = 'emails/plain/customer-pos-completed-order.php';
 			$this->placeholders   = array(
 				'{order_date}'   => '',
 				'{order_number}' => '',
@@ -49,8 +48,7 @@ if ( ! class_exists( 'WC_Email_Customer_POS_Completed_Order', false ) ) :
 				? __( 'Send an email to customers when their POS order is completed.', 'woocommerce' )
 				: __( 'POS order completed emails are sent to customers when their in-store orders are marked as completed.', 'woocommerce' );
 
-			// Triggers for this email.
-			add_action( 'woocommerce_pos_order_status_completed_notification', array( $this, 'trigger' ), 10, 2 );
+            $this->manual = true;
 		}
 
 		/**
