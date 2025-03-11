@@ -90,17 +90,9 @@
 "plugins/woocommerce/templates/emails/**/*":
   - team: proton
 
-"plugins/woocommerce/src/Admin/**/*":
-  - team: woo-fse
-  - team: ghidorah
-
 "plugins/woocommerce/src/Blocks/**/*":
   - team: rubik
   - team: woo-fse
-
-"plugins/woocommerce/src/Internal/Admin/**/*":
-  - team: woo-fse
-  - team: ghidorah
 
 "plugins/woocommerce/src/StoreApi/**/*":
   - team: rubik
@@ -125,3 +117,135 @@
 
 '**/package.json':
   - team: flux
+
+"php/blueprint":
+  - team: ghidorah
+
+"php/remote-specs-validation":
+  - team: ghidorah
+
+"plugins/woocommerce-beta-tester":
+  - team: ghidorah
+
+"plugins/Woocommerce":
+  - team: ghidorah
+
+"plugins/Woocommerce/includes/admin/class-wc-admin-setup-wizard":
+  - team: ghidorah
+
+"plugins/Woocommerce/includes/admin/notes/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/includes/react-admin/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/patterns/coming-soon-*.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/patterns/page-coming-soon-*.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/Notes/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/DataSourcePoller.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/DeprecatedClassFacade.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/FeaturePlugin.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/Loader.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/PageController.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/PluginsHelper.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/PluginsInstaller.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/WCAdminHelper.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/Features/OnboardingTasks/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/Features/PaymentGatewaySuggestions/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/Features/ShippingPartnerSuggestions/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/Features/LaunchYourStore/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/Features/Settings/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/Features/Blueprint/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/RemoteInboxNotifications/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/RemoteSpecs/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/Notes.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/Onboarding*.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/ShippingPartnerSuggestions.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/Experiments.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Admin/API/LaunchYourStore.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/Onboarding/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/RemoteFreeExtensions/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/MobileAppBanner.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/RemoteInboxNotifications.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/Homescreen.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/Settings/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/Notes/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/Loader.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Admin/WCAdminAssets.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/Logging/RemoteLogger.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/ComingSoon/*":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/McStats.php":
+  - team: ghidorah
+
+"plugins/Woocommerce/src/Internal/RemoteLogger.php":
+  - team: ghidorah
