@@ -253,12 +253,14 @@
               item = $( '<a></a>' ).attr( 'href', '#' ).text( j );
               if (slider.vars.controlNav === "thumbnails") {
                 item = $('<img/>', {
-                  onload: 'this.width = this.naturalWidth; this.height = this.naturalHeight',
                   src: slide.attr('data-thumb'),
                   srcset: slide.attr('data-thumb-srcset'),
                   sizes: slide.attr('data-thumb-sizes'),
                   alt: slide.attr('alt')
-                })
+                }).on('load', function() {
+                  this.width = this.naturalWidth;
+                  this.height = this.naturalHeight;
+                });
               }
 
               if ( '' !== slide.attr( 'data-thumb-alt' ) ) {
