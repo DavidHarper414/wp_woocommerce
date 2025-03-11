@@ -81,7 +81,6 @@ const TEMPLATE: InnerBlockTemplate[] = [
 							],
 						],
 					],
-					[ 'woocommerce/product-gallery-pager' ],
 				],
 			],
 		],
