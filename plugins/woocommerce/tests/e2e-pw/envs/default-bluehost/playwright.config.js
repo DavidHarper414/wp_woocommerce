@@ -1,0 +1,34 @@
+let config = require( '../../playwright.config.js' );
+const { tags } = require( '../../fixtures/fixtures' );
+
+process.env.INSTALL_WC = 'true';
+
+const grepInvert = new RegExp(
+	`${ tags.COULD_BE_LOWER_LEVEL_TEST }|${ tags.NON_CRITICAL }|${ tags.TO_BE_REMOVED }`
+);
+
+config = {
+	...config.default,
+	projects: [
+		...config.setupProjects,
+		{
+			name: 'reset',
+			testDir: `${ config.TESTS_ROOT_PATH }/fixtures`,
+			testMatch: 'reset.setup.js',
+		},
+		{
+			name: 'e2e-bluehost',
+			testMatch: [ '**/basic/**' ],
+			grepInvert,
+			dependencies: [ 'reset', 'site setup' ],
+		},
+		// {
+		// 	name: 'api-bluehost',
+		// 	testMatch: [ '**/api-tests/**' ],
+		// 	grepInvert,
+		// 	dependencies: [ 'reset', 'site setup' ],
+		// },
+	],
+};
+
+module.exports = config;
