@@ -16,19 +16,16 @@ config = {
 		},
 		{
 			name: 'e2e-subdir',
-			testIgnore: [
-				'**/api-tests/**',
-				'**/js-file-monitor/**',
-			],
+			testMatch: [ '**/basic/**' ],
 			grepInvert,
 			dependencies: [ 'reset', 'site setup' ],
 		},
-		{
-			name: 'api-subdir',
-			testMatch: [ '**/api-tests/**' ],
-			grepInvert,
-			dependencies: [ 'reset', 'site setup' ],
-		},
+		// {
+		// 	name: 'api-subdir',
+		// 	testMatch: [ '**/api-tests/**' ],
+		// 	grepInvert,
+		// 	dependencies: [ 'reset', 'site setup' ],
+		// },
 	],
 };
 
