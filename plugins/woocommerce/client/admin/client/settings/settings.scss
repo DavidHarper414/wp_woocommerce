@@ -62,4 +62,35 @@ body.woocommerce_page_wc-settings {
 		width: 300px;
 		flex-shrink: 0;
 	}
+
+	.woocommerce-site-page-header {
+		padding: $grid-unit-20 $grid-unit-60;
+		border-bottom: 1px solid $gray-100;
+		background: $white;
+		position: sticky;
+		top: 0;
+		z-index: z-index(".edit-site-page-header");
+
+		@media not (prefers-reduced-motion) {
+			transition: padding ease-out 0.1s;
+		}
+
+		.components-heading {
+			color: $gray-900;
+		}
+
+		.edit-site-page-header__page-title {
+			min-height: $grid-unit-50;
+
+			.components-heading {
+				flex-grow: 1;
+				flex-basis: 0;
+				white-space: nowrap;
+			}
+		}
+
+		.edit-site-page-header__sub-title {
+			margin-bottom: $grid-unit-10;
+		}
+	}
 }
