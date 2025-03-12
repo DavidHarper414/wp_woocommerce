@@ -21,7 +21,7 @@ class WC_Comments {
 	/**
 	 * @var string The cache group to use for comment counts.
 	 */
-	private const PRODUCT_REVIEWS_PENDING_COUNT_CACHE_KEY = 'wc_comment_counts';
+	private const PRODUCT_REVIEWS_PENDING_COUNT_CACHE_KEY = 'woocommerce_product_reviews_pending_count';
 
 	/**
 	 * Hook in methods.
@@ -242,7 +242,7 @@ class WC_Comments {
 	 */
 	public static function get_products_reviews_pending_moderation_counter() {
 		$cache = new CommentsCountCache();
-		$count = $cache->get( 'woocommerce_product_reviews_pending_count' );
+		$count = $cache->get( self::PRODUCT_REVIEWS_PENDING_COUNT_CACHE_KEY );
 		if ( false === $count ) {
 			$count = (int) get_comments(
 				array(
@@ -252,7 +252,7 @@ class WC_Comments {
 					'count'     => true,
 				)
 			);
-			$cache->set( 'woocommerce_product_reviews_pending_count', $count );
+			$cache->set( self::PRODUCT_REVIEWS_PENDING_COUNT_CACHE_KEY, $count );
 		}
 
 		return $count;
@@ -269,8 +269,8 @@ class WC_Comments {
 		if ( $needs_bump && in_array( $comment->comment_type, array( 'review', 'comment', '' ), true ) ) {
 			$is_product = 'product' === get_post_type( $comment->comment_post_ID );
 			$cache      = new CommentsCountCache();
-			if ( $is_product && $cache->has( 'woocommerce_product_reviews_pending_count' ) ) {
-				$cache->inc( 'woocommerce_product_reviews_pending_count' );
+			if ( $is_product && $cache->has( self::PRODUCT_REVIEWS_PENDING_COUNT_CACHE_KEY ) ) {
+				$cache->increment( self::PRODUCT_REVIEWS_PENDING_COUNT_CACHE_KEY );
 			}
 		}
 	}
@@ -287,11 +287,11 @@ class WC_Comments {
 		if ( $needs_adjustments && in_array( $comment->comment_type, array( 'review', 'comment', '' ), true ) ) {
 			$is_product = 'product' === get_post_type( $comment->comment_post_ID );
 			$cache      = new CommentsCountCache();
-			if ( $is_product && $cache->has( 'woocommerce_product_reviews_pending_count' ) ) {
+			if ( $is_product && $cache->has( self::PRODUCT_REVIEWS_PENDING_COUNT_CACHE_KEY ) ) {
 				if ( '0' === $comment->comment_approved ) {
-					$cache->inc( 'woocommerce_product_reviews_pending_count' );
+					$cache->increment( self::PRODUCT_REVIEWS_PENDING_COUNT_CACHE_KEY );
 				} else {
-					$cache->dec( 'woocommerce_product_reviews_pending_count' );
+					$cache->decrement( self::PRODUCT_REVIEWS_PENDING_COUNT_CACHE_KEY );
 				}
 			}
 		}

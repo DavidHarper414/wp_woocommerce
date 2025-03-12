@@ -25,7 +25,8 @@ class CommentsCountCache {
 	 * Constructor, detects which cache API to use.
 	 */
 	public function __construct() {
-		$this->use_cache_api = true === wp_using_ext_object_cache();
+		$this->use_cache_api = ( true === wp_using_ext_object_cache() );
+		$this->use_cache_api = ( true === wp_using_ext_object_cache() );
 	}
 
 	/**
@@ -70,7 +71,7 @@ class CommentsCountCache {
 	 * @param int    $increment The value increment to be applied.
 	 * @return false|int
 	 */
-	public function inc( string $name, int $increment = 1 ) {
+	public function increment( string $name, int $increment = 1 ) {
 		if ( $this->use_cache_api ) {
 			return wp_cache_incr( $name, $increment, self::COMMENT_COUNT_CACHE_GROUP );
 		}
@@ -89,7 +90,7 @@ class CommentsCountCache {
 	 * @param int    $decrement The value decrement to be applied.
 	 * @return false|int
 	 */
-	public function dec( string $name, int $decrement = 1 ) {
+	public function decrement( string $name, int $decrement = 1 ) {
 		if ( $this->use_cache_api ) {
 			return wp_cache_decrement( $name, $decrement, self::COMMENT_COUNT_CACHE_GROUP );
 		}
