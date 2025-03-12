@@ -71,6 +71,7 @@ class WC_Helper_Admin {
 		$settings['wccomHelper'] = array(
 			'isConnected'                => WC_Helper::is_site_connected(),
 			'connectURL'                 => self::get_connection_url(),
+			'reConnectURL'               => self::get_connection_url( true ),
 			'userEmail'                  => $auth_user_email,
 			'userAvatar'                 => get_avatar_url( $auth_user_email, array( 'size' => '48' ) ),
 			'storeCountry'               => wc_get_base_location()['country'],
@@ -92,6 +93,7 @@ class WC_Helper_Admin {
 			$settings['wccomHelper']['subscription_expired_notice']  = PluginsHelper::get_expired_subscription_notice( false );
 			$settings['wccomHelper']['subscription_expiring_notice'] = PluginsHelper::get_expiring_subscription_notice( false );
 			$settings['wccomHelper']['subscription_missing_notice']  = PluginsHelper::get_missing_subscription_notice();
+			$settings['wccomHelper']['connection_url_notice']        = WC_Woo_Helper_Connection::get_connection_url_notice();
 		} else {
 			$settings['wccomHelper']['disconnected_notice'] = PluginsHelper::get_wccom_disconnected_notice();
 		}
@@ -105,7 +107,7 @@ class WC_Helper_Admin {
 	 *
 	 * @return string
 	 */
-	public static function get_connection_url() {
+	public static function get_connection_url( $reconnect = false ) {
 		global $current_screen;
 
 		// Default to wc-addons, although this can be changed from the frontend
@@ -116,7 +118,7 @@ class WC_Helper_Admin {
 		);
 
 		// No active connection.
-		if ( WC_Helper::is_site_connected() ) {
+		if ( WC_Helper::is_site_connected() && ! $reconnect ) {
 			$connect_url_args['wc-helper-disconnect'] = 1;
 			$connect_url_args['wc-helper-nonce']      = wp_create_nonce( 'disconnect' );
 		} else {
