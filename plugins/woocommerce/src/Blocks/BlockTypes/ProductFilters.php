@@ -1,4 +1,7 @@
 <?php
+
+declare( strict_types = 1 );
+
 namespace Automattic\WooCommerce\Blocks\BlockTypes;
 
 /**
@@ -62,7 +65,7 @@ class ProductFilters extends AbstractBlock {
 		usort(
 			$active_filters,
 			function ( $a, $b ) {
-				return strnatcmp( $a['label'], $b['label'] );
+				return strnatcmp( $a['activeLabel'], $b['activeLabel'] );
 			}
 		);
 
