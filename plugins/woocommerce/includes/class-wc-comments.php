@@ -8,6 +8,7 @@
  * @version 2.3.0
  */
 
+use Automattic\WooCommerce\Caches\CommentsCountCache;
 use Automattic\WooCommerce\Internal\Admin\ProductReviews\ReviewsUtil;
 
 defined( 'ABSPATH' ) || exit;
@@ -16,6 +17,11 @@ defined( 'ABSPATH' ) || exit;
  * Comments class.
  */
 class WC_Comments {
+
+	/**
+	 * @var string The cache group to use for comment counts.
+	 */
+	private const PRODUCT_REVIEWS_PENDING_COUNT_CACHE_KEY = 'wc_comment_counts';
 
 	/**
 	 * Hook in methods.
@@ -230,12 +236,13 @@ class WC_Comments {
 	}
 
 	/**
-	 * Fetches (and populates if needed) transient holding the counter.
+	 * Fetches (and populates if needed) the counter.
 	 *
 	 * @return int
 	 */
 	public static function get_products_reviews_pending_moderation_counter() {
-		$count = get_transient( 'woocommerce_product_reviews_pending_count' );
+		$cache = new CommentsCountCache();
+		$count = $cache->get( 'woocommerce_product_reviews_pending_count' );
 		if ( false === $count ) {
 			$count = (int) get_comments(
 				array(
@@ -245,51 +252,47 @@ class WC_Comments {
 					'count'     => true,
 				)
 			);
-			set_transient( 'woocommerce_product_reviews_pending_count', $count, DAY_IN_SECONDS );
+			$cache->set( 'woocommerce_product_reviews_pending_count', $count );
 		}
 
 		return $count;
 	}
 
 	/**
-	 * Handles `wp_insert_comment` hook processing and actualizes transient holding the counter.
+	 * Handles `wp_insert_comment` hook processing and actualizes the counter.
 	 *
 	 * @param int         $comment_id Comment ID.
 	 * @param \WP_Comment $comment    Comment object.
 	 */
 	public static function maybe_bump_products_reviews_pending_moderation_counter( $comment_id, $comment ) {
 		$needs_bump = '0' === $comment->comment_approved;
-		if ( $needs_bump && in_array( $comment->comment_type, array( 'review', 'comment', '' ), true) ) {
+		if ( $needs_bump && in_array( $comment->comment_type, array( 'review', 'comment', '' ), true ) ) {
 			$is_product = 'product' === get_post_type( $comment->comment_post_ID );
-			if ( $is_product ) {
-				// If transient not yet populated, it'll be freshly populated and therefore increment is 0
-				$increment = (int) ( false !== get_transient( 'woocommerce_product_reviews_pending_count' ) );
-				$count     = self::get_products_reviews_pending_moderation_counter() + $increment;
-				set_transient( 'woocommerce_product_reviews_pending_count', $count, DAY_IN_SECONDS );
+			$cache      = new CommentsCountCache();
+			if ( $is_product && $cache->has( 'woocommerce_product_reviews_pending_count' ) ) {
+				$cache->inc( 'woocommerce_product_reviews_pending_count' );
 			}
 		}
 	}
 
 	/**
-	 * Handles `transition_comment_status` hook processing and actualizes transient holding the counter.
+	 * Handles `transition_comment_status` hook processing and actualizes the counter.
 	 *
 	 * @param int|string  $new_status New status.
 	 * @param int|string  $old_status Old status.
 	 * @param \WP_Comment $comment    Comment object.
 	 */
-	public static function maybe_adjust_products_reviews_pending_moderation_counter( $new_status, $old_status, $comment )
-	{
+	public static function maybe_adjust_products_reviews_pending_moderation_counter( $new_status, $old_status, $comment ) {
 		$needs_adjustments = 'unapproved' === $new_status || 'unapproved' === $old_status;
 		if ( $needs_adjustments && in_array( $comment->comment_type, array( 'review', 'comment', '' ), true ) ) {
 			$is_product = 'product' === get_post_type( $comment->comment_post_ID );
-			if ( $is_product ) {
-				$count = self::get_products_reviews_pending_moderation_counter();
+			$cache      = new CommentsCountCache();
+			if ( $is_product && $cache->has( 'woocommerce_product_reviews_pending_count' ) ) {
 				if ( '0' === $comment->comment_approved ) {
-					++$count;
+					$cache->inc( 'woocommerce_product_reviews_pending_count' );
 				} else {
-					--$count;
+					$cache->dec( 'woocommerce_product_reviews_pending_count' );
 				}
-				set_transient( 'woocommerce_product_reviews_pending_count', $count, DAY_IN_SECONDS );
 			}
 		}
 	}
