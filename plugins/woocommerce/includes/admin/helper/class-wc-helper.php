@@ -68,6 +68,7 @@ class WC_Helper {
 		include_once __DIR__ . '/class-wc-helper-options.php';
 		include_once __DIR__ . '/class-wc-helper-api.php';
 		include_once __DIR__ . '/class-wc-woo-update-manager-plugin.php';
+		include_once __DIR__ . '/class-wc-woo-helper-connection.php';
 		include_once __DIR__ . '/class-wc-helper-updater.php';
 		include_once __DIR__ . '/class-wc-plugin-api-updater.php';
 		include_once __DIR__ . '/class-wc-helper-compat.php';
