@@ -241,8 +241,6 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 				}
 			);
 
-			await checkoutPageObject.waitForCustomerDataUpdate();
-
 			// Change the shipping and billing select fields again.
 			await checkoutPageObject.fillInCheckoutWithTestData(
 				{},
@@ -257,8 +255,6 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 					},
 				}
 			);
-
-			await checkoutPageObject.waitForCustomerDataUpdate();
 
 			await checkoutPageObject.page
 				.getByLabel( 'Would you like a free gift with your order?' )
@@ -324,9 +320,6 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 			await checkoutPageObject.page
 				.getByLabel( 'Test required checkbox' )
 				.check();
-
-			await checkoutPageObject.waitForCustomerDataUpdate();
-
 			await checkoutPageObject.placeOrder();
 
 			expect(
@@ -907,6 +900,97 @@ test.describe( 'Shopper → Additional Checkout Fields', () => {
 			await expect( giftMessageInput ).toHaveValue(
 				'This is a nice gift'
 			);
+		} );
+
+		test( 'Shopper can refresh the page, and not lose any entered data', async ( {
+			checkoutPageObject,
+		} ) => {
+			await checkoutPageObject.editShippingDetails();
+			await checkoutPageObject.unsyncBillingWithShipping();
+			await checkoutPageObject.editBillingDetails();
+
+			await checkoutPageObject.fillInCheckoutWithTestData(
+				{},
+				{
+					contact: {
+						'Enter a gift message to include in the package':
+							'Happy Birthday!',
+						'Is this a personal purchase or a business purchase?':
+							'personal',
+					},
+					order: {
+						'What is your favourite colour?': 'Red',
+						// 'How did you hear about us?': 'Friend',
+					},
+				}
+			);
+
+			await checkoutPageObject.page
+				.getByLabel(
+					'Do you want to subscribe to our newsletter? (optional)'
+				)
+				.check();
+
+			// Check that contact and order fields are persisted
+			await checkoutPageObject.page.waitForResponse(
+				'**/wc/store/v1/checkout**'
+			);
+
+			await checkoutPageObject.page.reload();
+
+			await expect(
+				checkoutPageObject.page
+					.getByRole( 'group', {
+						name: 'Additional order information',
+					} )
+					.getByLabel( 'What is your favourite colour?' )
+			).toHaveValue( 'Red' );
+
+			await expect(
+				checkoutPageObject.page
+					.getByRole( 'group', { name: 'Contact information' } )
+					.getByLabel(
+						'Do you want to subscribe to our newsletter? (optional)'
+					)
+			).toBeChecked();
+
+			await expect(
+				checkoutPageObject.page
+					.getByRole( 'group', { name: 'Contact information' } )
+					.getByLabel(
+						'Enter a gift message to include in the package'
+					)
+			).toHaveValue( 'Happy Birthday!' );
+
+			await expect(
+				checkoutPageObject.page
+					.getByRole( 'group', { name: 'Contact information' } )
+					.getByLabel(
+						'Is this a personal purchase or a business purchase?'
+					)
+			).toHaveValue( 'personal' );
+
+			// Verify the required checkbox is not checked after refresh
+			await expect(
+				checkoutPageObject.page.getByLabel( 'Test required checkbox' )
+			).not.toBeChecked();
+
+			// Check the required checkbox and refresh.
+			await checkoutPageObject.page
+				.getByLabel( 'Test required checkbox' )
+				.check();
+
+			// This should generate a PUT request to checkout.
+			await checkoutPageObject.page.waitForResponse(
+				'**/wc/store/v1/checkout**'
+			);
+
+			await checkoutPageObject.page.reload();
+
+			// Verify the required checkbox remains checked after refresh.
+			await expect(
+				checkoutPageObject.page.getByLabel( 'Test required checkbox' )
+			).toBeChecked();
 		} );
 	} );
 } );
