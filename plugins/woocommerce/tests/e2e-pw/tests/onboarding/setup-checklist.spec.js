@@ -1,5 +1,17 @@
 const { tags, test: baseTest, expect } = require( '../../fixtures/fixtures' );
 const { ADMIN_STATE_PATH } = require( '../../playwright.config' );
+const { setOption } = require( '../../utils/options' );
+const { request: apiRequest } = require( '../../fixtures/api-tests-fixtures' );
+
+const { BASE_URL } = process.env;
+const disableNewPaymentsSettingsFeature = async () => {
+	await setOption(
+		apiRequest,
+		BASE_URL,
+		'woocommerce_feature_reactify-classic-payments-settings',
+		'no'
+	);
+};
 
 const test = baseTest.extend( {
 	storageState: ADMIN_STATE_PATH,
@@ -40,6 +52,8 @@ const test = baseTest.extend( {
 		} );
 	},
 } );
+
+test.beforeAll( disableNewPaymentsSettingsFeature );
 
 test(
 	'Can hide the task list',
