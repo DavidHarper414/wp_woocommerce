@@ -177,7 +177,7 @@ export const setPrefersCollection = ( prefersCollection: boolean ) => ( {
 /**
  * Registers additional data under an extension namespace.
  */
-export const __internalSetExtensionData = (
+export const setExtensionData = (
 	// The namespace for the extension. Defaults to 'default'. Must be unique to prevent conflicts.
 	namespace: string,
 	// Data to register under the namespace.
@@ -190,3 +190,15 @@ export const __internalSetExtensionData = (
 	namespace,
 	replace,
 } );
+
+/**
+ * @deprecated Use setExtensionData instead
+ */
+export const __internalSetExtensionData = (
+	...args: Parameters< typeof setExtensionData >
+) => {
+	console.warn(
+		'Warning: __internalSetExtensionData is deprecated. Use setExtensionData instead.'
+	);
+	return setExtensionData( ...args );
+};
