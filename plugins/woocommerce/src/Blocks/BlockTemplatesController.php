@@ -29,7 +29,6 @@ class BlockTemplatesController {
 		add_filter( 'taxonomy_template_hierarchy', array( $this, 'add_fallback_template_to_hierarchy' ), 10, 1 );
 		add_filter( 'block_type_metadata_settings', array( $this, 'add_plugin_templates_parts_support' ), 10, 2 );
 		add_filter( 'block_type_metadata_settings', array( $this, 'prevent_shortcodes_html_breakage' ), 10, 2 );
-		add_action( 'current_screen', array( $this, 'hide_template_selector_in_cart_checkout_pages' ), 10 );
 	}
 
 	/**
@@ -175,7 +174,6 @@ class BlockTemplatesController {
 		return $settings;
 	}
 
-
 	/**
 	 * Prevents shortcodes in templates having their HTML content broken by wpautop.
 	 *
@@ -203,25 +201,6 @@ class BlockTemplatesController {
 			};
 		}
 		return $settings;
-	}
-
-	/**
-	 * Prevents the pages that are assigned as Cart/Checkout from showing the "template" selector in the page-editor.
-	 * We want to avoid this flow and point users towards the Site Editor instead.
-	 *
-	 * @return void
-	 */
-	public function hide_template_selector_in_cart_checkout_pages() {
-		if ( ! is_admin() ) {
-			return;
-		}
-
-		$current_screen = get_current_screen();
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( $current_screen && 'page' === $current_screen->id && ! empty( $_GET['post'] ) && in_array( absint( $_GET['post'] ), array( wc_get_page_id( 'cart' ), wc_get_page_id( 'checkout' ) ), true ) ) {
-			wp_add_inline_style( 'wc-blocks-editor-style', '.edit-post-post-template { display: none; }' );
-		}
 	}
 
 	/**
