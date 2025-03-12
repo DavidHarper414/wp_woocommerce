@@ -214,6 +214,22 @@ const blocks = {
 		customDir: 'order-confirmation/create-account',
 		isExperimental: true,
 	},
+	'blockified-product-reviews': {
+		isExperimental: true,
+		customDir: 'product-reviews',
+	},
+	'product-review-rating': {
+		customDir: 'product-reviews/inner-blocks/review-rating',
+		isExperimental: true,
+	},
+	'product-review-form': {
+		customDir: 'product-reviews/inner-blocks/review-form',
+		isExperimental: true,
+	},
+	'product-reviews-title': {
+		customDir: 'product-reviews/inner-blocks/reviews-title',
+		isExperimental: true,
+	},
 };
 
 /**

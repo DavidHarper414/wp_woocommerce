@@ -160,6 +160,7 @@ export { TaxClass } from './tax-classes/types';
 export { ProductTag, Query } from './product-tags/types';
 export { WCUser } from './user/types';
 export { UserPreferences } from './user/types';
+export { ReviewObject as ProductReview } from './reviews/types';
 
 /**
  * Internal dependencies
