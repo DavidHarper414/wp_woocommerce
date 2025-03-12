@@ -2,6 +2,7 @@
 
 namespace Automattic\WooCommerce\Internal\Admin\Orders;
 
+use Automattic\WooCommerce\Enums\OrderStatus;
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 use Automattic\WooCommerce\Caches\OrderCountCache;
@@ -762,8 +763,6 @@ class ListTable extends WP_List_Table {
 	private function months_filter() {
 		global $wp_locale;
 
-		// XXX: [review] we may prefer to move this logic outside of the ListTable class.
-
 		/**
 		 * Filters whether to remove the 'Months' drop-down from the order list table.
 		 *
@@ -805,7 +804,7 @@ class ListTable extends WP_List_Table {
 	 * Get order year-months cache. We cache the results in the options table, since these results will change very infrequently.
 	 * We use the heuristic to always return current year-month when getting from cache to prevent an additional query.
 	 *
-	 * @return array List of year-months.
+	 * @return \stdClass[] List of year-months.
 	 */
 	protected function get_and_maybe_update_months_filter_cache(): array {
 		global $wpdb;
@@ -829,34 +828,116 @@ class ListTable extends WP_List_Table {
 			$current_year_month->year  = gmdate( 'Y', time() );
 			$current_year_month->month = gmdate( 'n', time() );
 			if ( count( $cached_value ) === 0 || (
-				$cached_value[0]->year !== $current_year_month->year ||
-				$cached_value[0]->month !== $current_year_month->month )
+					$cached_value[0]->year !== $current_year_month->year ||
+					$cached_value[0]->month !== $current_year_month->month )
 			) {
 				array_unshift( $cached_value, $current_year_month );
 			}
 			return $cached_value;
 		}
 
-		$orders_table = esc_sql( OrdersTableDataStore::get_orders_table_name() );
-		$utc_offset   = wc_timezone_offset();
+		// Option to use a simplified, more performant method for building the months options list.
+		$use_simplified_months_options = boolval( get_option( 'wc_' . $this->order_type . '_list_table_months_filter_simplified', false ) );
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$order_dates = $wpdb->get_results(
+		if ( true === $use_simplified_months_options ) {
+			$order_dates = $this->get_simplified_months_filter_options();
+		} else {
+			$orders_table = esc_sql( OrdersTableDataStore::get_orders_table_name() );
+			$trash_status = esc_sql( OrderStatus::TRASH );
+			$utc_offset   = wc_timezone_offset();
+
+			$order_dates = $wpdb->get_results(
+				// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$wpdb->prepare(
+					"
+						SELECT DISTINCT YEAR( t.date_created_local ) AS year,
+										MONTH( t.date_created_local ) AS month
+						FROM ( SELECT DATE_ADD( date_created_gmt, INTERVAL $utc_offset SECOND ) AS date_created_local FROM $orders_table WHERE type = %s AND status != '$trash_status' ) t
+						ORDER BY year DESC, month DESC
+					",
+					$this->order_type
+				)
+				// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			);
+		}
+
+		update_option( $cache_option_date_name, time(), false );
+		update_option( $cache_option_value_name, $order_dates, false );
+
+		return $order_dates;
+	}
+
+	/**
+	 * Get a list of year-month options for filtering the orders list table.
+	 *
+	 * This is a simplified approach that finds the oldest order and generates a year-month option for every month
+	 * in the range between then and the current month. It uses a query that is much more performant on sites with a
+	 * large number of orders. The tradeoff is that it might include months for which no orders actually exist.
+	 *
+	 * @return \stdClass[] List of year-months.
+	 */
+	protected function get_simplified_months_filter_options(): array {
+		global $wpdb;
+
+		$orders_table = esc_sql( OrdersTableDataStore::get_orders_table_name() );
+		$trash_status = esc_sql( OrderStatus::TRASH );
+
+		$first_year_month = $wpdb->get_row(
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$wpdb->prepare(
 				"
-					SELECT DISTINCT YEAR( t.date_created_local ) AS year,
-									MONTH( t.date_created_local ) AS month
-					FROM ( SELECT DATE_ADD( date_created_gmt, INTERVAL $utc_offset SECOND ) AS date_created_local FROM $orders_table WHERE type = %s AND status != 'trash' ) t
-					ORDER BY year DESC, month DESC
+					SELECT YEAR( t.date_created_gmt ) AS year,
+					       MONTH( t.date_created_gmt ) AS month
+					FROM $orders_table t
+					WHERE type = %s
+					AND status != '$trash_status'
+					ORDER BY year ASC, month ASC
+					LIMIT 1
 				",
 				$this->order_type
 			)
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		);
 
-		update_option( $cache_option_date_name, time() );
-		update_option( $cache_option_value_name, $order_dates );
+		$end     = new \DateTime( 'now', wp_timezone() );
+		$options = array();
 
-		return $order_dates;
+		if ( is_object( $first_year_month ) ) {
+			$start = new \DateTime(
+				sprintf(
+					'%s-%s-01',
+					$first_year_month->year,
+					$first_year_month->month
+				),
+				wp_timezone()
+			);
+
+			// If, somehow, the oldest order date is in the future, swap the start and end of the range.
+			if ( $start > $end ) {
+				$end   = $start;
+				$start = new \DateTime( 'now', wp_timezone() );
+			}
+
+			while (
+				$start->format( 'Y' ) < $end->format( 'Y' )
+				|| $start->format( 'n' ) < $end->format( 'n' )
+			) {
+				$option        = new \stdClass();
+				$option->year  = $start->format( 'Y' );
+				$option->month = $start->format( 'n' );
+				$options[]     = $option;
+
+				$start->add( new \DateInterval( 'P1M' ) );
+			}
+		}
+
+		// Add in the current year-month.
+		$option        = new \stdClass();
+		$option->year  = $end->format( 'Y' );
+		$option->month = $end->format( 'n' );
+		$options[]     = $option;
+
+		return array_reverse( $options );
 	}
 
 	/**
