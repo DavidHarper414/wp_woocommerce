@@ -60,7 +60,8 @@ class Packages {
 	 * @var array Key is the package name/directory, value is the main package class which handles init.
 	 */
 	protected static $merged_packages = array(
-		'woocommerce-brands' => '\\Automattic\\WooCommerce\\Internal\\Brands',
+		'woocommerce-brands'                      => '\\Automattic\\WooCommerce\\Internal\\Brands',
+		'woocommerce-back-in-stock-notifications' => '\\Automattic\\WooCommerce\\Internal\\BackInStockNotifications',
 	);
 
 
@@ -141,8 +142,8 @@ class Packages {
 			}
 
 			// If an option is not set, ensure that a package is enabled for user's remote variant number. Mainly for gradual releases.
-			$experimental_package_enabled = method_exists( $package_class, 'is_enabled' ) ?
-				call_user_func( array( $package_class, 'is_enabled' ) ) :
+			$experimental_package_enabled = method_exists( $package_class, 'is_enabled_for_rollout' ) ?
+				call_user_func( array( $package_class, 'is_enabled_for_rollout' ) ) :
 				false;
 
 			if ( ! $experimental_package_enabled ) {
@@ -170,6 +171,13 @@ class Packages {
 	 * Especially useful when running actions early in the 'plugins_loaded' timeline.
 	 */
 	public static function prepare_packages() {
+		// Prepare all merged packages for initialization even if they are disabled.
+		foreach ( self::$merged_packages as $package_name => $package_class ) {
+			if ( method_exists( $package_class, 'prepare_always' ) ) {
+				call_user_func( array( $package_class, 'prepare_always' ) );
+			}
+		}
+
 		foreach ( self::get_enabled_packages() as $package_name => $package_class ) {
 			if ( method_exists( $package_class, 'prepare' ) ) {
 				call_user_func( array( $package_class, 'prepare' ) );

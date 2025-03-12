@@ -6,6 +6,7 @@
  */
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Automattic\WooCommerce\Internal\BackInStockNotifications;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -509,6 +510,9 @@ class WC_Settings_Advanced extends WC_Settings_Page {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		global $current_section;
 
+		// Remember whether BIS is enabled.
+		$previous_bis_setting = get_option( BackInStockNotifications::$ENABLE_OPTION_NAME );
+
 		$prev_value = 'yes' === get_option( 'woocommerce_allow_tracking', 'no' ) ? 'yes' : 'no';
 		$new_value  = isset( $_POST['woocommerce_allow_tracking'] ) && ( 'yes' === $_POST['woocommerce_allow_tracking'] || '1' === $_POST['woocommerce_allow_tracking'] ) ? 'yes' : 'no';
 
@@ -543,6 +547,13 @@ class WC_Settings_Advanced extends WC_Settings_Page {
 			}
 		}
 		// phpcs:enable
+
+		// Check if back in stock notification setting was changed and reload the page to ensure it's active immediately.
+		$new_bis_setting = get_option( BackInStockNotifications::$ENABLE_OPTION_NAME );
+		if ( $previous_bis_setting !== $new_bis_setting ) {
+			wp_redirect( add_query_arg( 'reload', '1' ) );
+			exit;
+		}
 	}
 }
 

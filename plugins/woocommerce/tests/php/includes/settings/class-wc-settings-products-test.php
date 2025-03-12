@@ -116,16 +116,16 @@ class WC_Settings_Products_Test extends WC_Settings_Unit_Test_Case {
 		$setting_ids_and_types = $this->get_ids_and_types( $settings );
 
 		$expected = array(
-			'product_inventory_options'           => array( 'title', 'sectionend' ),
-			'woocommerce_manage_stock'            => 'checkbox',
-			'woocommerce_hold_stock_minutes'      => 'number',
-			'woocommerce_notify_low_stock'        => 'checkbox',
-			'woocommerce_notify_no_stock'         => 'checkbox',
-			'woocommerce_stock_email_recipient'   => 'text',
-			'woocommerce_notify_low_stock_amount' => 'number',
-			'woocommerce_notify_no_stock_amount'  => 'number',
-			'woocommerce_hide_out_of_stock_items' => 'checkbox',
-			'woocommerce_stock_format'            => 'select',
+			'product_inventory_options'                                  => array( 'title', 'sectionend' ),
+			'woocommerce_manage_stock'                                   => 'checkbox',
+			'woocommerce_hold_stock_minutes'                             => 'number',
+			'woocommerce_notify_low_stock'                               => 'checkbox',
+			'woocommerce_notify_no_stock'                                => 'checkbox',
+			'woocommerce_stock_email_recipient'                          => 'text',
+			'woocommerce_notify_low_stock_amount'                        => 'number',
+			'woocommerce_notify_no_stock_amount'                         => 'number',
+			'woocommerce_hide_out_of_stock_items'                        => 'checkbox',
+			'woocommerce_stock_format'                                   => 'select',
 		);
 
 		$this->assertEquals( $expected, $setting_ids_and_types );

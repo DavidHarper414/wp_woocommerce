@@ -21,7 +21,7 @@ class Brands {
 	 */
 	final public static function init() {
 
-		if ( ! self::is_enabled() ) {
+		if ( ! self::is_enabled_for_rollout() ) {
 			return;
 		}
 
@@ -45,7 +45,7 @@ class Brands {
 	 *
 	 * @return bool
 	 */
-	public static function is_enabled() {
+	public static function is_enabled_for_rollout() {
 		return true;
 	}
 
@@ -55,7 +55,7 @@ class Brands {
 	 */
 	public static function prepare() {
 
-		if ( ! self::is_enabled() ) {
+		if ( ! self::is_enabled_for_rollout() ) {
 			return;
 		}
 
