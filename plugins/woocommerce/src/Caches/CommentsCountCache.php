@@ -26,7 +26,6 @@ class CommentsCountCache {
 	 */
 	public function __construct() {
 		$this->use_cache_api = ( true === wp_using_ext_object_cache() );
-		$this->use_cache_api = ( true === wp_using_ext_object_cache() );
 	}
 
 	/**
