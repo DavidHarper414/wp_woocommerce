@@ -12,7 +12,7 @@
 @import "@automattic/site-admin/src/components/site-icon/style.scss";
 
 .woocommerce-settings-header {
-	&.edit-site-page-header.woocommerce-settings-header--has-tabs {
+	&.woocommerce-site-page-header.woocommerce-settings-header--has-tabs {
 		border-bottom: none;
 	}
 }
@@ -25,7 +25,7 @@
 	}
 }
 
-#wc-settings-page .edit-site-layout__area {
+#wc-settings-page .woocommerce-site-layout__area {
 	overflow: scroll;
 }
 

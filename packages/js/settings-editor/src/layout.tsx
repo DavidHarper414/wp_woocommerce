@@ -49,8 +49,8 @@ export function Layout( {
 	return (
 		<>
 			{ fullResizer }
-			<div className="edit-site-layout">
-				<div className="edit-site-layout__content">
+			<div className="woocommerce-site-layout">
+				<div className="woocommerce-site-layout__content">
 					{ /*
 						The NavigableRegion must always be rendered and not use
 						`inert` otherwise `useNavigateRegions` will fail.
@@ -72,7 +72,7 @@ export function Layout( {
 											: ANIMATION_DURATION,
 									ease: 'easeOut',
 								} }
-								className="edit-site-layout__sidebar a8c-site-admin-sidebar"
+								className="woocommerce-site-layout__sidebar a8c-site-admin-sidebar"
 							>
 								<SidebarContent
 									shouldAnimate={ false }
@@ -88,7 +88,7 @@ export function Layout( {
 
 					{ ! isMobileViewport && areas.content && (
 						<div
-							className="edit-site-layout__area"
+							className="woocommerce-site-layout__area"
 							style={ {
 								maxWidth: widths?.content,
 							} }
@@ -108,7 +108,7 @@ export function Layout( {
 
 					{ ! isMobileViewport && areas.edit && (
 						<div
-							className="edit-site-layout__area"
+							className="woocommerce-site-layout__area"
 							style={ {
 								maxWidth: widths?.edit,
 							} }
