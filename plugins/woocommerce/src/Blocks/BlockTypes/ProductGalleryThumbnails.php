@@ -43,49 +43,6 @@ class ProductGalleryThumbnails extends AbstractBlock {
 	}
 
 	/**
-	 * Generate the View All markup.
-	 *
-	 * @param int $remaining_thumbnails_count The number of thumbnails that are not displayed.
-	 *
-	 * @return string
-	 */
-	protected function generate_view_all_html( $remaining_thumbnails_count ) {
-		$view_all_html = '<div class="wc-block-product-gallery-thumbnails__thumbnail__overlay" data-wp-on--click="actions.openDialog" data-wp-on--keydown="actions.onViewAllImagesKeyDown" tabindex="0">
-			<span class="wc-block-product-gallery-thumbnails__thumbnail__remaining-thumbnails-count">+%1$s</span>
-			<span class="wc-block-product-gallery-thumbnails__thumbnail__view-all">%2$s</span>
-			</div>';
-
-		return sprintf(
-			$view_all_html,
-			esc_html( $remaining_thumbnails_count ),
-			esc_html__( 'View all', 'woocommerce' )
-		);
-	}
-
-	/**
-	 * Inject View All markup into the product thumbnail HTML.
-	 *
-	 * @param string $thumbnail_html The thumbnail HTML.
-	 * @param string $view_all_html  The view all HTML.
-	 *
-	 * @return string
-	 */
-	protected function inject_view_all( $thumbnail_html, $view_all_html ) {
-
-		// Find the position of the last </div>.
-		$pos = strrpos( $thumbnail_html, '</div>' );
-
-		if ( false !== $pos ) {
-			// Inject the view_all_html at the correct position.
-			$html = substr_replace( $thumbnail_html, $view_all_html, $pos, 0 );
-
-			return $html;
-		}
-
-		return $thumbnail_html;
-	}
-
-	/**
 	 * Check if the thumbnails should be limited.
 	 *
 	 * @param int $thumbnails_count     Current count of processed thumbnails.
@@ -95,20 +52,6 @@ class ProductGalleryThumbnails extends AbstractBlock {
 	 */
 	protected function limit_thumbnails( $thumbnails_count, $number_of_thumbnails ) {
 		return $thumbnails_count > $number_of_thumbnails;
-	}
-
-	/**
-	 * Check if View All markup should be displayed.
-	 *
-	 * @param int   $thumbnails_count       Current count of processed thumbnails.
-	 * @param array $product_gallery_images Array of product gallery image HTML strings.
-	 * @param int   $number_of_thumbnails   Number of thumbnails configured to display.
-	 *
-	 * @return bool
-	 */
-	protected function should_display_view_all( $thumbnails_count, $product_gallery_images, $number_of_thumbnails ) {
-		return $thumbnails_count === $number_of_thumbnails &&
-		count( $product_gallery_images ) > $number_of_thumbnails;
 	}
 
 	/**
@@ -164,13 +107,6 @@ class ProductGalleryThumbnails extends AbstractBlock {
 			// Limit the number of thumbnails only in the standard mode (and not in dialog).
 			if ( $this->limit_thumbnails( $thumbnails_count, $number_of_thumbnails ) ) {
 				break;
-			}
-
-			$remaining_thumbnails_count = $number_of_images - $number_of_thumbnails;
-
-			// Display view all if this is the last visible thumbnail and there are more images.
-			if ( $this->should_display_view_all( $thumbnails_count, $product_gallery_images, $number_of_thumbnails ) ) {
-				$product_gallery_image_html = $this->inject_view_all( $product_gallery_image_html, $this->generate_view_all_html( $remaining_thumbnails_count ) );
 			}
 
 			$processor = new \WP_HTML_Tag_Processor( $product_gallery_image_html );
