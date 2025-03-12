@@ -308,7 +308,7 @@ describe.only( 'Checkout Store Reducer', () => {
 
 			expect( state ).toEqual( expectedState );
 			expect( consoleSpy ).toHaveBeenCalledWith(
-				'Warning: __internalSetExtensionData is deprecated. Use setExtensionData instead.'
+				'__internalSetExtensionData is deprecated. Please use setExtensionData instead.'
 			);
 
 			consoleSpy.mockRestore();

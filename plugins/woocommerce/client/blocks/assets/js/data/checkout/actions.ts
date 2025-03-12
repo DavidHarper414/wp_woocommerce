@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { OrderFormValues } from '@woocommerce/settings';
+import deprecated from '@wordpress/deprecated';
 
 /**
  * Internal dependencies
@@ -197,8 +198,9 @@ export const setExtensionData = (
 export const __internalSetExtensionData = (
 	...args: Parameters< typeof setExtensionData >
 ) => {
-	console.warn(
-		'Warning: __internalSetExtensionData is deprecated. Use setExtensionData instead.'
-	);
+	deprecated( '__internalSetExtensionData', {
+		alternative: 'setExtensionData',
+		plugin: 'WooCommerce',
+	} );
 	return setExtensionData( ...args );
 };
