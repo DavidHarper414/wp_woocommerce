@@ -91,7 +91,7 @@ class CommentsCountCache {
 	 */
 	public function decrement( string $name, int $decrement = 1 ) {
 		if ( $this->use_cache_api ) {
-			return wp_cache_decrement( $name, $decrement, self::COMMENT_COUNT_CACHE_GROUP );
+			return wp_cache_decr( $name, $decrement, self::COMMENT_COUNT_CACHE_GROUP );
 		}
 
 		$transient_value = get_transient( $name );
