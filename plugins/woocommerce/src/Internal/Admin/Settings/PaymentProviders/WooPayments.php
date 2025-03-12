@@ -196,11 +196,25 @@ class WooPayments extends PaymentGateway {
 			$live_onboarding = true;
 		}
 
+		$transient_key = 'wc_experiment_failure_woocommerce_payment_settings_onboarding_2025_v1';
+
+		// Try to get cached result first.
+		$cached_result = get_transient( $transient_key );
+
 		// We run an experiment to determine the efficiency of test-account-first onboarding vs straight-to-live onboarding.
 		// If the experiment is active and the store is in the treatment group, we will do live onboarding.
 		// Otherwise, we will do test-account-first onboarding (control group).
-		if ( ! $live_onboarding && Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_onboarding_2025_v1' ) ) {
-			$live_onboarding = true;
+		try {
+			// If we have a cache entry that indicates an error, disable the live onboarding.
+			if ( 'error' === $cached_result ) {
+				$live_onboarding = false;
+			} else {
+				$live_onboarding = ! $live_onboarding && Experimental_Abtest::in_treatment( 'woocommerce_payment_settings_onboarding_2025_v1' );
+			}
+		} catch ( \Exception $e ) {
+			// If the experiment fails, set a transient to avoid repeated failures and set the flag to false.
+			$live_onboarding = false;
+			set_transient( $transient_key, 'error', HOUR_IN_SECONDS );
 		}
 
 		// If we are doing live onboarding, we don't need to add more to the URL.
