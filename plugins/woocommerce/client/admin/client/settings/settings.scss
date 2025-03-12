@@ -3,17 +3,12 @@
 body.woocommerce_page_wc-settings {
 	#wpcontent {
 		margin-left: 0 !important;
+		padding-left: 0 !important;
 	}
-	#wpadminbar {
-		display: none;
-	}
-
+	#wpadminbar,
 	#adminmenumain,
-	#woocommerce-embedded-root {
-		display: none;
-	}
-
-	#screen-meta-links {
+	#screen-meta-links,
+	#wpfooter {
 		display: none;
 	}
 
@@ -38,6 +33,10 @@ body.woocommerce_page_wc-settings {
 			min-height: 100%;
 			height: auto;
 		}
+	}
+
+	.notice {
+		display: none;
 	}
 
 	.woocommerce-site-layout__area {
