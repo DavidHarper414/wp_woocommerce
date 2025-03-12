@@ -2391,7 +2391,7 @@ class WC_Order extends WC_Abstract_Order {
 			if ( $auth_code ) {
 				$total_rows['payment_auth_code'] = array(
 					'type'  => 'payment_auth_code',
-					'label' => __( 'Payment auth code:', 'woocommerce' ),
+					'label' => __( 'Auth code:', 'woocommerce' ),
 					'value' => $auth_code,
 				);
 			}
