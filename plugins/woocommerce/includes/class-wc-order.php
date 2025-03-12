@@ -2386,6 +2386,15 @@ class WC_Order extends WC_Abstract_Order {
 				'label' => __( 'Payment method:', 'woocommerce' ),
 				'value' => $value,
 			);
+
+			$auth_code = $this->get_meta( '_charge_id', true );
+			if ( $auth_code ) {
+				$total_rows['payment_auth_code'] = array(
+					'type'  => 'payment_auth_code',
+					'label' => __( 'Payment auth code:', 'woocommerce' ),
+					'value' => $auth_code,
+				);
+			}
 		}
 	}
 
