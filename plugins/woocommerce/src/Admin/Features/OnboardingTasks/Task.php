@@ -391,15 +391,19 @@ abstract class Task {
 	}
 
 	/**
-	 * Track task completion if task is viewable.
+	 * Track task completion if task is viewable and is complete.
+	 *
+	 * @param bool $verify_is_complete Whether to test if $this->complete() prior to tracking completion. Default true.
+	 *
+	 * @return void
 	 */
-	public function possibly_track_completion() {
+	public function possibly_track_completion( $verify_is_complete = true ) {
 		if ( $this->has_previously_completed() ) {
 			return;
 		}
 
 		// Expensive check.
-		if ( ! $this->is_complete() ) {
+		if ( $verify_is_complete && ! $this->is_complete() ) {
 			return;
 		}
 
@@ -499,7 +503,10 @@ abstract class Task {
 	 * @return array
 	 */
 	public function get_json() {
-		$this->possibly_track_completion();
+		$is_complete = $this->is_complete();
+		if ( $is_complete ) {
+			$this->possibly_track_completion( false );
+		}
 
 		return array(
 			'id'              => $this->get_id(),
@@ -511,7 +518,7 @@ abstract class Task {
 			'additionalInfo'  => $this->get_additional_info(),
 			'actionLabel'     => $this->get_action_label(),
 			'actionUrl'       => $this->get_action_url(),
-			'isComplete'      => $this->is_complete(),
+			'isComplete'      => $is_complete,
 			'time'            => $this->get_time(),
 			'level'           => 3,
 			'isActioned'      => $this->is_actioned(),
