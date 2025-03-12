@@ -98,6 +98,7 @@ class Init {
 		wp_register_style( 'wc-global-presets', false ); // phpcs:ignore
 		wp_add_inline_style( 'wc-global-presets', wp_get_global_stylesheet( array( 'presets' ) ) );
 		wp_enqueue_style( 'wc-global-presets' );
+		WCAdminAssets::register_style( 'settings-embed', 'style', array( 'wp-components' ) );
 	}
 
 	/**
