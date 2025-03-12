@@ -10,6 +10,7 @@ import {
 	SidebarNavigationScreen,
 	SidebarNavigationItem,
 } from '@automattic/site-admin';
+import { getPath } from '@woocommerce/navigation';
 
 const { Icon, ...icons } = IconPackage;
 
@@ -60,6 +61,7 @@ export const Sidebar = ( {
 		<SidebarNavigationScreen
 			title={ pageTitle }
 			isRoot
+			exitLink={ addQueryArgs( 'admin.php', { page: 'wc-admin' } ) }
 			content={
 				<SidebarNavigationScreenContent
 					activePage={ activePage }
