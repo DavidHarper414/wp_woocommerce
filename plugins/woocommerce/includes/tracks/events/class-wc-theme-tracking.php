@@ -42,7 +42,8 @@ class WC_Theme_Tracking {
 		$theme_object = wp_get_theme();
 
 		if ( function_exists( 'wc_current_theme_is_fse_theme' ) ) {
-			$is_block_theme = wc_current_theme_is_fse_theme();
+			$is_block_theme = wp_is_block_theme()
+;
 		}
 
 		$properties = array(

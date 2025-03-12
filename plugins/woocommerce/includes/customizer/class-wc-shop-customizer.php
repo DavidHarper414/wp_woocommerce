@@ -955,7 +955,8 @@ global $pagenow;
 if (
 	'customize.php' === $pagenow ||
 	isset( $_REQUEST['customize_theme'] ) || // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	! wc_current_theme_is_fse_theme()
+	! wp_is_block_theme()
+
 ) {
 	new WC_Shop_Customizer();
 }

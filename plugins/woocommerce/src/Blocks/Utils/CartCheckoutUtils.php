@@ -135,7 +135,8 @@ class CartCheckoutUtils {
 	 * @return bool true if the WC cart page is using the Cart block.
 	 */
 	public static function is_cart_block_default() {
-		if ( wc_current_theme_is_fse_theme() ) {
+		if ( wp_is_block_theme()
+ ) {
 			// Ignore the pages and check the templates.
 			$templates_from_db = BlockTemplateUtils::get_block_templates_from_db( array( 'cart' ), 'wp_template' );
 			foreach ( $templates_from_db as $template ) {
@@ -154,7 +155,8 @@ class CartCheckoutUtils {
 	 * @return bool true if the WC checkout page is using the Checkout block.
 	 */
 	public static function is_checkout_block_default() {
-		if ( wc_current_theme_is_fse_theme() ) {
+		if ( wp_is_block_theme()
+ ) {
 			// Ignore the pages and check the templates.
 			$templates_from_db = BlockTemplateUtils::get_block_templates_from_db( array( 'checkout' ), 'wp_template' );
 			foreach ( $templates_from_db as $template ) {
@@ -299,7 +301,8 @@ class CartCheckoutUtils {
 
 		$block = str_replace( 'woocommerce/', '', $block );
 
-		if ( wc_current_theme_is_fse_theme() ) {
+		if ( wp_is_block_theme()
+ ) {
 			$templates_from_db = BlockTemplateUtils::get_block_templates_from_db( array( 'page-' . $block ) );
 			foreach ( $templates_from_db as $template ) {
 				if ( ! has_block( 'woocommerce/page-content-wrapper', $template->content ) ) {

@@ -36,7 +36,8 @@ class EmailColors {
 			$footer_text_color_default = '#787c82';
 
 			if ( function_exists( 'wc_current_theme_is_fse_theme' ) 
-				&& wc_current_theme_is_fse_theme() 
+				&& wp_is_block_theme()
+ 
 				&& function_exists( 'wp_get_global_styles' ) 
 			) {
 				$global_styles             = wp_get_global_styles( array(), array( 'transforms' => array( 'resolve-variables' ) ) );

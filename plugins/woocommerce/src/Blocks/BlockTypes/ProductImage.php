@@ -193,7 +193,8 @@ class ProductImage extends AbstractBlock {
 	 *                           not in the post content on editor load.
 	 */
 	protected function enqueue_data( array $attributes = [] ) {
-		$this->asset_data_registry->add( 'isBlockThemeEnabled', wc_current_theme_is_fse_theme() );
+		$this->asset_data_registry->add( 'isBlockThemeEnabled', wp_is_block_theme()
+ );
 	}
 
 
