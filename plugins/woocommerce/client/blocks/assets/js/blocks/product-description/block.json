@@ -8,6 +8,10 @@
 	"category": "woocommerce",
 	"textdomain": "woocommerce",
 	"usesContext": [ "postId", "postType", "queryId" ],
+	"ancestor": [
+		"woocommerce/single-product",
+		"woocommerce/product-template"
+	],
 	"supports": {
 		"align": [ "wide", "full" ],
 		"html": false,
