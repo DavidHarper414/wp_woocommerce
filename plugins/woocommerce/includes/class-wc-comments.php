@@ -19,7 +19,9 @@ defined( 'ABSPATH' ) || exit;
 class WC_Comments {
 
 	/**
-	 * @var string The cache group to use for comment counts.
+	 * The cache group to use for comment counts.
+	 *
+	 * @var string
 	 */
 	private const PRODUCT_REVIEWS_PENDING_COUNT_CACHE_KEY = 'woocommerce_product_reviews_pending_count';
 

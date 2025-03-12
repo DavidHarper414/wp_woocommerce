@@ -1,0 +1,4 @@
+Significance: patch
+Type: performance
+
+Performance: introduce pending product reviews counter cachinh for better admin perfromance.
