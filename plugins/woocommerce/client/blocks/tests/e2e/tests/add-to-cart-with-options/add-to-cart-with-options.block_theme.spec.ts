@@ -43,6 +43,18 @@ test.describe( 'Add to Cart with Options Block', () => {
 
 		await editor.saveSiteEditorEntities();
 
+		await admin.visitSiteEditor( {
+			postId: 'woocommerce/woocommerce//simple-product-add-to-cart-with-options',
+			postType: 'wp_template_part',
+			canvas: 'edit',
+		} );
+
+		await expect(
+			editor.canvas.getByText(
+				'This is a test paragraph added to the Add to Cart with Options template part.'
+			)
+		).toBeVisible();
+
 		await page.goto( '/product/cap' );
 
 		await expect(
