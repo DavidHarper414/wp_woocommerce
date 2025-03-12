@@ -62,7 +62,7 @@ class Init {
 	 * @return bool
 	 */
 	public function turn_off_embed_page( $is_connected_page, $current_page = null ) {
-		if ( $this->is_settings_page() ) {
+		if ( self::get_instance()->is_settings_page() ) {
 			return false;
 		}
 
@@ -126,6 +126,7 @@ class Init {
 		);
 
 		wp_set_script_translations( 'wc-admin-' . $script_name, 'woocommerce' );
+		WCAdminAssets::register_script( 'wp-admin-scripts', 'settings-embed', true );
 	}
 
 	/**
