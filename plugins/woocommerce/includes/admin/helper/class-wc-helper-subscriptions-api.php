@@ -146,6 +146,7 @@ class WC_Helper_Subscriptions_API {
 		WC_Helper::refresh_helper_subscriptions();
 		WC_Helper::get_subscriptions();
 		WC_Helper::get_product_usage_notice_rules();
+		WC_Helper::fetch_helper_connection_info();
 		self::get_subscriptions();
 	}
 
