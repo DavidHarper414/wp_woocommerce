@@ -124,27 +124,11 @@ function EditableContent( { context = {} } ) {
 }
 
 function Content( props ) {
-	const { context: { queryId, postType, postId } = {}, layoutClassNames } =
-		props;
-	const blockProps = useBlockProps( { className: layoutClassNames } );
+	const { context: { postType, postId } = {}, layoutClassNames } = props;
 
 	const userCanEdit = useCanEditEntity( 'postType', postType, postId );
 	if ( userCanEdit === undefined ) {
 		return null;
-	}
-
-	// Show warning if the block is not used in a product context.
-	if ( postType && postType !== 'product' ) {
-		return (
-			<div { ...blockProps }>
-				<Warning>
-					{ __(
-						'This block requires a product context to function. You can use it inside a Single Product template, Single Product block, Product Collection block, or within other product-related blocks.',
-						'woocommerce'
-					) }
-				</Warning>
-			</div>
-		);
 	}
 
 	return userCanEdit ? (
