@@ -123,7 +123,7 @@ function add_extension_register_script() {
 	}
 }
 
-add_action( 'admin_enqueue_scripts', 'add_extension_register_script' );
+add_action( 'admin_enqueue_scripts', 'add_extension_register_script', 100 );
 
 add_action(
 	'before_woocommerce_init',
