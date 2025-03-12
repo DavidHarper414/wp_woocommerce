@@ -67,7 +67,7 @@ class WC_Comments_Tests extends \WC_Unit_Test_Case {
 		);
 		$this->assertSame( count( $unapproved_reviews ), WC_Comments::get_products_reviews_pending_moderation_counter() );
 
-		// Ensure the existing reviews status changes is handled as intended (flip-flow approved statuses)
+		// Ensure the existing reviews status changes are handled as intended (flip-flop approved statuses)
 		foreach ( $unapproved_reviews as $review_id ) {
 			\wp_update_comment( array(
 				'comment_ID'       => $review_id,
