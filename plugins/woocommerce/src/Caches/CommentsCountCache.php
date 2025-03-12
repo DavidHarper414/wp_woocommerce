@@ -19,7 +19,7 @@ class CommentsCountCache {
 	 *
 	 * @var bool
 	 */
-	private $use_cache_api;
+	protected $use_cache_api;
 
 	/**
 	 * Constructor, detects which cache API to use.

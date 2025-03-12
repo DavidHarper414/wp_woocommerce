@@ -1,5 +1,7 @@
 <?php
+declare( strict_types=1 );
 
+use Automattic\WooCommerce\Caches\CommentsCountCache;
 use Automattic\WooCommerce\RestApi\UnitTests\Helpers\ProductHelper;
 
 /**
@@ -19,7 +21,7 @@ class WC_Comments_Tests extends \WC_Unit_Test_Case {
 			$product2->get_id() => 0,
 			$product3->get_id() => 0,
 		);
-		$product_id_array = array_keys( $expected_review_count );
+		$product_id_array      = array_keys( $expected_review_count );
 
 		$this->assertEquals( $expected_review_count, WC_Comments::get_review_counts_for_product_ids( $product_id_array ) );
 
@@ -51,15 +53,22 @@ class WC_Comments_Tests extends \WC_Unit_Test_Case {
 
 	/**
 	 * Test get_products_reviews_pending_moderation_counter.
+	 *
+	 * @param CommentsCountCache $comments_cache_facade Cache facade instance to inject from data provider.
+	 * @dataProvider cache_facade_instance
 	 */
-	public function test_get_pending_review_count_is_getting_updated() {
-		// Populate the cache entry, otherwise lazy updates will not be performed
+	public function test_get_pending_review_count_is_getting_updated( CommentsCountCache $comments_cache_facade ) {
+		$di                             = wc_get_container();
+		$original_comments_cache_facade = $di->get( CommentsCountCache::class );
+		$di->replace( CommentsCountCache::class, $comments_cache_facade );
+
+		// Populate the cache entry, otherwise lazy updates will not be performed.
 		$this->assertSame( 0, WC_Comments::get_products_reviews_pending_moderation_counter() );
 
-		// Ensure the newly posted reviews processing is handled as intended
-		$product = WC_Helper_Product::create_simple_product();
-		$approved_reviews = array(
-			ProductHelper::create_product_review( $product->get_id(), '...' )
+		// Ensure the newly posted reviews processing is handled as intended.
+		$product            = WC_Helper_Product::create_simple_product();
+		$approved_reviews   = array(
+			ProductHelper::create_product_review( $product->get_id(), '...' ),
 		);
 		$unapproved_reviews = array(
 			ProductHelper::create_product_review( $product->get_id(), '...', '0' ),
@@ -67,20 +76,56 @@ class WC_Comments_Tests extends \WC_Unit_Test_Case {
 		);
 		$this->assertSame( count( $unapproved_reviews ), WC_Comments::get_products_reviews_pending_moderation_counter() );
 
-		// Ensure the existing reviews status changes are handled as intended (flip-flop approved statuses)
+		// Ensure the existing reviews status changes are handled as intended (flip-flop approved statuses).
 		foreach ( $unapproved_reviews as $review_id ) {
-			\wp_update_comment( array(
-				'comment_ID'       => $review_id,
-				'comment_approved' => '1'
-			) );
+			\wp_update_comment(
+				array(
+					'comment_ID'       => $review_id,
+					'comment_approved' => '1',
+				)
+			);
 		}
 		$this->assertSame( 0, WC_Comments::get_products_reviews_pending_moderation_counter() );
 		foreach ( $unapproved_reviews as $review_id ) {
-			\wp_update_comment( array(
-				'comment_ID'       => $review_id,
-				'comment_approved' => '0'
-			) );
+			\wp_update_comment(
+				array(
+					'comment_ID'       => $review_id,
+					'comment_approved' => '0',
+				)
+			);
 		}
 		$this->assertSame( count( $unapproved_reviews ), WC_Comments::get_products_reviews_pending_moderation_counter() );
+
+		$di->replace( CommentsCountCache::class, $original_comments_cache_facade );
+	}
+
+	/**
+	 * Data provider supplying the caching facade instance testing against different caching APIs.
+	 *
+	 * @return Generator<CommentsCountCache>
+	 */
+	public function cache_facade_instance() {
+		yield from array(
+			'use cache API'     => array(
+				new class() extends CommentsCountCache {
+					/**
+					 * Constructor override.
+					 */
+					public function __construct() {
+						$this->use_cache_api = true;
+					}
+				},
+			),
+			'use transient API' => array(
+				new class() extends CommentsCountCache {
+					/**
+					 * Constructor override.
+					 */
+					public function __construct() {
+						$this->use_cache_api = false;
+					}
+				},
+			),
+		);
 	}
 }
